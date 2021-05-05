@@ -1,0 +1,31 @@
+@use 'var';
+@use 'color';
+
+%animate-all {
+  transition: all var.$animation-time ease-out, visibility 0s;
+}
+
+%animate-all-bounceend {
+  transition: all var.$animation-time cubic-bezier(0.175, 0.885, 0.32, 1.275), visibility 0s;
+}
+
+%animate-tf-bounceend {
+  transition: transform var.$animation-time cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+%blockpadd {
+  padding: var.$txt-box-pad var.$b-radius;
+  border-radius: var.$b-radius;
+}
+
+%grayblock {
+  @extend %blockpadd;
+  border: var.$border-width solid var.$gray;
+}
+
+@mixin th-td-spacing($col-count) {
+  th,
+  td {
+    width: 1 / $col-count * 100%;
+  }
+}

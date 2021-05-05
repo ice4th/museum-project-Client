@@ -1,0 +1,54 @@
+// color
+$gray: #707070;
+$default: #7e7e7e;
+$success: #2e7d32;
+$warn: #d32f2f;
+$white: #fff;
+$violet: #725d79;
+$link: #733e85;
+$black: #1b1b1b;
+$txt-warn: #e60000;
+$txt-info: #1b5e20;
+$admin: #ffcdd2;
+$staff: #b2dfdb;
+
+// border
+$border-width: 1px;
+$hightlight-width: 2.5px;
+$b-radius: 10px;
+
+// animation
+$animation-time: 0.25s;
+
+// font
+$font-fam: ('Noto Sans Disp', 'Noto Sans Thai UI', sans-serif);
+$font-scaler: 0.5;
+
+// margin padding
+$txt-m-bot: 0.5rem;
+$label-m-right: 0.5rem;
+$txt-box-pad: 2px;
+$form-comtrol-bot: 1rem;
+
+// scrollbar
+$scrollbar-width: 6px;
+$scrollbar-track-color: #f0f0f0;
+$scrollbar-thumb-color: #bdbdbd;
+
+// CheckBox
+$label-pad-left: 10px;
+$cb-size: 30px;
+$cb-top: -1px;
+$cb-left: 0;
+
+// cb tick
+$tick-left: 5.76px;
+$tick-top: 2px;
+
+//admin thingy
+$navbar-width: 15vw;
+$navbar-minwidth: 165px;
+$top-part-h: 3rem;
+
+//visitor
+$navbar-shadow: 0 5px 9px 1px rgba(79, 79, 79, 0.2);
