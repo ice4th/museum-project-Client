@@ -14,17 +14,16 @@ export function addDoner(data) {
   })
 }
 
-// export function putDoner(donerIn) {
-//   return axios.instance.put(`/api/doner/`, donerIn, {
-//     'Content-Type': 'multipart/form-data',
-//   })
-// }
-
-export function putDoner(id, donerIn) {
-  return axios.instance.put(`/api/doner/${id}`, donerIn, {
+export function putDoner(donerIn) {
+  return axios.instance.put(`/api/doner`, donerIn, {
+    headers: {"Access-Control-Allow-Origin": "*"},
     'Content-Type': 'multipart/form-data',
   })
 }
+
+// export function putDoner(id) {
+//   return axios.instance.get(`/api/doner/test/${id}` )
+// }
 
 export function deleteDoner(id) {
   return axios.instance.delete(`/api/doner/${id}`)

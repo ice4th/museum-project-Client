@@ -294,28 +294,33 @@ export default {
         this.$router.go()
       })
     },
+
+    saveData() {
+      const formData = new FormData()
+      for (const i in this.editedItem) {
+        formData.append(i, this.editedItem[i])
+        console.log(i,this.editedItem[i])
+      }
+      console.log(formData)
+
+      putDoner(formData).then((_a) => {
+        this.$router.go()
+      })
+      this.dialog = false
+    },
+
+    
     // saveData() {
     //   const formData = new FormData()
     //   for (const i in this.editedItem) {
     //     formData.append(i, this.editedItem[i])
     //   }
 
-    //   putDoner(formData).then((_a) => {
+    //   putDoner(this.editedItem.id).then((_a) => {
     //     this.$router.go()
     //   })
     //   this.dialog = false
     // },
-    saveData() {
-      const formData = new FormData()
-      for (const i in this.editedItem) {
-        formData.append(i, this.editedItem[i])
-      }
-
-      putDoner(this.editedItem.id, formData).then((_a) => {
-        this.$router.go()
-      })
-      this.dialog = false
-    },
 
     removeData(id) {
       const result = confirm('Want to delete?')
