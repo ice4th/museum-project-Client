@@ -1,107 +1,9 @@
 <template>
   <div>
-    <h2>Doner</h2>
-    <v-container>
-      <!-- insert doner -->
-      <v-row justify="start">
-        <v-dialog v-model="dialogAdd" persistent max-width="600px">
-          <!-- add doner -->
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark v-bind="attrs" v-on="on">
-              Add Doner
-            </v-btn>
-          </template>
-          <!-- insert doner -->
-          <v-card>
-            <v-card-title>
-              <span class="headline">Doner</span>
-            </v-card-title>
-            <v-card-text>
-              <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      label="ชื่อ"
-                      required
-                      v-model="details.Name"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      label="นามสกุล"
-                      required
-                      v-model="details.LastName"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      label="จำนวนเงิน"
-                      required
-                      v-model="details.Donation"
-                    ></v-text-field>
-                  </v-col>
-
-                  <!-- D/M/Y -->
-                  <v-col cols="12" sm="6" md="4">
-                    <v-menu
-                      ref="menu"
-                      v-model="menu"
-                      :close-on-content-click="false"
-                      :return-value.sync="PayDate"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="PayDate"
-                          label="Picker in menu"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="PayDate" no-title scrollable>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="menu = false">
-                          Cancel
-                        </v-btn>
-                        <v-btn
-                          text
-                          color="primary"
-                          @click="$refs.menu.save(PayDate)"
-                        >
-                          OK
-                        </v-btn>
-                      </v-date-picker>
-                    </v-menu>
-                  </v-col>
-                  <v-col cols="12" sm="6">
-                    <v-file-input
-                      label="Upload image"
-                      filled
-                      prepend-icon="mdi-camera"
-                      v-model="details.ImgPath"
-                    ></v-file-input>
-                  </v-col>
-                </v-row>
-              </v-container>
-              <small>*indicates required field</small>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="dialog = false">
-                Close
-              </v-btn>
-              <v-btn color="blue darken-1" text @click="uploadData">
-                Save
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
-    </v-container>
+    <h2>Doner Management</h2>
+    <v-btn color="primary" dark text @click="dialogAdd = true">
+      Add Doner
+    </v-btn>
 
     <!-- doner table -->
     <div class="DonerTableMN">
@@ -131,6 +33,97 @@
         </template>
       </v-data-table>
     </div>
+
+    <!-- insert doner -->
+    <v-row justify="start">
+      <v-dialog v-model="dialogAdd" persistent max-width="600px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Add Doner</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    label="ชื่อ"
+                    required
+                    v-model="details.Name"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    label="นามสกุล"
+                    required
+                    v-model="details.LastName"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field
+                    label="จำนวนเงิน"
+                    required
+                    v-model="details.Donation"
+                  ></v-text-field>
+                </v-col>
+
+                <!-- D/M/Y -->
+                <v-col cols="12" sm="6" md="4">
+                  <v-menu
+                    ref="menu"
+                    v-model="menu"
+                    :close-on-content-click="false"
+                    :return-value.sync="PayDate"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="auto"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-text-field
+                        v-model="PayDate"
+                        label="Picker in menu"
+                        prepend-icon="mdi-calendar"
+                        readonly
+                        v-bind="attrs"
+                        v-on="on"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker v-model="PayDate" no-title scrollable>
+                      <v-spacer></v-spacer>
+                      <v-btn text color="primary" @click="menu = false">
+                        Cancel
+                      </v-btn>
+                      <v-btn
+                        text
+                        color="primary"
+                        @click="$refs.menu.save(PayDate)"
+                      >
+                        OK
+                      </v-btn>
+                    </v-date-picker>
+                  </v-menu>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-file-input
+                    label="Upload image"
+                    filled
+                    prepend-icon="mdi-camera"
+                    v-model="details.ImgPath"
+                  ></v-file-input>
+                </v-col>
+              </v-row>
+            </v-container>
+            <small>*indicates required field</small>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="dialogAdd = false">
+              Close
+            </v-btn>
+            <v-btn color="blue darken-1" text @click="uploadData"> Save </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
 
     <!-- update doner -->
     <v-row justify="center">
@@ -299,28 +292,13 @@ export default {
       const formData = new FormData()
       for (const i in this.editedItem) {
         formData.append(i, this.editedItem[i])
-        console.log(i,this.editedItem[i])
       }
-      console.log(formData)
 
       putDoner(formData).then((_a) => {
         this.$router.go()
       })
       this.dialog = false
     },
-
-    
-    // saveData() {
-    //   const formData = new FormData()
-    //   for (const i in this.editedItem) {
-    //     formData.append(i, this.editedItem[i])
-    //   }
-
-    //   putDoner(this.editedItem.id).then((_a) => {
-    //     this.$router.go()
-    //   })
-    //   this.dialog = false
-    // },
 
     removeData(id) {
       const result = confirm('Want to delete?')
@@ -334,11 +312,4 @@ export default {
 }
 </script>
 
-<style>
-.DonerTable {
-  margin-top: 100px;
-}
-.DonerTableMN h4 {
-  text-align: center;
-}
-</style>
+<style></style>

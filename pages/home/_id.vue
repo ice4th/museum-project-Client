@@ -1,6 +1,6 @@
 <template>
   <div class="newsdetail">
-    <h2>{{ news && news.title }}</h2>
+    <h3>{{ news && news.title }}</h3>
     <p>{{ news && news.description }}</p>
   </div>
 </template>
@@ -25,4 +25,8 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang = "scss" scoped>
+.newsdetail {
+  padding-top: 3rem;
+}
+</style>

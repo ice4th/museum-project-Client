@@ -1,11 +1,7 @@
 <template>
-  <div class="organdetail">
-    <h2>{{ organ && organ.nameTh }}</h2>
-    <div class="organinfo">
-      <p>{{ organ && organ.nameTh }}</p>
-      <p>{{ organ && organ.nameEng }}</p>
-      <p><b>รายละเอียด: </b>{{ organ && organ.description }}</p>
-    </div>
+  <div class="organinfo">
+    <h2>{{ organ && organ.nameTh }} ({{ organ && organ.nameEng }})</h2>
+    <p><b>รายละเอียด: </b>{{ organ && organ.description }}</p>
   </div>
 </template>
 

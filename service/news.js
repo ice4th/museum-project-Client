@@ -14,8 +14,8 @@ export function addNews(data) {
   })
 }
 
-export function putNews(NewsIn){
-  return axios.instance.put(`/api/news`, NewsIn, {
+export function putNews(data) {
+  return axios.instance.put(`/api/news`, data, {
     'Content-Type': 'multipart/form-data',
   })
 }
