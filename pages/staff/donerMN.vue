@@ -49,6 +49,7 @@
                     label="ชื่อ"
                     required
                     v-model="details.Name"
+                    :rules="rules.name"
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -63,6 +64,7 @@
                     label="จำนวนเงิน"
                     required
                     v-model="details.Donation"
+                    :rules="rules.donateNum"
                   ></v-text-field>
                 </v-col>
 
@@ -112,14 +114,20 @@
                 </v-col>
               </v-row>
             </v-container>
-            <small>*indicates required field</small>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="dialogAdd = false">
               Close
             </v-btn>
-            <v-btn color="blue darken-1" text @click="uploadData"> Save </v-btn>
+            <v-btn
+              :disabled="!detailsIsValid"
+              color="blue darken-1"
+              text
+              @click="uploadData"
+            >
+              Save
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -141,6 +149,7 @@
                     label="ชื่อ"
                     required
                     v-model="editedItem.name"
+                    :rules="rules.name"
                   ></v-text-field>
                 </v-col>
                 <!-- lastName -->
@@ -157,6 +166,7 @@
                     label="จำนวนเงิน"
                     required
                     v-model="editedItem.donation"
+                    :rules="rules.donateNum"
                   ></v-text-field>
                 </v-col>
 
@@ -208,7 +218,6 @@
                 </v-col>
               </v-row>
             </v-container>
-            <small>*indicates required field</small>
           </v-card-text>
 
           <v-card-actions>
@@ -216,7 +225,14 @@
             <v-btn color="blue darken-1" text @click="dialog = false"
               >Close</v-btn
             >
-            <v-btn color="blue darken-1" text @click="saveData"> Save </v-btn>
+            <v-btn
+              :disabled="!editedItemIsValid"
+              color="blue darken-1"
+              text
+              @click="saveData"
+            >
+              Save
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -263,7 +279,23 @@ export default {
       PayDate: new Date().toISOString().substr(0, 10),
       Donation: '',
     },
+    rules: {
+      name: [(val) => (val || '').length > 0 || 'This field is required'],
+      donateNum: [
+        (val) =>
+          (!isNaN(+val) && (val || '').length > 0) || 'Please input number',
+      ],
+    },
   }),
+
+  computed: {
+    detailsIsValid() {
+      return this.details.Name && this.details.Donation
+    },
+    editedItemIsvalid() {
+      return this.editedItem.name && this.editedItem.donation
+    },
+  },
   mounted() {
     getDoner().then((res) => {
       console.log(res.data)

@@ -43,17 +43,23 @@
               <v-row>
                 <!--  title -->
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field label="Title" required v-model="details.Title">
+                  <v-text-field
+                    label="Title"
+                    required
+                    v-model="details.Title"
+                    :rules="rules.name"
+                  >
                   </v-text-field>
                 </v-col>
                 <!-- Description -->
                 <v-col cols="12">
-                  <v-text-field
-                    label="Description*"
+                  <v-textarea
+                    label="Description"
                     required
                     v-model="details.Description"
+                    :rules="rules.name"
                   >
-                  </v-text-field>
+                  </v-textarea>
                 </v-col>
                 <!-- image -->
                 <v-col cols="12" sm="6" md="4">
@@ -68,14 +74,20 @@
                 </v-col>
               </v-row>
             </v-container>
-            <small>*indicates required field</small>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="dialogAdd = false">
               Close
             </v-btn>
-            <v-btn color="blue darken-1" text @click="uploadFile"> Save </v-btn>
+            <v-btn
+              :disabled="!detailsIsValid"
+              color="blue darken-1"
+              text
+              @click="uploadFile"
+            >
+              Save
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -95,15 +107,17 @@
                     label="Title*"
                     required
                     v-model="editedItem.title"
+                    :rules="rules.name"
                   >
                   </v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-text-field
-                    label="Description*"
+                  <v-textarea
+                    label="Description"
                     required
                     v-model="editedItem.description"
-                  ></v-text-field>
+                    :rules="rules.name"
+                  ></v-textarea>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-file-input
@@ -115,14 +129,20 @@
                 </v-col>
               </v-row>
             </v-container>
-            <small>*indicates required field</small>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="dialog = false">
               Close
             </v-btn>
-            <v-btn color="blue darken-1" text @click="saveData"> Save </v-btn>
+            <v-btn
+              :disabled="!editedItemIsValid"
+              color="blue darken-1"
+              text
+              @click="saveData"
+            >
+              Save
+            </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -142,8 +162,8 @@ export default {
         sortable: false,
         value: 'title',
       },
-      { text: 'authorDate', value: 'authorDate', sortable: false},
-      { text: 'Actions', value: 'actions', sortable: false},
+      { text: 'authorDate', value: 'authorDate', sortable: false },
+      { text: 'Actions', value: 'actions', sortable: false },
     ],
     search: '',
     editedIndex: -1,
@@ -155,7 +175,7 @@ export default {
     },
     dialog: false,
     dialogAdd: false,
-    
+
     saving: false,
     newslist: [],
     news: null,
@@ -164,8 +184,22 @@ export default {
       Title: '',
       Description: '',
       ImgPath: null,
+      AuthorDate: new Date().toISOString().substr(0, 10),
+    },
+    rules: {
+      name: [(val) => (val || '').length > 0 || 'This field is required'],
     },
   }),
+
+  computed: {
+    detailsIsValid() {
+      return this.details.Title && this.details.Description
+    },
+    editedItemIsvalid() {
+      return this.editedItem.title && this.editedItem.description
+    },
+  },
+
   mounted() {
     getNews(this.$route.params.id).then((res) => {
       // console.log(res.data)
@@ -188,8 +222,8 @@ export default {
       console.log(this.editedItem)
       console.log(formData)
       putNews(formData).then((_a) => {
-          this.$router.go()
-        })
+        this.$router.go()
+      })
       this.dialog = false
     },
 

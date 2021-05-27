@@ -50,6 +50,7 @@
                       label="Name(Thai)"
                       required
                       v-model="details.nameTh"
+                      :rules="rules.name"
                     >
                     </v-text-field>
                   </v-col>
@@ -59,17 +60,19 @@
                       label="Name(English)"
                       required
                       v-model="details.nameEng"
+                      :rules="rules.name"
                     >
                     </v-text-field>
                   </v-col>
                   <!-- Description -->
                   <v-col cols="12">
-                    <v-text-field
+                    <v-textarea
                       label="Description*"
                       required
                       v-model="details.description"
+                      :rules="rules.name"
                     >
-                    </v-text-field>
+                    </v-textarea>
                   </v-col>
                   <!-- image -->
                   <v-col cols="12" sm="6" md="4">
@@ -83,14 +86,18 @@
                   </v-col>
                 </v-row>
               </v-container>
-              <small>*indicates required field</small>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="dialogAdd = false">
                 Close
               </v-btn>
-              <v-btn color="blue darken-1" text @click="uploadFile">
+              <v-btn
+                :disabled="!detailsIsValid"
+                color="blue darken-1"
+                text
+                @click="uploadFile"
+              >
                 Save
               </v-btn>
             </v-card-actions>
@@ -126,12 +133,12 @@
                   </v-col>
                   <!-- Description -->
                   <v-col cols="12">
-                    <v-text-field
+                    <v-textarea
                       label="Description*"
                       required
                       v-model="editedItem.description"
                     >
-                    </v-text-field>
+                    </v-textarea>
                   </v-col>
                   <!-- image -->
                   <v-col cols="12" sm="6" md="4">
@@ -145,14 +152,20 @@
                   </v-col>
                 </v-row>
               </v-container>
-              <small>*indicates required field</small>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="dialog = false">
                 Close
               </v-btn>
-              <v-btn color="blue darken-1" text @click="saveData"> Save </v-btn>
+              <v-btn
+                :disabled="!editedItemIsValid"
+                color="blue darken-1"
+                text
+                @click="saveData"
+              >
+                Save
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -182,9 +195,8 @@ export default {
           sortable: false,
           value: 'nameEng',
         },
-        { text: 'Actions', value: 'actions', sortable: false},
+        { text: 'Actions', value: 'actions', sortable: false },
       ],
-      organ: null,
       organlist: [],
       editedIndex: -1,
       editedItem: {
@@ -200,8 +212,27 @@ export default {
         description: '',
         imgPath: null,
       },
+      rules: {
+        name: [(val) => (val || '').length > 0 || 'This field is required'],
+      },
     }
   },
+
+  computed: {
+    detailsIsValid() {
+      return (
+        this.details.nameTh && this.details.nameEng && this.details.description
+      )
+    },
+    editedItemIsvalid() {
+      return (
+        this.editedItem.nameTh &&
+        this.editedItem.nameEng &&
+        this.editedItem.description
+      )
+    },
+  },
+
   mounted() {
     getOrgan().then((res) => {
       console.log(res.data)
@@ -220,7 +251,6 @@ export default {
       for (const i in this.editedItem) {
         formData.append(i, this.editedItem[i])
       }
-      console.log(this.editedItem)
       console.log(formData)
       putOrgan(formData).then((_a) => {
         this.$router.go()
@@ -229,7 +259,6 @@ export default {
     },
 
     uploadFile() {
-      this.dialogAdd = false
       const formData = new FormData()
       for (const i in this.details) {
         formData.append(i, this.details[i])
@@ -237,11 +266,11 @@ export default {
       addOrgan(formData).then((_a) => {
         this.$router.go()
       })
+      this.dialogAdd = false
     },
 
     removeData(id) {
       const result = confirm('Want to delete?')
-      console.log(id)
       if (result) {
         deleteOrgan(id).then((_a) => {
           this.$router.go()

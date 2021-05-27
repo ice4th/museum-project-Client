@@ -19,6 +19,7 @@
           dent
         ></v-text-field>
       </v-card-title>
+
       <v-data-table
         :headers="headers"
         :items="bonelist"
@@ -50,6 +51,7 @@
                       label="Name(Thai)"
                       required
                       v-model="details.thaiName"
+                      :rules="rules.name"
                     >
                     </v-text-field>
                   </v-col>
@@ -59,6 +61,7 @@
                       label="Common Name"
                       required
                       v-model="details.commonName"
+                      :rules="rules.name"
                     >
                     </v-text-field>
                   </v-col>
@@ -68,18 +71,20 @@
                       label="Scientific Name"
                       required
                       v-model="details.scientificName"
+                      :rules="rules.name"
                     >
                     </v-text-field>
                   </v-col>
 
                   <!-- Description -->
                   <v-col cols="12">
-                    <v-text-field
+                    <v-textarea
                       label="Description*"
                       required
                       v-model="details.description"
+                      :rules="rules.name"
                     >
-                    </v-text-field>
+                    </v-textarea>
                   </v-col>
                   <!-- image -->
                   <v-col cols="12" sm="6" md="4">
@@ -278,14 +283,18 @@
                   </row>
                 </v-row>
               </v-container>
-              <small>*indicates required field</small>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="dialogAdd = false">
                 Close
               </v-btn>
-              <v-btn color="blue darken-1" text @click="uploadFile">
+              <v-btn
+                :disabled="!detailsIsValid"
+                color="blue darken-1"
+                text
+                @click="uploadFile"
+              >
                 Save
               </v-btn>
             </v-card-actions>
@@ -309,6 +318,7 @@
                       label="Name(Thai)"
                       required
                       v-model="editedItem.thaiName"
+                      :rules="rules.name"
                     >
                     </v-text-field>
                   </v-col>
@@ -318,6 +328,7 @@
                       label="Common Name"
                       required
                       v-model="editedItem.commonName"
+                      :rules="rules.name"
                     >
                     </v-text-field>
                   </v-col>
@@ -327,18 +338,20 @@
                       label="Scientific Name"
                       required
                       v-model="editedItem.scientificName"
+                      :rules="rules.name"
                     >
                     </v-text-field>
                   </v-col>
 
                   <!-- Description -->
                   <v-col cols="12">
-                    <v-text-field
-                      label="Description*"
+                    <v-textarea
+                      label="Description"
                       required
                       v-model="editedItem.description"
+                      :rules="rules.name"
                     >
-                    </v-text-field>
+                    </v-textarea>
                   </v-col>
                   <!-- image -->
                   <v-col cols="12" sm="6" md="4">
@@ -537,14 +550,20 @@
                   </row>
                 </v-row>
               </v-container>
-              <small>*indicates required field</small>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="dialog = false">
                 Close
               </v-btn>
-              <v-btn color="blue darken-1" text @click="saveData"> Save </v-btn>
+              <v-btn
+                :disabled="!editedItemIsvalid"
+                color="blue darken-1"
+                text
+                @click="saveData"
+              >
+                Save
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -636,7 +655,29 @@ export default {
         species: '',
         subSpecies: '',
       },
+      rules: {
+        name: [(val) => (val || '').length > 0 || 'This field is required'],
+      },
     }
+  },
+
+  computed: {
+    detailsIsValid() {
+      return (
+        this.details.thaiName &&
+        this.details.commonName &&
+        this.details.scientificName &&
+        this.details.description
+      )
+    },
+    editedItemIsvalid() {
+      return (
+        this.editItem.thaiName &&
+        this.editItem.commonName &&
+        this.editItem.scientificName &&
+        this.editItem.description
+      )
+    },
   },
   mounted() {
     getAnimal().then((res) => {
@@ -688,6 +729,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
