@@ -165,6 +165,7 @@ export default {
       { text: 'authorDate', value: 'authorDate', sortable: false },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
+    
     search: '',
     editedIndex: -1,
     editedItem: {

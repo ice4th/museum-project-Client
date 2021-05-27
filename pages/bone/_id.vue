@@ -6,6 +6,15 @@
       max-width="392"
     ></v-img>
     <div class="animalinfo">
+      <v-carousel>
+        <v-carousel-item
+          v-for="(item, i) in items"
+          :key="i"
+          :src="item.src"
+          reverse-transition="fade-transition"
+          transition="fade-transition"
+        ></v-carousel-item>
+      </v-carousel>
       <h3>
         {{ animal && animal.thaiName }} ({{ animal && animal.commonName }})
       </h3>
@@ -13,11 +22,12 @@
       <p><b>รายละเอียด: </b>{{ animal && animal.description }}</p>
       <p><b>Taxonomy</b></p>
 
-      
-
       <div v-if="animal != null">
-        <div v-for="(val, key,index) in taxonomy" :key="key + val">
-          <p v-bind:style="{ paddingLeft: (index*8) + 'px' }" v-if="val != null && key != 'id'">
+        <div v-for="(val, key, index) in taxonomy" :key="key + val">
+          <p
+            v-bind:style="{ paddingLeft: index * 8 + 'px' }"
+            v-if="val != null && key != 'id'"
+          >
             <b> {{ key }}: {{ val }} </b>
           </p>
         </div>
@@ -32,7 +42,7 @@ export default {
   data: () => ({
     animal: [],
     taxonomy: {},
-    
+    items: [],
   }),
   mounted() {
     this.getAnimal()
@@ -62,7 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.animalinfo{
+.animalinfo {
   margin-top: 3rem;
 }
 </style>
