@@ -1,0 +1,23 @@
+<script setup lang="ts">
+/**
+ * This is a Vue Component that will be
+ * automatically mapped to a entry on vue-router.
+ *
+ * You will be able to access this page at http://localhost:3000/navbar-blank-page-8
+ * Page uri will match related path to src/pages folder
+ *
+ * Read more about routing:
+ * @see /vite.config.ts
+ * @see /src/router.ts
+ */
+
+import { useHead } from '@vueuse/head'
+
+useHead({
+  title: 'Index Page'
+})
+</script>
+
+<template>
+  <div>Index Page</div>
+</template>
