@@ -26,7 +26,7 @@ useHead({
 
 <template>
   <SidebarLabelsLayout>
-    <!-- <GenericSidebar /> -->
+    <StudentSidebar />
     <!-- <GenericMobileSubsidebar /> -->
 
     <!-- Content Wrapper -->

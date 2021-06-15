@@ -20,14 +20,14 @@ import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 
 useHead({
-  title: 'Blank Page 5 - Sidebar - Vuero',
+  title: 'Whitehouse: Student',
 })
 </script>
 
 <template>
   <SidebarLabelsLayout>
-    <!-- <GenericSidebar /> -->
-    <!-- <GenericMobileSubsidebar /> -->
+    <StudentSidebar />
+    <StudentMobileSubsidebar />
 
     <!-- Content Wrapper -->
     <div
@@ -58,7 +58,7 @@ useHead({
 
             <!-- Page title -->
             <div class="title-wrap">
-              <h1 class="title is-4">Blank Page 5 - Sidebar</h1>
+              <h1 class="title is-4">Student Page</h1>
             </div>
 
             <!-- <Toolbar /> -->

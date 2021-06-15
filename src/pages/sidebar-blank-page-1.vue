@@ -3,7 +3,7 @@
  * This is a Vue Component that will be
  * automatically mapped to a entry on vue-router.
  *
- * You will be able to access this page at http://localhost:3000/sidebar-blank-page-5
+ * You will be able to access this page at http://localhost:3000/sidebar-blank-page-1
  * Page uri will match related path to src/pages folder
  *
  * Read more about routing:
@@ -20,12 +20,12 @@ import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 
 useHead({
-  title: 'Blank Page 5 - Sidebar - Vuero',
+  title: 'Blank Page 1 - Sidebar - Vuero',
 })
 </script>
 
 <template>
-  <SidebarLabelsLayout>
+  <SidebarLayout>
     <!-- <GenericSidebar /> -->
     <!-- <GenericMobileSubsidebar /> -->
 
@@ -58,7 +58,7 @@ useHead({
 
             <!-- Page title -->
             <div class="title-wrap">
-              <h1 class="title is-4">Blank Page 5 - Sidebar</h1>
+              <h1 class="title is-4">Blank Page 1 - Sidebar</h1>
             </div>
 
             <!-- <Toolbar /> -->
@@ -66,14 +66,14 @@ useHead({
 
           <div class="page-content-inner">
             <!--
-              Page content goes here
+                Page content goes here
 
-              You can see pages content samples from 
-              files in /src/components/pages directory
-            -->
+                You can see pages content samples from 
+                files in /src/components/pages directory
+              -->
           </div>
         </div>
       </div>
     </div>
-  </SidebarLabelsLayout>
+  </SidebarLayout>
 </template>
