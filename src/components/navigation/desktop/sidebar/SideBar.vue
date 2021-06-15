@@ -11,6 +11,8 @@
       <ul class="icon-menu">
         <!-- Student -->
         <SidebarItemStudent />
+        <!-- Product -->
+        <SidebarItemProduct />
       </ul>
 
       <!-- User account -->

@@ -11,8 +11,19 @@ import { activePanel } from '/@src/state/activePanelState'
     <div class="inner">
       <ul class="icon-side-menu">
         <li>
-          <RouterLink id="home-sidebar-menu-mobile" :to="{ name: 'index' }">
-            <i class="iconify" data-icon="feather:activity"></i>
+          <RouterLink
+            id="student-sidebar-menu-mobile"
+            :to="{ name: 'student' }"
+          >
+            <i class="iconify" data-icon="feather:users"></i>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink
+            id="product-sidebar-menu-mobile"
+            :to="{ name: 'product' }"
+          >
+            <i class="iconify" data-icon="feather:book"></i>
           </RouterLink>
         </li>
       </ul>

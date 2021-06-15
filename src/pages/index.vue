@@ -3,7 +3,7 @@
  * This is a Vue Component that will be
  * automatically mapped to a entry on vue-router.
  *
- * You will be able to access this page at http://localhost:3000/sidebar-blank-page-5
+ * You will be able to access this page at http://localhost:8083/sidebar-blank-page-5
  * Page uri will match related path to src/pages folder
  *
  * Read more about routing:

@@ -4,7 +4,7 @@ import { activeSidebar } from '/@src/state/activeSidebarState'
 
 <template>
   <div
-    id="home-sidebar"
+    id="student-sidebar"
     :class="[activeSidebar === 'student' && 'is-active']"
     class="sidebar-panel is-generic"
   >
@@ -45,7 +45,7 @@ import { activeSidebar } from '/@src/state/activeSidebarState'
             </li>
           </ul>
         </li> -->
-        <li class="divider"></li>
+        <!-- <li class="divider"></li> -->
         <li>
           <RouterLink :to="{ name: 'student' }">Student Info</RouterLink>
         </li>

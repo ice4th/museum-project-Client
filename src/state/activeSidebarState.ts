@@ -10,7 +10,7 @@
 
 import { ref, watchEffect } from 'vue'
 
-type SidebarId = 'none' | 'student'
+type SidebarId = 'none' | 'student' | 'product'
 
 export const activeSidebar = ref<SidebarId>('none')
 

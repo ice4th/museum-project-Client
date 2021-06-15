@@ -1,11 +1,11 @@
 <template>
   <li>
     <RouterLink
-      id="home-sidebar-menu"
+      id="student-sidebar-menu"
       :to="{ name: 'student' }"
       data-content="Student"
     >
-      <i class="iconify sidebar-svg" data-icon="feather:user"></i>
+      <i class="iconify sidebar-svg" data-icon="feather:users"></i>
     </RouterLink>
   </li>
 </template>

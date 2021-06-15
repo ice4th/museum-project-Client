@@ -11,8 +11,8 @@
       <ul class="icon-menu">
         <!-- Student -->
         <SidebarItemStudent />
-        <!-- Layouts -->
-        <!-- <SidebarItemLayouts /> -->
+        <!-- Product -->
+        <SidebarItemProduct />
         <!-- Bounties -->
         <!-- <SidebarItemElements /> -->
         <!-- Bugs -->
