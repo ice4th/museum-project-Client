@@ -34,7 +34,7 @@ import { activeSidebar } from '/@src/state/activeSidebarState'
           </div>
           <ul>
             <li>
-              <RouterLink :to="{ name: 'product' }" class="is-submenu">
+              <RouterLink :to="{ name: 'product-package' }" class="is-submenu">
                 <i class="lnil lnil-law-book"></i>
                 <span>Package Detail</span>
               </RouterLink>
