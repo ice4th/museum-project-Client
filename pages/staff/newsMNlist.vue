@@ -8,6 +8,7 @@
 
     <!-- search -->
     <v-card-title>
+      รายการข่าว
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -46,7 +47,7 @@
                   <v-text-field
                     label="Title"
                     required
-                    v-model="details.Title"
+                    v-model="details.title"
                     :rules="rules.name"
                   >
                   </v-text-field>
@@ -56,21 +57,27 @@
                   <v-textarea
                     label="Description"
                     required
-                    v-model="details.Description"
+                    v-model="details.description"
                     :rules="rules.name"
                   >
                   </v-textarea>
                 </v-col>
                 <!-- image -->
                 <v-col cols="12" sm="6" md="4">
-                  <v-file-input
-                    label="Upload image"
-                    filled
-                    prepend-icon="mdi-camera"
-                    v-model="details.ImgPath"
-                  >
-                    <!--v-model="details.imgPath"-->
-                  </v-file-input>
+                  <p>News Image</p>
+                  <vue-upload-multiple-image
+                    @upload-success="uploadImageSuccess"
+                    @before-remove="beforeRemove"
+                    @edit-image="editImage"
+                    @data-change="dataChange"
+                    :data-images="images"
+                    primaryText="Upload Images"
+                    popupText="Description default image"
+                    browseText="Choose file"
+                    dragText="Drag Images"
+                    markIsPrimaryText="Set to First"
+                    v-model="details.imgPath"
+                  ></vue-upload-multiple-image>
                 </v-col>
               </v-row>
             </v-container>
@@ -104,8 +111,7 @@
                 <!-- แก้ไข title -->
                 <v-col cols="12">
                   <v-text-field
-                    label="Title*"
-                    required
+                    label="Title"
                     v-model="editedItem.title"
                     :rules="rules.name"
                   >
@@ -114,18 +120,24 @@
                 <v-col cols="12">
                   <v-textarea
                     label="Description"
-                    required
                     v-model="editedItem.description"
                     :rules="rules.name"
                   ></v-textarea>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-file-input
-                    label="Upload image"
-                    filled
-                    prepend-icon="mdi-camera"
-                    v-model="editedItem.imgpath"
-                  ></v-file-input>
+                  <p>News Image</p>
+                  <vue-upload-multiple-image
+                    @upload-success="uploadImageSuccess"
+                    @before-remove="beforeRemove"
+                    @edit-image="editImage"
+                    @data-change="dataChange"
+                    :data-images="images"
+                    primaryText="Upload Images"
+                    popupText="Description default image"
+                    browseText="Choose file"
+                    dragText="Drag Images"
+                    markIsPrimaryText="Set to First"
+                  ></vue-upload-multiple-image>
                 </v-col>
               </v-row>
             </v-container>
@@ -136,7 +148,7 @@
               Close
             </v-btn>
             <v-btn
-              :disabled="!editedItemIsValid"
+              :disabled="!editedItemIsvalid"
               color="blue darken-1"
               text
               @click="saveData"
@@ -152,8 +164,15 @@
 
 <script>
 import { deleteNews, getNews, addNews, putNews } from '@/service/news'
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
+import { addImage } from '@/service/image'
+import Vue from 'vue'
+export default Vue.extend({
+  layout: 'admin',
+  components: {
+    VueUploadMultipleImage,
+  },
 
-export default {
   data: () => ({
     headers: [
       {
@@ -162,17 +181,16 @@ export default {
         sortable: false,
         value: 'title',
       },
-      { text: 'authorDate', value: 'authorDate', sortable: false },
       { text: 'Actions', value: 'actions', sortable: false },
     ],
-    
+    images: [],
     search: '',
     editedIndex: -1,
     editedItem: {
       id: '',
       title: '',
       description: '',
-      imgPath: null,
+      imgPath: [],
     },
     dialog: false,
     dialogAdd: false,
@@ -182,10 +200,10 @@ export default {
     news: null,
     title: 'Vuetify.js',
     details: {
-      Title: '',
-      Description: '',
-      ImgPath: null,
-      AuthorDate: new Date().toISOString().substr(0, 10),
+      title: '',
+      description: '',
+      imgPath: [],
+      authorDate: new Date().toISOString().substr(0, 10),
     },
     rules: {
       name: [(val) => (val || '').length > 0 || 'This field is required'],
@@ -193,8 +211,9 @@ export default {
   }),
 
   computed: {
+    // data not empty
     detailsIsValid() {
-      return this.details.Title && this.details.Description
+      return this.details.title && this.details.description
     },
     editedItemIsvalid() {
       return this.editedItem.title && this.editedItem.description
@@ -209,6 +228,27 @@ export default {
   },
 
   methods: {
+    uploadImageSuccess(formData, index, fileList) {
+      console.log('data', formData, index, fileList)
+      addImage(formData).then((res) => {
+        this.details.imgPath.push(res.data)
+        console.log('imagePath', this.details.imgPath)
+      })
+    },
+    beforeRemove(index, done, fileList) {
+      console.log('index', index, fileList)
+      const r = confirm('remove image')
+      if (r === true) {
+        done()
+      }
+    },
+    editImage(formData, index, fileList) {
+      console.log('edit data', formData, index, fileList)
+    },
+    dataChange(data) {
+      console.log(data)
+    },
+
     editItem(item) {
       this.editedIndex = this.newslist.indexOf(item)
       this.editedItem = Object.assign({}, item)
@@ -249,11 +289,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
-<style>
-.newsTable {
-  margin-top: 25px;
-}
-</style>
+<style></style>

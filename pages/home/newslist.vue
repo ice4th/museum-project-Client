@@ -1,53 +1,73 @@
 <template>
   <div class="container">
     <h2 class="header">ข่าว</h2>
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Search"
-      single-lined
-      hide-details
-      dense
-    />
-    <div class="newslist">
-      <nuxt-link
-      v-for="item in newslist"
-      :key="item"
-      :to="`/home/${item.id}`"
-      :search="search"
-      class="news_list"
-    >
-      <p class="link" color="black">{{ item.title }}</p>
-    </nuxt-link>
+    <div v-if="newslist">
+      <v-text-field
+        v-model="searchString"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+        dent
+      ></v-text-field>
     </div>
-    
+
+    <div v-if="newslist" class="newslist">
+      <nuxt-link
+        v-for="item in newsSearch"
+        :key="item.id"
+        :to="`/home/${item.id}`"
+        class="news_list"
+      >
+        <div class="n-box">
+          <v-img
+            class="img-resize"
+            :src="`https://localhost:44351/api/image/${item.imgPath}`"
+          ></v-img>
+          <p class="link" color="black">{{ item.title }}</p>
+        </div>
+      </nuxt-link>
+    </div>
   </div>
 </template>
 
 <script>
 import { getNews } from '@/service/news'
-export default {
+import Vue from 'vue'
+export default Vue.extend({
+  layout: 'visitor',
   data() {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
+      searchString: '',
       newslist: [],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      search: '',
       title: 'Vuetify.js',
     }
   },
+  computed: {
+    newsSearch() {
+      function compare(a, b) {
+        if (a.title < b.title) return -1
+        if (a.title > b.title) return 1
+        return 0
+      }
+      return this.newslist
+        .filter((item) => {
+          return item.title.includes(this.searchString)
+        })
+        .sort(compare)
+    },
+  },
   mounted() {
     getNews().then((res) => {
-      console.log(res.data)
+      console.log('news', res.data)
       this.newslist = res.data
+      this.newslist.forEach((item) => {
+        item.imgPath = item.imgPath[0].split(',')[0]
+      })
     })
   },
   methods: {},
-}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -55,26 +75,34 @@ export default {
   margin-bottom: 3rem;
 }
 .news_list {
-  text-align: center;
+  text-align: start;
   margin-top: 4rem;
-  
 }
 
-.newslist{
-  margin-top: 3rem;
-
+.newslist {
+  text-decoration: none;
 }
 :link {
   text-decoration: none;
 }
-p.link{
-  // border-style: solid;
-  // border-width: thin;
-  // border-radius: 0.5em ;
-  // border-color: gray;
+.n-box {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 1rem;
+  align-items: center;
+  margin: 50px 10px 20px 10px;
+}
+.link {
   color: black;
 }
-.link:hover{
-  color:goldenrod;
+.link:hover {
+  color: goldenrod;
+}
+.img-resize {
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  text-align: center;
 }
 </style>

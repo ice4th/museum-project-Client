@@ -1,24 +1,28 @@
 <template>
   <div class="container">
     <h2 class="header">อวัยวะสัตว์</h2>
+    <div v-if="organlist">
+      <v-text-field
+        v-model="searchString"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+        dent
+      ></v-text-field>
+    </div>
 
-    <v-text-field
-      v-model="search"
-      append-icon="mdi-magnify"
-      label="Search"
-      single-lined
-      hide-details
-      dense
-    />
-
-    <div class="organlist">
+    <div v-if="organlist" class="organlist">
       <nuxt-link
-        v-for="item in organ"
-        :key="item"
+        v-for="item in organSearch"
+        :key="item.id"
         :to="`/organ/${item.id}`"
-        :search="search"
         class="organ_name_list"
       >
+        <v-img
+          class="img-resize"
+          :src="`https://localhost:44351/api/image/${item.imgPath}`"
+        ></v-img>
         <p class="link">{{ item.nameTh }}</p>
       </nuxt-link>
     </div>
@@ -27,45 +31,57 @@
 
 <script>
 import { getOrgan } from '@/service/organ'
-export default {
+import Vue from 'vue'
+export default Vue.extend({
+  layout: 'visitor',
   data() {
     return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      organ: [],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
+      organlist: [],
       title: 'Vuetify.js',
-      search: '',
+      searchString: '',
     }
   },
+
+  computed: {
+    organSearch() {
+      function compare(a, b) {
+        if (a.nameTh < b.nameTh) return -1
+        if (a.nameTh > b.nameTh) return 1
+        return 0
+      }
+      return this.organlist
+        .filter((item) => {
+          return item.nameTh.includes(this.searchString)
+        })
+        .sort(compare)
+    },
+  },
+
   mounted() {
     getOrgan().then((res) => {
       console.log(res.data)
-      this.organ = res.data
+      this.organlist = res.data
+      this.organlist.forEach((item) => {
+        item.imgPath = item.imgPath[0].split(',')[0]
+      })
     })
   },
   methods: {},
-}
+})
 </script>
 
 <style>
-.organ_name_list {
-  text-align: center;
-margin-top: 4rem;
-}
+
 .organlist {
   display: grid;
   width: 100%;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   grid-gap: 1rem;
   align-items: center;
-  margin: 50px 0px 20px 0px;
+  margin: 50px 10px 20px 10px;
 }
 
-.header{
+.header {
   margin-bottom: 3rem;
 }
 :link {
@@ -76,5 +92,12 @@ margin-top: 4rem;
 }
 .link:hover {
   color: goldenrod;
+}
+
+.img-resize {
+  width: 300px;
+  height: 300px;
+  overflow: hidden;
+  text-align: center;
 }
 </style>

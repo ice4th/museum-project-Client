@@ -51,8 +51,9 @@
                       label="Name(Thai)"
                       required
                       v-model="details.thaiName"
-                      :rules="rules.name"
+                      :rules="rules.nameThai"
                     >
+                      <!-- thaiName !=== bonelist -->
                     </v-text-field>
                   </v-col>
                   <!-- Commom Name -->
@@ -61,7 +62,7 @@
                       label="Common Name"
                       required
                       v-model="details.commonName"
-                      :rules="rules.name"
+                      :rules="rules.nameEng"
                     >
                     </v-text-field>
                   </v-col>
@@ -71,7 +72,7 @@
                       label="Scientific Name"
                       required
                       v-model="details.scientificName"
-                      :rules="rules.name"
+                      :rules="rules.nameEng"
                     >
                     </v-text-field>
                   </v-col>
@@ -79,36 +80,39 @@
                   <!-- Description -->
                   <v-col cols="12">
                     <v-textarea
-                      label="Description*"
+                      label="Description"
                       required
                       v-model="details.description"
                       :rules="rules.name"
                     >
                     </v-textarea>
                   </v-col>
-                  <!-- image -->
+
+                  <!-- anmimal image -->
                   <v-col cols="12" sm="6" md="4">
-                    <v-file-input
-                      label="Upload image"
-                      filled
-                      prepend-icon="mdi-camera"
-                      v-model="details.boneImgPath"
-                    >
-                    </v-file-input>
+                    <p>Animal Image</p>
+                    <vue-upload-multiple-image
+                      @upload-success="uploadImageSuccess"
+                      @before-remove="beforeRemove"
+                      @edit-image="editImage"
+                      @data-change="dataChange"
+                      :data-images="images"
+                      primaryText="Upload Images"
+                      popupText="Description default image"
+                      browseText="Choose file"
+                      dragText="Drag Images"
+                      markIsPrimaryText="Set to First"
+                    ></vue-upload-multiple-image>
                   </v-col>
 
                   <!-- Taxonomy -->
-                  <row>
-                    <p>Taxonomy</p>
+                  <row class="pa-6 ma-2">
+                    <p class="headline">Taxonomy</p>
 
                     <!--  kingdom -->
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Kingdom"
-                          required
-                          v-model="details.kingdom"
-                        >
+                        <v-text-field label="Kingdom" v-model="details.kingdom">
                         </v-text-field>
                       </v-col>
                     </v-row>
@@ -116,17 +120,12 @@
                     <!--  Phylum -->
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Phylum"
-                          required
-                          v-model="details.phylum"
-                        >
+                        <v-text-field label="Phylum" v-model="details.phylum">
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Subphylum"
-                          required
                           v-model="details.subPhylum"
                         >
                         </v-text-field>
@@ -134,7 +133,6 @@
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Infraphylum"
-                          required
                           v-model="details.infraPhylum"
                         >
                         </v-text-field>
@@ -144,17 +142,12 @@
                     <!-- Class -->
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Class"
-                          required
-                          v-model="details.class"
-                        >
+                        <v-text-field label="Class" v-model="details.class">
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Subclass"
-                          required
                           v-model="details.subClass"
                         >
                         </v-text-field>
@@ -162,7 +155,6 @@
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Infraclass"
-                          required
                           v-model="details.infraClass"
                         >
                         </v-text-field>
@@ -172,17 +164,12 @@
                     <!-- Order -->
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Order"
-                          required
-                          v-model="details.order"
-                        >
+                        <v-text-field label="Order" v-model="details.order">
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Suborder"
-                          required
                           v-model="details.subOrder"
                         >
                         </v-text-field>
@@ -190,7 +177,6 @@
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Infraorder"
-                          required
                           v-model="details.infraOrder"
                         >
                         </v-text-field>
@@ -200,17 +186,12 @@
                     <!-- Family -->
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Family"
-                          required
-                          v-model="details.family"
-                        >
+                        <v-text-field label="Family" v-model="details.family">
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Subfamily"
-                          required
                           v-model="details.subFamily"
                         >
                         </v-text-field>
@@ -218,7 +199,6 @@
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Infrafamily"
-                          required
                           v-model="details.infraFamily"
                         >
                         </v-text-field>
@@ -228,17 +208,12 @@
                     <!-- Genus -->
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Genus"
-                          required
-                          v-model="details.genus"
-                        >
+                        <v-text-field label="Genus" v-model="details.genus">
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Subgenus"
-                          required
                           v-model="details.subGenus"
                         >
                         </v-text-field>
@@ -246,7 +221,6 @@
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Infragenus"
-                          required
                           v-model="details.infraGenus"
                         >
                         </v-text-field>
@@ -256,17 +230,12 @@
                     <!-- Species -->
                     <v-row>
                       <v-col cols="12" sm="6" md="4">
-                        <v-text-field
-                          label="Species"
-                          required
-                          v-model="details.species"
-                        >
+                        <v-text-field label="Species" v-model="details.species">
                         </v-text-field>
                       </v-col>
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Subspecies"
-                          required
                           v-model="details.subSpecies"
                         >
                         </v-text-field>
@@ -274,7 +243,6 @@
                       <v-col cols="12" sm="6" md="4">
                         <v-text-field
                           label="Infraspecies"
-                          required
                           v-model="details.infraSpecies"
                         >
                         </v-text-field>
@@ -316,9 +284,8 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="Name(Thai)"
-                      required
                       v-model="editedItem.thaiName"
-                      :rules="rules.name"
+                      :rules="rules.nameThai"
                     >
                     </v-text-field>
                   </v-col>
@@ -326,9 +293,8 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="Common Name"
-                      required
                       v-model="editedItem.commonName"
-                      :rules="rules.name"
+                      :rules="rules.nameEng"
                     >
                     </v-text-field>
                   </v-col>
@@ -336,9 +302,8 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="Scientific Name"
-                      required
                       v-model="editedItem.scientificName"
-                      :rules="rules.name"
+                      :rules="rules.nameEng"
                     >
                     </v-text-field>
                   </v-col>
@@ -347,21 +312,27 @@
                   <v-col cols="12">
                     <v-textarea
                       label="Description"
-                      required
                       v-model="editedItem.description"
                       :rules="rules.name"
                     >
                     </v-textarea>
                   </v-col>
-                  <!-- image -->
+                  <!-- anmimal image -->
                   <v-col cols="12" sm="6" md="4">
-                    <v-file-input
-                      label="Upload image"
-                      filled
-                      prepend-icon="mdi-camera"
-                      v-model="editedItem.boneImgPath"
-                    >
-                    </v-file-input>
+                    <p>Animal Image</p>
+
+                    <vue-upload-multiple-image
+                      @upload-success="uploadImageSuccess"
+                      @before-remove="beforeRemove"
+                      @edit-image="editImage"
+                      @data-change="dataChange"
+                      :data-images="images"
+                      primaryText="Upload Images"
+                      popupText="Description default image"
+                      browseText="Choose file"
+                      dragText="Drag Images"
+                      markIsPrimaryText="Set to First"
+                    ></vue-upload-multiple-image>
                   </v-col>
 
                   <!-- Taxonomy -->
@@ -573,11 +544,25 @@
 </template>
 
 <script>
-import { getAnimal, addAnimal, putAnimal, deleteAnimal } from '@/service/animal'
+import {
+  getAnimalById,
+  getAnimal,
+  addAnimal,
+  putAnimal,
+  deleteAnimal,
+} from '@/service/animal'
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
+import { addImage } from '@/service/image'
 
-export default {
+import Vue from 'vue'
+export default Vue.extend({
+  layout: 'admin',
+  components: {
+    VueUploadMultipleImage,
+  },
   data() {
     return {
+      images: [],
       search: '',
       dialog: false,
       dialogAdd: false,
@@ -600,10 +585,9 @@ export default {
       editedIndex: -1,
       editedItem: {
         id: '',
-        boneImgPath: null,
         commonName: '',
         description: '',
-        imgPath: null,
+        imgPath: [],
         scientificName: '',
         taxonomyId: '',
         thaiName: '',
@@ -627,12 +611,12 @@ export default {
         subSpecies: '',
       },
       bonelist: [],
+
       bone: null,
       details: {
-        boneImgPath: null,
         commonName: '',
         description: '',
-        imgPath: null,
+        imgPath: [],
         scientificName: '',
         thaiName: '',
         taxonomyId: '',
@@ -657,6 +641,13 @@ export default {
       },
       rules: {
         name: [(val) => (val || '').length > 0 || 'This field is required'],
+        nameThai: [
+          (val) => (val || '').match(/^[ก-๏\s]+$/) || 'Thai language only',
+        ],
+        nameEng: [
+          (val) =>
+            (val || '').match(/^[a-zA-Z\s]+$/) || 'English language only',
+        ],
       },
     }
   },
@@ -672,23 +663,51 @@ export default {
     },
     editedItemIsvalid() {
       return (
-        this.editItem.thaiName &&
-        this.editItem.commonName &&
-        this.editItem.scientificName &&
-        this.editItem.description
+        this.editedItem.thaiName &&
+        this.editedItem.commonName &&
+        this.editedItem.scientificName &&
+        this.editedItem.description
       )
     },
   },
+
   mounted() {
     getAnimal().then((res) => {
-      console.log(res.data)
+      console.log('name', res.data)
       this.bonelist = res.data
+      console.log('bone', this.bonelist)
     })
   },
+
   methods: {
+    uploadImageSuccess(formData, index, fileList) {
+      console.log('data', formData, index, fileList)
+      addImage(formData).then((res) => {
+        this.details.imgPath.push(res.data)
+      })
+    },
+
+    beforeRemove(index, done, fileList) {
+      console.log('index', index, fileList)
+      const r = confirm('remove image')
+      if (r === true) {
+        done()
+      }
+    },
+    editImage(formData, index, fileList) {
+      console.log('edit data', formData, index, fileList)
+    },
+    dataChange(data) {
+      console.log(data)
+    },
+    // Edit data
     editItem(item) {
       this.editedIndex = this.bonelist.indexOf(item)
       this.editedItem = Object.assign({}, item)
+      getAnimalById(item.id).then((res) => {
+        console.log('taxonomy', res.data.taxonomyId)
+        this.editedItem = { ...this.editedItem, ...res.data.taxonomyId }
+      })
       this.dialog = true
     },
 
@@ -697,8 +716,6 @@ export default {
       for (const i in this.editedItem) {
         formData.append(i, this.editedItem[i])
       }
-      console.log(this.editedItem)
-      console.log(formData)
       putAnimal(formData).then((_a) => {
         this.$router.go()
       })
@@ -726,7 +743,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style></style>

@@ -48,9 +48,9 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       label="Name(Thai)"
-                      required
                       v-model="details.nameTh"
-                      :rules="rules.name"
+                      :rules="rules.nameThai"
+                      required
                     >
                     </v-text-field>
                   </v-col>
@@ -60,14 +60,14 @@
                       label="Name(English)"
                       required
                       v-model="details.nameEng"
-                      :rules="rules.name"
+                      :rules="rules.nameEng"
                     >
                     </v-text-field>
                   </v-col>
                   <!-- Description -->
                   <v-col cols="12">
                     <v-textarea
-                      label="Description*"
+                      label="Description"
                       required
                       v-model="details.description"
                       :rules="rules.name"
@@ -76,13 +76,20 @@
                   </v-col>
                   <!-- image -->
                   <v-col cols="12" sm="6" md="4">
-                    <v-file-input
-                      label="Upload image"
-                      filled
-                      prepend-icon="mdi-camera"
+                    <p>Organ Image</p>
+                    <vue-upload-multiple-image
+                      @upload-success="uploadImageSuccess"
+                      @before-remove="beforeRemove"
+                      @edit-image="editImage"
+                      @data-change="dataChange"
+                      :data-images="images"
+                      primaryText="Upload Images"
+                      popupText="Description default image"
+                      browseText="Choose file"
+                      dragText="Drag Images"
+                      markIsPrimaryText="Set to First"
                       v-model="details.imgPath"
-                    >
-                    </v-file-input>
+                    ></vue-upload-multiple-image>
                   </v-col>
                 </v-row>
               </v-container>
@@ -119,6 +126,7 @@
                       label="Name(Thai)"
                       required
                       v-model="editedItem.nameTh"
+                      :rules="rules.nameThai"
                     >
                     </v-text-field>
                   </v-col>
@@ -128,27 +136,35 @@
                       label="Name(English)"
                       required
                       v-model="editedItem.nameEng"
+                      :rules="rules.nameEng"
                     >
                     </v-text-field>
                   </v-col>
                   <!-- Description -->
                   <v-col cols="12">
                     <v-textarea
-                      label="Description*"
+                      label="Description"
                       required
                       v-model="editedItem.description"
+                      :rules="rules.name"
                     >
                     </v-textarea>
                   </v-col>
                   <!-- image -->
                   <v-col cols="12" sm="6" md="4">
-                    <v-file-input
-                      label="Upload image"
-                      filled
-                      prepend-icon="mdi-camera"
-                      v-model="editedItem.imgPath"
-                    >
-                    </v-file-input>
+                    <p>Organ Image</p>
+                    <vue-upload-multiple-image
+                      @upload-success="uploadImageSuccess"
+                      @before-remove="beforeRemove"
+                      @edit-image="editImage"
+                      @data-change="dataChange"
+                      :data-images="images"
+                      primaryText="Upload Images"
+                      popupText="Description default image"
+                      browseText="Choose file"
+                      dragText="Drag Images"
+                      markIsPrimaryText="Set to First"
+                    ></vue-upload-multiple-image>
                   </v-col>
                 </v-row>
               </v-container>
@@ -159,7 +175,7 @@
                 Close
               </v-btn>
               <v-btn
-                :disabled="!editedItemIsValid"
+                :disabled="!editedItemIsvalid"
                 color="blue darken-1"
                 text
                 @click="saveData"
@@ -176,9 +192,19 @@
 
 <script>
 import { getOrgan, addOrgan, deleteOrgan, putOrgan } from '@/service/organ'
-export default {
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
+import { addImage } from '@/service/image'
+import Vue from 'vue'
+
+export default Vue.extend({
+  layout: 'admin',
+
+  components: {
+    VueUploadMultipleImage,
+  },
   data() {
     return {
+      images: [],
       search: '',
       dialog: false,
       dialogAdd: false,
@@ -204,16 +230,23 @@ export default {
         nameTh: '',
         nameEng: '',
         description: '',
-        imgPath: null,
+        imgPath: [],
       },
       details: {
         nameTh: '',
         nameEng: '',
         description: '',
-        imgPath: null,
+        imgPath: [],
       },
       rules: {
         name: [(val) => (val || '').length > 0 || 'This field is required'],
+        nameThai: [
+          (val) => (val || '').match(/^[ก-๏\s]+$/) || 'Thai language only',
+        ],
+        nameEng: [
+          (val) =>
+            (val || '').match(/^[a-zA-Z\s]+$/) || 'English language only',
+        ],
       },
     }
   },
@@ -240,12 +273,33 @@ export default {
     })
   },
   methods: {
+    // add img
+    uploadImageSuccess(formData, index, fileList) {
+      console.log('data', formData, index, fileList)
+      addImage(formData).then((res) => {
+        this.details.imgPath.push(res.data)
+      })
+    },
+    beforeRemove(index, done, fileList) {
+      console.log('index', index, fileList)
+      const r = confirm('remove image')
+      if (r === true) {
+        done()
+      }
+    },
+    editImage(formData, index, fileList) {
+      console.log('edit data', formData, index, fileList)
+    },
+    dataChange(data) {
+      console.log(data)
+    },
+    // Edit data
     editItem(item) {
       this.editedIndex = this.organlist.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
-
+    // update
     saveData() {
       const formData = new FormData()
       for (const i in this.editedItem) {
@@ -257,7 +311,7 @@ export default {
       })
       this.dialog = false
     },
-
+    // Add
     uploadFile() {
       const formData = new FormData()
       for (const i in this.details) {
@@ -268,7 +322,7 @@ export default {
       })
       this.dialogAdd = false
     },
-
+    // Delete
     removeData(id) {
       const result = confirm('Want to delete?')
       if (result) {
@@ -278,10 +332,6 @@ export default {
       }
     },
   },
-}
+})
 </script>
-<style>
-.OrUploadFile {
-  margin-top: 50px;
-}
-</style>
+<style></style>

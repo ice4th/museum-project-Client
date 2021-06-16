@@ -2,13 +2,13 @@
   <div class="newsdetail">
     <h3>{{ news && news.title }}</h3>
     <br />
-    <small> เขียนเมื่อ: {{ news && news.authorDate }} </small>
+    <small> เขียนเมื่อ: {{ news && WriteDate }} </small>
     <div class="container">
       <v-carousel>
         <v-carousel-item
           v-for="(item, i) in items"
           :key="i"
-          :src="item.src"
+          :src="item"
           reverse-transition="fade-transition"
           transition="fade-transition"
         ></v-carousel-item>
@@ -21,28 +21,48 @@
 
 <script>
 import { getNewsById } from '@/service/news'
-export default {
+import Vue from 'vue'
+export default Vue.extend({
+  layout: 'visitor',
   data: () => ({
     news: [],
-    items:[],
+    allImg: {},
+    a: [],
+    items: [],
   }),
   mounted() {
     this.getNews()
   },
+
+  computed: {
+    WriteDate() {
+      const date = new Date(this.news.authorDate)
+      return `${date.getDate()} / ${date.getMonth()} / ${date.getFullYear()}`
+    },
+  },
   methods: {
     getNews() {
       getNewsById(this.$route.params.id).then((res) => {
-        console.log(res.data)
         this.news = res.data
+        this.allImg = this.news.imgPath
+        this.allImg.forEach((item) => {
+          this.a.push(item.split(','))
+        })
+        this.a = this.a.toString().split(',')
+        this.a.forEach((item) => {
+          console.log(item)
+          this.items.push({ src: `https://localhost:44351/api/image/${item}` })
+        })
       })
     },
   },
-}
+})
 </script>
 
 <style lang="scss" scoped>
 .newsdetail {
   padding-top: 3rem;
+  padding-bottom: 10rem;
 }
 .newsdetail small {
   font-size: 12px;

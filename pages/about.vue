@@ -75,7 +75,9 @@
 
 <script>
 import { getDoner } from '@/service/doner'
-export default {
+import Vue from 'vue';
+export default Vue.extend({
+  layout: 'visitor',
   data: () => ({
     search:'',
     headers: [
@@ -97,7 +99,7 @@ export default {
     })
   },
   methods: {},
-}
+})
 </script>
 
 <style>

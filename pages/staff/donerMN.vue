@@ -81,7 +81,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="PayDate"
+                        v-model="details.PayDate"
                         label="Picker in menu"
                         prepend-icon="mdi-calendar"
                         readonly
@@ -89,7 +89,11 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-                    <v-date-picker v-model="PayDate" no-title scrollable>
+                    <v-date-picker
+                      v-model="details.PayDate"
+                      no-title
+                      scrollable
+                    >
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menu = false">
                         Cancel
@@ -104,13 +108,21 @@
                     </v-date-picker>
                   </v-menu>
                 </v-col>
+
                 <v-col cols="12" sm="6">
-                  <v-file-input
-                    label="Upload image"
-                    filled
-                    prepend-icon="mdi-camera"
-                    v-model="details.ImgPath"
-                  ></v-file-input>
+                  <p>Payment Slip</p>
+                  <vue-upload-multiple-image
+                    @upload-success="uploadImageSuccess"
+                    @before-remove="beforeRemove"
+                    @edit-image="editImage"
+                    @data-change="dataChange"
+                    :data-images="images"
+                    primaryText="Upload Images"
+                    popupText="Description default image"
+                    browseText="Choose file"
+                    dragText="Drag Images"
+                    markIsPrimaryText="Set to First"
+                  ></vue-upload-multiple-image>
                 </v-col>
               </v-row>
             </v-container>
@@ -165,6 +177,7 @@
                   <v-text-field
                     label="จำนวนเงิน"
                     required
+                    type="number"
                     v-model="editedItem.donation"
                     :rules="rules.donateNum"
                   ></v-text-field>
@@ -183,7 +196,7 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-text-field
-                        v-model="payDate"
+                        v-model="editedItem.payDate"
                         label="Picker in menu"
                         prepend-icon="mdi-calendar"
                         readonly
@@ -191,8 +204,11 @@
                         v-on="on"
                       ></v-text-field>
                     </template>
-
-                    <v-date-picker v-model="payDate" no-title scrollable>
+                    <v-date-picker
+                      v-model="editedItem.payDate"
+                      no-title
+                      scrollable
+                    >
                       <v-spacer></v-spacer>
                       <v-btn text color="primary" @click="menu = false">
                         Cancel
@@ -209,12 +225,18 @@
                 </v-col>
                 <!-- image -->
                 <v-col cols="12" sm="6">
-                  <v-file-input
-                    label="Upload image"
-                    filled
-                    prepend-icon="mdi-camera"
-                    v-model="editedItem.imgPath"
-                  ></v-file-input>
+                  <vue-upload-multiple-image
+                    @upload-success="uploadImageSuccess"
+                    @before-remove="beforeRemove"
+                    @edit-image="editImage"
+                    @data-change="dataChange"
+                    :data-images="images"
+                    primaryText="Upload Images"
+                    popupText="Description default image"
+                    browseText="Choose file"
+                    dragText="Drag Images"
+                    markIsPrimaryText="Set to First"
+                  ></vue-upload-multiple-image>
                 </v-col>
               </v-row>
             </v-container>
@@ -226,7 +248,7 @@
               >Close</v-btn
             >
             <v-btn
-              :disabled="!editedItemIsValid"
+              :disabled="!editedItemIsvalid"
               color="blue darken-1"
               text
               @click="saveData"
@@ -242,15 +264,24 @@
 
 <script>
 import { getDoner, addDoner, putDoner, deleteDoner } from '@/service/doner'
-export default {
+import VueUploadMultipleImage from 'vue-upload-multiple-image'
+import { addImage } from '@/service/image'
+
+import Vue from 'vue'
+export default Vue.extend({
+  layout: 'admin',
+  components: {
+    VueUploadMultipleImage,
+  },
   data: () => ({
+    menu: false,
+    images: [],
     doner: [],
     search: '',
     confirm_popup: false,
     dialog: false,
     dialogAdd: false,
     // date: new Date().toISOString().substr(0, 10),
-    menu: false,
     headers: [
       {
         text: 'Name',
@@ -268,14 +299,14 @@ export default {
       id: '',
       name: '',
       lastName: '',
-      imgPath: null,
+      imgPath: [],
       payDate: new Date().toISOString().substr(0, 10),
       donation: '',
     },
     details: {
       Name: '',
       LastName: '',
-      ImgPath: null,
+      ImgPath: [],
       PayDate: new Date().toISOString().substr(0, 10),
       Donation: '',
     },
@@ -303,12 +334,35 @@ export default {
     })
   },
   methods: {
+    // uplaod image
+    uploadImageSuccess(formData, index, fileList) {
+      console.log('data', formData, index, fileList)
+      addImage(formData).then((res) => {
+        this.details.imgPath.push(res.data)
+        console.log('imagePath', this.details.ImgPath)
+      })
+    },
+    beforeRemove(index, done, fileList) {
+      console.log('index', index, fileList)
+      const r = confirm('remove image')
+      if (r === true) {
+        done()
+      }
+    },
+    editImage(formData, index, fileList) {
+      console.log('edit data', formData, index, fileList)
+    },
+    dataChange(data) {
+      console.log(data)
+    },
+
     editItem(item) {
       this.editedIndex = this.doner.indexOf(item)
       this.editedItem = Object.assign({}, item)
       this.dialog = true
     },
 
+    // Add
     uploadData() {
       this.dialogAdd = false
       const formData = new FormData()
@@ -320,18 +374,19 @@ export default {
       })
     },
 
+    // Update
     saveData() {
       const formData = new FormData()
       for (const i in this.editedItem) {
         formData.append(i, this.editedItem[i])
       }
-
       putDoner(formData).then((_a) => {
         this.$router.go()
       })
       this.dialog = false
     },
 
+    // Delete
     removeData(id) {
       const result = confirm('Want to delete?')
       if (result) {
@@ -341,7 +396,7 @@ export default {
       }
     },
   },
-}
+})
 </script>
 
 <style></style>
