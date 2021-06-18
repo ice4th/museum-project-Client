@@ -46,6 +46,15 @@ import { activeSidebar } from '/@src/state/activeSidebarState'
                 <span>Package Detail</span>
               </RouterLink>
             </li>
+            <li>
+              <RouterLink
+                :to="{ name: 'product-create-package' }"
+                class="is-submenu"
+              >
+                <i class="lnil lnil-books"></i>
+                <span>Create Package</span>
+              </RouterLink>
+            </li>
           </ul>
         </li>
         <!-- <li class="divider"></li> -->
