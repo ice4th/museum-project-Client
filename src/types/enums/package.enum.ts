@@ -14,3 +14,13 @@ export enum PrivateSlot {
   ONE_HOUR_THIRTY_MINUTES = 3,
   TWO_HOUR = 4,
 }
+
+export enum GenerateTicket {
+  NOT_GENERATE_TICKET = '0',
+  GENERATE_TICKET = '1',
+}
+
+export enum PricingPackage {
+  NOT_COUNT_PRICING = '0',
+  COUNT_PRICING = '1',
+}

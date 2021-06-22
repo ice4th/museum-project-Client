@@ -12,7 +12,7 @@ export interface ApiServiceResponse<T = any> extends AxiosResponse {
  */
 // const BASE_URL = process.env.ADMIN_BASE_URL || 'http://localhost:3002'
 const BASE_URL = 'http://localhost:3002'
-
+console.log('import.meta.env.ADMIN_BASE_URL', import.meta.env)
 const HEADERS = {
   Accept: 'application/json',
   'Content-Type': 'application/json',

@@ -1,11 +1,18 @@
-import { IPackage } from '../types/interfaces/package.interface'
+import {
+  ICreatePackageGroup,
+  IPackageInfo,
+} from '../types/interfaces/package.interface'
 import ApiService, { ApiServiceResponse } from './api.service'
-// import { IAllAnnouncement } from '@/types/interfaces/announcement.interface'
-
 export default class PackageService {
   public static async getAllPackages(): Promise<
-    ApiServiceResponse<IPackage[]>
+    ApiServiceResponse<IPackageInfo[]>
   > {
-    return await ApiService.get<IPackage[]>(`/Package`)
+    return await ApiService.get<IPackageInfo[]>(`/Package`)
+  }
+
+  public static async createPackageGroup(
+    payload: ICreatePackageGroup
+  ): Promise<ApiServiceResponse<IPackageInfo[]>> {
+    return await ApiService.post(`/PackageGroup`, payload)
   }
 }

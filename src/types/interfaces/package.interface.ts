@@ -1,7 +1,12 @@
-import { PrivateSlot, Purchasable, StatusPackage } from '../enums/package.enum'
+import {
+  GenerateTicket,
+  PrivateSlot,
+  Purchasable,
+  StatusPackage,
+} from '../enums/package.enum'
 import { IProduct } from './product.interface'
 
-export interface IPackage {
+export interface IPackageInfo {
   id: number
   packageName: string
   productId: number
@@ -33,7 +38,29 @@ export interface IPackage {
   featureGroupId?: number
   privateSlot: PrivateSlot
   courseId: number
-  createdAt?: Date
-  updatedAt?: Date
+  createdAt?: string
+  updatedAt?: string
   product?: IProduct
+}
+
+export interface ICreateAddonPackage {
+  packageId: number
+  generateTicket: GenerateTicket
+  idx: number
+  dependonPackageId?: number
+  dependonTicketUse?: number
+}
+
+export interface IUpdateAddonPackage {
+  packageGroupId?: number
+  packageId: number
+  generateTicket: GenerateTicket
+  idx: number
+  dependonPackageId?: number
+  dependonTicketUse?: number
+}
+
+export interface ICreatePackageGroup {
+  mainPackageId: number
+  addonPackages: ICreateAddonPackage[] // include main package
 }
