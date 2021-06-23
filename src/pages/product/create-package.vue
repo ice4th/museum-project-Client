@@ -2,7 +2,6 @@
 import { useWindowScroll } from '@vueuse/core'
 import { computed, reactive, ref } from 'vue'
 import { useHead } from '@vueuse/head'
-// import { popovers } from '/@src/data/users/userPopovers'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import useCreatePackage from '/@src/composable/package/use-create-package'
 
@@ -13,16 +12,20 @@ useHead({
 const showDependOnSelector = ref(false)
 const {
   addonPackages,
+  addMainPackage,
+  currentAddonPackage,
   createPackageGroup,
   dependOnPackageList,
   displayPackageNameById,
   displayPackageImageById,
+  isLoadingPackages,
   mainIdx,
   mainPackage,
   generateTicket,
   packages,
   addAddonPackage,
   showAddonSection,
+  removePackage,
   showMainPackageSection,
   toggleShowAddonPackageSection,
   toggleShowMainPackageSection,
@@ -66,110 +69,116 @@ const isStuck = computed(() => {
     <div class="page-content-inner">
       <!-- create group package -->
       <div class="form-layout is-stacked">
-        <div class="form-outer">
-          <div
-            :class="[isStuck && 'is-stuck']"
-            class="form-header stuck-header"
-          >
-            <div class="form-header-inner">
-              <div class="left">
-                <h3>Create Package Group</h3>
-              </div>
-              <div class="right">
-                <div class="buttons">
-                  <V-Button
-                    icon="lnir lnir-arrow-left rem-100"
-                    light
-                    dark-outlined
-                  >
-                    Cancel
-                  </V-Button>
-                  <V-Button color="primary" raised @click="createPackageGroup">
-                    Create
-                  </V-Button>
+        <V-Loader
+          size="small"
+          lighter
+          grey
+          translucent
+          :active="isLoadingPackages"
+        >
+          <div class="form-outer">
+            <div
+              :class="[isStuck && 'is-stuck']"
+              class="form-header stuck-header"
+            >
+              <div class="form-header-inner">
+                <div class="left">
+                  <h3>Create Package Group</h3>
+                </div>
+                <div class="right">
+                  <div class="buttons">
+                    <V-Button
+                      icon="lnir lnir-arrow-left rem-100"
+                      light
+                      dark-outlined
+                    >
+                      Cancel
+                    </V-Button>
+                    <V-Button
+                      color="primary"
+                      raised
+                      @click="createPackageGroup"
+                    >
+                      Create
+                    </V-Button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="form-body">
-            <div v-show="addonPackages.length" class="form-section is-grey">
-              <V-Block
-                title="Main Package"
-                :subtitle="displayPackageNameById(mainPackage)"
-                center
+            <div class="form-body">
+              <div
+                v-show="addonPackages.length && !showMainPackageSection"
+                class="form-section is-grey"
               >
-                <template #icon>
-                  <strong>{{ mainIdx }}</strong>
-                  <!-- <p>Main Package: {{ displayPackageNameById(mainPackage) }}</p> -->
-                </template>
-                <template #action>
-                  <V-Button
-                    color="primary"
-                    elevated
-                    @click="toggleShowMainPackageSection"
-                    >Edit</V-Button
-                  >
-                </template>
-              </V-Block>
-
-              <template
-                v-for="addon in addonPackages"
-                :key="`show-addon-${addon.idx}`"
-              >
-                <template v-if="addon.packageId !== mainPackage">
-                  <V-Block
-                    title="Addon Package"
-                    :subtitle="displayPackageNameById(addon.packageId)"
-                    center
-                  >
-                    <template #icon>
-                      <strong>{{ addon.idx }}</strong>
-                      <!-- <p>Main Package: {{ displayPackageNameById(mainPackage) }}</p> -->
-                    </template>
-                    <template #action>
-                      <V-Button
-                        color="primary"
-                        elevated
-                        @click="toggleShowAddonPackageSection"
-                        >Edit</V-Button
-                      >
-                    </template>
-                  </V-Block>
-                </template>
-              </template>
-              <div class="p-3 center">
-                <V-Button @click="toggleShowAddonPackageSection"
-                  >Add addon package</V-Button
+                <V-Block
+                  v-for="addon in addonPackages"
+                  :key="`show-addon-${addon.idx}`"
+                  :title="
+                    addon.type === 'main' ? 'Main Package' : 'Addon Package'
+                  "
+                  :subtitle="displayPackageNameById(addon.packageId)"
+                  center
                 >
+                  <template #icon>
+                    <strong>{{ addon.idx }}</strong>
+                  </template>
+                  <template
+                    v-if="!(showMainPackageSection || showAddonSection)"
+                    #action
+                  >
+                    <V-Button
+                      v-if="addon.type === 'main'"
+                      elevated
+                      @click="toggleShowMainPackageSection"
+                      >Edit</V-Button
+                    >
+                    <V-Button
+                      v-else
+                      elevated
+                      @click="toggleShowAddonPackageSection(addon)"
+                      >Edit</V-Button
+                    >
+                    <V-Button
+                      v-if="addon.type === 'addon'"
+                      color="danger"
+                      elevated
+                      class="ml-3"
+                      @click="removePackage(addon.idx)"
+                      >Remove</V-Button
+                    >
+                  </template>
+                </V-Block>
+                <div class="p-3 right">
+                  <V-Button @click="toggleShowAddonPackageSection"
+                    >Add addon package</V-Button
+                  >
+                </div>
               </div>
-            </div>
 
-            <!-- Main package section -->
-            <div v-if="showMainPackageSection" class="form-section">
-              <div class="form-section-inner">
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label">Order Index</label>
-                  </div>
-                  <div class="field-body">
+              <!-- Main package section -->
+              <div v-if="showMainPackageSection" class="form-fieldset">
+                <div class="fieldset-heading">
+                  <h4>Main Package</h4>
+                  <p>Select main package and order in package group</p>
+                </div>
+                <div class="columns is-multiline">
+                  <div class="column is-3">
                     <V-Field>
-                      <V-Control>
+                      <label>Order Index</label>
+                      <V-Control icon="feather:layers">
                         <input
                           v-model="mainIdx"
                           type="text"
                           class="input"
-                          placeholder="order index"
+                          placeholder=""
+                          autocomplete="organization"
                         />
                       </V-Control>
                     </V-Field>
                   </div>
-                </div>
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label">Main Package</label>
-                  </div>
-                  <div class="field-body">
+                  <div class="column is-9">
                     <V-Field>
+                      <label>Main Package</label>
                       <V-Control>
                         <Multiselect
                           v-model="mainPackage"
@@ -193,13 +202,9 @@ const isStuck = computed(() => {
                       </V-Control>
                     </V-Field>
                   </div>
-                </div>
-                <div class="field is-horizontal">
-                  <div class="field-label is-normal">
-                    <label class="label">Generate Ticket</label>
-                  </div>
-                  <div class="field-body">
+                  <div class="column is-12">
                     <V-Field>
+                      <label>Generate Ticket</label>
                       <V-Control>
                         <V-Radio
                           v-model="generateTicket"
@@ -222,17 +227,27 @@ const isStuck = computed(() => {
                     </V-Field>
                   </div>
                 </div>
+                <div class="button-submit">
+                  <V-Button @click="toggleShowMainPackageSection"
+                    >Cancel</V-Button
+                  >
+                  <V-Button color="primary" class="ml-3" @click="addMainPackage"
+                    >Add Main Package</V-Button
+                  >
+                </div>
               </div>
-            </div>
 
-            <AddonPackageForm
-              v-if="showAddonSection"
-              :packages="packages"
-              :all-group-packages="dependOnPackageList"
-              @add="addAddonPackage"
-            />
+              <AddonPackageForm
+                v-if="showAddonSection"
+                :packages="packages"
+                :all-group-packages="dependOnPackageList"
+                :current-addon-package="currentAddonPackage"
+                @add="addAddonPackage"
+                @cancel="toggleShowAddonPackageSection"
+              />
+            </div>
           </div>
-        </div>
+        </V-Loader>
       </div>
     </div>
   </div>
@@ -242,4 +257,10 @@ const isStuck = computed(() => {
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
 @import '../../scss/pages/generic/_forms.scss';
+.form-fieldset {
+  max-width: 540px;
+}
+.button-submit {
+  text-align: end;
+}
 </style>
