@@ -2,8 +2,7 @@
  * useCreatePackage Composition API
  */
 
-import { onMounted, reactive, ref, toRefs, watch } from 'vue'
-import { onClickOutside } from '@vueuse/core'
+import { onMounted, reactive, ref, toRefs } from 'vue'
 import PackageService from '/@src/api/package.service'
 import {
   ICreateAddonPackage,
@@ -13,13 +12,16 @@ import { GenerateTicket } from '/@src/types/enums/package.enum'
 import { Notyf } from 'notyf'
 import { themeColors } from '/@src/utils/themeColors'
 
+/**
+ * add type for render with type
+ */
 interface IAddonPackageWithType extends ICreateAddonPackage {
   type: 'main' | 'addon'
 }
 export interface IUseCreatePackageState {
   mainIdx: string
   mainPackage?: number
-  generateTicket: GenerateTicket // 0 | 1
+  generateTicket: GenerateTicket
   isLoadingPackages: boolean
   packages: IPackageInfo[]
   dependOnPackageList: IPackageInfo[]
@@ -27,9 +29,6 @@ export interface IUseCreatePackageState {
   addonPackages: IAddonPackageWithType[]
   currentAddonPackage?: IAddonPackageWithType
 }
-/**
- * Generate refs to handle a dropdown state
- */
 
 const notyfWarning = new Notyf({
   duration: 2000,
@@ -188,7 +187,7 @@ export default function useCreatePackage() {
       message,
     })
   }
-  // watch(() => [state.mainPackage, state.generateTicket], updateMainPackage)
+
   onMounted(() => {
     fetchAllPackage()
   })

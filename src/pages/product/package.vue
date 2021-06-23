@@ -2,30 +2,12 @@
 import { useHead } from '@vueuse/head'
 
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
-
+import usePackageTable from '/@src/composable/package/use-package-table'
 useHead({
   title: 'Whitehouse Package',
 })
 
-const options = {
-  searchable: true,
-  sortable: true,
-  perPageSelect: false,
-  data: {
-    headings: ['id', 'Name', 'Type', 'Purchasable', 'Price', 'Duration'],
-    data: [
-      [1, 'Build Up', 'default', 0, '2220', 1],
-      [6, 'Make New Friends', 'default', 0, '4320', 1],
-      [7, 'Living Abroad', 'default', 0, '4320', 1],
-      [8, 'Business', 'default', 0, '6120', 2],
-      [9, 'Interview', 'default', 0, '2220', 2],
-      [10, 'Presentation', 'default', 0, '2220', 3],
-      [11, 'Free Talking (Hands Up)', 'default', 0, '2220', 2],
-      [12, 'Mind English', 'default', 0, '2220', 2],
-      [13, 'Trial Class', 'default', 0, '2220', 1],
-    ],
-  },
-}
+const { isLoading, packageTableFormat, optionsTable } = usePackageTable()
 </script>
 
 <template>
@@ -59,7 +41,10 @@ const options = {
 
     <div class="page-content-inner">
       <!-- if have data to show -->
-      <V-SimpleDatatables v-if="options.data.data.length" :options="options" />
+      <V-SimpleDatatables
+        v-if="!isLoading && packageTableFormat.length"
+        :options="optionsTable"
+      />
       <!-- else for empty stage -->
       <V-SimpleDatatables v-else>
         <thead>

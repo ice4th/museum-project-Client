@@ -6,13 +6,9 @@ export interface ApiServiceResponse<T = any> extends AxiosResponse {
   message?: any
   code?: number
 }
-
-/**
- * TODO: use ADMIN_BASE_URL from env
- */
 // const BASE_URL = process.env.ADMIN_BASE_URL || 'http://localhost:3002'
-const BASE_URL = 'http://localhost:3002'
-console.log('import.meta.env.ADMIN_BASE_URL', import.meta.env)
+const BASE_URL =
+  (import.meta.env.VITE_APP_ADMIN_BASE_URL as string) || 'http://localhost:3002'
 const HEADERS = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
