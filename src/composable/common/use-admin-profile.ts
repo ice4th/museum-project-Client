@@ -1,7 +1,7 @@
 /**
  * useAdminProfile Composition API
  */
-import { reactive, ref, toRefs } from 'vue'
+import { onMounted, reactive, ref, toRefs } from 'vue'
 import AuthService from '/@src/api/auth.service'
 import { Notyf } from 'notyf'
 import { useRoute, useRouter } from 'vue-router'
@@ -68,6 +68,10 @@ export default function useAdminProfile() {
     }
     await fetchProfile()
   }
+
+  onMounted(() => {
+    getMyProfile()
+  })
 
   return { adminProfile, fetchProfile, messageError }
 }

@@ -48,6 +48,9 @@ const router = createRouter({
 /**
  * Handle NProgress display on page changes
  */
+/**
+ * TODO: handle auth guard
+ */
 router.beforeEach(() => {
   NProgress.start()
 })

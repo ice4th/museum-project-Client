@@ -30,7 +30,7 @@
         <!-- Wallet -->
         <!-- <SidebarItemSettings /> -->
         <!-- Profile -->
-        <!-- <SidebarItemProfile /> -->
+        <SidebarItemProfile />
       </ul>
     </div>
   </div>
