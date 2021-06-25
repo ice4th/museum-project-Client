@@ -1,4 +1,5 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import AuthService from './auth.service'
 
 export interface ApiServiceResponse<T = any> extends AxiosResponse {
   data: T
@@ -6,7 +7,7 @@ export interface ApiServiceResponse<T = any> extends AxiosResponse {
   message?: any
   code?: number
 }
-// const BASE_URL = process.env.ADMIN_BASE_URL || 'http://localhost:3002'
+
 const BASE_URL =
   (import.meta.env.VITE_APP_ADMIN_BASE_URL as string) || 'http://localhost:3002'
 const HEADERS = {
@@ -20,8 +21,8 @@ axios.defaults.headers.common = HEADERS
 
 axios.interceptors.request.use(
   async (config) => {
-    // const token = getToken()
-    // config.headers.Authorization = token
+    const token = AuthService.getToken()
+    config.headers.Authorization = token
     return config
   },
   (error) => {
