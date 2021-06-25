@@ -5,6 +5,7 @@ import { reactive, ref, toRefs } from 'vue'
 import AuthService from '/@src/api/auth.service'
 import { Notyf } from 'notyf'
 import { useRouter } from 'vue-router'
+import useAdminProfile from '../common/use-admin-profile'
 
 interface UseLoginState {
   email: string
@@ -19,6 +20,7 @@ export default function useLogin() {
     },
   })
   const router = useRouter()
+  const { fetchProfile } = useAdminProfile()
   const isLoading = ref(false)
   const state = reactive<UseLoginState>({
     email: '',
@@ -34,10 +36,8 @@ export default function useLogin() {
     isLoading.value = false
     if (status === 201) {
       console.log('success')
-      if (data?.accessToken) {
-        // TODO: set cookie access token
-      }
-      // router.push('/')
+      await fetchProfile()
+      router.push('/')
       return
     }
     if (typeof message === 'object') {

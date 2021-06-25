@@ -12,3 +12,7 @@ export interface ICreateAdminUser {
   phone: string
   dob: string
 }
+
+export interface IAccessToken {
+  accessToken: string
+}
