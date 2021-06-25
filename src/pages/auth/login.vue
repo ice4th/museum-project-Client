@@ -5,12 +5,14 @@ import { useHead } from '@vueuse/head'
 
 import { isDark } from '/@src/state/darkModeState'
 import useNotyf from '/@src/composable/useNotyf'
+import useLogin from '/@src/composable/auth/use-login'
 import sleep from '/@src/utils/sleep'
 
 const isLoading = ref(false)
 const router = useRouter()
 const notif = useNotyf()
 
+const { email, password, login } = useLogin()
 const handleLogin = async () => {
   if (!isLoading.value) {
     isLoading.value = true
@@ -66,21 +68,23 @@ useHead({
 
         <!--Form-->
         <div class="form-card">
-          <form @submit.prevent="handleLogin">
+          <form @submit.prevent="login">
             <div class="login-form">
               <V-Field>
-                <V-Control icon="feather:user">
+                <V-Control icon="feather:mail">
                   <input
+                    v-model="email"
                     class="input"
                     type="text"
-                    placeholder="Username"
-                    autocomplete="username"
+                    placeholder="email"
+                    autocomplete="email"
                   />
                 </V-Control>
               </V-Field>
               <V-Field>
                 <V-Control icon="feather:lock">
                   <input
+                    v-model="password"
                     class="input"
                     type="password"
                     placeholder="Password"
@@ -118,9 +122,9 @@ useHead({
           </form>
         </div>
 
-        <div class="forgot-link has-text-centered">
+        <!-- <div class="forgot-link has-text-centered">
           <a>Forgot Password?</a>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

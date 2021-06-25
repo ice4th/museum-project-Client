@@ -10,7 +10,7 @@ import sleep from '/@src/utils/sleep'
 
 const router = useRouter()
 const notif = useNotyf()
-const isLoading = ref(false)
+// const isLoading = ref(false)
 
 const {
   name,
@@ -22,12 +22,14 @@ const {
   confirmPassword,
   dob,
   register,
+  validation,
+  isLoading,
 } = useRegister()
 
 useHead({
   title: 'WH | Register',
 })
-const showSuccessPopup = ref(true)
+const showSuccessPopup = ref(false)
 const handleRegister = async () => {
   const res = await register()
   if (res) showSuccessPopup.value = true
@@ -87,6 +89,9 @@ const handleRegister = async () => {
                     autocomplete="name"
                   />
                 </V-Control>
+                <h6 v-show="validation.name" class="msg-error">
+                  {{ validation.name }}
+                </h6>
               </V-Field>
 
               <div class="columns is-multiline mb-0">
@@ -102,6 +107,9 @@ const handleRegister = async () => {
                         autocomplete="firstname"
                       />
                     </V-Control>
+                    <h6 v-show="validation.firstname" class="msg-error">
+                      {{ validation.firstname }}
+                    </h6>
                   </V-Field>
                 </div>
                 <div class="column is-6">
@@ -116,6 +124,9 @@ const handleRegister = async () => {
                         autocomplete="lastname"
                       />
                     </V-Control>
+                    <h6 v-show="validation.lastname" class="msg-error">
+                      {{ validation.lastname }}
+                    </h6>
                   </V-Field>
                 </div>
               </div>
@@ -130,6 +141,9 @@ const handleRegister = async () => {
                     autocomplete="email"
                   />
                 </V-Control>
+                <h6 v-show="validation.email" class="msg-error">
+                  {{ validation.email }}
+                </h6>
               </V-Field>
               <!-- Input -->
               <V-Field>
@@ -142,6 +156,9 @@ const handleRegister = async () => {
                     autocomplete="phone"
                   />
                 </V-Control>
+                <h6 v-show="validation.phone" class="msg-error">
+                  {{ validation.phone }}
+                </h6>
               </V-Field>
               <!-- Input -->
               <V-Field>
@@ -154,6 +171,9 @@ const handleRegister = async () => {
                     autocomplete="new-password"
                   />
                 </V-Control>
+                <h6 v-show="validation.password" class="msg-error">
+                  {{ validation.password }}
+                </h6>
               </V-Field>
               <!-- Input -->
               <V-Field>
@@ -165,20 +185,37 @@ const handleRegister = async () => {
                     placeholder="Confirm Password"
                   />
                 </V-Control>
+                <h6 v-show="confirmPassword !== password" class="msg-error">
+                  confirm password not match with password
+                </h6>
               </V-Field>
 
-              <v-date-picker v-model="dob" color="orange" trim-weeks>
+              <v-date-picker
+                v-model="dob"
+                color="orange"
+                :model-config="{
+                  type: 'string',
+                  mask: 'YYYY-MM-DD',
+                }"
+                :masks="{
+                  input: 'YYYY-MM-DD',
+                }"
+                trim-weeks
+              >
                 <template #default="{ inputValue, inputEvents }">
                   <V-Field>
                     <V-Control icon="feather:calendar">
                       <input
                         class="input"
                         type="text"
-                        placeholder="Date of birth"
+                        placeholder="Date of birth YYYY-MM-DD"
                         :value="inputValue"
                         v-on="inputEvents"
                       />
                     </V-Control>
+                    <h6 v-show="validation.dob" class="msg-error">
+                      {{ validation.dob }}
+                    </h6>
                   </V-Field>
                 </template>
               </v-date-picker>
@@ -186,9 +223,17 @@ const handleRegister = async () => {
               <!-- Submit -->
               <V-Field>
                 <V-Control class="login">
-                  <V-Button color="primary" bold fullwidth raised>
-                    Sign Up
-                  </V-Button>
+                  <V-Loader size="small" :active="isLoading">
+                    <V-Button
+                      color="primary"
+                      :disabled="isLoading"
+                      bold
+                      fullwidth
+                      raised
+                    >
+                      Sign Up
+                    </V-Button>
+                  </V-Loader>
                 </V-Control>
               </V-Field>
             </div>
@@ -219,7 +264,14 @@ const handleRegister = async () => {
 </template>
 
 <style lang="scss" scoped>
+@import '../../scss/abstracts/_variables.scss';
 .inner-wrap {
   max-width: 480px !important;
+}
+h6.msg-error {
+  color: $danger;
+}
+.auth-wrapper-inner .single-form-wrap .inner-wrap {
+  margin: 66px auto 0 auto;
 }
 </style>

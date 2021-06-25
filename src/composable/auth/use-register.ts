@@ -17,6 +17,7 @@ interface UseRegisterState {
   lastname: string
   phone: string
   dob?: string
+  validation: object
 }
 export default function useRegister() {
   const notyf = new Notyf({
@@ -36,10 +37,10 @@ export default function useRegister() {
     lastname: '',
     phone: '',
     dob: undefined,
+    validation: {},
   })
 
   const register = async () => {
-    console.log('register')
     const { name, email, password, firstname, lastname, phone, dob } = state
     const payload = {
       name,
@@ -53,17 +54,15 @@ export default function useRegister() {
     isLoading.value = true
     const { status, message } = await AuthService.registerAdmin(payload)
     isLoading.value = false
-    notyf.error('hello')
     if (status === 201) {
       return true
     }
     if (typeof message === 'object') {
+      state.validation = message
       return
     }
     notyf.error(message || 'Fail! Please try again')
-    // case error
-    console.log(message)
   }
 
-  return { ...toRefs(state), register }
+  return { ...toRefs(state), isLoading, register }
 }
