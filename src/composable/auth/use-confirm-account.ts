@@ -23,7 +23,6 @@ export default function useConfirmAccount() {
   const activateAccount = async () => {
     isLoading.value = true
     const token = route.query.token as string
-    console.log('token', token)
     const { status, message } = await AuthService.activeAccount(token)
     isLoading.value = false
     if (status === 201) {

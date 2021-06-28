@@ -7,6 +7,7 @@ import * as NProgress from 'nprogress'
  * @see https://github.com/hannoeru/vite-plugin-pages
  */
 import routes from 'pages-generated'
+import AuthService from './api/auth.service'
 
 /**
  * Here is how a simple route is generated:
@@ -51,8 +52,15 @@ const router = createRouter({
 /**
  * TODO: handle auth guard
  */
-router.beforeEach(() => {
+router.beforeEach((to, from, next) => {
+  const publicRoute = ['auth-login', 'auth-register', 'auth-confirm-register']
+  const isPublicRoute = publicRoute.some((r) => r === to.name)
+  const isLoggedIn = !!AuthService.getToken()
+  if (!(isLoggedIn || isPublicRoute)) {
+    next({ name: 'auth-login' })
+  }
   NProgress.start()
+  next()
 })
 router.afterEach(() => {
   NProgress.done()
