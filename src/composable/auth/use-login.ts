@@ -35,7 +35,6 @@ export default function useLogin() {
     })
     isLoading.value = false
     if (status === 201) {
-      console.log('success')
       await fetchProfile()
       router.push('/')
       return

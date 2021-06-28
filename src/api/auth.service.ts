@@ -8,14 +8,16 @@ import {
 } from '../types/interfaces/auth.interface'
 import ApiService, { ApiServiceResponse } from './api.service'
 import Cookies from 'js-cookie'
+import { IAdminInfo } from '../types/interfaces/admin.interface'
+
 const ADMIN_ACCESS_TOKEN = 'wh_access_token'
 export default class AuthService {
   public static setCookie(token: string) {
     Cookies.set(ADMIN_ACCESS_TOKEN, token)
   }
 
-  public static getToken() {
-    Cookies.get(ADMIN_ACCESS_TOKEN)
+  public static getToken(): string | undefined {
+    return Cookies.get(ADMIN_ACCESS_TOKEN)
   }
 
   public static removeCookie() {
@@ -48,6 +50,14 @@ export default class AuthService {
     if (res.data?.accessToken) {
       this.setCookie(res.data.accessToken)
     }
+    return res
+  }
+
+  public static async getMyAdminInfo(): Promise<
+    ApiServiceResponse<IAdminInfo>
+  > {
+    // TODO: Get My Admin Profile API
+    const res = await ApiService.get<IAdminInfo>(`Auth/Me`)
     return res
   }
 }

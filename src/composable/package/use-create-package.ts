@@ -153,7 +153,6 @@ export default function useCreatePackage() {
   }
 
   const addAddonPackage = (addon: ICreateAddonPackage) => {
-    console.log('addAddonPackage', addon)
     addGroupPackage(+addon.idx, { ...addon, type: 'addon' }, 'addon')
   }
 

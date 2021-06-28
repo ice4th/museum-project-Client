@@ -22,7 +22,7 @@ axios.defaults.headers.common = HEADERS
 axios.interceptors.request.use(
   async (config) => {
     const token = AuthService.getToken()
-    config.headers.Authorization = token
+    config.headers.Authorization = `Bearer ${token}`
     return config
   },
   (error) => {
