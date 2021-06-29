@@ -2,7 +2,7 @@
 import useAdminProfile from '/@src/composable/common/use-admin-profile'
 import useDropdown from '/@src/composable/useDropdown'
 const { dropdownElement, isOpen, toggle } = useDropdown()
-const { adminProfile: profile } = useAdminProfile()
+const { adminProfile: profile, logout } = useAdminProfile()
 </script>
 
 <template>
@@ -14,7 +14,7 @@ const { adminProfile: profile } = useAdminProfile()
       class="dropdown profile-dropdown dropdown-trigger is-spaced is-up"
     >
       <img
-        src="/demo/avatars/8.jpg"
+        :src="profile.avatar"
         alt=""
         @error.once="$event.target.src = 'https://via.placeholder.com/150x150'"
         @click="toggle"
@@ -27,7 +27,7 @@ const { adminProfile: profile } = useAdminProfile()
             <div class="v-avatar is-large">
               <img
                 class="avatar"
-                src="/demo/avatars/8.jpg"
+                :src="profile.avatar"
                 alt=""
                 @error.once="
                   $event.target.src = 'https://via.placeholder.com/150x150'
@@ -81,6 +81,7 @@ const { adminProfile: profile } = useAdminProfile()
           <div class="dropdown-item is-button">
             <button
               class="button v-button is-primary is-raised is-fullwidth logout-button"
+              @click="logout"
             >
               <span class="icon is-small">
                 <i class="iconify" data-icon="feather:log-out"></i>
@@ -93,3 +94,9 @@ const { adminProfile: profile } = useAdminProfile()
     </div>
   </li>
 </template>
+
+<style lang="scss" scoped>
+.main-sidebar .sidebar-inner .bottom-menu li .dropdown > img {
+  object-fit: cover;
+}
+</style>
