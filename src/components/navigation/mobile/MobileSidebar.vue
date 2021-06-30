@@ -1,58 +1,59 @@
 <script setup lang="ts">
-import { isMobileSidebarOpen } from '/@src/state/mobileSidebarState'
-import { activePanel } from '/@src/state/activePanelState'
+import { defineEmit, defineProps } from 'vue'
+
+const props = defineProps({
+  isOpen: {
+    type: Boolean,
+    default: false,
+  },
+})
+const emit = defineEmit(['toggle'])
 </script>
 
 <template>
-  <div
-    :class="[isMobileSidebarOpen && 'is-active']"
-    class="mobile-main-sidebar"
-  >
+  <div :class="[props.isOpen && 'is-active']" class="mobile-main-sidebar">
     <div class="inner">
       <ul class="icon-side-menu">
-        <li>
-          <RouterLink
-            id="student-sidebar-menu-mobile"
-            :to="{ name: 'student' }"
-          >
-            <i class="iconify" data-icon="feather:users"></i>
-          </RouterLink>
-        </li>
-        <li>
-          <RouterLink
-            id="product-sidebar-menu-mobile"
-            :to="{ name: 'product' }"
-          >
-            <i class="iconify" data-icon="feather:book"></i>
-          </RouterLink>
-        </li>
+        <slot name="links">
+          <li>
+            <a href="/">
+              <i
+                aria-hidden="true"
+                class="iconify"
+                data-icon="feather:activity"
+              ></i>
+            </a>
+          </li>
+        </slot>
       </ul>
 
       <ul class="bottom-icon-side-menu">
-        <!-- <li>
-          <a @click="activePanel = 'search'">
-            <i class="iconify" data-icon="feather:search"></i>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class="iconify" data-icon="feather:settings"></i>
-          </a>
-        </li> -->
+        <slot name="bottom-links"></slot>
       </ul>
     </div>
   </div>
+
+  <div v-if="props.isOpen" class="mobile-overlay" @click="emit('toggle')"></div>
 </template>
 
 <style lang="scss">
-@import '../../../../scss/abstracts/_variables.scss';
-@import '../../../../scss/layout/_sidebar.scss';
-@import '../../../../scss/layout/_sidebar-mobile.scss';
+@import '../../../scss/abstracts/_variables.scss';
+@import '../../../scss/layout/_sidebar.scss';
+@import '../../../scss/layout/_sidebar-mobile.scss';
 
 /* ==========================================================================
 1. Mobile Sidebar
 ========================================================================== */
-
+.mobile-overlay {
+  background: rgb(0 0 0 / 30%);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  backdrop-filter: blur(1px);
+}
 .mobile-main-sidebar {
   position: fixed;
   top: 60px;

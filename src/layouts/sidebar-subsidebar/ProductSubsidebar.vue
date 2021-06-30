@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { isMobileSidebarOpen } from '/@src/state/mobileSidebarState'
-import { activeSidebar } from '/@src/state/activeSidebarState'
+import { defineEmit } from 'vue'
+
+const emit = defineEmit(['close'])
 </script>
 
 <template>
-  <div :class="[isMobileSidebarOpen && 'is-active']" class="mobile-subsidebar">
-    <div class="inner">
-      <div class="sidebar-title">
-        <h3>Product</h3>
+  <div class="sidebar-panel is-generic">
+    <div class="subpanel-header">
+      <h3 class="no-mb">Products & Packages</h3>
+      <div class="panel-close" @click="emit('close')">
+        <i aria-hidden="true" class="iconify" data-icon="feather:x"></i>
       </div>
-
-      <ul class="submenu" data-simplebar>
+    </div>
+    <div class="inner" data-simplebar>
+      <ul>
         <li v-has-nested-router-link class="has-children">
           <div class="collapse-wrap">
             <a class="parent-link"
@@ -41,6 +44,15 @@ import { activeSidebar } from '/@src/state/activeSidebarState'
             </li>
             <li>
               <RouterLink
+                :to="{ name: 'product-package-group' }"
+                class="is-submenu"
+              >
+                <i class="lnil lnil-books"></i>
+                <span>Package Group Detail</span>
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink
                 :to="{ name: 'product-create-package' }"
                 class="is-submenu"
               >
@@ -56,6 +68,6 @@ import { activeSidebar } from '/@src/state/activeSidebarState'
 </template>
 
 <style lang="scss">
-@import '../../../../../scss/abstracts/_variables.scss';
-@import '../../../../../scss/layout/_sidebar-mobile.scss';
+@import '../../scss/abstracts/_variables.scss';
+@import '../../scss/layout/_sidebar-panel.scss';
 </style>

@@ -1,23 +1,11 @@
-<script setup lang="ts">
-import { activeSidebar } from '/@src/state/activeSidebarState'
-</script>
-
 <template>
-  <div
-    id="product-sidebar"
-    :class="[activeSidebar === 'product' && 'is-active']"
-    class="sidebar-panel is-generic"
-  >
-    <div class="subpanel-header">
-      <!-- <ProjectsQuickDropdown /> -->
-
-      <h3 class="no-mb">Product & Package</h3>
-      <div class="panel-close" @click="activeSidebar = 'none'">
-        <i class="iconify" data-icon="feather:x"></i>
+  <div class="mobile-subsidebar is-activity">
+    <div class="inner">
+      <div class="sidebar-title">
+        <h3>Products & Packages</h3>
       </div>
-    </div>
-    <div class="inner" data-simplebar>
-      <ul>
+
+      <ul class="submenu">
         <li v-has-nested-router-link class="has-children">
           <div class="collapse-wrap">
             <a class="parent-link"
@@ -66,16 +54,13 @@ import { activeSidebar } from '/@src/state/activeSidebarState'
             </li>
           </ul>
         </li>
-        <!-- <li class="divider"></li> -->
-        <!-- <li>
-          <RouterLink :to="{ name: 'student' }">Student Info</RouterLink>
-        </li> -->
       </ul>
+      <div class="bottom-action"></div>
     </div>
   </div>
 </template>
 
 <style lang="scss">
-@import '../../../../../scss/abstracts/_variables.scss';
-@import '../../../../../scss/layout/_sidebar-panel.scss';
+@import '../../scss/abstracts/_variables.scss';
+@import '../../scss/layout/_sidebar-mobile.scss';
 </style>

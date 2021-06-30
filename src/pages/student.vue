@@ -10,7 +10,7 @@ const route = useRoute()
   <SidebarLayout
     :theme="sidebarTheme"
     close-on-change
-    default-sidebar="product"
+    default-sidebar="student"
   >
     <!-- <ProductSidebar /> -->
     <!-- <ProductMobileSubsidebar /> -->
