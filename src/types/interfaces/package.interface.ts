@@ -43,6 +43,50 @@ export interface IPackageInfo {
   product?: IProduct
 }
 
+export interface TPackageInfo {
+  id: number
+  packageName: string
+  detail: string
+  comment: string
+  accessLevel: string
+  price: number
+  beforeDiscount: number
+  duration: number
+  ticket: number
+  freetalkTicket?: number
+  fmcId: number
+  status: StatusPackage
+  country: string
+  purchasable: Purchasable
+  photo: string
+  priority: number
+  curriculumSheet: string
+  type: string
+  engder: string
+  pepTalkTicket?: number
+  installmentMonth: number
+  groupClassTicket?: number
+  masterClassTicket?: number
+  nameInternal: string
+  curriculumId: number
+  cefr: string
+  globishLevel: string
+  featureGroupId?: number
+  privateSlot: PrivateSlot
+  courseId: number
+}
+
+export interface IPackageGroupInfo {
+  isMainPackage: boolean
+  packageId: number
+  addonPackageId: number
+  generateTicket: GenerateTicket
+  idx: number
+  dependonPackageId: number
+  dependonTicketUse: number
+  packageInfo: TPackageInfo
+}
+
 export interface ICreateAddonPackage {
   packageId: number
   generateTicket: GenerateTicket

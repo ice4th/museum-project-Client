@@ -111,6 +111,7 @@ Responsive styles
   }
 
   .mobile-main-sidebar,
+  .mobile-overlay,
   .mobile-subsidebar {
     display: none !important;
   }
@@ -501,6 +502,7 @@ Responsive styles
   }
 
   .mobile-main-sidebar,
+  .mobile-overlay,
   .mobile-subsidebar {
     display: none !important;
   }
@@ -521,6 +523,16 @@ Responsive styles
 
   .h-only-mobile-flex {
     display: flex !important;
+  }
+
+  .is-half-mobile-p {
+    display: flex !important;
+
+    .column {
+      width: 50%;
+      min-width: 50%;
+      max-width: 50%;
+    }
   }
 }
 
