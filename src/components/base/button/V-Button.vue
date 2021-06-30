@@ -179,8 +179,8 @@ const classes = computed(() => {
 
 <template>
   <RouterLink
-    v-if="to"
     :aria-hidden="props.placeload && 'true'"
+    v-if="to"
     :to="to"
     :class="classes"
   >
@@ -202,8 +202,8 @@ const classes = computed(() => {
     </span>
   </RouterLink>
   <a
-    v-else-if="href"
     :aria-hidden="props.placeload && 'true'"
+    v-else-if="href"
     :href="href"
     :class="classes"
   >
@@ -225,8 +225,8 @@ const classes = computed(() => {
     </span>
   </a>
   <button
-    v-else
     :aria-hidden="props.placeload && 'true'"
+    v-else
     :class="classes"
     :disabled="disabled"
   >

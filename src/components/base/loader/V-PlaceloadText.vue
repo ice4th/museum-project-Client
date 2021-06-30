@@ -51,9 +51,9 @@ const props = defineProps({
 <template>
   <div class="content-shape-group">
     <V-Placeload
+      :width="props.width"
       v-for="line of props.lines - 1"
       :key="line"
-      :width="props.width"
       :centered="props.centered"
     />
     <V-Placeload :width="props.lastLineWidth" :centered="props.centered" />

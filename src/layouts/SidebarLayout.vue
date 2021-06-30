@@ -98,7 +98,7 @@ watch(
 
         <div class="brand-end">
           <!-- <NotificationsMobileDropdown /> -->
-          <!-- <UserProfileDropdown /> -->
+          <UserProfileDropdown />
         </div>
       </template>
     </MobileNavbar>
@@ -162,11 +162,6 @@ watch(
       <ProductMobileSubsidebar
         v-else-if="isMobileSidebarOpen && activeMobileSubsidebar === 'product'"
       />
-      <!-- <DashboardsMobileSubsidebar
-        v-else-if="
-          isMobileSidebarOpen && activeMobileSubsidebar === 'dashboard'
-        "
-      /> -->
     </transition>
 
     <!-- Desktop navigation -->
@@ -246,7 +241,7 @@ watch(
 
         <!-- Profile Dropdown -->
         <li>
-          <!-- <UserProfileDropdown up /> -->
+          <UserProfileDropdown up />
         </li>
       </template>
     </Sidebar>

@@ -90,8 +90,8 @@ expose({
       <a
         v-else
         class="is-trigger button dropdown-trigger"
-        :class="[props.color && `is-${props.color}`]"
         @click="dropdown.toggle"
+        :class="[props.color && `is-${props.color}`]"
       >
         <span v-if="props.title">{{ props.title }}</span>
         <span
