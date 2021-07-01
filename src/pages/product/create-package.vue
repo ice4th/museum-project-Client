@@ -38,6 +38,12 @@ const { y } = useWindowScroll()
 const isStuck = computed(() => {
   return y.value > 30
 })
+
+const swapOrderIndex = () => {
+  addonPackages.value = addonPackages.value.map((addon, index) => {
+    return { ...addon, idx: index + 1 }
+  })
+}
 </script>
 
 <template>
@@ -95,46 +101,117 @@ const isStuck = computed(() => {
                     v-show="addonPackages.length && !showMainPackageSection"
                     class="form-section is-grey"
                   >
-                    <V-Block
-                      v-for="addon in addonPackages"
-                      :key="`show-addon-${addon.idx}`"
-                      :title="
-                        addon.type === 'main' ? 'Main Package' : 'Addon Package'
-                      "
-                      :subtitle="`(id: ${
-                        addon.packageId
-                      }) ${displayPackageNameById(addon.packageId)}`"
-                      center
+                    <VueDraggable
+                      v-model="addonPackages"
+                      :disabled="showMainPackageSection || showAddonSection"
+                      item-key="packageId"
+                      class="list-group"
+                      ghost-class="ghost"
+                      @change="swapOrderIndex"
                     >
-                      <template #icon>
-                        <strong>{{ addon.idx }}</strong>
+                      <template #item="{ element: addon }">
+                        <V-CardAction
+                          :avatar="displayPackageImageById(addon.packageId)"
+                          :title="`[idx: ${addon.idx}] (id: ${
+                            addon.packageId
+                          }) ${displayPackageNameById(addon.packageId)}`"
+                          :subtitle="
+                            addon.type === 'main'
+                              ? 'Main Package'
+                              : 'Addon Package'
+                          "
+                          class="package-row-drag"
+                        >
+                          <template #action>
+                            <V-IconBox
+                              v-if="addon.type === 'main'"
+                              size="small"
+                              color="primary"
+                              rounded
+                              class="mr-3"
+                            >
+                              <i class="iconify" data-icon="feather:flag"></i>
+                            </V-IconBox>
+                            <template
+                              v-if="
+                                !(showMainPackageSection || showAddonSection)
+                              "
+                            >
+                              <V-Button
+                                v-if="addon.type === 'main'"
+                                elevated
+                                @click="toggleShowMainPackageSection"
+                                >Edit</V-Button
+                              >
+                              <V-Button
+                                v-else
+                                elevated
+                                @click="toggleShowAddonPackageSection(addon)"
+                                >Edit</V-Button
+                              >
+                              <V-Button
+                                v-if="addon.type === 'addon'"
+                                color="danger"
+                                elevated
+                                class="ml-3"
+                                @click="removePackage(addon.idx)"
+                                >Remove</V-Button
+                              >
+                            </template>
+                          </template>
+                          <div class="package-detail">
+                            <V-Snack
+                              v-if="addon.generateTicket === '1'"
+                              title="Generate Ticket"
+                              color="success"
+                              white
+                              solid
+                              icon="feather:plus-circle"
+                            >
+                              <div></div>
+                            </V-Snack>
+                            <V-Snack
+                              v-if="addon.generateTicket === '0'"
+                              title="Not Generate Ticket"
+                              color="danger"
+                              white
+                              solid
+                              icon="feather:minus-circle"
+                            >
+                              <div></div>
+                            </V-Snack>
+
+                            <V-Snack
+                              v-if="addon.dependonPackageId"
+                              :title="
+                                displayPackageNameById(addon.dependonPackageId)
+                              "
+                              color="warning"
+                              white
+                              solid
+                              icon="feather:alert-triangle"
+                              class="ml-3"
+                            >
+                              <!-- <i class="iconify" data-icon="feather:minus"></i> -->
+                              <div></div>
+                            </V-Snack>
+
+                            <V-Snack
+                              v-if="addon.dependonTicketUse"
+                              :title="`Ticket Used: ${addon.dependonTicketUse}`"
+                              color="success"
+                              white
+                              solid
+                              icon="feather:hash"
+                              class="ml-3"
+                            >
+                              <!-- <i class="iconify" data-icon="feather:hash"></i> -->
+                              <div></div>
+                            </V-Snack>
+                          </div>
+                        </V-CardAction>
                       </template>
-                      <template
-                        v-if="!(showMainPackageSection || showAddonSection)"
-                        #action
-                      >
-                        <V-Button
-                          v-if="addon.type === 'main'"
-                          elevated
-                          @click="toggleShowMainPackageSection"
-                          >Edit</V-Button
-                        >
-                        <V-Button
-                          v-else
-                          elevated
-                          @click="toggleShowAddonPackageSection(addon)"
-                          >Edit</V-Button
-                        >
-                        <V-Button
-                          v-if="addon.type === 'addon'"
-                          color="danger"
-                          elevated
-                          class="ml-3"
-                          @click="removePackage(addon.idx)"
-                          >Remove</V-Button
-                        >
-                      </template>
-                    </V-Block>
+                    </VueDraggable>
                     <div class="p-3 right">
                       <V-Button @click="toggleShowAddonPackageSection"
                         >Add addon package</V-Button
@@ -146,24 +223,10 @@ const isStuck = computed(() => {
                   <div v-if="showMainPackageSection" class="form-fieldset">
                     <div class="fieldset-heading">
                       <h4>Main Package</h4>
-                      <p>Select main package and order in package group</p>
+                      <p>Select main package</p>
                     </div>
                     <div class="columns is-multiline">
-                      <div class="column is-3">
-                        <V-Field>
-                          <label>Order Index</label>
-                          <V-Control icon="feather:layers">
-                            <input
-                              v-model="mainIdx"
-                              type="text"
-                              class="input"
-                              placeholder=""
-                              autocomplete="organization"
-                            />
-                          </V-Control>
-                        </V-Field>
-                      </div>
-                      <div class="column is-9">
+                      <div class="column is-12">
                         <V-Field>
                           <label>Main Package</label>
                           <V-Control>
@@ -254,5 +317,13 @@ const isStuck = computed(() => {
 }
 .button-submit {
   text-align: end;
+}
+.package-row-drag {
+  cursor: pointer;
+  margin-bottom: 1rem;
+  .package-detail {
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

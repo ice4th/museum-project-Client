@@ -69,7 +69,8 @@
     "vue-router": "4.0.6",
     "vue-scrollto": "2.20.0",
     "vue-tippy": "6.0.0-alpha.29",
-    "vue3-apexcharts": "1.4.0"
+    "vue3-apexcharts": "1.4.0",
+    "vuedraggable": "^4.0.3"
   },
   "devDependencies": {
     "@iconify/json": "1.1.358",

@@ -26,11 +26,6 @@ const emit = defineEmit({
   cancel: null,
   add: Object,
 })
-const addonIdx = ref<string>(
-  props.currentAddonPackage?.idx?.toString() ||
-    (props.allGroupPackages.length + 1).toString() ||
-    '2'
-)
 const addonPackage = ref<number | undefined>(
   props.currentAddonPackage?.packageId
 )
@@ -50,8 +45,8 @@ const updateAddonPackage = () => {
     const data = {
       packageId: addonPackage.value,
       generateTicket: GenerateTicket.GENERATE_TICKET,
-      idx: +addonIdx?.value,
       dependonPackageId: dependOnPackage.value,
+      idx: props.currentAddonPackage.idx,
       dependonTicketUse: ticketUsed.value ? +ticketUsed.value : undefined,
     } as ICreateAddonPackage
     emit('add', data)
@@ -60,7 +55,7 @@ const updateAddonPackage = () => {
     const data = {
       packageId: addonPackage.value,
       generateTicket: GenerateTicket.GENERATE_TICKET,
-      idx: +addonIdx?.value,
+      idx: props.currentAddonPackage.idx,
     } as ICreateAddonPackage
     emit('add', data)
   }
@@ -74,7 +69,7 @@ const updateAddonPackage = () => {
       <p>Select addon package and order in package group</p>
     </div>
     <div class="columns is-multiline">
-      <div class="column is-3">
+      <!-- <div class="column is-3">
         <V-Field>
           <label>Order Index</label>
           <V-Control icon="feather:layers">
@@ -86,8 +81,8 @@ const updateAddonPackage = () => {
             />
           </V-Control>
         </V-Field>
-      </div>
-      <div class="column is-9">
+      </div> -->
+      <div class="column is-12">
         <V-Field>
           <label>Addon Package</label>
           <V-Control>
