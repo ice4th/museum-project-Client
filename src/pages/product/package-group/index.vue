@@ -4,6 +4,7 @@ import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import usePackageGroupTable from '/@src/composable/package/use-package-group-table'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+import { ref } from 'vue'
 
 pageTitle.value = 'Package Group Information'
 useHead({
@@ -16,11 +17,20 @@ const {
   optionsTable,
   packages,
   viewAddonPackage,
+  addonPackages,
+  currentViewMainPackageId,
 } = usePackageGroupTable()
 
-const view = () => {
-  console.log('view')
-  viewAddonPackage(502)
+const showPackageDetailPopup = ref(false)
+
+const view = async (packageId: number) => {
+  await viewAddonPackage(packageId)
+  showPackageDetailPopup.value = true
+}
+
+const closeDetailPopup = () => {
+  showPackageDetailPopup.value = false
+  addonPackages.value = []
 }
 </script>
 
@@ -30,7 +40,7 @@ const view = () => {
       >View</V-Button
     >
     <!-- if have data to show -->
-    <V-SimpleDatatables v-if="!isLoading && packageTableFormat.length">
+    <!-- <V-SimpleDatatables v-if="!isLoading && packageTableFormat.length">
       <thead>
         <tr>
           <th scope="col">ID</th>
@@ -61,7 +71,54 @@ const view = () => {
           <td>{{ pk.packageInfo.duration }}</td>
         </tr>
       </tbody>
-    </V-SimpleDatatables>
+    </V-SimpleDatatables> -->
+
+    <V-FlexTable v-if="!isLoading && packages.length">
+      <template #header>
+        <div class="flex-table-header">
+          <span>ID</span>
+          <span class="is-grow">Package Name</span>
+          <span>Type</span>
+          <span>Purchasable</span>
+          <span>Price</span>
+          <span>Duration</span>
+          <span class="cell-end">Actions</span>
+        </div>
+      </template>
+      <template #body>
+        <div v-for="pk in packages" :key="pk.packageId" class="flex-table-item">
+          <div class="flex-table-cell" data-th="ID">
+            <span class="dark-text">{{ pk.packageId }}</span>
+          </div>
+          <div class="flex-table-cell is-grow is-bold" data-th="Package Name">
+            <span class="light-text">{{ pk.packageInfo.packageName }}</span>
+          </div>
+          <div class="flex-table-cell" data-th="Type">
+            <span class="light-text">{{ pk.packageInfo.type }}</span>
+          </div>
+          <div class="flex-table-cell" data-th="Purchasable">
+            <span class="light-text">{{ pk.packageInfo.purchasable }}</span>
+          </div>
+          <div class="flex-table-cell" data-th="Price">
+            <span class="light-text">{{ pk.packageInfo.price }}</span>
+          </div>
+          <div class="flex-table-cell" data-th="Duration">
+            <span class="light-text">{{ pk.packageInfo.duration }}</span>
+          </div>
+          <div class="flex-table-cell cell-end" data-th="Actions">
+            <V-Button
+              color="primary"
+              icon="feather:arrow-down"
+              :to="{
+                name: 'product-package-group-:packageid',
+                params: { packageid: `${pk.packageId}` },
+              }"
+              >View</V-Button
+            >
+          </div>
+        </div>
+      </template>
+    </V-FlexTable>
     <!-- else for empty stage -->
 
     <V-Loader v-else size="large" translucent :active="isLoading">

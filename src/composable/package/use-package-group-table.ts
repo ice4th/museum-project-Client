@@ -12,11 +12,15 @@ import {
 interface UsePackageTableState {
   isLoading: boolean
   packages: IPackageGroupInfo[]
+  currentViewMainPackageId: number
+  addonPackages: IPackageGroupInfo[]
 }
 export default function usePackageTable() {
   const state = reactive<UsePackageTableState>({
     isLoading: false,
     packages: [],
+    currentViewMainPackageId: 0,
+    addonPackages: [],
   })
   const fetchAllPackages = async () => {
     state.isLoading = true
@@ -52,12 +56,11 @@ export default function usePackageTable() {
 
   const viewAddonPackage = async (packageId: number) => {
     console.log('viewAddonPackage', packageId)
-    const {
-      status,
-      data,
-    } = await PackageService.getAddonPackageByMainPackageId(packageId)
+    const { status, data } =
+      await PackageService.getAddonPackageByMainPackageId(packageId)
     if (status === 200) {
-      console.log(data)
+      state.currentViewMainPackageId = packageId
+      state.addonPackages = data
     }
   }
 

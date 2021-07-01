@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // AddonPackageForm Component
-import { defineEmit, defineProps, PropType, ref } from 'vue'
+import { defineEmit, defineProps, ref } from 'vue'
+import type { PropType } from 'vue'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
 import type {
   ICreateAddonPackage,
