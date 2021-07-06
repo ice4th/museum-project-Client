@@ -15,12 +15,12 @@ import { themeColors } from '/@src/utils/themeColors'
 /**
  * add type for render with type
  */
-interface IAddonPackageWithType extends ICreateAddonPackage {
+export interface IAddonPackageWithType extends ICreateAddonPackage {
   type: 'main' | 'addon'
 }
 export interface IUseCreatePackageState {
   mainIdx: string
-  mainPackage?: number
+  mainPackage: number
   generateTicket: GenerateTicket
   isLoadingPackages: boolean
   packages: IPackageInfo[]
@@ -71,7 +71,7 @@ export default function useCreatePackage() {
   const showMainPackageSection = ref<boolean>(true)
   const state = reactive<IUseCreatePackageState>({
     mainIdx: '1',
-    mainPackage: undefined,
+    mainPackage: 0,
     generateTicket: GenerateTicket.NOT_GENERATE_TICKET,
     isLoadingPackages: false,
     packages: [],
@@ -124,11 +124,15 @@ export default function useCreatePackage() {
         if (mainIdx >= 0) state.addonPackages[mainIdx] = newPackage
         else state.addonPackages.push(newPackage)
       } else {
-        notyfWarning.open({
-          type: 'warning',
-          message: 'package id is duplicate',
-        })
-        return
+        if (isMyPackage) {
+          state.addonPackages[packageIndex] = newPackage
+        } else {
+          notyfWarning.open({
+            type: 'warning',
+            message: 'package id is duplicate',
+          })
+          return
+        }
       }
     } else {
       state.addonPackages.push(newPackage)
@@ -197,8 +201,8 @@ export default function useCreatePackage() {
     })
   }
 
-  onMounted(() => {
-    fetchAllPackage()
+  onMounted(async () => {
+    await fetchAllPackage()
   })
 
   return {

@@ -77,6 +77,7 @@ export interface TPackageInfo {
 }
 
 export interface IPackageGroupInfo {
+  id: number
   isMainPackage: boolean
   packageId: number
   addonPackageId: number
@@ -106,5 +107,5 @@ export interface IUpdateAddonPackage {
 
 export interface ICreatePackageGroup {
   mainPackageId: number
-  addonPackages: ICreateAddonPackage[] // include main package
+  addonPackages: IUpdateAddonPackage[] // include main package
 }

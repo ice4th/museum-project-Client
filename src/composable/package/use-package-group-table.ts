@@ -3,6 +3,7 @@
  */
 
 import { computed, onMounted, reactive, toRefs } from 'vue'
+import useNotyf from '../useNotyf'
 import PackageService from '/@src/api/package.service'
 import {
   IPackageGroupInfo,
@@ -30,6 +31,7 @@ export default function usePackageTable() {
       state.packages = data
     }
   }
+  const noty = useNotyf()
 
   const packageTableFormat = computed(() => {
     //heading  ['id', 'Name', 'Type', 'Purchasable', 'Price', 'Duration']
@@ -64,6 +66,17 @@ export default function usePackageTable() {
     }
   }
 
+  const removePackageGroup = async (packageId: number) => {
+    const { status, message } =
+      await PackageService.deletePackageGroupByMainPackageId(packageId)
+
+    if (status === 200) {
+      await fetchAllPackages()
+    } else {
+      noty.error(message || 'Fail !')
+    }
+  }
+
   onMounted(() => {
     fetchAllPackages()
   })
@@ -73,5 +86,6 @@ export default function usePackageTable() {
     packageTableFormat,
     optionsTable,
     viewAddonPackage,
+    removePackageGroup,
   }
 }

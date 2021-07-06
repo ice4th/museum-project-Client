@@ -1,17 +1,63 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, onBeforeUpdate, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import useCreatePackage from '/@src/composable/package/use-create-package'
 import useViewPackageGroup from '/@src/composable/package/use-view-package-group'
 
 const route = useRoute()
 const showUpdate = ref(false)
-const { addonPackages, isLoading, updatePackage, displayPackageNameById } =
-  useViewPackageGroup()
+const showConfirmRemovePopup = ref(false)
+
+const {
+  packages,
+  addMainPackage,
+  addAddonPackage,
+  addonPackages,
+  currentAddonPackage,
+  dependOnPackageList,
+  displayPackageNameById,
+  displayPackageImageById,
+  toggleShowAddonPackageSection,
+  toggleShowMainPackageSection,
+  showMainPackageSection,
+  showAddonSection,
+  mainPackage,
+  generateTicket,
+} = useCreatePackage()
+const {
+  addonPackages: rawAddonPackages,
+  isLoading,
+  updatePackage,
+  removeAddonPackage,
+} = useViewPackageGroup()
+onBeforeUpdate(() => {
+  showMainPackageSection.value = false
+  addonPackages.value = rawAddonPackages.value
+  dependOnPackageList.value = packages.value.filter((pk) =>
+    addonPackages.value.some((apk) => apk.packageId === pk.id)
+  )
+  const mainPk = addonPackages.value.find((pk) => pk.type === 'main')
+  if (mainPk) {
+    generateTicket.value = mainPk.generateTicket
+    mainPackage.value = mainPk.packageId
+  }
+  console.log(addonPackages.value, rawAddonPackages.value)
+})
+const remove = async (packageId: number) => {
+  showConfirmRemovePopup.value = true
+  // await removeAddonPackage(packageId)
+}
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
   return y.value > 30
 })
+
+const swapOrderIndex = () => {
+  addonPackages.value = addonPackages.value.map((addon, index) => {
+    return { ...addon, idx: index + 1 }
+  })
+}
 </script>
 <template>
   <div class="page-content-inner">
@@ -25,7 +71,7 @@ const isStuck = computed(() => {
           >
             <div class="form-header-inner">
               <div class="left">
-                <h3>Create Package Group</h3>
+                <h3>View/Edit Package Group</h3>
               </div>
               <div class="right">
                 <div v-if="showUpdate" class="buttons">
@@ -37,7 +83,11 @@ const isStuck = computed(() => {
                   >
                     Cancel
                   </V-Button>
-                  <V-Button color="primary" raised @click="updatePackage">
+                  <V-Button
+                    color="primary"
+                    raised
+                    @click="updatePackage(addonPackages)"
+                  >
                     Update
                   </V-Button>
                 </div>
@@ -50,61 +100,125 @@ const isStuck = computed(() => {
             </div>
           </div>
           <div class="form-body">
-            <div v-show="addonPackages.length" class="form-section is-grey">
-              <V-Block
-                v-for="addon in addonPackages"
-                :key="`show-addon-${addon.idx}`"
-                :title="addon.isMainPackage ? 'Main Package' : 'Addon Package'"
-                :subtitle="`(id: ${addon.packageId}) ${displayPackageNameById(
-                  addon.packageId
-                )}`"
-                center
+            <div v-if="addonPackages.length" class="form-section is-grey">
+              <VueDraggable
+                v-model="addonPackages"
+                :disabled="!showUpdate"
+                item-key="packageId"
+                class="list-group"
+                ghost-class="ghost"
+                @change="swapOrderIndex"
               >
-                <template #icon>
-                  <strong>{{ addon.idx }}</strong>
-                </template>
-                <template #action>
-                  <V-Button v-if="addon.isMainPackage" elevated>Edit</V-Button>
-                  <V-Button v-else elevated>Edit</V-Button>
-                  <V-Button
-                    v-if="!addon.isMainPackage"
-                    color="danger"
-                    elevated
-                    class="ml-3"
-                    @click="removePackage(addon.idx)"
-                    >Remove</V-Button
+                <template #item="{ element: addon }">
+                  <V-CardAction
+                    :avatar="displayPackageImageById(addon.packageId)"
+                    :title="`[idx: ${addon.idx}] (id: ${
+                      addon.packageId
+                    }) ${displayPackageNameById(addon.packageId)}`"
+                    :subtitle="
+                      addon.isMainPackage ? 'Main Package' : 'Addon Package'
+                    "
+                    class="package-row-drag"
                   >
+                    <template #action>
+                      <V-IconBox
+                        v-if="addon.isMainPackage"
+                        size="small"
+                        color="primary"
+                        rounded
+                        class="mr-3"
+                      >
+                        <i class="iconify" data-icon="feather:flag"></i>
+                      </V-IconBox>
+                      <template v-if="showUpdate">
+                        <V-Button
+                          v-if="addon.isMainPackage"
+                          elevated
+                          @click="toggleShowMainPackageSection"
+                          >Edit</V-Button
+                        >
+                        <V-Button
+                          v-else
+                          elevated
+                          @click="toggleShowAddonPackageSection(addon)"
+                          >Edit</V-Button
+                        >
+                        <V-Button
+                          v-if="!addon.isMainPackage"
+                          color="danger"
+                          elevated
+                          class="ml-3"
+                          @clik="remove(addon.packageInfo.id)"
+                          >Remove</V-Button
+                        >
+                      </template>
+                    </template>
+                    <div class="package-detail">
+                      <V-Snack
+                        v-if="addon.generateTicket === '1'"
+                        title="Generate Ticket"
+                        color="success"
+                        white
+                        solid
+                        icon="feather:plus-circle"
+                      >
+                        <div></div>
+                      </V-Snack>
+                      <V-Snack
+                        v-if="addon.generateTicket === '0'"
+                        title="Not Generate Ticket"
+                        color="danger"
+                        white
+                        solid
+                        icon="feather:minus-circle"
+                      >
+                        <div></div>
+                      </V-Snack>
+
+                      <V-Snack
+                        v-if="addon.dependonPackageId"
+                        :title="displayPackageNameById(addon.dependonPackageId)"
+                        color="warning"
+                        white
+                        solid
+                        icon="feather:alert-triangle"
+                        class="ml-3"
+                      >
+                        <!-- <i class="iconify" data-icon="feather:minus"></i> -->
+                        <div></div>
+                      </V-Snack>
+
+                      <V-Snack
+                        v-if="addon.dependonTicketUse"
+                        :title="`Ticket Used: ${addon.dependonTicketUse}`"
+                        color="success"
+                        white
+                        solid
+                        icon="feather:hash"
+                        class="ml-3"
+                      >
+                        <!-- <i class="iconify" data-icon="feather:hash"></i> -->
+                        <div></div>
+                      </V-Snack>
+                    </div>
+                  </V-CardAction>
                 </template>
-              </V-Block>
-              <!-- <div class="p-3 right">
+              </VueDraggable>
+              <div v-if="showUpdate" class="p-3 right">
                 <V-Button @click="toggleShowAddonPackageSection"
                   >Add addon package</V-Button
                 >
-              </div> -->
+              </div>
             </div>
 
             <!-- Main package section -->
-            <!-- <div v-if="showMainPackageSection" class="form-fieldset">
+            <div v-if="showMainPackageSection" class="form-fieldset">
               <div class="fieldset-heading">
                 <h4>Main Package</h4>
-                <p>Select main package and order in package group</p>
+                <p>Select main package</p>
               </div>
               <div class="columns is-multiline">
-                <div class="column is-3">
-                  <V-Field>
-                    <label>Order Index</label>
-                    <V-Control icon="feather:layers">
-                      <input
-                        v-model="mainIdx"
-                        type="text"
-                        class="input"
-                        placeholder=""
-                        autocomplete="organization"
-                      />
-                    </V-Control>
-                  </V-Field>
-                </div>
-                <div class="column is-9">
+                <div class="column is-12">
                   <V-Field>
                     <label>Main Package</label>
                     <V-Control>
@@ -163,16 +277,16 @@ const isStuck = computed(() => {
                   >Add Main Package</V-Button
                 >
               </div>
-            </div> -->
+            </div>
 
-            <!-- <AddonPackageForm
+            <AddonPackageForm
               v-if="showAddonSection"
               :packages="packages"
               :all-group-packages="dependOnPackageList"
               :current-addon-package="currentAddonPackage"
               @add="addAddonPackage"
               @cancel="toggleShowAddonPackageSection"
-            /> -->
+            />
           </div>
         </div>
       </V-Loader>
@@ -189,5 +303,13 @@ const isStuck = computed(() => {
 }
 .button-submit {
   text-align: end;
+}
+.package-row-drag {
+  cursor: pointer;
+  margin-bottom: 1rem;
+  .package-detail {
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

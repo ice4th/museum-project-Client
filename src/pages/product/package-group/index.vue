@@ -5,6 +5,7 @@ import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import usePackageGroupTable from '/@src/composable/package/use-package-group-table'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { ref } from 'vue'
+import type { IPackageGroupInfo } from '/@src/types/interfaces/package.interface'
 
 pageTitle.value = 'Package Group Information'
 useHead({
@@ -19,26 +20,49 @@ const {
   viewAddonPackage,
   addonPackages,
   currentViewMainPackageId,
+  removePackageGroup,
 } = usePackageGroupTable()
 
-const showPackageDetailPopup = ref(false)
+const showConfirmRemovePopup = ref(false)
 
-const view = async (packageId: number) => {
-  await viewAddonPackage(packageId)
-  showPackageDetailPopup.value = true
+const currentPackage = ref<IPackageGroupInfo | undefined>(undefined)
+
+const toggleConfirmRemovePopup = (pk?: IPackageGroupInfo) => {
+  currentPackage.value = pk
+  showConfirmRemovePopup.value = !!pk
 }
-
-const closeDetailPopup = () => {
-  showPackageDetailPopup.value = false
-  addonPackages.value = []
+const confirmRemovePackage = () => {
+  if (!currentPackage.value) return
+  removePackageGroup(currentPackage.value?.packageId)
+  toggleConfirmRemovePopup()
 }
 </script>
 
 <template>
   <div class="page-content-inner">
-    <V-Button color="primary" icon="feather:arrow-down" @click="view"
-      >View</V-Button
+    <V-Modal
+      title="Confirm Remove Package Group"
+      :open="showConfirmRemovePopup"
+      size="small"
+      actions="center"
+      @close="toggleConfirmRemovePopup"
     >
+      <template #content>
+        <V-PlaceholderSection
+          :title="`You want to remove group of ${currentPackage?.packageInfo?.packageName}`"
+        />
+      </template>
+      <template #action>
+        <V-Button color="danger" raised @click="confirmRemovePackage"
+          >Confirm</V-Button
+        >
+      </template>
+      <template #cancel>
+        <V-Button color="primary" raised @click="toggleConfirmRemovePopup"
+          >Cancel</V-Button
+        >
+      </template>
+    </V-Modal>
     <!-- if have data to show -->
     <!-- <V-SimpleDatatables v-if="!isLoading && packageTableFormat.length">
       <thead>
@@ -114,6 +138,13 @@ const closeDetailPopup = () => {
                 params: { packageid: `${pk.packageId}` },
               }"
               >View</V-Button
+            >
+            <V-Button
+              color="danger"
+              icon="feather:trash"
+              class="ml-3"
+              @click="toggleConfirmRemovePopup(pk)"
+              >Delete</V-Button
             >
           </div>
         </div>
