@@ -14,11 +14,11 @@ anchors:
     KUBE_CERTIFICATE:
       from_secret: kubernetes_certificate
   - &install-dependencies
-    image: node:12.20.0-alpine
+    image: node:14.15.5
     commands:
       - yarn
   # - &run-test
-  #   image: node:12.20.0-alpine
+  #   image: node:14.15.5
   #   commands:
   #     - yarn run jest
 
@@ -76,7 +76,7 @@ steps:
   #         - master
 
   - name: build-app-master
-    image: node:12.20.0-alpine
+    image: node:14.15.5
     environment:
       VERSION: "${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}"
       VITE_APP_ADMIN_BASE_URL: "https://admin-api.globish.co.th"
@@ -91,7 +91,7 @@ steps:
         - master
 
   - name: build-app-staging
-    image: node:12.20.0-alpine
+    image: node:14.15.5
     environment:
       VERSION: "${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}"
       VITE_APP_ADMIN_BASE_URL: "https://admin-api.globish.site"
@@ -106,7 +106,7 @@ steps:
         - staging
 
   - name: build-app-dev
-    image: node:12.20.0-alpine
+    image: node:14.15.5
     environment:
       VERSION: "${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}"
       VITE_APP_ADMIN_BASE_URL: "https://admin-api.globish.dev"
