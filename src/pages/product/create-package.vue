@@ -115,7 +115,7 @@ const swapOrderIndex = () => {
                             addon.packageId
                           }) ${displayPackageNameById(addon.packageId)}`"
                           :subtitle="
-                            addon.type === 'main'
+                            addon.packageId === mainPackageId
                               ? 'Main Package'
                               : 'Addon Package'
                           "
@@ -153,7 +153,7 @@ const swapOrderIndex = () => {
                                 color="danger"
                                 elevated
                                 class="ml-3"
-                                @click="removePackage(addon.idx)"
+                                @click="removePackage(addon.packageId)"
                                 >Remove</V-Button
                               >
                             </template>

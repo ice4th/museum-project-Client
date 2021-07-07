@@ -36,7 +36,6 @@ const addMainPackage = () => {
     packageId: mainPackageId.value,
     generateTicket: generateTicket.value,
   } as IUpdateAddonPackage
-  console.log('addMainPackage', mainPackageData)
   emit('on-update', mainPackageData)
 }
 </script>

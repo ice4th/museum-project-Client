@@ -58,7 +58,8 @@ const updateAddonPackage = () => {
       dependonPackageId: dependOnPackage.value,
       idx: props.currentAddonPackage?.idx || 0,
       dependonTicketUse: ticketUsed.value ? +ticketUsed.value : undefined,
-    } as ICreateAddonPackage
+      packageGroupId: props.currentAddonPackage.packageGroupId,
+    } as IUpdateAddonPackage
     emit('add', data)
   } else {
     if (!addonPackage.value) return
@@ -66,7 +67,8 @@ const updateAddonPackage = () => {
       packageId: addonPackage.value,
       generateTicket: GenerateTicket.GENERATE_TICKET,
       idx: props.currentAddonPackage?.idx || 0,
-    } as ICreateAddonPackage
+      packageGroupId: props.currentAddonPackage.packageGroupId,
+    } as IUpdateAddonPackage
     emit('add', data)
   }
 }

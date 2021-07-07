@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
 import { computed, onBeforeUpdate, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import useCreatePackage from '/@src/composable/package/use-create-package'
 import useViewPackageGroup from '/@src/composable/package/use-view-package-group'
+import type { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
 
 const route = useRoute()
+const router = useRouter()
 const showUpdate = ref(false)
 const showConfirmRemovePopup = ref(false)
+const currentPackageRemoved = ref<IUpdateAddonPackage | undefined>(undefined)
 
 const {
   packages,
@@ -15,17 +18,18 @@ const {
   addAddonPackage,
   addonPackages,
   currentAddonPackage,
-  dependOnPackageList,
   displayPackageNameById,
   displayPackageImageById,
   toggleShowAddonPackageSection,
   toggleShowMainPackageSection,
   showMainPackageSection,
   showAddonSection,
-  mainPackage,
-  generateTicket,
+  mainPackageId,
+  mainSelectedPackage,
+  removePackage,
 } = useCreatePackage()
 const {
+  mainPackage,
   addonPackages: rawAddonPackages,
   isLoading,
   updatePackage,
@@ -34,29 +38,36 @@ const {
 onBeforeUpdate(() => {
   showMainPackageSection.value = false
   addonPackages.value = rawAddonPackages.value
-  dependOnPackageList.value = packages.value.filter((pk) =>
-    addonPackages.value.some((apk) => apk.packageId === pk.id)
-  )
-  const mainPk = addonPackages.value.find((pk) => pk.type === 'main')
-  if (mainPk) {
-    generateTicket.value = mainPk.generateTicket
-    mainPackage.value = mainPk.packageId
+  if (mainSelectedPackage) {
+    mainSelectedPackage.value = mainPackage?.value
+    mainPackageId.value = mainPackage?.value?.packageId || 0
   }
-  console.log(addonPackages.value, rawAddonPackages.value)
 })
-const remove = async (packageId: number) => {
-  showConfirmRemovePopup.value = true
-  // await removeAddonPackage(packageId)
+const toggleConfirmRemovePopup = async (pk?: IUpdateAddonPackage) => {
+  currentPackageRemoved.value = pk
+  showConfirmRemovePopup.value = !!pk
+}
+const confirmRemovePackage = async () => {
+  if (!currentPackageRemoved.value) return
+  // if (currentPackageRemoved.value?.packageGroupId)
+  //   await removeAddonPackage(currentPackageRemoved.value?.packageGroupId)
+  // else await removePackage(currentPackageRemoved.value?.packageId)
+  // console.log(addonPackages.value)
+  await removePackage(currentPackageRemoved.value?.packageId)
+  toggleConfirmRemovePopup()
 }
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
-  return y.value > 30
+  return y.value > 50
 })
 
 const swapOrderIndex = () => {
   addonPackages.value = addonPackages.value.map((addon, index) => {
     return { ...addon, idx: index + 1 }
   })
+}
+const reload = () => {
+  router.go(0)
 }
 </script>
 <template>
@@ -79,14 +90,14 @@ const swapOrderIndex = () => {
                     icon="lnir lnir-arrow-left rem-100"
                     light
                     dark-outlined
-                    :to="{ name: 'product-package-group' }"
+                    @click="reload"
                   >
                     Cancel
                   </V-Button>
                   <V-Button
                     color="primary"
                     raised
-                    @click="updatePackage(addonPackages)"
+                    @click="updatePackage(addonPackages, mainPackageId)"
                   >
                     Update
                   </V-Button>
@@ -100,10 +111,13 @@ const swapOrderIndex = () => {
             </div>
           </div>
           <div class="form-body">
+            <div>{{ addonPackages.length }}</div>
             <div v-if="addonPackages.length" class="form-section is-grey">
               <VueDraggable
                 v-model="addonPackages"
-                :disabled="!showUpdate"
+                :disabled="
+                  !showUpdate || showMainPackageSection || showAddonSection
+                "
                 item-key="packageId"
                 class="list-group"
                 ghost-class="ghost"
@@ -116,13 +130,15 @@ const swapOrderIndex = () => {
                       addon.packageId
                     }) ${displayPackageNameById(addon.packageId)}`"
                     :subtitle="
-                      addon.isMainPackage ? 'Main Package' : 'Addon Package'
+                      addon.packageId === mainPackageId
+                        ? 'Main Package'
+                        : 'Addon Package'
                     "
                     class="package-row-drag"
                   >
                     <template #action>
                       <V-IconBox
-                        v-if="addon.isMainPackage"
+                        v-if="addon.packageId === mainPackageId"
                         size="small"
                         color="primary"
                         rounded
@@ -130,9 +146,14 @@ const swapOrderIndex = () => {
                       >
                         <i class="iconify" data-icon="feather:flag"></i>
                       </V-IconBox>
-                      <template v-if="showUpdate">
+                      <template
+                        v-if="
+                          showUpdate &&
+                          !(showMainPackageSection || showAddonSection)
+                        "
+                      >
                         <V-Button
-                          v-if="addon.isMainPackage"
+                          v-if="addon.packageId === mainPackageId"
                           elevated
                           @click="toggleShowMainPackageSection"
                           >Edit</V-Button
@@ -144,11 +165,11 @@ const swapOrderIndex = () => {
                           >Edit</V-Button
                         >
                         <V-Button
-                          v-if="!addon.isMainPackage"
+                          v-if="addon.packageId !== mainPackageId"
                           color="danger"
                           elevated
                           class="ml-3"
-                          @clik="remove(addon.packageInfo.id)"
+                          @click="removePackage(addon.packageId)"
                           >Remove</V-Button
                         >
                       </template>
@@ -212,77 +233,17 @@ const swapOrderIndex = () => {
             </div>
 
             <!-- Main package section -->
-            <div v-if="showMainPackageSection" class="form-fieldset">
-              <div class="fieldset-heading">
-                <h4>Main Package</h4>
-                <p>Select main package</p>
-              </div>
-              <div class="columns is-multiline">
-                <div class="column is-12">
-                  <V-Field>
-                    <label>Main Package</label>
-                    <V-Control>
-                      <Multiselect
-                        v-model="mainPackage"
-                        placeholder="Select a main package"
-                        :options="packages"
-                        :searchable="true"
-                        track-by="packageName"
-                        value-prop="id"
-                      >
-                        <template #singlelabel="{ value }">
-                          <div class="multiselect-single-label">
-                            ({{ value.id }}) {{ value.packageName }}
-                          </div>
-                        </template>
-                        <template #option="{ option }">
-                          <span class="select-option-text">
-                            ({{ option.id }}) {{ option.packageName }}
-                          </span>
-                        </template>
-                      </Multiselect>
-                    </V-Control>
-                  </V-Field>
-                </div>
-                <div class="column is-12">
-                  <V-Field>
-                    <label>Generate Ticket</label>
-                    <V-Control>
-                      <V-Radio
-                        v-model="generateTicket"
-                        value="1"
-                        label="Yes"
-                        name="outlined_squared_radio"
-                        color="success"
-                        square
-                      />
-
-                      <V-Radio
-                        v-model="generateTicket"
-                        value="0"
-                        label="No"
-                        name="outlined_squared_radio"
-                        color="primary"
-                        square
-                      />
-                    </V-Control>
-                  </V-Field>
-                </div>
-              </div>
-              <div class="button-submit">
-                <V-Button @click="toggleShowMainPackageSection"
-                  >Cancel</V-Button
-                >
-                <V-Button color="primary" class="ml-3" @click="addMainPackage"
-                  >Add Main Package</V-Button
-                >
-              </div>
-            </div>
+            <MainPackageForm
+              v-if="showMainPackageSection"
+              :main-package="mainSelectedPackage"
+              :packages="packages"
+              @on-update="addMainPackage"
+            />
 
             <AddonPackageForm
               v-if="showAddonSection"
               :packages="packages"
-              :all-group-packages="dependOnPackageList"
+              :group-packages="addonPackages"
               :current-addon-package="currentAddonPackage"
               @add="addAddonPackage"
               @cancel="toggleShowAddonPackageSection"

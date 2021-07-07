@@ -79,11 +79,11 @@ export default function useCreatePackage() {
   })
 
   const displayPackageNameById = (id: number) => {
-    return state.packages.find((pk) => pk.id === id)?.packageName
+    return state.packages.find((pk) => pk.id === id)?.packageName || ''
   }
 
   const displayPackageImageById = (id: number) => {
-    return state.packages.find((pk) => pk.id === id)?.photo
+    return state.packages.find((pk) => pk.id === id)?.photo || ''
   }
 
   const fetchAllPackage = async () => {
@@ -163,12 +163,14 @@ export default function useCreatePackage() {
     toggleShowAddonPackageSection()
   }
 
-  const removePackage = (idx: number) => {
-    state.addonPackages = state.addonPackages
-      .filter((pk) => pk.idx !== idx)
+  const removePackage = async (packageId: number) => {
+    console.log('removePackage', packageId)
+    state.addonPackages = await state.addonPackages
+      .filter((pk) => pk.packageId !== packageId)
       .map((pk, index) => {
         return { ...pk, idx: index + 1 }
       })
+    console.log(state.addonPackages)
   }
 
   const createPackageGroup = async () => {

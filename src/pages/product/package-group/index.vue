@@ -100,7 +100,7 @@ const confirmRemovePackage = () => {
     <V-FlexTable v-if="!isLoading && packages.length">
       <template #header>
         <div class="flex-table-header">
-          <span>ID</span>
+          <span>Main PackageId</span>
           <span class="is-grow">Package Name</span>
           <span>Type</span>
           <span>Purchasable</span>
