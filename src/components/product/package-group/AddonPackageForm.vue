@@ -6,6 +6,7 @@ import { GenerateTicket } from '/@src/types/enums/package.enum'
 import type {
   ICreateAddonPackage,
   IPackageInfo,
+  IUpdateAddonPackage,
 } from '/@src/types/interfaces/package.interface'
 
 const props = defineProps({
@@ -13,12 +14,12 @@ const props = defineProps({
     type: Array as PropType<IPackageInfo[]>,
     required: true,
   },
-  allGroupPackages: {
-    type: Array as PropType<IPackageInfo[]>,
+  groupPackages: {
+    type: Array as PropType<IUpdateAddonPackage[]>,
     default: () => [],
   },
   currentAddonPackage: {
-    type: Object as PropType<ICreateAddonPackage>,
+    type: Object as PropType<IUpdateAddonPackage>,
     default: undefined,
   },
 })
@@ -26,6 +27,15 @@ const emit = defineEmit({
   cancel: null,
   add: Object,
 })
+const allGroupPackages = ref<IPackageInfo[]>(
+  props.packages.filter((pk) =>
+    props.groupPackages.some(
+      (gpk) =>
+        gpk.packageId === pk.id &&
+        props.currentAddonPackage?.packageId !== pk.id
+    )
+  ) || []
+)
 const addonPackage = ref<number | undefined>(
   props.currentAddonPackage?.packageId
 )
@@ -46,7 +56,7 @@ const updateAddonPackage = () => {
       packageId: addonPackage.value,
       generateTicket: GenerateTicket.GENERATE_TICKET,
       dependonPackageId: dependOnPackage.value,
-      idx: props.currentAddonPackage.idx,
+      idx: props.currentAddonPackage?.idx || 0,
       dependonTicketUse: ticketUsed.value ? +ticketUsed.value : undefined,
     } as ICreateAddonPackage
     emit('add', data)
@@ -55,7 +65,7 @@ const updateAddonPackage = () => {
     const data = {
       packageId: addonPackage.value,
       generateTicket: GenerateTicket.GENERATE_TICKET,
-      idx: props.currentAddonPackage.idx,
+      idx: props.currentAddonPackage?.idx || 0,
     } as ICreateAddonPackage
     emit('add', data)
   }

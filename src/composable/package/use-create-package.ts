@@ -2,11 +2,12 @@
  * useCreatePackage Composition API
  */
 
-import { onMounted, reactive, ref, toRefs } from 'vue'
+import { onMounted, reactive, ref, toRefs, watch } from 'vue'
 import PackageService from '/@src/api/package.service'
 import {
   ICreateAddonPackage,
   IPackageInfo,
+  IUpdateAddonPackage,
 } from '/@src/types/interfaces/package.interface'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
 import { Notyf } from 'notyf'
@@ -19,14 +20,12 @@ export interface IAddonPackageWithType extends ICreateAddonPackage {
   type: 'main' | 'addon'
 }
 export interface IUseCreatePackageState {
-  mainIdx: string
-  mainPackage: number
-  generateTicket: GenerateTicket
+  mainPackageId: number
   isLoadingPackages: boolean
   packages: IPackageInfo[]
   dependOnPackageList: IPackageInfo[]
-  mainSelectedPackage?: IAddonPackageWithType
-  addonPackages: IAddonPackageWithType[]
+  mainSelectedPackage?: IUpdateAddonPackage
+  addonPackages: IUpdateAddonPackage[]
   currentAddonPackage?: IAddonPackageWithType
 }
 
@@ -70,9 +69,7 @@ export default function useCreatePackage() {
   const showAddonSection = ref<boolean>(false)
   const showMainPackageSection = ref<boolean>(true)
   const state = reactive<IUseCreatePackageState>({
-    mainIdx: '1',
-    mainPackage: 0,
-    generateTicket: GenerateTicket.NOT_GENERATE_TICKET,
+    mainPackageId: 0,
     isLoadingPackages: false,
     packages: [],
     dependOnPackageList: [],
@@ -98,80 +95,72 @@ export default function useCreatePackage() {
     }
   }
 
-  const addGroupPackage = (newPackage: IAddonPackageWithType) => {
-    const packageIndex = state.addonPackages.findIndex(
-      (pk) => pk.packageId === newPackage.packageId
-    )
-    const isMyPackage = state.addonPackages.some(
-      (pk, index) =>
-        pk.packageId === newPackage.packageId && packageIndex === index
-    )
-    console.log(isMyPackage, packageIndex)
-    /**
-     * @info have packageId in list
-     */
-    if (packageIndex >= 0) {
-      if (newPackage.type === 'main') {
-        /**
-         * @info remove addon package is same main package
-         */
-        state.addonPackages = state.addonPackages.filter(
-          (pk) => pk.packageId !== newPackage.packageId
-        )
-        const mainIdx = state.addonPackages.findIndex(
-          (pk) => pk.type === 'main'
-        )
-        if (mainIdx >= 0) state.addonPackages[mainIdx] = newPackage
-        else state.addonPackages.push(newPackage)
-      } else {
-        if (isMyPackage) {
-          state.addonPackages[packageIndex] = newPackage
-        } else {
-          notyfWarning.open({
-            type: 'warning',
-            message: 'package id is duplicate',
-          })
-          return
-        }
-      }
-    } else {
-      state.addonPackages.push(newPackage)
-    }
-    state.addonPackages = state.addonPackages.map((pk, index) => {
-      return { ...pk, idx: index + 1 }
-    })
-    state.dependOnPackageList = state.packages.filter((pk) =>
-      state.addonPackages.some((apk) => apk.packageId === pk.id)
-    )
-    showAddonSection.value = false
-    showMainPackageSection.value = false
-  }
-
-  const addMainPackage = () => {
-    if (!state.mainPackage) return
-    state.mainSelectedPackage = {
-      packageId: state.mainPackage,
-      generateTicket: state.generateTicket,
-      idx: state.addonPackages.length + 1,
-      type: 'main',
-    }
-    addGroupPackage(state.mainSelectedPackage)
-  }
-
-  const addAddonPackage = (addon: ICreateAddonPackage) => {
-    addGroupPackage({
-      ...addon,
-      idx: +addon.idx || state.addonPackages.length + 1,
-      type: 'addon',
-    })
+  const toggleShowMainPackageSection = () => {
+    showMainPackageSection.value = !showMainPackageSection.value
   }
 
   const toggleShowAddonPackageSection = (addon?: IAddonPackageWithType) => {
     state.currentAddonPackage = addon
     showAddonSection.value = !showAddonSection.value
   }
-  const toggleShowMainPackageSection = () => {
-    showMainPackageSection.value = !showMainPackageSection.value
+
+  const addMainPackage = (mainPk: IUpdateAddonPackage) => {
+    /**
+     * @info remove old main package
+     */
+    if (state.mainPackageId && mainPk.packageId !== state.mainPackageId) {
+      state.addonPackages = state.addonPackages.filter(
+        (pk) => pk.packageId !== state.mainPackageId
+      )
+    }
+    state.mainPackageId = mainPk.packageId
+    const index = state.addonPackages.findIndex(
+      (pk) => pk.packageId === state.mainPackageId
+    )
+    if (index >= 0) {
+      state.addonPackages[index] = mainPk
+    } else {
+      state.addonPackages = [mainPk]
+        .concat(state.addonPackages)
+        .map((pk, index) => {
+          return { ...pk, idx: index + 1 }
+        })
+    }
+    state.mainSelectedPackage = mainPk
+    toggleShowMainPackageSection()
+  }
+
+  const addAddonPackage = (addon: IUpdateAddonPackage) => {
+    if (addon.packageId === state.mainPackageId) {
+      notyfWarning.open({
+        type: 'warning',
+        message: 'package id is duplicate main package',
+      })
+      return
+    }
+    const havePackage = state.addonPackages.some(
+      (pk) => pk.packageId === addon.packageId
+    )
+    const isMyPackage = state.addonPackages.some((pk) => pk.idx === addon.idx)
+    if (havePackage && !isMyPackage) {
+      notyfWarning.open({
+        type: 'warning',
+        message: 'package id is duplicate',
+      })
+      return
+    }
+    if (addon.idx) {
+      const index = state.addonPackages.findIndex(
+        (pk) => pk.packageId === addon.packageId
+      )
+      state.addonPackages[index] = addon
+    } else {
+      state.addonPackages.push({
+        ...addon,
+        idx: state.addonPackages.length + 1,
+      })
+    }
+    toggleShowAddonPackageSection()
   }
 
   const removePackage = (idx: number) => {
@@ -183,9 +172,8 @@ export default function useCreatePackage() {
   }
 
   const createPackageGroup = async () => {
-    if (!state.mainPackage) return
     const { status, message } = await PackageService.createPackageGroup({
-      mainPackageId: state.mainPackage,
+      mainPackageId: state.mainPackageId,
       addonPackages: state.addonPackages,
     })
     if (status === 201) {
@@ -193,6 +181,7 @@ export default function useCreatePackage() {
         type: 'success',
         message: 'Created Success!',
       })
+      // TODO: route to view package
       return
     }
     notyfWarning.open({

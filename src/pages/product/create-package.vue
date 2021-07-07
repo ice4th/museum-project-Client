@@ -22,9 +22,8 @@ const {
   displayPackageNameById,
   displayPackageImageById,
   isLoadingPackages,
-  mainIdx,
-  mainPackage,
-  generateTicket,
+  mainPackageId,
+  mainSelectedPackage,
   packages,
   addAddonPackage,
   showAddonSection,
@@ -124,7 +123,7 @@ const swapOrderIndex = () => {
                         >
                           <template #action>
                             <V-IconBox
-                              v-if="addon.type === 'main'"
+                              v-if="addon.packageId === mainPackageId"
                               size="small"
                               color="primary"
                               rounded
@@ -138,7 +137,7 @@ const swapOrderIndex = () => {
                               "
                             >
                               <V-Button
-                                v-if="addon.type === 'main'"
+                                v-if="addon.packageId === mainPackageId"
                                 elevated
                                 @click="toggleShowMainPackageSection"
                                 >Edit</V-Button
@@ -150,7 +149,7 @@ const swapOrderIndex = () => {
                                 >Edit</V-Button
                               >
                               <V-Button
-                                v-if="addon.type === 'addon'"
+                                v-if="addon.packageId !== mainPackageId"
                                 color="danger"
                                 elevated
                                 class="ml-3"
@@ -220,80 +219,17 @@ const swapOrderIndex = () => {
                   </div>
 
                   <!-- Main package section -->
-                  <div v-if="showMainPackageSection" class="form-fieldset">
-                    <div class="fieldset-heading">
-                      <h4>Main Package</h4>
-                      <p>Select main package</p>
-                    </div>
-                    <div class="columns is-multiline">
-                      <div class="column is-12">
-                        <V-Field>
-                          <label>Main Package</label>
-                          <V-Control>
-                            <Multiselect
-                              v-model="mainPackage"
-                              placeholder="Select a main package"
-                              :options="packages"
-                              :searchable="true"
-                              track-by="packageName"
-                              value-prop="id"
-                            >
-                              <template #singlelabel="{ value }">
-                                <div class="multiselect-single-label">
-                                  ({{ value.id }}) {{ value.packageName }}
-                                </div>
-                              </template>
-                              <template #option="{ option }">
-                                <span class="select-option-text">
-                                  ({{ option.id }}) {{ option.packageName }}
-                                </span>
-                              </template>
-                            </Multiselect>
-                          </V-Control>
-                        </V-Field>
-                      </div>
-                      <div class="column is-12">
-                        <V-Field>
-                          <label>Generate Ticket</label>
-                          <V-Control>
-                            <V-Radio
-                              v-model="generateTicket"
-                              value="1"
-                              label="Yes"
-                              name="outlined_squared_radio"
-                              color="success"
-                              square
-                            />
-
-                            <V-Radio
-                              v-model="generateTicket"
-                              value="0"
-                              label="No"
-                              name="outlined_squared_radio"
-                              color="primary"
-                              square
-                            />
-                          </V-Control>
-                        </V-Field>
-                      </div>
-                    </div>
-                    <div class="button-submit">
-                      <V-Button @click="toggleShowMainPackageSection"
-                        >Cancel</V-Button
-                      >
-                      <V-Button
-                        color="primary"
-                        class="ml-3"
-                        @click="addMainPackage"
-                        >Add Main Package</V-Button
-                      >
-                    </div>
-                  </div>
+                  <MainPackageForm
+                    v-if="showMainPackageSection"
+                    :main-package="mainSelectedPackage"
+                    :packages="packages"
+                    @on-update="addMainPackage"
+                  />
 
                   <AddonPackageForm
                     v-if="showAddonSection"
                     :packages="packages"
-                    :all-group-packages="dependOnPackageList"
+                    :group-packages="addonPackages"
                     :current-addon-package="currentAddonPackage"
                     @add="addAddonPackage"
                     @cancel="toggleShowAddonPackageSection"
