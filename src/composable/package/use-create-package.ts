@@ -164,13 +164,11 @@ export default function useCreatePackage() {
   }
 
   const removePackage = async (packageId: number) => {
-    console.log('removePackage', packageId)
     state.addonPackages = await state.addonPackages
       .filter((pk) => pk.packageId !== packageId)
       .map((pk, index) => {
         return { ...pk, idx: index + 1 }
       })
-    console.log(state.addonPackages)
   }
 
   const createPackageGroup = async () => {

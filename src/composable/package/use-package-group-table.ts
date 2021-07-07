@@ -57,7 +57,6 @@ export default function usePackageTable() {
   })
 
   const viewAddonPackage = async (packageId: number) => {
-    console.log('viewAddonPackage', packageId)
     const { status, data } =
       await PackageService.getAddonPackageByMainPackageId(packageId)
     if (status === 200) {

@@ -4,13 +4,10 @@ import { computed, onBeforeUpdate, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useCreatePackage from '/@src/composable/package/use-create-package'
 import useViewPackageGroup from '/@src/composable/package/use-view-package-group'
-import type { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
 
 const route = useRoute()
 const router = useRouter()
 const showUpdate = ref(false)
-const showConfirmRemovePopup = ref(false)
-const currentPackageRemoved = ref<IUpdateAddonPackage | undefined>(undefined)
 
 const {
   packages,
@@ -33,7 +30,6 @@ const {
   addonPackages: rawAddonPackages,
   isLoading,
   updatePackage,
-  removeAddonPackage,
 } = useViewPackageGroup()
 onBeforeUpdate(() => {
   showMainPackageSection.value = false
@@ -43,19 +39,6 @@ onBeforeUpdate(() => {
     mainPackageId.value = mainPackage?.value?.packageId || 0
   }
 })
-const toggleConfirmRemovePopup = async (pk?: IUpdateAddonPackage) => {
-  currentPackageRemoved.value = pk
-  showConfirmRemovePopup.value = !!pk
-}
-const confirmRemovePackage = async () => {
-  if (!currentPackageRemoved.value) return
-  // if (currentPackageRemoved.value?.packageGroupId)
-  //   await removeAddonPackage(currentPackageRemoved.value?.packageGroupId)
-  // else await removePackage(currentPackageRemoved.value?.packageId)
-  // console.log(addonPackages.value)
-  await removePackage(currentPackageRemoved.value?.packageId)
-  toggleConfirmRemovePopup()
-}
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
   return y.value > 50
@@ -74,7 +57,13 @@ const reload = () => {
   <div class="page-content-inner">
     <!-- create group package -->
     <div class="form-layout is-stacked">
-      <V-Loader size="small" lighter grey translucent :active="isLoading">
+      <V-Loader
+        size="small"
+        lighter
+        grey
+        translucent
+        :active="isLoading || isUpdating"
+      >
         <div class="form-outer">
           <div
             :class="[isStuck && 'is-stuck']"
@@ -97,6 +86,7 @@ const reload = () => {
                   <V-Button
                     color="primary"
                     raised
+                    :disabled="isUpdating"
                     @click="updatePackage(addonPackages, mainPackageId)"
                   >
                     Update

@@ -15,6 +15,7 @@ import {
 } from '/@src/types/interfaces/package.interface'
 interface UseViewPackageGroupState {
   isLoading: boolean
+  isUpdating: boolean
   packages: IPackageInfo[]
   addonPackages: IUpdateAddonPackage[]
   mainPackage?: IUpdateAddonPackage
@@ -22,6 +23,7 @@ interface UseViewPackageGroupState {
 export default function useViewPackageGroup() {
   const state = reactive<UseViewPackageGroupState>({
     isLoading: false,
+    isUpdating: false,
     packages: [],
     addonPackages: [],
     mainPackage: undefined,
@@ -68,14 +70,13 @@ export default function useViewPackageGroup() {
     packages: IUpdateAddonPackage[],
     mainId?: number
   ) => {
-    console.log('updatePackage', packages)
+    state.isUpdating = true
     await Promise.all(
       state.addonPackages.map(async (apk) => {
         if (
           !packages.some((pk) => apk.packageId === pk.packageId) &&
           apk.packageId !== mainPackageId.value
         ) {
-          console.log('remove', apk.packageId)
           if (!apk.packageGroupId) return
           await removeAddonPackage(apk.packageGroupId)
         }
@@ -104,6 +105,7 @@ export default function useViewPackageGroup() {
       mainPackageId: mainId || mainPackageId.value,
       addonPackages: parsedPackages,
     })
+    state.isUpdating = false
     if (status === 200) {
       if (mainId === mainPackageId.value) {
         router.go(0)
