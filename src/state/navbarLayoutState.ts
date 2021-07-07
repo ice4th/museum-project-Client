@@ -14,48 +14,40 @@ import { computed, ref, defineAsyncComponent } from 'vue'
 const NavbarLayout = defineAsyncComponent(
   () => import('/@src/layouts/NavbarLayout.vue')
 )
-const NavbarFadeLayout = defineAsyncComponent(
-  () => import('/@src/layouts/NavbarFadeLayout.vue')
+const NavbarDropdownLayout = defineAsyncComponent(
+  () => import('/@src/layouts/NavbarDropdownLayout.vue')
 )
-const NavbarColoredLayout = defineAsyncComponent(
-  () => import('/@src/layouts/NavbarColoredLayout.vue')
+const NavbarSearchLayout = defineAsyncComponent(
+  () => import('/@src/layouts/NavbarSearchLayout.vue')
 )
-const NavbarAltLayout = defineAsyncComponent(
-  () => import('/@src/layouts/NavbarAltLayout.vue')
-)
-const NavbarAltColoredLayout = defineAsyncComponent(
-  () => import('/@src/layouts/NavbarAltColoredLayout.vue')
-)
-const NavbarCleanLayout = defineAsyncComponent(
-  () => import('/@src/layouts/NavbarCleanLayout.vue')
-)
-const NavbarCleanCenterLayout = defineAsyncComponent(
-  () => import('/@src/layouts/NavbarCleanCenterLayout.vue')
-)
-const NavbarCleanFadeLayout = defineAsyncComponent(
-  () => import('/@src/layouts/NavbarCleanFadeLayout.vue')
-)
-
 const layoutsComponents = {
   'navbar-default': NavbarLayout,
-  'navbar-fade': NavbarFadeLayout,
-  'navbar-colored': NavbarColoredLayout,
-  'navbar-alt': NavbarAltLayout,
-  'navbar-alt-colored': NavbarAltColoredLayout,
-  'navbar-clean': NavbarCleanLayout,
-  'navbar-clean-center': NavbarCleanCenterLayout,
-  'navbar-clean-fade': NavbarCleanFadeLayout,
+  'navbar-fade': NavbarLayout,
+  'navbar-colored': NavbarLayout,
+  'navbar-dropdown': NavbarDropdownLayout,
+  'navbar-dropdown-colored': NavbarDropdownLayout,
+  'navbar-clean': NavbarSearchLayout,
+  'navbar-clean-center': NavbarSearchLayout,
+  'navbar-clean-fade': NavbarSearchLayout,
 }
 
-export const navbarLayoutId = ref<keyof typeof layoutsComponents>(
-  'navbar-default'
-)
-export const navbarLayout = computed(() => {
+export const navbarLayoutId =
+  ref<keyof typeof layoutsComponents>('navbar-default')
+export const navbarLayoutComponent = computed(() => {
   return layoutsComponents[navbarLayoutId.value] || NavbarLayout
 })
-
-export function setLayout(layoutId: keyof typeof layoutsComponents) {
-  if (layoutsComponents[layoutId]) {
-    navbarLayoutId.value = layoutId
+export const navbarLayoutTheme = computed(() => {
+  switch (navbarLayoutId.value) {
+    case 'navbar-fade':
+    case 'navbar-clean-fade':
+      return 'fade'
+    case 'navbar-colored':
+    case 'navbar-dropdown-colored':
+      return 'colored'
+    case 'navbar-clean-center':
+      return 'center'
+    default:
+      return 'default'
   }
-}
+})
+export const pageTitle = ref('Welcome')

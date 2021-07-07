@@ -12,9 +12,10 @@
 
 import { useHead } from '@vueuse/head'
 import { onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 
 onMounted(() => {
   /**
@@ -24,12 +25,13 @@ onMounted(() => {
    * @see /src/nginx/vuejs.conf
    */
   if (!route.path.startsWith('/404')) {
-    window.location.href = `/404${route.fullPath}`
+    // window.location.href = `/404${route.fullPath}`
+    router.replace(`/404${route.fullPath}`)
   }
 })
 
 useHead({
-  title: 'Page not found - Vuero',
+  title: 'Page not found - Whitehouse',
   meta: [
     {
       name: 'robots',
@@ -44,11 +46,7 @@ useHead({
     <div class="error-container">
       <div class="error-wrapper">
         <div class="error-inner has-text-centered">
-          <img
-            class="light-image"
-            src="/@src/assets/illustrations/placeholders/error-4.svg"
-            alt=""
-          />
+          <div class="bg-number">404</div>
           <img
             class="dark-image"
             src="/@src/assets/illustrations/placeholders/error-4-dark.svg"
@@ -60,7 +58,7 @@ useHead({
             an administrator if the problem persists.
           </p>
           <div class="button-wrap">
-            <V-Button color="primary" elevated rounded @click="$router.go(-1)">
+            <V-Button color="primary" elevated :to="{ name: 'index' }">
               Take me Back
             </V-Button>
           </div>

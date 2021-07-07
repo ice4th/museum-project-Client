@@ -1,9 +1,41 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import type { PropType } from 'vue'
+import { defineProps, ref, useContext } from 'vue'
 import useDropdown from '/@src/composable/useDropdown'
 
-defineProps({
+type DropdownColor =
+  | undefined
+  | 'primary'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'danger'
+
+const props = defineProps({
   title: {
+    type: String,
+    default: undefined,
+  },
+  color: {
+    type: String as PropType<DropdownColor>,
+    default: undefined,
+    validator: (value: DropdownColor) => {
+      // The value must match one of these strings
+      if (
+        [undefined, 'primary', 'info', 'success', 'warning', 'danger'].indexOf(
+          value
+        ) === -1
+      ) {
+        console.warn(
+          `V-Dropdown: invalid "${value}" color. Should be primary, info, success, warning, danger or undefined`
+        )
+        return false
+      }
+
+      return true
+    },
+  },
+  icon: {
     type: String,
     default: undefined,
   },
@@ -12,10 +44,6 @@ defineProps({
     default: false,
   },
   right: {
-    type: Boolean,
-    default: false,
-  },
-  dots: {
     type: Boolean,
     default: false,
   },
@@ -29,48 +57,55 @@ defineProps({
   },
 })
 
-const { dropdownElement, open, close, toggle, isOpen } = useDropdown()
+const { expose } = useContext()
+const dropdownElement = ref<HTMLElement | null>(null)
+const dropdown = useDropdown(dropdownElement)
+
+expose({
+  ...dropdown,
+})
 </script>
 
-<template inherit-attrs="false">
+<template>
   <div
     ref="dropdownElement"
     :class="[
-      isOpen && 'is-active',
-      right && 'is-right',
-      up && 'is-up',
-      dots && 'is-dots',
-      modern && 'is-modern',
-      spaced && 'is-spaced',
+      props.right && 'is-right',
+      props.up && 'is-up',
+      props.icon && 'is-dots',
+      props.modern && 'is-modern',
+      props.spaced && 'is-spaced',
     ]"
-    class="dropdown dropdown-trigger"
+    class="dropdown"
   >
-    <slot
-      name="button"
-      :open="open"
-      :close="close"
-      :toggle="toggle"
-      :is-open="isOpen"
-    >
-      <button v-bind="$attrs" class="is-trigger button" @click="toggle">
-        <span v-if="title">{{ title }}</span>
-        <span :class="[!modern && 'base-caret', modern && 'base-caret']">
-          <V-Icon v-if="!isOpen" icon="fa:angle-down" />
+    <slot name="button" v-bind="dropdown">
+      <a
+        v-if="props.icon"
+        class="is-trigger dropdown-trigger"
+        @click="dropdown.toggle"
+      >
+        <V-Icon :icon="props.icon" />
+      </a>
+
+      <a
+        v-else
+        class="is-trigger button dropdown-trigger"
+        @click="dropdown.toggle"
+        :class="[props.color && `is-${props.color}`]"
+      >
+        <span v-if="props.title">{{ props.title }}</span>
+        <span
+          :class="[!props.modern && 'base-caret', props.modern && 'base-caret']"
+        >
+          <V-Icon v-if="!dropdown.isOpen" icon="fa:angle-down" />
           <V-Icon v-else icon="fa:angle-up" />
         </span>
-      </button>
+      </a>
     </slot>
 
     <div class="dropdown-menu" role="menu">
       <div class="dropdown-content">
-        <slot name="content">
-          <a href="#" class="dropdown-item"> Dropdown item </a>
-          <a href="#" class="dropdown-item"> Other dropdown item </a>
-          <a href="#" class="dropdown-item"> Active dropdown item </a>
-          <a href="#" class="dropdown-item"> Other dropdown item </a>
-          <hr class="dropdown-divider" />
-          <a href="#" class="dropdown-item"> With a divider </a>
-        </slot>
+        <slot name="content" v-bind="dropdown"></slot>
       </div>
     </div>
   </div>
@@ -105,6 +140,11 @@ const { dropdownElement, open, close, toggle, isOpen } = useDropdown()
       background: transparent;
       cursor: pointer;
       transition: all 0.3s;
+
+      > span {
+        height: 20px;
+        width: 20px;
+      }
 
       svg {
         height: 20px;
@@ -290,7 +330,6 @@ const { dropdownElement, open, close, toggle, isOpen } = useDropdown()
 
   .base-caret {
     position: relative;
-    top: -3px;
     margin-left: 0.5rem;
     display: flex;
     justify-content: center;

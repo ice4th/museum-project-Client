@@ -11,6 +11,7 @@ declare module '*.vue' {
 }
 
 declare module 'vue3-apexcharts'
+declare module 'vuedraggable'
 declare module 'simplebar-vue'
 declare module '@vueform/multiselect'
 declare module '@vueform/slider'

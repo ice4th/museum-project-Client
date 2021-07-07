@@ -13,7 +13,7 @@ import { IAdminInfo } from '../types/interfaces/admin.interface'
 const ADMIN_ACCESS_TOKEN = 'wh_access_token'
 export default class AuthService {
   public static setCookie(token: string) {
-    Cookies.set(ADMIN_ACCESS_TOKEN, token)
+    Cookies.set(ADMIN_ACCESS_TOKEN, token, { expires: 0.25 })
   }
 
   public static getToken(): string | undefined {

@@ -24,7 +24,7 @@ const handleLogin = async () => {
 }
 
 useHead({
-  title: 'Auth Login 3 - Vuero',
+  title: 'WH | Login',
 })
 </script>
 

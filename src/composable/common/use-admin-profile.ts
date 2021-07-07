@@ -1,13 +1,14 @@
 /**
  * useAdminProfile Composition API
  */
-import { onMounted, reactive, ref, toRefs } from 'vue'
+import { onBeforeMount, reactive, ref, toRefs } from 'vue'
 import AuthService from '/@src/api/auth.service'
 import { Notyf } from 'notyf'
 import { useRoute, useRouter } from 'vue-router'
 import { IAdminInfo } from '/@src/types/interfaces/admin.interface'
 import { AdminStatus } from '/@src/types/enums/admin.enum'
 
+const LOCAL_KEY = 'wh_profile'
 export default function useAdminProfile() {
   const notyf = new Notyf({
     duration: 2000,
@@ -47,13 +48,13 @@ export default function useAdminProfile() {
       adminProfile.avatar = data.avatar
       adminProfile.dob = data.dob
       adminProfile.lastLogin = data.lastLogin
-      localStorage.setItem('wh_profile', JSON.stringify(data))
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(data))
       return
     }
   }
 
   const getMyProfile = async () => {
-    const myProfile = localStorage.getItem('wh_profile')
+    const myProfile = localStorage.getItem(LOCAL_KEY)
     if (!!myProfile) {
       const parsedProfile = JSON.parse(myProfile) as IAdminInfo
       adminProfile.id = parsedProfile.id
@@ -70,9 +71,17 @@ export default function useAdminProfile() {
     await fetchProfile()
   }
 
-  onMounted(() => {
+  const logout = async () => {
+    await AuthService.removeCookie()
+    localStorage.removeItem(LOCAL_KEY)
+    router.push({ name: 'auth-login' })
+  }
+
+  onBeforeMount(() => {
+    const isLoggedIn = !!AuthService.getToken()
+    if (!isLoggedIn) return
     getMyProfile()
   })
 
-  return { adminProfile, fetchProfile, messageError }
+  return { adminProfile, fetchProfile, logout, messageError }
 }

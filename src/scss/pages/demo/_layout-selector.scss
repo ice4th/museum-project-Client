@@ -10,7 +10,8 @@
 ========================================================================== */
 
 .layout-selector {
-  max-height: 335px;
+  min-height: 340px;
+  max-height: 340px;
   overflow-y: auto;
 
   .layout-item {
@@ -58,7 +59,7 @@
 
       svg,
       .iconify {
-        stroke: $white;
+        color: $white;
         height: 13px;
         width: 13px;
 

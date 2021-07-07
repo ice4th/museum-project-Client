@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig } from 'vite'
 import path from 'path'
 import Vue from '@vitejs/plugin-vue'
 import Pages from 'vite-plugin-pages'
@@ -31,11 +31,11 @@ export default defineConfig({
     alias: [
       {
         find: '/~/',
-        replacement: `${path.resolve(__dirname, 'src', 'assets')}/`,
+        replacement: `/src/assets/`,
       },
       {
         find: '/@src/',
-        replacement: `${path.resolve(__dirname, 'src')}/`,
+        replacement: `/src/`,
       },
     ],
   },
@@ -77,7 +77,12 @@ export default defineConfig({
      * @see https://github.com/hannoeru/vite-plugin-pages
      */
     Pages({
-      pagesDir: ['src/pages'],
+      pagesDir: [
+        {
+          dir: 'src/pages',
+          baseRoute: '',
+        },
+      ],
     }),
 
     /**
@@ -190,17 +195,17 @@ export default defineConfig({
      */
     ImageMin({
       gifsicle: {
-        optimizationLevel: 7,
+        optimizationLevel: 3,
         interlaced: false,
       },
       optipng: {
-        optimizationLevel: 7,
+        optimizationLevel: 3,
       },
       mozjpeg: {
-        quality: 8,
+        quality: 90,
       },
       pngquant: {
-        quality: [0.8, 0.9],
+        quality: [0.8, 1],
         speed: 4,
       },
       svgo: {
