@@ -1,0 +1,11 @@
+apiVersion: v1
+appVersion: "1.0"
+description: "A Helm chart for globish-admin-frontend project"
+name: globish-admin-frontend
+version: 0.1.0
+sources:
+  - "https://bitbucket.org/globish/globish-admin-frontend/src/master/"
+maintainers:
+  - name: "Chavachon"
+    email: "chavachons@gmail.com"
+    url: "https://github.com/chavachons"
