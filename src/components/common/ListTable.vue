@@ -21,6 +21,10 @@ const props = defineProps({
     type: Number,
     default: 10,
   },
+  canSearchable: {
+    type: Boolean,
+    default: true,
+  },
 })
 const filteredData = computed(() => {
   return props.data
@@ -47,7 +51,7 @@ const filteredData = computed(() => {
 
 <template>
   <div class="list-view-toolbar">
-    <V-Field>
+    <V-Field v-show="canSearchable">
       <V-Control icon="feather:search">
         <input
           v-model="filters"
@@ -57,8 +61,9 @@ const filteredData = computed(() => {
       </V-Control>
     </V-Field>
 
-    <!-- <div class="tabs-inner">
-      <div class="tabs">
+    <div class="tabs-inner">
+      <slot name="tabs" />
+      <!-- <div class="tabs">
         <ul>
           <li :class="[activeTab === 'active' && 'is-active']">
             <a @click="activeTab = 'active'"><span>Active</span></a>
@@ -68,8 +73,8 @@ const filteredData = computed(() => {
           </li>
           <li class="tab-naver"></li>
         </ul>
-      </div>
-    </div> -->
+      </div> -->
+    </div>
   </div>
 
   <div class="page-content-inner">

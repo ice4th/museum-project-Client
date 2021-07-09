@@ -16,6 +16,7 @@ interface UseRedeemTableState {
   totalPage: number
   perPage: number
   total: number
+  currentRedeem?: IRedeemDetail
 }
 
 export default function useRedeemTable() {
@@ -25,23 +26,27 @@ export default function useRedeemTable() {
     perPage: 15,
     totalPage: 1,
     total: 1,
+    currentRedeem: undefined,
   })
   const route = useRoute()
 
   const fetchAllRedeem = async () => {
-    const { data } = await RedeemService.getAllRedeems({
+    const { data, status } = await RedeemService.getAllRedeems({
       currentPage: state.currentPage,
       perPage: state.perPage,
     })
-    state.data = data.data
-    state.total = data.total
-    state.totalPage = data.totalPage
-    console.log(state.data)
+    if (status === 200 && data) {
+      state.data = data.data
+      state.total = data.total
+      state.totalPage = data.totalPage
+    }
   }
 
   const fetchRedeemById = async (id: number) => {
-    const { data } = await RedeemService.getRedeemById(id)
-    console.log(data)
+    const { data, status } = await RedeemService.getRedeemById(id)
+    if (status === 200 && data) {
+      state.currentRedeem = data
+    }
   }
   onMounted(() => {
     const page = route.query.page as string
