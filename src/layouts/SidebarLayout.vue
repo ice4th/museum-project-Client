@@ -183,7 +183,6 @@ watch(
             ></i>
           </a>
         </li>
-
         <!-- Products & Packages -->
         <li>
           <a
@@ -197,6 +196,22 @@ watch(
               data-icon="feather:box"
             ></i>
           </a>
+        </li>
+
+        <!-- Code Management tab -->
+        <li>
+          <RouterLink
+            :to="{ name: 'code' }"
+            :class="[activeMobileSubsidebar === 'code' && 'is-active']"
+            data-content="Code Management"
+            @click="switchSidebar('code')"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:gift"
+            ></i>
+          </RouterLink>
         </li>
       </template>
 
