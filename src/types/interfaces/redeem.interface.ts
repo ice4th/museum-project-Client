@@ -15,3 +15,12 @@ export interface IRedeemDetail {
   ticketStartDate?: string
   expireDate?: string
 }
+
+export interface ICreateRedeem {
+  redeemType: RedeemType
+  partnerId: number
+  packageId: number
+  ticketStartDate?: string
+  expireDate?: string
+  amount?: number // for redeem type group
+}

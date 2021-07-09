@@ -5,7 +5,10 @@ import {
   IPaginationParams,
   IPaginationResponse,
 } from '../types/interfaces/common.interface'
-import { IRedeemDetail } from '../types/interfaces/redeem.interface'
+import {
+  ICreateRedeem,
+  IRedeemDetail,
+} from '../types/interfaces/redeem.interface'
 import ApiService, { ApiServiceResponse } from './api.service'
 
 export default class RedeemService {
@@ -22,5 +25,14 @@ export default class RedeemService {
     id: number
   ): Promise<ApiServiceResponse<IRedeemDetail>> {
     return await ApiService.get<IRedeemDetail>(`/Redeems/${id}`)
+  }
+
+  public static async createRedeem(
+    payload: ICreateRedeem
+  ): Promise<ApiServiceResponse> {
+    return await ApiService.post(`/Redeems`, {
+      ...payload,
+      amount: payload.amount ? +payload.amount : undefined,
+    })
   }
 }
