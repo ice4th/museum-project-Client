@@ -24,7 +24,8 @@ interface UseRedeemTableState {
   totalPage: number
   perPage: number
   total: number
-  currentRedeem?: IRedeemDetail
+  currentRedeemId?: number
+  redeemDetail: IRedeemDetail[]
   createNewRedeem: ICreateRedeem
   packages: IPackageInfo[]
   partners: IPartnerDetail[]
@@ -37,7 +38,8 @@ export default function useRedeemTable() {
     perPage: 15,
     totalPage: 1,
     total: 1,
-    currentRedeem: undefined,
+    currentRedeemId: undefined,
+    redeemDetail: [],
     createNewRedeem: {
       redeemType: RedeemType.DEFAULT,
       partnerId: 1,
@@ -69,7 +71,8 @@ export default function useRedeemTable() {
   const fetchRedeemById = async (id: number) => {
     const { data, status } = await RedeemService.getRedeemById(id)
     if (status === 200 && data) {
-      state.currentRedeem = data
+      state.currentRedeemId = id
+      state.redeemDetail = data
     }
   }
 

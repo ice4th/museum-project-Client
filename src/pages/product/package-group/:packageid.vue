@@ -56,7 +56,7 @@ const reload = () => {
 <template>
   <div class="page-content-inner">
     <!-- create group package -->
-    <div class="form-layout is-stacked">
+    <div class="form-layout">
       <V-Loader
         size="small"
         lighter

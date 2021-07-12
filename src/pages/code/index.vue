@@ -3,7 +3,7 @@ import { useHead } from '@vueuse/head'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { toFormat } from '/@src/helpers/date.helper'
 import useRedeemTable from '/@src/composable/redeem/use-redeem-table'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { RedeemType } from '/@src/types/enums/redeem.enum'
 pageTitle.value = 'Code Management'
 
@@ -16,7 +16,8 @@ const {
   total,
   data,
   fetchRedeemById,
-  currentRedeem,
+  currentRedeemId,
+  redeemDetail,
   createRedeem,
   createNewRedeem,
   packages,
@@ -46,6 +47,23 @@ const create = async () => {
   const res = await createRedeem()
   if (res) toggleCreateRedeem()
 }
+
+const tableOptions = computed(() => {
+  return {
+    searchable: false,
+    sortable: true,
+    perPageSelect: false,
+    data: {
+      headings: ['Code', 'Activated', 'Student', 'Expired'],
+      data: redeemDetail.value.map((detail) => [
+        detail.code,
+        toFormat(detail.usedDate),
+        detail.studentName,
+        detail.expireDate,
+      ]),
+    },
+  }
+})
 </script>
 
 <template>
@@ -209,44 +227,54 @@ const create = async () => {
       </template>
     </V-Modal>
     <V-Modal
-      :title="`Redeem Detail ${currentRedeem?.id}`"
-      :open="currentRedeem !== undefined"
+      :title="`Redeem Detail ${currentRedeemId}`"
+      :open="!!currentRedeemId"
       size="medium"
       actions="center"
-      @close="currentRedeem = undefined"
+      @close="currentRedeemId = undefined"
     >
-      <template v-if="currentRedeem" #content>
-        <div v-if="currentRedeem.type !== 'group'" class="redeem-modal-content">
-          <div class="content">
-            <blockquote class="is-primary">
-              <p class="subtitle is-5">Code</p>
-              <h1 class="title is-1 is-narrow">
-                {{ currentRedeem.code }}
-              </h1>
-            </blockquote>
+      <template v-if="currentRedeemId" #content>
+        <V-SimpleDatatables
+          v-if="redeemDetail.length > 1"
+          :options="tableOptions"
+        />
+        <template v-else>
+          <div
+            v-for="detail in redeemDetail"
+            :key="detail.id"
+            class="redeem-modal-content"
+          >
+            <div class="content">
+              <blockquote class="is-primary">
+                <p class="subtitle is-5">Code</p>
+                <h1 class="title is-1 is-narrow">
+                  {{ detail.code }}
+                </h1>
+              </blockquote>
+            </div>
+            <div v-if="detail.usedDate" class="columns is-multiline">
+              <div class="column is-12">
+                <p class="subtitle is-6">Student</p>
+                <h2 class="title is-5 is-narrow">
+                  (id: {{ detail.studentId }})
+                  {{ detail.studentName }}
+                </h2>
+              </div>
+              <div class="column is-12">
+                <p class="subtitle is-6">Package Item</p>
+                <h2 class="title is-5 is-narrow">
+                  {{ detail.packageItemId }}
+                </h2>
+              </div>
+              <div class="column is-12">
+                <p class="subtitle is-6">Activate Date</p>
+                <h2 class="title is-5 is-narrow">
+                  {{ toFormat(detail.usedDate) }}
+                </h2>
+              </div>
+            </div>
           </div>
-          <div v-if="currentRedeem.usedDate" class="columns is-multiline">
-            <div class="column is-12">
-              <p class="subtitle is-6">Student</p>
-              <h2 class="title is-5 is-narrow">
-                (id: {{ currentRedeem.studentId }})
-                {{ currentRedeem.studentName }}
-              </h2>
-            </div>
-            <div class="column is-12">
-              <p class="subtitle is-6">Package Item</p>
-              <h2 class="title is-5 is-narrow">
-                {{ currentRedeem.packageItemId }}
-              </h2>
-            </div>
-            <div class="column is-12">
-              <p class="subtitle is-6">Activate Date</p>
-              <h2 class="title is-5 is-narrow">
-                {{ toFormat(currentRedeem.usedDate) }}
-              </h2>
-            </div>
-          </div>
-        </div>
+        </template>
       </template>
       <!-- <template #action>
         <V-Button color="danger" raised @click="confirmRemovePackage"
