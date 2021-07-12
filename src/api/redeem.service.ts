@@ -23,8 +23,8 @@ export default class RedeemService {
 
   public static async getRedeemById(
     id: number
-  ): Promise<ApiServiceResponse<IRedeemDetail>> {
-    return await ApiService.get<IRedeemDetail>(`/Redeems/${id}`)
+  ): Promise<ApiServiceResponse<IRedeemDetail[]>> {
+    return await ApiService.get<IRedeemDetail[]>(`/Redeems/${id}`)
   }
 
   public static async createRedeem(

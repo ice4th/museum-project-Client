@@ -1,10 +1,9 @@
 <script setup lang="ts">
 // AddonPackageForm Component
-import { defineEmit, defineProps, ref } from 'vue'
+import { computed, defineEmit, defineProps, ref } from 'vue'
 import type { PropType } from 'vue'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
 import type {
-  ICreateAddonPackage,
   IPackageInfo,
   IUpdateAddonPackage,
 } from '/@src/types/interfaces/package.interface'
@@ -72,6 +71,12 @@ const updateAddonPackage = () => {
     emit('add', data)
   }
 }
+const depenonPackageInfo = computed(() => {
+  return (
+    allGroupPackages.value.find((pk) => pk.id === dependOnPackage.value) ||
+    undefined
+  )
+})
 </script>
 
 <template>
@@ -162,10 +167,12 @@ const updateAddonPackage = () => {
         </div>
         <div class="column is-3">
           <V-Field>
-            <label>Ticket used</label>
+            <label>Ticket used {{ depenonPackageInfo?.ticket }}</label>
             <V-Control icon="feather:hash">
               <input
                 v-model="ticketUsed"
+                min="0"
+                :max="depenonPackageInfo?.ticket"
                 type="number"
                 class="input"
                 placeholder=""
