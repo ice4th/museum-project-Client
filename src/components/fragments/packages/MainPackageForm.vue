@@ -25,7 +25,7 @@ const generateTicket = ref<GenerateTicket>(
   props.mainPackage?.generateTicket || GenerateTicket.NOT_GENERATE_TICKET
 )
 const emit = defineEmit({
-  'on-update': Object as () => IUpdateAddonPackage,
+  'on-update': Object,
 })
 
 const addMainPackage = () => {
