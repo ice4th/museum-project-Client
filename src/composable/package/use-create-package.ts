@@ -173,6 +173,18 @@ export default function useCreatePackage() {
       })
   }
 
+  /**
+   * create package button
+   * @action Add Package
+   */
+  const createPackage = () => {
+    const message = 'Package was created.'
+    notyfWarning.open({
+      type: 'success',
+      message,
+    })
+  }
+
   const createPackageGroup = async () => {
     const { status, message } = await PackageService.createPackageGroup({
       mainPackageId: state.mainPackageId,
@@ -209,6 +221,7 @@ export default function useCreatePackage() {
     displayPackageImageById,
     toggleShowAddonPackageSection,
     toggleShowMainPackageSection,
+    createPackage,
     createPackageGroup,
     removePackage,
   }

@@ -17,6 +17,7 @@ const {
   addonPackages,
   addMainPackage,
   currentAddonPackage,
+  createPackage,
   createPackageGroup,
   dependOnPackageList,
   displayPackageNameById,
@@ -50,15 +51,56 @@ const swapOrderIndex = () => {
     <!-- create group package -->
     <div class="form-layout">
       <V-Tabs
-        selected="package-group"
+        selected="package"
         :tabs="[
           { label: 'Package', value: 'package' },
           { label: 'Package Group', value: 'package-group' },
         ]"
       >
         <template #tab="{ activeValue }">
-          <p v-if="activeValue === 'package'">Create normal package</p>
-          <p v-else-if="activeValue === 'package-group'">
+          <div v-if="activeValue === 'package'">
+            <V-Loader
+              size="small"
+              lighter
+              grey
+              translucent
+              :active="isLoadingPackages"
+            >
+              <div class="form-outer">
+                <div
+                  :class="[isStuck && 'is-stuck']"
+                  class="form-header stuck-header"
+                >
+                  <div class="form-header-inner">
+                    <div class="left"><h3>Create Package</h3></div>
+                    <div class="right">
+                      <div class="buttons">
+                        <V-Button
+                          icon="lnir lnir-protection rem-100"
+                          light
+                          dark-outlined
+                        >
+                          Verify
+                        </V-Button>
+                        <V-Button
+                          icon="lnir lnir-checkmark rem-100"
+                          color="primary"
+                          raised
+                          @click="createPackageGroup"
+                        >
+                          Done
+                        </V-Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-body">
+                  <AddPackageForm />
+                </div>
+              </div>
+            </V-Loader>
+          </div>
+          <div v-else-if="activeValue === 'package-group'">
             <V-Loader
               size="small"
               lighter
@@ -237,7 +279,7 @@ const swapOrderIndex = () => {
                 </div>
               </div>
             </V-Loader>
-          </p>
+          </div>
         </template>
       </V-Tabs>
     </div>
