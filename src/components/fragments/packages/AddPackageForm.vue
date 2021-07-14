@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { defineEmit, defineProps, ref } from 'vue'
+import { defineProps } from 'vue'
 import type { PropType } from 'vue'
 import type { ICratePackageForm } from '/@src/types/interfaces/package.interface'
+import { addCommas } from '/@src/helpers/filter.helper'
 
 /**
  * defined props type
@@ -36,18 +37,6 @@ const props = defineProps({
     default: undefined,
   },
 })
-
-/**
- * define emit
- */
-const emit = defineEmit()
-
-/**
- * Methods
- */
-const addCommas = (num: number): string => {
-  return num ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''
-}
 </script>
 
 <template>
@@ -58,7 +47,12 @@ const addCommas = (num: number): string => {
         <V-Field>
           <label>Package Name</label>
           <V-Control icon="lnil lnil-package">
-            <input type="text" class="input" placeholder="Package name" />
+            <input
+              v-model="createPackageForm.packageName"
+              type="text"
+              class="input"
+              placeholder="Package name"
+            />
           </V-Control>
         </V-Field>
       </div>
@@ -68,6 +62,7 @@ const addCommas = (num: number): string => {
           <label>Internal Package Name</label>
           <V-Control icon="lnil lnil-file-name">
             <input
+              v-model="createPackageForm.packageNameInternal"
               type="text"
               class="input"
               placeholder="Internal Package Name"
@@ -77,23 +72,28 @@ const addCommas = (num: number): string => {
       </div>
       <!-- Field Select Product Item -->
       <div class="column is-12">
-        <V-Field>
+        <V-Field class="is-autocomplete-select">
           <label>Product</label>
-          <V-Control class="has-icons-left" loading>
-            <div class="select">
-              <select v-model="selectProduct">
-                <option value="">Select some product</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
-            <div class="icon is-small is-left">
-              <i class="lnil lnil-package"></i>
-            </div>
+          <V-Control icon="feather:search">
+            <Multiselect
+              v-model="createPackageForm.productId"
+              placeholder="Select product"
+              :options="products"
+              :searchable="true"
+              track-by="name"
+              value-prop="id"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  ({{ value.id }}) {{ value.name }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  ({{ option.id }}) {{ option.name }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
@@ -210,7 +210,7 @@ const addCommas = (num: number): string => {
       <!-- Price -->
       <div class="column is-6">
         <V-Field>
-          <label>Price {{ addCommas(inputPrice) }}</label>
+          <label>Price {{ addCommas(props.createPackageForm.price) }}</label>
           <V-Control>
             <V-Field addons>
               <V-Control>
@@ -218,7 +218,7 @@ const addCommas = (num: number): string => {
               </V-Control>
               <V-Control expanded>
                 <input
-                  v-model="inputPrice"
+                  v-model="props.createPackageForm.price"
                   type="number"
                   class="input"
                   placeholder="Price"
@@ -231,7 +231,10 @@ const addCommas = (num: number): string => {
       <!-- Price Before Discount -->
       <div class="column is-6">
         <V-Field>
-          <label>Before Discount {{ addCommas(inputPrice) }}</label>
+          <label
+            >Before Discount
+            {{ addCommas(props.createPackageForm.beforeDiscount) }}</label
+          >
           <V-Control>
             <V-Field addons>
               <V-Control>
@@ -239,7 +242,7 @@ const addCommas = (num: number): string => {
               </V-Control>
               <V-Control expanded>
                 <input
-                  v-model="inputPrice"
+                  v-model="props.createPackageForm.beforeDiscount"
                   type="number"
                   class="input"
                   placeholder="Before Discount"

@@ -45,6 +45,7 @@ const {
   // methods
   createPackage,
   verifyPackage,
+  logPackageName,
 } = useCreatePackageForm()
 
 const { y } = useWindowScroll()
@@ -116,7 +117,7 @@ const swapOrderIndex = () => {
                     :fmc-packages="fmcPackages"
                     :curriculums="curriculums"
                     :products="products"
-                    :package-name="createPackageForm.packageName"
+                    @update:create-package-form="logPackageName($event)"
                   />
                 </div>
               </div>

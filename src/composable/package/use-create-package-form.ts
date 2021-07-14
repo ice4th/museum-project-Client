@@ -38,17 +38,27 @@ const notyfSuccess = new Notyf({
 })
 
 export default function useCreatePackageForm() {
+  const mockProducts = [
+    { id: 1, name: 'product 001' },
+    { id: 2, name: 'product 002' },
+    { id: 3, name: 'product 003' },
+    { id: 4, name: 'product 004' },
+    { id: 5, name: 'product 005' },
+    { id: 6, name: 'product 006' },
+    { id: 7, name: 'product 007' },
+    { id: 8, name: 'product 008' },
+  ]
   /**
    * use state
    */
   const state = reactive<IUseCratePackageForm>({
-    products: [],
+    products: mockProducts,
     curriculums: [],
     featureGroups: [],
     fmcPackages: [],
     moocCourses: [],
     createPackageForm: {
-      packageName: '',
+      packageName: 'mock',
       packageNameInternal: '',
       productId: NaN,
       purchasable: Purchasable.NOT_FOR_SALE,
@@ -89,10 +99,14 @@ export default function useCreatePackageForm() {
       message: 'Created Success!',
     })
   }
+  const logPackageName = (val: string) => {
+    console.log(val)
+  }
 
   return {
     ...toRefs(state),
     verifyPackage,
     createPackage,
+    logPackageName,
   }
 }
