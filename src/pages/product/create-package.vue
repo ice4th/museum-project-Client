@@ -4,6 +4,7 @@ import { computed, reactive, ref } from 'vue'
 import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import useCreatePackage from '/@src/composable/package/use-create-package'
+import useCreatePackageForm from '/@src/composable/package/use-create-package-form'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 pageTitle.value = 'Package Management'
@@ -17,7 +18,6 @@ const {
   addonPackages,
   addMainPackage,
   currentAddonPackage,
-  createPackage,
   createPackageGroup,
   dependOnPackageList,
   displayPackageNameById,
@@ -33,6 +33,19 @@ const {
   toggleShowAddonPackageSection,
   toggleShowMainPackageSection,
 } = useCreatePackage()
+
+const {
+  // state
+  createPackageForm,
+  featureGroups,
+  moocCourses,
+  fmcPackages,
+  curriculums,
+  products,
+  // methods
+  createPackage,
+  verifyPackage,
+} = useCreatePackageForm()
 
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
@@ -79,6 +92,7 @@ const swapOrderIndex = () => {
                           icon="lnir lnir-protection rem-100"
                           light
                           dark-outlined
+                          @click="verifyPackage"
                         >
                           Verify
                         </V-Button>
@@ -86,7 +100,7 @@ const swapOrderIndex = () => {
                           icon="lnir lnir-checkmark rem-100"
                           color="primary"
                           raised
-                          @click="createPackageGroup"
+                          @click="createPackage"
                         >
                           Done
                         </V-Button>
@@ -95,7 +109,15 @@ const swapOrderIndex = () => {
                   </div>
                 </div>
                 <div class="form-body">
-                  <AddPackageForm />
+                  <AddPackageForm
+                    :create-package-form="createPackageForm"
+                    :feature-groups="featureGroups"
+                    :mooc-courses="moocCourses"
+                    :fmc-packages="fmcPackages"
+                    :curriculums="curriculums"
+                    :products="products"
+                    :package-name="createPackageForm.packageName"
+                  />
                 </div>
               </div>
             </V-Loader>

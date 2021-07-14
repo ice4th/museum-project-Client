@@ -1,35 +1,57 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-// drop down select
-const selectProduct = ref('')
-const selectStatus = ref('')
-// toggle switch
-const isPurchasable = ref(false)
-// text area
-const detailText = ref('')
-const commentText = ref('')
-// input
-const inputPrice = ref(null)
-const duration = ref(null)
-// radio
-const selected = ref('value_1')
+import { defineEmit, defineProps, ref } from 'vue'
+import type { PropType } from 'vue'
+import type { ICratePackageForm } from '/@src/types/interfaces/package.interface'
+
+/**
+ * defined props type
+ */
+const props = defineProps({
+  products: {
+    type: Array,
+    default: () => [],
+  },
+  curriculums: {
+    type: Array,
+    default: () => [],
+  },
+  featureGroups: {
+    type: Array,
+    default: () => [],
+  },
+  fmcPackages: {
+    type: Array,
+    default: () => [],
+  },
+  moocCourses: {
+    type: Array,
+    default: () => [],
+  },
+  packageName: {
+    type: String,
+    default: '',
+  },
+  createPackageForm: {
+    type: Object as PropType<ICratePackageForm>,
+    default: undefined,
+  },
+})
+
+/**
+ * define emit
+ */
+const emit = defineEmit()
+
 /**
  * Methods
  */
 const addCommas = (num: number): string => {
-  if (!num) {
-    return ''
-  }
-  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return num ? num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''
 }
 </script>
 
 <template>
   <div class="form-fieldset">
-    <!-- <div class="fieldset-heading">
-      <h4>Package Info</h4>
-      <p>Specific base information for this package.</p>
-    </div> -->
     <div class="fieldset columns is-multiline">
       <!-- Field Package Name -->
       <div class="column is-6">
@@ -361,12 +383,13 @@ const addCommas = (num: number): string => {
           </V-Control>
         </V-Field>
       </div>
+
       <!-- Photo -->
-      <div class="column is-6">
+      <div class="column is-12">
         <V-Field>
-          <label>Photo</label>
-          <V-Control>
-            <div class="file has-name">
+          <label>Photo Link</label>
+          <V-Control icon="lnil lnil-link-alt">
+            <!-- <div class="file has-name">
               <label class="file-label">
                 <input class="file-input" type="file" name="resume" />
                 <span class="file-cta">
@@ -379,16 +402,18 @@ const addCommas = (num: number): string => {
                   22082020_project_budget.xls
                 </span>
               </label>
-            </div>
+            </div> -->
+            <input type="text" class="input" placeholder="Photo URL..." />
           </V-Control>
         </V-Field>
       </div>
+
       <!-- Curriculum (Old) -->
-      <div class="column is-6">
+      <div class="column is-12">
         <V-Field>
-          <label>Curriculum (Old)</label>
-          <V-Control>
-            <div class="file has-name">
+          <label>Curriculum Link (Old)</label>
+          <V-Control icon="lnil lnil-link-alt">
+            <!-- <div class="file has-name">
               <label class="file-label">
                 <input class="file-input" type="file" name="resume" />
                 <span class="file-cta">
@@ -401,7 +426,8 @@ const addCommas = (num: number): string => {
                   22082020_project_budget.xls
                 </span>
               </label>
-            </div>
+            </div> -->
+            <input type="text" class="input" placeholder="Curriculum URL..." />
           </V-Control>
         </V-Field>
       </div>
@@ -500,8 +526,8 @@ const addCommas = (num: number): string => {
           </V-Control>
         </V-Field>
       </div>
-      <!-- Subscription class -->
-      <div class="column is-12">
+
+      <!-- <div class="column is-12">
         <V-Field>
           <label>Subscription class type</label>
           <V-Control>
@@ -519,7 +545,6 @@ const addCommas = (num: number): string => {
           </V-Control>
         </V-Field>
       </div>
-      <!-- Limit per day -->
       <div class="column is-4">
         <V-Field>
           <label>Limit per day</label>
@@ -533,7 +558,6 @@ const addCommas = (num: number): string => {
           </V-Control>
         </V-Field>
       </div>
-      <!-- Limit per week -->
       <div class="column is-4">
         <V-Field>
           <label>Limit per week</label>
@@ -547,7 +571,6 @@ const addCommas = (num: number): string => {
           </V-Control>
         </V-Field>
       </div>
-      <!-- Limit per month -->
       <div class="column is-4">
         <V-Field>
           <label>Limit per month</label>
@@ -560,7 +583,7 @@ const addCommas = (num: number): string => {
             />
           </V-Control>
         </V-Field>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

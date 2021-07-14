@@ -1,8 +1,11 @@
 import {
+  CEFRLevel,
   GenerateTicket,
+  GlobishLevel,
   PrivateSlot,
   Purchasable,
   StatusPackage,
+  TypePackage,
 } from '../enums/package.enum'
 import { IProduct } from './product.interface'
 
@@ -108,4 +111,42 @@ export interface IUpdateAddonPackage {
 export interface ICreatePackageGroup {
   mainPackageId: number
   addonPackages: IUpdateAddonPackage[] // include main package
+}
+
+export interface ICratePackageForm {
+  packageName: string
+  packageNameInternal?: string
+  productId: number
+  purchasable: Purchasable
+  status: StatusPackage
+  detail?: string
+  comment?: string
+  globishLevel: GlobishLevel
+  cefrLevel: CEFRLevel
+  price: number
+  beforeDiscount: number
+  installmentMonth: number
+  engder?: string
+  type: TypePackage
+  duration?: number
+  ticketOneOnOne?: number
+  ticketFreetalk?: number
+  ticketGroup?: number
+  ticketMaster?: number
+  photo?: string
+  curriculumSheet?: string
+  curriculumId?: number
+  featureGroupId?: number
+  findMycoachId?: number
+  moocCourseId?: number
+  privateSlot: PrivateSlot
+}
+
+export interface IUseCratePackageForm {
+  products: any[]
+  curriculums: any[]
+  featureGroups: any[]
+  fmcPackages: any[]
+  moocCourses: any[]
+  createPackageForm: ICratePackageForm
 }
