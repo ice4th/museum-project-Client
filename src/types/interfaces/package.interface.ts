@@ -1,11 +1,8 @@
 import {
-  CEFRLevel,
   GenerateTicket,
-  GlobishLevel,
   PrivateSlot,
   Purchasable,
   StatusPackage,
-  TypePackage,
 } from '../enums/package.enum'
 import { IProduct } from './product.interface'
 
@@ -117,17 +114,17 @@ export interface ICratePackageForm {
   packageName: string
   packageNameInternal?: string
   productId: number
-  purchasable: Purchasable
-  status: StatusPackage
+  purchasable: boolean
+  status: '0' | '1'
   detail?: string
   comment?: string
-  globishLevel: GlobishLevel
-  cefrLevel: CEFRLevel
-  price: number
-  beforeDiscount: number
-  installmentMonth: number
+  globishLevel: string
+  cefrLevel: string
+  price?: number
+  beforeDiscount?: number
+  installmentMonth?: string
   engder?: string
-  type: TypePackage
+  type: string
   duration?: number
   ticketOneOnOne?: number
   ticketFreetalk?: number
@@ -139,7 +136,36 @@ export interface ICratePackageForm {
   featureGroupId?: number
   findMycoachId?: number
   moocCourseId?: number
-  privateSlot: PrivateSlot
+  privateSlot?: number
+}
+
+export interface ICratePackage {
+  packageName: string
+  packageNameInternal?: string
+  productId: number
+  purchasable: Purchasable
+  status: StatusPackage
+  detail?: string
+  comment?: string
+  globishLevel: string
+  cefrLevel: string
+  price: number
+  beforeDiscount: number
+  installmentMonth: number
+  engder?: string
+  type: string
+  duration?: number
+  ticketOneOnOne?: number
+  ticketFreetalk?: number
+  ticketGroup?: number
+  ticketMaster?: number
+  photo?: string
+  curriculumSheet?: string
+  curriculumId?: number
+  featureGroupId?: number
+  findMycoachId?: number
+  moocCourseId?: number
+  privateSlot?: number
 }
 
 export interface IUseCratePackageForm {

@@ -117,7 +117,6 @@ const swapOrderIndex = () => {
                     :fmc-packages="fmcPackages"
                     :curriculums="curriculums"
                     :products="products"
-                    @update:create-package-form="logPackageName($event)"
                   />
                 </div>
               </div>

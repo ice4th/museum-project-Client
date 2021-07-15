@@ -5,14 +5,7 @@
 import { Notyf } from 'notyf'
 import { reactive, toRefs } from 'vue'
 import { themeColors } from '../../utils/themeColors'
-import {
-  CEFRLevel,
-  GlobishLevel,
-  PrivateSlot,
-  Purchasable,
-  StatusPackage,
-  TypePackage,
-} from '/@src/types/enums/package.enum'
+import { PrivateSlot } from '/@src/types/enums/package.enum'
 import { IUseCratePackageForm } from '/@src/types/interfaces/package.interface'
 
 /**
@@ -38,40 +31,40 @@ const notyfSuccess = new Notyf({
 })
 
 export default function useCreatePackageForm() {
-  const mockProducts = [
-    { id: 1, name: 'product 001' },
-    { id: 2, name: 'product 002' },
-    { id: 3, name: 'product 003' },
-    { id: 4, name: 'product 004' },
-    { id: 5, name: 'product 005' },
-    { id: 6, name: 'product 006' },
-    { id: 7, name: 'product 007' },
-    { id: 8, name: 'product 008' },
+  const items = [
+    { id: 1, name: 'item 001' },
+    { id: 2, name: 'item 002' },
+    { id: 3, name: 'item 003' },
+    { id: 4, name: 'item 004' },
+    { id: 5, name: 'item 005' },
+    { id: 6, name: 'item 006' },
+    { id: 7, name: 'item 007' },
+    { id: 8, name: 'item 008' },
   ]
   /**
    * use state
    */
   const state = reactive<IUseCratePackageForm>({
-    products: mockProducts,
-    curriculums: [],
-    featureGroups: [],
-    fmcPackages: [],
-    moocCourses: [],
+    products: items,
+    curriculums: items,
+    featureGroups: items,
+    fmcPackages: items,
+    moocCourses: items,
     createPackageForm: {
-      packageName: 'mock',
+      packageName: '',
       packageNameInternal: '',
       productId: NaN,
-      purchasable: Purchasable.NOT_FOR_SALE,
-      status: StatusPackage.NOT_SHOW_ON_WEBSITE,
+      purchasable: false,
+      status: '0',
       detail: '',
       comment: '',
-      globishLevel: GlobishLevel.G0,
-      cefrLevel: CEFRLevel.NONE,
-      price: 0,
-      beforeDiscount: 0,
-      installmentMonth: 0,
+      globishLevel: '',
+      cefrLevel: '',
+      price: undefined,
+      beforeDiscount: undefined,
+      installmentMonth: undefined,
       engder: undefined,
-      type: TypePackage.ADULT,
+      type: '',
       duration: undefined,
       ticketOneOnOne: undefined,
       ticketFreetalk: undefined,
@@ -83,7 +76,7 @@ export default function useCreatePackageForm() {
       featureGroupId: undefined,
       findMycoachId: undefined,
       moocCourseId: undefined,
-      privateSlot: PrivateSlot.THIRTY_MINUTE,
+      privateSlot: undefined,
     },
   })
 

@@ -1,8 +1,15 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { computed, defineProps } from 'vue'
 import type { PropType } from 'vue'
 import type { ICratePackageForm } from '/@src/types/interfaces/package.interface'
 import { addCommas } from '/@src/helpers/filter.helper'
+import {
+  GlobishLevel,
+  PackageCefrLevel,
+  PackageEngder,
+  PackageInstallment,
+  PackageType,
+} from '/@src/types/enums/package.enum'
 
 /**
  * defined props type
@@ -37,6 +44,32 @@ const props = defineProps({
     default: undefined,
   },
 })
+
+/**
+ * Multi Select Items
+ */
+const globishLevelItems = Object.entries(GlobishLevel).map(([key, value]) => {
+  return { key: key.replace('_', ' '), value }
+})
+const cefrLevelItems = Object.values(PackageCefrLevel).map((value) => {
+  return { key: value, value }
+})
+const installmentItems = Object.values(PackageInstallment).map((value) => {
+  const key = value === '0' ? 'No installment' : `${value} Month`
+  return { key, value }
+})
+const packageEngderItems = Object.entries(PackageEngder).map(([key, value]) => {
+  return { key: key.replace(/_/g, ' '), value }
+})
+const packageTypeItems = Object.values(PackageType).map((value) => {
+  return { key: value, value }
+})
+const privateSlots = [
+  { key: '30 Minutes', value: 1 },
+  { key: '1 Hour', value: 2 },
+  { key: '1 Hour 30 Minutes', value: 3 },
+  { key: '30 Minutes', value: 4 },
+]
 </script>
 
 <template>
@@ -103,7 +136,7 @@ const props = defineProps({
           <label>&nbsp;</label>
           <V-Control>
             <V-SwitchBlock
-              v-model="isPurchasable"
+              v-model="createPackageForm.purchasable"
               label="Purchasable"
               color="primary"
             />
@@ -123,16 +156,16 @@ const props = defineProps({
           <V-Tag v-tooltip="'แสดงหน้าเว็บ'" color="solid" label="General" />
           <V-Control>
             <V-Radio
-              v-model="selected"
-              value="value_1"
+              v-model="createPackageForm.status"
+              value="0"
               label="None"
               name="status_radio"
               color="primary"
               square
             />
             <V-Radio
-              v-model="selected"
-              value="value_2"
+              v-model="createPackageForm.status"
+              value="1"
               label="General"
               name="status_radio"
               color="primary"
@@ -147,7 +180,7 @@ const props = defineProps({
           <label>Detail</label>
           <V-Control>
             <textarea
-              v-model="detailText"
+              v-model="createPackageForm.detail"
               class="textarea"
               rows="2"
               placeholder="Add detail..."
@@ -161,7 +194,7 @@ const props = defineProps({
           <label>Comment</label>
           <V-Control>
             <textarea
-              v-model="commentText"
+              v-model="createPackageForm.comment"
               class="textarea"
               rows="2"
               placeholder="Add comment..."
@@ -174,17 +207,24 @@ const props = defineProps({
         <V-Field>
           <label>Globish Level</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select some status</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.globishLevel"
+              placeholder="Select globish level"
+              :options="globishLevelItems"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
@@ -193,17 +233,24 @@ const props = defineProps({
         <V-Field>
           <label>CEFR Level</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select some status</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.cefrLevel"
+              placeholder="Select CEFR level"
+              :options="cefrLevelItems"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
@@ -257,36 +304,50 @@ const props = defineProps({
         <V-Field>
           <label>Installment</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select installment</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.installmentMonth"
+              placeholder="Select installment"
+              :options="installmentItems"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
-      <!-- Endger -->
+      <!-- Engder -->
       <div class="column is-6">
         <V-Field>
-          <label>Endger</label>
+          <label>Engder</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select endger</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.engder"
+              placeholder="Select package engder"
+              :options="packageEngderItems"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
@@ -295,17 +356,24 @@ const props = defineProps({
         <V-Field>
           <label>Type</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select type</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.type"
+              placeholder="Select package type"
+              :options="packageTypeItems"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
@@ -317,10 +385,10 @@ const props = defineProps({
             <V-Field addons>
               <V-Control expanded>
                 <input
-                  v-model="duration"
+                  v-model="createPackageForm.duration"
                   type="number"
                   class="input"
-                  placeholder="Add total month..."
+                  placeholder="duration..."
                 />
               </V-Control>
               <V-Control>
@@ -336,10 +404,10 @@ const props = defineProps({
           <label>1 on 1 Ticket</label>
           <V-Control icon="lnil lnil-ticket">
             <input
-              v-model="duration"
+              v-model="createPackageForm.ticketOneOnOne"
               type="number"
               class="input"
-              placeholder="Specific ticket number..."
+              placeholder="1 on 1 ticket..."
             />
           </V-Control>
         </V-Field>
@@ -350,10 +418,10 @@ const props = defineProps({
           <label>Freetalk Ticket</label>
           <V-Control icon="lnil lnil-ticket">
             <input
-              v-model="duration"
+              v-model="createPackageForm.ticketFreetalk"
               type="number"
               class="input"
-              placeholder="Specific ticket number..."
+              placeholder="freetalk ticket..."
             />
           </V-Control>
         </V-Field>
@@ -364,10 +432,10 @@ const props = defineProps({
           <label>Group class Ticket</label>
           <V-Control icon="lnil lnil-ticket">
             <input
-              v-model="duration"
+              v-model="createPackageForm.ticketGroup"
               type="number"
               class="input"
-              placeholder="Specific ticket number..."
+              placeholder="group class ticket..."
             />
           </V-Control>
         </V-Field>
@@ -378,10 +446,10 @@ const props = defineProps({
           <label>Master class Ticket</label>
           <V-Control icon="lnil lnil-ticket">
             <input
-              v-model="duration"
+              v-model="createPackageForm.ticketMaster"
               type="number"
               class="input"
-              placeholder="Specific ticket number..."
+              placeholder="master class ticket..."
             />
           </V-Control>
         </V-Field>
@@ -406,7 +474,12 @@ const props = defineProps({
                 </span>
               </label>
             </div> -->
-            <input type="text" class="input" placeholder="Photo URL..." />
+            <input
+              v-model="createPackageForm.photo"
+              type="text"
+              class="input"
+              placeholder="Photo URL..."
+            />
           </V-Control>
         </V-Field>
       </div>
@@ -430,7 +503,12 @@ const props = defineProps({
                 </span>
               </label>
             </div> -->
-            <input type="text" class="input" placeholder="Curriculum URL..." />
+            <input
+              v-model="createPackageForm.curriculumSheet"
+              type="text"
+              class="input"
+              placeholder="Curriculum URL..."
+            />
           </V-Control>
         </V-Field>
       </div>
@@ -439,17 +517,24 @@ const props = defineProps({
         <V-Field>
           <label>Curriculum (New)</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select installment</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.curriculumId"
+              placeholder="Select curriculum"
+              :options="curriculums"
+              track-by="name"
+              value-prop="id"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.name }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.name }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
@@ -458,17 +543,24 @@ const props = defineProps({
         <V-Field>
           <label>Globish Plus</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select endger</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.featureGroupId"
+              placeholder="Select feature group"
+              :options="featureGroups"
+              track-by="name"
+              value-prop="id"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.name }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.name }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
@@ -477,17 +569,24 @@ const props = defineProps({
         <V-Field>
           <label>Find My Coach</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select type</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.findMycoachId"
+              placeholder="Select find my coach"
+              :options="fmcPackages"
+              track-by="name"
+              value-prop="id"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.name }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.name }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
@@ -496,17 +595,24 @@ const props = defineProps({
         <V-Field>
           <label>Course (Mook)</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select installment</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.moocCourseId"
+              placeholder="Select mooc course"
+              :options="moocCourses"
+              track-by="name"
+              value-prop="id"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.name }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.name }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
@@ -515,17 +621,24 @@ const props = defineProps({
         <V-Field>
           <label>Private class time</label>
           <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select class time</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
+            <Multiselect
+              v-model="createPackageForm.privateSlot"
+              placeholder="Select private class time"
+              :options="privateSlots"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
           </V-Control>
         </V-Field>
       </div>
