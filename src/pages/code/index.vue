@@ -57,9 +57,9 @@ const tableOptions = computed(() => {
       headings: ['Code', 'Activated', 'Student', 'Expired'],
       data: redeemDetail.value.map((detail) => [
         detail.code,
-        toFormat(detail.usedDate),
-        detail.studentName,
-        detail.expireDate,
+        detail.usedDate ? toFormat(detail.usedDate) : '',
+        detail.studentName || '',
+        detail.expireDate ? toFormat(detail.expireDate) : '',
       ]),
     },
   }
@@ -256,8 +256,12 @@ const tableOptions = computed(() => {
               <div class="column is-12">
                 <p class="subtitle is-6">Student</p>
                 <h2 class="title is-5 is-narrow">
-                  (id: {{ detail.studentId }})
-                  {{ detail.studentName }}
+                  <span v-show="detail.studentId"
+                    >(id: {{ detail.studentId }})</span
+                  >
+                  <span v-show="detail.studentName" class="ml-2">{{
+                    detail.studentName
+                  }}</span>
                 </h2>
               </div>
               <div class="column is-12">
