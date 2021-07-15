@@ -100,7 +100,7 @@ export default function useRedeemTable() {
     )
     if (status === 201) {
       notyf.success('Create Redeem Success!')
-      await fetchAllRedeem()
+      router.push({ name: 'code' })
     } else {
       if (typeof message === 'object') {
         notyf.error(JSON.stringify(message) || 'Fail')
