@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
+import { ref } from 'vue-demi'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 pageTitle.value = 'Student Information'
@@ -7,6 +8,7 @@ pageTitle.value = 'Student Information'
 useHead({
   title: 'Whitehouse: Student',
 })
+const userCountry = ref('th')
 </script>
 
 <template>
@@ -25,11 +27,31 @@ useHead({
                   badge="/images/icons/flags/thailand.svg"
                 />
               </template>
+              <template #action>
+                <div class="p-3" style="width: 100px">
+                  <V-Field>
+                    <V-Control>
+                      <div class="select is-rounded">
+                        <select v-model="userCountry">
+                          <option value="">Select a country</option>
+                          <option value="th">TH</option>
+                          <option value="vn">VN</option>
+                        </select>
+                      </div>
+                    </V-Control>
+                  </V-Field>
+                  <!-- <Multiselect
+                    v-model="userCountry"
+                    placeholder="user country"
+                    :options="['th', 'vn']"
+                  /> -->
+                </div>
+              </template>
             </V-Block>
 
             <div class="account-menu">
               <RouterLink
-                :to="{ name: 'student-info' }"
+                :to="{ name: 'student-:id' }"
                 class="account-menu-item"
               >
                 <i aria-hidden="true" class="lnil lnil-user-alt"></i>
@@ -38,42 +60,60 @@ useHead({
                   <i aria-hidden="true" class="fas fa-arrow-right"></i>
                 </span>
               </RouterLink>
-              <RouterLink :to="{ name: 'student' }" class="account-menu-item">
+              <RouterLink
+                :to="{ name: 'student-:id-packages' }"
+                class="account-menu-item"
+              >
                 <i aria-hidden="true" class="lnil lnil-book"></i>
                 <span>Packages</span>
                 <span class="end">
                   <i aria-hidden="true" class="fas fa-arrow-right"></i>
                 </span>
               </RouterLink>
-              <RouterLink :to="{ name: 'student' }" class="account-menu-item">
+              <RouterLink
+                :to="{ name: 'student-:id-private-class' }"
+                class="account-menu-item"
+              >
                 <i aria-hidden="true" class="lnil lnil-user-alt"></i>
                 <span>Private Class</span>
                 <span class="end">
                   <i aria-hidden="true" class="fas fa-arrow-right"></i>
                 </span>
               </RouterLink>
-              <RouterLink :to="{ name: 'student' }" class="account-menu-item">
+              <RouterLink
+                :to="{ name: 'student-:id-discussion-class' }"
+                class="account-menu-item"
+              >
                 <i aria-hidden="true" class="lnil lnil-users-alt"></i>
                 <span>Discussion Class</span>
                 <span class="end">
                   <i aria-hidden="true" class="fas fa-arrow-right"></i>
                 </span>
               </RouterLink>
-              <RouterLink :to="{ name: 'student' }" class="account-menu-item">
+              <RouterLink
+                :to="{ name: 'student-:id-family-account' }"
+                class="account-menu-item"
+              >
                 <i aria-hidden="true" class="lnil lnil-users"></i>
                 <span>Family Account</span>
                 <span class="end">
                   <i aria-hidden="true" class="fas fa-arrow-right"></i>
                 </span>
               </RouterLink>
-              <RouterLink :to="{ name: 'student' }" class="account-menu-item">
+              <RouterLink
+                :to="{ name: 'student-:id-report' }"
+                class="account-menu-item"
+              >
                 <i aria-hidden="true" class="lnil lnil-control-panel"></i>
                 <span>Report Log</span>
                 <span class="end">
                   <i aria-hidden="true" class="fas fa-arrow-right"></i>
                 </span>
               </RouterLink>
-              <RouterLink :to="{ name: 'student' }" class="account-menu-item">
+              <RouterLink
+                :to="{ name: 'student-:id-settings' }"
+                class="account-menu-item"
+              >
                 <i aria-hidden="true" class="lnil lnil-cog"></i>
                 <span>Settings</span>
                 <span class="end">

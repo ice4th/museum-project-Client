@@ -18,6 +18,9 @@ const devicesOptions = [
   { value: 'pc', label: 'PC' },
 ]
 
+const timezone = ref('Asia/Bangkok')
+const timezoneOptions = ['Asia/Bangkok', 'Etc']
+
 const notyf = useNotyf()
 const { y } = useWindowScroll()
 
@@ -152,12 +155,14 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-6">
             <V-Field>
+              <label>First name (TH)</label>
               <V-Control icon="feather:user">
                 <input
                   type="text"
                   class="input"
                   placeholder="First Name (TH)"
                   autocomplete="given-name"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -165,24 +170,28 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-6">
             <V-Field>
+              <label>Last name (TH)</label>
               <V-Control icon="feather:user">
                 <input
                   type="text"
                   class="input"
                   placeholder="Last Name (TH)"
                   autocomplete="family-name"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
           </div>
           <div class="column is-12">
             <V-Field>
+              <label>Nickname (TH)</label>
               <V-Control icon="feather:user">
                 <input
                   type="text"
                   class="input"
-                  placeholder="Nick Name (TH)"
+                  placeholder="Nickname (TH)"
                   autocomplete="family-name"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -201,12 +210,14 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-6">
             <V-Field>
+              <label>First name (EN)</label>
               <V-Control icon="feather:user">
                 <input
                   type="text"
                   class="input"
                   placeholder="First Name (EN)"
                   autocomplete="given-name"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -214,24 +225,28 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-6">
             <V-Field>
+              <label>Last name (EN)</label>
               <V-Control icon="feather:user">
                 <input
                   type="text"
                   class="input"
                   placeholder="Last Name (EN)"
                   autocomplete="family-name"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
           </div>
           <div class="column is-12">
             <V-Field>
+              <label>Nickname (EN)</label>
               <V-Control icon="feather:user">
                 <input
                   type="text"
                   class="input"
                   placeholder="Nick Name (EN)"
                   autocomplete="family-name"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -242,7 +257,7 @@ const isEditMode = ref(false)
       <!--Fieldset-->
       <div class="fieldset">
         <div class="fieldset-heading">
-          <h4>Personal Info</h4>
+          <h4>General Info</h4>
           <p>Others diserve to know you more</p>
         </div>
 
@@ -250,12 +265,14 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-6">
             <V-Field>
+              <label>Email</label>
               <V-Control icon="feather:user">
                 <input
                   type="text"
                   class="input"
                   placeholder="Email"
                   autocomplete="email"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -263,12 +280,14 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-6">
             <V-Field>
+              <label>Phone</label>
               <V-Control icon="feather:phone">
                 <input
                   type="text"
                   class="input"
                   placeholder="Phone"
                   autocomplete="phone"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -276,12 +295,14 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-12">
             <V-Field>
+              <label>Gender</label>
               <V-Control>
                 <input
                   type="text"
                   class="input"
                   placeholder="Gender"
                   autocomplete="organization-title"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -289,12 +310,14 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-9">
             <V-Field>
-              <V-Control icon="feather:gift">
+              <label>Date of birth</label>
+              <V-Control icon="feather:calendar">
                 <input
                   type="text"
                   class="input"
                   placeholder="Date of birth"
                   autocomplete="country-name"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -302,19 +325,37 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-3">
             <V-Field>
+              <label>Age</label>
               <V-Control>
                 <input
                   type="text"
                   class="input"
                   placeholder="Age"
                   autocomplete="country-name"
+                  :readonly="!isEditMode"
+                />
+              </V-Control>
+            </V-Field>
+          </div>
+
+          <div class="column is-12">
+            <V-Field>
+              <label>Timezone</label>
+              <V-Control>
+                <Multiselect
+                  v-model="timezone"
+                  :searchable="true"
+                  :options="timezoneOptions"
+                  placeholder="timezone"
+                  :disabled="!isEditMode"
                 />
               </V-Control>
             </V-Field>
           </div>
           <!--Field-->
-          <div class="column is-12">
+          <!-- <div class="column is-12">
             <V-Field>
+              <label>Address</label>
               <V-Control>
                 <textarea
                   class="textarea"
@@ -323,10 +364,11 @@ const isEditMode = ref(false)
                   autocomplete="off"
                   autocapitalize="off"
                   spellcheck="true"
+                  :readonly="!isEditMode"
                 ></textarea>
               </V-Control>
             </V-Field>
-          </div>
+          </div> -->
         </div>
       </div>
 
@@ -340,12 +382,38 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-12">
             <V-Field>
+              <label>Industry</label>
+              <V-Control icon="feather:briefcase">
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="Industry"
+                  autocomplete="organization-title"
+                  :readonly="!isEditMode"
+                />
+              </V-Control>
+            </V-Field>
+            <V-Field>
+              <label>Occupation</label>
               <V-Control icon="feather:briefcase">
                 <input
                   type="text"
                   class="input"
                   placeholder="Occupation"
                   autocomplete="organization-title"
+                  :readonly="!isEditMode"
+                />
+              </V-Control>
+            </V-Field>
+            <V-Field>
+              <label>School</label>
+              <V-Control icon="feather:briefcase">
+                <input
+                  type="text"
+                  class="input"
+                  placeholder="School"
+                  autocomplete="organization-title"
+                  :readonly="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -353,6 +421,7 @@ const isEditMode = ref(false)
           <!--Field-->
           <div class="column is-12">
             <V-Field>
+              <label>Devices</label>
               <V-Control>
                 <Multiselect
                   v-model="devices"
@@ -361,6 +430,7 @@ const isEditMode = ref(false)
                   :create-tag="true"
                   :options="devicesOptions"
                   placeholder="Add tags"
+                  :disabled="!isEditMode"
                 />
               </V-Control>
             </V-Field>
