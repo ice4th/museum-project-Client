@@ -5,5 +5,5 @@ const { studentInfo } = useStudentInfo()
 </script>
 
 <template>
-  <StudentProfileEditor :student-info="studentInfo" />
+  <StudentProfileEditor v-if="studentInfo" :student-info="studentInfo" />
 </template>

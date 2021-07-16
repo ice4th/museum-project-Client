@@ -3,14 +3,17 @@ import { useWindowScroll } from '@vueuse/core'
 import { computed, defineProps, onBeforeMount, ref } from 'vue'
 import type { PropType } from 'vue'
 import useNotyf from '/@src/composable/useNotyf'
-import type { IStudentInfo } from '/@src/types/interfaces/student.interface'
+import type {
+  IStudentInfo,
+  StudentInfoResponse,
+} from '/@src/types/interfaces/student.interface'
 import sleep from '/@src/utils/sleep'
 import occupationList from '/@src/data/occupation-list.json'
 import industryList from '/@src/data/industry-list.json'
 import moment from 'moment-timezone'
 const props = defineProps({
   studentInfo: {
-    type: Object as PropType<IStudentInfo>,
+    type: Object as PropType<StudentInfoResponse>,
   },
 })
 const isUploading = ref(false)
@@ -24,6 +27,10 @@ const devicesOptions = ['IOS', 'Mac', 'Android', 'PC']
 const industryOptions = industryList
 const occupationOptions = occupationList
 const timezoneOptions = moment.tz.names()
+const genderOptions = {
+  male: 'Male',
+  female: 'Female',
+}
 
 const notyf = useNotyf()
 const { y } = useWindowScroll()
@@ -58,11 +65,13 @@ const isEditMode = ref(false)
 
 onBeforeMount(() => {
   if (
-    !occupationOptions.some((oc) => oc.value === props.studentInfo?.occupation)
+    !occupationOptions.some(
+      (oc) => oc.value === props.studentInfo?.studentNote?.occupation
+    )
   ) {
     occupationOptions.push({
-      text: props.studentInfo?.occupation || '',
-      value: props.studentInfo?.occupation || '',
+      text: props.studentInfo?.studentNote?.occupation || '',
+      value: props.studentInfo?.studentNote?.occupation || '',
     })
   }
 })
@@ -320,13 +329,12 @@ onBeforeMount(() => {
             <V-Field>
               <label>Gender</label>
               <V-Control>
-                <input
+                <Multiselect
                   v-model="studentInfo.gender"
-                  type="text"
-                  class="input"
-                  placeholder="Gender"
-                  autocomplete="organization-title"
-                  :readonly="!isEditMode"
+                  :searchable="true"
+                  :options="genderOptions"
+                  placeholder="gender"
+                  :disabled="!isEditMode"
                 />
               </V-Control>
             </V-Field>
@@ -420,7 +428,7 @@ onBeforeMount(() => {
               <label>Industry</label>
               <V-Control icon="feather:briefcase">
                 <Multiselect
-                  v-model="studentInfo.industry"
+                  v-model="studentInfo.studentNote.industry"
                   :searchable="true"
                   :options="industryOptions"
                   placeholder="Industry"
@@ -452,7 +460,7 @@ onBeforeMount(() => {
                   :readonly="!isEditMode"
                 /> -->
                 <Multiselect
-                  v-model="studentInfo.occupation"
+                  v-model="studentInfo.studentNote.occupation"
                   :searchable="true"
                   :options="occupationOptions"
                   placeholder="Occupation"
@@ -492,7 +500,7 @@ onBeforeMount(() => {
               <label>Devices</label>
               <V-Control>
                 <Multiselect
-                  v-model="studentInfo.devices"
+                  v-model="studentInfo.studentNote.device"
                   mode="tags"
                   :searchable="true"
                   :create-tag="true"

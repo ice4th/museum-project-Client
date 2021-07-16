@@ -12,9 +12,9 @@ useHead({
 })
 const { studentInfo } = useStudentInfo()
 
-const studentName = displayStudentFullname(studentInfo.value)
+const studentName = computed(() => displayStudentFullname(studentInfo?.value))
 const studentFlag = computed(() => {
-  if (studentInfo.value.country === 'vn') {
+  if (studentInfo?.value?.country === 'vn') {
     return '/images/icons/flags/vietnam.svg'
   } else {
     return '/images/icons/flags/thailand.svg'
@@ -30,35 +30,31 @@ const studentFlag = computed(() => {
         <!--Navigation-->
         <div class="column is-4">
           <div class="account-box is-navigation">
-            <V-Block :title="studentName" :subtitle="studentInfo.email" center>
+            <V-Block :title="studentName" :subtitle="studentInfo?.email" center>
               <template #icon>
                 <V-Avatar
                   size="large"
-                  :picture="studentInfo.avatar"
+                  :picture="studentInfo?.avatar"
                   :badge="studentFlag"
                 />
               </template>
-              <template #action>
-                <div class="p-3" style="width: 100px">
-                  <V-Field>
-                    <V-Control>
-                      <div class="select is-rounded">
-                        <select v-model="studentInfo.country">
-                          <option value="">Select a country</option>
-                          <option value="th">TH</option>
-                          <option value="vn">VN</option>
-                        </select>
-                      </div>
-                    </V-Control>
-                  </V-Field>
-                  <!-- <Multiselect
-                    v-model="userCountry"
-                    placeholder="user country"
-                    :options="['th', 'vn']"
-                  /> -->
-                </div>
-              </template>
             </V-Block>
+            <div class="advanced-box">
+              <div v-if="studentInfo">
+                <V-Field>
+                  <label>Change Country</label>
+                  <V-Control>
+                    <div class="select">
+                      <select v-model="studentInfo.country">
+                        <option value="">Select a country</option>
+                        <option value="th">TH</option>
+                        <option value="vn">VN</option>
+                      </select>
+                    </div>
+                  </V-Control>
+                </V-Field>
+              </div>
+            </div>
 
             <div class="account-menu">
               <RouterLink
@@ -151,4 +147,10 @@ const studentFlag = computed(() => {
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
 @import '../../scss/pages/profile/_user-profile.scss';
+.account-wrapper .account-box.is-navigation .media-flex-center {
+  padding-bottom: 0;
+}
+.advanced-box {
+  padding-bottom: 20px;
+}
 </style>
