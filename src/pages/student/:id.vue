@@ -1,14 +1,25 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { ref } from 'vue-demi'
+import { computed, ref } from 'vue-demi'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+import useStudentInfo from '/@src/composable/student/use-student-info'
+import { displayStudentFullname } from '/@src/helpers/student.helper'
 
 pageTitle.value = 'Student Information'
 
 useHead({
   title: 'Whitehouse: Student',
 })
-const userCountry = ref('th')
+const { studentInfo } = useStudentInfo()
+
+const studentName = displayStudentFullname(studentInfo.value)
+const studentFlag = computed(() => {
+  if (studentInfo.value.country === 'vn') {
+    return '/images/icons/flags/vietnam.svg'
+  } else {
+    return '/images/icons/flags/thailand.svg'
+  }
+})
 </script>
 
 <template>
@@ -19,12 +30,12 @@ const userCountry = ref('th')
         <!--Navigation-->
         <div class="column is-4">
           <div class="account-box is-navigation">
-            <V-Block title="Erik Kovalsky" subtitle="Product Manager" center>
+            <V-Block :title="studentName" :subtitle="studentInfo.email" center>
               <template #icon>
                 <V-Avatar
                   size="large"
-                  picture="/demo/avatars/8.jpg"
-                  badge="/images/icons/flags/thailand.svg"
+                  :picture="studentInfo.avatar"
+                  :badge="studentFlag"
                 />
               </template>
               <template #action>
@@ -32,7 +43,7 @@ const userCountry = ref('th')
                   <V-Field>
                     <V-Control>
                       <div class="select is-rounded">
-                        <select v-model="userCountry">
+                        <select v-model="studentInfo.country">
                           <option value="">Select a country</option>
                           <option value="th">TH</option>
                           <option value="vn">VN</option>

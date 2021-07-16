@@ -1,25 +1,29 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, defineProps, onBeforeMount, ref } from 'vue'
+import type { PropType } from 'vue'
 import useNotyf from '/@src/composable/useNotyf'
+import type { IStudentInfo } from '/@src/types/interfaces/student.interface'
 import sleep from '/@src/utils/sleep'
-
+import occupationList from '/@src/data/occupation-list.json'
+import industryList from '/@src/data/industry-list.json'
+import moment from 'moment-timezone'
+const props = defineProps({
+  studentInfo: {
+    type: Object as PropType<IStudentInfo>,
+  },
+})
 const isUploading = ref(false)
 const isLoading = ref(false)
 const experience = ref('')
 const firstJob = ref('')
 const flexibility = ref('')
 const remote = ref('')
-const devices = ref(['ios', 'mac'])
-const devicesOptions = [
-  { value: 'ios', label: 'IOS' },
-  { value: 'mac', label: 'Mac' },
-  { value: 'android', label: 'Android' },
-  { value: 'pc', label: 'PC' },
-]
+const devicesOptions = ['IOS', 'Mac', 'Android', 'PC']
 
-const timezone = ref('Asia/Bangkok')
-const timezoneOptions = ['Asia/Bangkok', 'Etc']
+const industryOptions = industryList
+const occupationOptions = occupationList
+const timezoneOptions = moment.tz.names()
 
 const notyf = useNotyf()
 const { y } = useWindowScroll()
@@ -51,6 +55,17 @@ const onSave = async () => {
   isLoading.value = false
 }
 const isEditMode = ref(false)
+
+onBeforeMount(() => {
+  if (
+    !occupationOptions.some((oc) => oc.value === props.studentInfo?.occupation)
+  ) {
+    occupationOptions.push({
+      text: props.studentInfo?.occupation || '',
+      value: props.studentInfo?.occupation || '',
+    })
+  }
+})
 </script>
 
 <template>
@@ -158,6 +173,7 @@ const isEditMode = ref(false)
               <label>First name (TH)</label>
               <V-Control icon="feather:user">
                 <input
+                  v-model="studentInfo.firstname.th"
                   type="text"
                   class="input"
                   placeholder="First Name (TH)"
@@ -173,6 +189,7 @@ const isEditMode = ref(false)
               <label>Last name (TH)</label>
               <V-Control icon="feather:user">
                 <input
+                  v-model="studentInfo.lastname.th"
                   type="text"
                   class="input"
                   placeholder="Last Name (TH)"
@@ -187,6 +204,7 @@ const isEditMode = ref(false)
               <label>Nickname (TH)</label>
               <V-Control icon="feather:user">
                 <input
+                  v-model="studentInfo.nickname.th"
                   type="text"
                   class="input"
                   placeholder="Nickname (TH)"
@@ -213,6 +231,7 @@ const isEditMode = ref(false)
               <label>First name (EN)</label>
               <V-Control icon="feather:user">
                 <input
+                  v-model="studentInfo.firstname.en"
                   type="text"
                   class="input"
                   placeholder="First Name (EN)"
@@ -228,6 +247,7 @@ const isEditMode = ref(false)
               <label>Last name (EN)</label>
               <V-Control icon="feather:user">
                 <input
+                  v-model="studentInfo.lastname.en"
                   type="text"
                   class="input"
                   placeholder="Last Name (EN)"
@@ -242,6 +262,7 @@ const isEditMode = ref(false)
               <label>Nickname (EN)</label>
               <V-Control icon="feather:user">
                 <input
+                  v-model="studentInfo.nickname.en"
                   type="text"
                   class="input"
                   placeholder="Nick Name (EN)"
@@ -268,6 +289,7 @@ const isEditMode = ref(false)
               <label>Email</label>
               <V-Control icon="feather:user">
                 <input
+                  v-model="studentInfo.email"
                   type="text"
                   class="input"
                   placeholder="Email"
@@ -283,6 +305,7 @@ const isEditMode = ref(false)
               <label>Phone</label>
               <V-Control icon="feather:phone">
                 <input
+                  v-model="studentInfo.phone"
                   type="text"
                   class="input"
                   placeholder="Phone"
@@ -298,6 +321,7 @@ const isEditMode = ref(false)
               <label>Gender</label>
               <V-Control>
                 <input
+                  v-model="studentInfo.gender"
                   type="text"
                   class="input"
                   placeholder="Gender"
@@ -313,6 +337,7 @@ const isEditMode = ref(false)
               <label>Date of birth</label>
               <V-Control icon="feather:calendar">
                 <input
+                  v-model="studentInfo.dob"
                   type="text"
                   class="input"
                   placeholder="Date of birth"
@@ -339,11 +364,21 @@ const isEditMode = ref(false)
           </div>
 
           <div class="column is-12">
-            <V-Field>
+            <V-Field class="is-autocomplete-select">
               <label>Timezone</label>
-              <V-Control>
+              <V-Control icon="feather:clock">
+                <input
+                  v-show="!isEditMode"
+                  v-model="studentInfo.timezone"
+                  type="text"
+                  class="input"
+                  placeholder="Age"
+                  autocomplete="country-name"
+                  :readonly="!isEditMode"
+                />
                 <Multiselect
-                  v-model="timezone"
+                  v-show="isEditMode"
+                  v-model="studentInfo.timezone"
                   :searchable="true"
                   :options="timezoneOptions"
                   placeholder="timezone"
@@ -381,28 +416,61 @@ const isEditMode = ref(false)
         <div class="columns is-multiline">
           <!--Field-->
           <div class="column is-12">
-            <V-Field>
+            <V-Field class="is-autocomplete-select">
               <label>Industry</label>
               <V-Control icon="feather:briefcase">
-                <input
-                  type="text"
-                  class="input"
+                <Multiselect
+                  v-model="studentInfo.industry"
+                  :searchable="true"
+                  :options="industryOptions"
                   placeholder="Industry"
-                  autocomplete="organization-title"
-                  :readonly="!isEditMode"
-                />
+                  track-by="text"
+                  value-prop="value"
+                  :disabled="!isEditMode"
+                >
+                  <template #singlelabel="{ value }">
+                    <div class="multiselect-single-label">
+                      {{ value.text }}
+                    </div>
+                  </template>
+                  <template #option="{ option }">
+                    <span class="select-option-text">
+                      {{ option.text }}
+                    </span>
+                  </template>
+                </Multiselect>
               </V-Control>
             </V-Field>
-            <V-Field>
+            <V-Field class="is-autocomplete-select">
               <label>Occupation</label>
               <V-Control icon="feather:briefcase">
-                <input
+                <!-- <input
                   type="text"
                   class="input"
                   placeholder="Occupation"
                   autocomplete="organization-title"
                   :readonly="!isEditMode"
-                />
+                /> -->
+                <Multiselect
+                  v-model="studentInfo.occupation"
+                  :searchable="true"
+                  :options="occupationOptions"
+                  placeholder="Occupation"
+                  track-by="text"
+                  value-prop="value"
+                  :disabled="!isEditMode"
+                >
+                  <template #singlelabel="{ value }">
+                    <div class="multiselect-single-label">
+                      {{ value.text }}
+                    </div>
+                  </template>
+                  <template #option="{ option }">
+                    <span class="select-option-text">
+                      {{ option.text }}
+                    </span>
+                  </template>
+                </Multiselect>
               </V-Control>
             </V-Field>
             <V-Field>
@@ -424,7 +492,7 @@ const isEditMode = ref(false)
               <label>Devices</label>
               <V-Control>
                 <Multiselect
-                  v-model="devices"
+                  v-model="studentInfo.devices"
                   mode="tags"
                   :searchable="true"
                   :create-tag="true"
