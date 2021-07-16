@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { isDark } from '/@src/state/darkModeState'
 
 import sleep from '/@src/utils/sleep'
 import useNotyf from '/@src/composable/useNotyf'

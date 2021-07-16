@@ -22,6 +22,7 @@ const experience = ref('')
 const firstJob = ref('')
 const flexibility = ref('')
 const remote = ref('')
+const age = ref(moment().diff(props.studentInfo?.dob, 'years'))
 const devicesOptions = ['IOS', 'Mac', 'Android', 'PC']
 
 const industryOptions = industryList
@@ -303,7 +304,7 @@ onBeforeMount(() => {
                   class="input"
                   placeholder="Email"
                   autocomplete="email"
-                  :readonly="!isEditMode"
+                  readonly
                 />
               </V-Control>
             </V-Field>
@@ -329,11 +330,21 @@ onBeforeMount(() => {
             <V-Field>
               <label>Gender</label>
               <V-Control>
+                <input
+                  v-show="!isEditMode"
+                  v-model="studentInfo.gender"
+                  type="text"
+                  class="input gender"
+                  placeholder="Gender"
+                  autocomplete="gender"
+                  :readonly="!isEditMode"
+                />
                 <Multiselect
+                  v-show="isEditMode"
                   v-model="studentInfo.gender"
                   :searchable="true"
                   :options="genderOptions"
-                  placeholder="gender"
+                  placeholder="Gender"
                   :disabled="!isEditMode"
                 />
               </V-Control>
@@ -361,11 +372,12 @@ onBeforeMount(() => {
               <label>Age</label>
               <V-Control>
                 <input
+                  v-model="age"
                   type="text"
                   class="input"
                   placeholder="Age"
                   autocomplete="country-name"
-                  :readonly="!isEditMode"
+                  readonly
                 />
               </V-Control>
             </V-Field>
@@ -427,7 +439,17 @@ onBeforeMount(() => {
             <V-Field class="is-autocomplete-select">
               <label>Industry</label>
               <V-Control icon="feather:briefcase">
+                <input
+                  v-show="!isEditMode"
+                  v-model="studentInfo.studentNote.industry"
+                  type="text"
+                  class="input"
+                  placeholder="Industry"
+                  autocomplete="industry-name"
+                  :readonly="!isEditMode"
+                />
                 <Multiselect
+                  v-show="isEditMode"
                   v-model="studentInfo.studentNote.industry"
                   :searchable="true"
                   :options="industryOptions"
@@ -452,14 +474,17 @@ onBeforeMount(() => {
             <V-Field class="is-autocomplete-select">
               <label>Occupation</label>
               <V-Control icon="feather:briefcase">
-                <!-- <input
+                <input
+                  v-show="!isEditMode"
+                  v-model="studentInfo.studentNote.occupation"
                   type="text"
                   class="input"
                   placeholder="Occupation"
-                  autocomplete="organization-title"
+                  autocomplete="occupation-name"
                   :readonly="!isEditMode"
-                /> -->
+                />
                 <Multiselect
+                  v-show="isEditMode"
                   v-model="studentInfo.studentNote.occupation"
                   :searchable="true"
                   :options="occupationOptions"
@@ -499,13 +524,23 @@ onBeforeMount(() => {
             <V-Field>
               <label>Devices</label>
               <V-Control>
+                <input
+                  v-show="!isEditMode"
+                  v-model="studentInfo.studentNote.device"
+                  type="text"
+                  class="input"
+                  placeholder="Add devices"
+                  autocomplete="device-name"
+                  :readonly="!isEditMode"
+                />
                 <Multiselect
+                  v-show="isEditMode"
                   v-model="studentInfo.studentNote.device"
                   mode="tags"
                   :searchable="true"
                   :create-tag="true"
                   :options="devicesOptions"
-                  placeholder="Add tags"
+                  placeholder="Add devices"
                   :disabled="!isEditMode"
                 />
               </V-Control>
@@ -516,3 +551,9 @@ onBeforeMount(() => {
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.input.gender {
+  text-transform: capitalize;
+}
+</style>

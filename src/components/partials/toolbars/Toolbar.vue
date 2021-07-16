@@ -6,11 +6,15 @@ import { useI18n } from 'vue-i18n'
 import { computed, ref } from 'vue'
 
 const { locale } = useI18n()
-const dropdownElement = ref<HTMLElement | null>(null)
-const dropdown = useDropdown(dropdownElement)
+// const dropdownElement = ref<HTMLElement | null>(null)
+// const dropdown = useDropdown(dropdownElement)
 
 const localFlagSrc = computed(() => {
   switch (locale.value) {
+    case 'th':
+      return '/images/icons/flags/thailand.svg'
+    case 'vn':
+      return '/images/icons/flags/vietnam.svg'
     case 'fr':
       return '/images/icons/flags/france.svg'
     case 'es':
@@ -52,7 +56,7 @@ const localFlagSrc = computed(() => {
       <img :src="localFlagSrc" alt="" />
     </a>
 
-    <div class="toolbar-notifications is-hidden-mobile">
+    <!-- <div class="toolbar-notifications is-hidden-mobile">
       <div
         ref="dropdownElement"
         class="dropdown is-spaced is-dots is-right dropdown-trigger"
@@ -68,10 +72,7 @@ const localFlagSrc = computed(() => {
                 <h6 class="heading-title">Notifications</h6>
               </div>
               <div class="heading-right">
-                <RouterLink
-                  class="notification-link"
-                  :to="{ name: 'sidebar-layouts-profile-notifications' }"
-                >
+                <RouterLink class="notification-link" :to="{ name: 'index' }">
                   See all
                 </RouterLink>
               </div>
@@ -165,13 +166,13 @@ const localFlagSrc = computed(() => {
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <a
+    <!-- <a
       class="toolbar-link right-panel-trigger"
       @click="activePanel = 'activity'"
     >
       <i aria-hidden="true" class="iconify" data-icon="feather:grid"></i>
-    </a>
+    </a> -->
   </div>
 </template>
