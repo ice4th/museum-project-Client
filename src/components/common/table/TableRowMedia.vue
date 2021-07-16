@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineAsyncComponent, defineProps, onMounted } from 'vue'
+import { defineAsyncComponent, defineProps, onMounted } from 'vue'
 import type { PropType } from 'vue'
 const Avatar = defineAsyncComponent(
   () => import('/@src/components/base/avatar/V-Avatar.vue')
@@ -87,20 +87,6 @@ const props = defineProps({
 onMounted(() => {
   // console.log(props.rows)
 })
-
-const showAs = computed((args: ShowAs) => {
-  switch (args.type) {
-    case 'avatar':
-      console.log('avatar new')
-      return `<V-Avatar size="medium" :picture="${args.avatar}" />`
-    case 'badge':
-      return `<V-Avatar size="medium" :picture="${args.avatar}" :badge="${args.badge}"/>`
-    case 'text':
-      return `<span class="light-text"> ${args.text} </span>`
-    default:
-      return ''
-  }
-})
 </script>
 
 <template>
@@ -165,15 +151,6 @@ const showAs = computed((args: ShowAs) => {
     </V-FlexTable>
   </div>
 </template>
-<!-- <component
-      v-if="header.showAs"
-      :is="
-        showAs({
-          [header.showAs]: row[header.key],
-          type: header.showAs,
-        })
-      "
-    ></component> -->
 <style lang="scss" scoped>
 .link {
   color: #a2a5b9;

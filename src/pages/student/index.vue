@@ -118,6 +118,20 @@ const headers = [
         : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/220px-Flag_of_Vietnam.svg.png'
     },
   },
+  {
+    key: '',
+    label: 'Action',
+    showAs: {
+      button: {
+        action(data: IStudent) {},
+      },
+    },
+    display(data: IStudent) {
+      return data.country == 'th'
+        ? 'https://www.countryflags.com/wp-content/uploads/thailand-flag-png-xl.png'
+        : 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Flag_of_Vietnam.svg/220px-Flag_of_Vietnam.svg.png'
+    },
+  },
 ]
 const data = [
   {
