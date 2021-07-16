@@ -1,0 +1,1266 @@
+[
+  {
+    "text": "Academic Advisor",
+    "value": "Academic Advisor"
+  },
+  {
+    "text": "Academic Tutor",
+    "value": "Academic Tutor"
+  },
+  {
+    "text": "Account Executive",
+    "value": "Account Executive"
+  },
+  {
+    "text": "Account Manager",
+    "value": "Account Manager"
+  },
+  {
+    "text": "Account Sales Representative",
+    "value": "Account Sales Representative"
+  },
+  {
+    "text": "Accountant",
+    "value": "Accountant"
+  },
+  {
+    "text": "Accounting",
+    "value": "Accounting"
+  },
+  {
+    "text": "Accounting Specialist",
+    "value": "Accounting Specialist"
+  },
+  {
+    "text": "Actor",
+    "value": "Actor"
+  },
+  {
+    "text": "Actress",
+    "value": "Actress"
+  },
+  {
+    "text": "Administrator",
+    "value": "Administrator"
+  },
+  {
+    "text": "Advertising Specialist",
+    "value": "Advertising Specialist"
+  },
+  {
+    "text": "Advisor",
+    "value": "Advisor"
+  },
+  {
+    "text": "Aerospace Engineer",
+    "value": "Aerospace Engineer"
+  },
+  {
+    "text": "Agent",
+    "value": "Agent"
+  },
+  {
+    "text": "Air Traffic Controller",
+    "value": "Air Traffic Controller"
+  },
+  {
+    "text": "Air hostess",
+    "value": "Air hostess"
+  },
+  {
+    "text": "Aircraft Maintenance Supervisor",
+    "value": "Aircraft Maintenance Supervisor"
+  },
+  {
+    "text": "Aircraft Maintenance Technician",
+    "value": "Aircraft Maintenance Technician"
+  },
+  {
+    "text": "Airline Pilot",
+    "value": "Airline Pilot"
+  },
+  {
+    "text": "Ambassador",
+    "value": "Ambassador"
+  },
+  {
+    "text": "Analyst",
+    "value": "Analyst"
+  },
+  {
+    "text": "Archaeologist",
+    "value": "Archaeologist"
+  },
+  {
+    "text": "Architect",
+    "value": "Architect"
+  },
+  {
+    "text": "Area Manager",
+    "value": "Area Manager"
+  },
+  {
+    "text": "Art Director",
+    "value": "Art Director"
+  },
+  {
+    "text": "Artist",
+    "value": "Artist"
+  },
+  {
+    "text": "Assistant",
+    "value": "Assistant"
+  },
+  {
+    "text": "Assistant Manager",
+    "value": "Assistant Manager"
+  },
+  {
+    "text": "Assistant Marketing Manager",
+    "value": "Assistant Marketing Manager"
+  },
+  {
+    "text": "Assistant Project Manager",
+    "value": "Assistant Project Manager"
+  },
+  {
+    "text": "Assistant Sales Manager",
+    "value": "Assistant Sales Manager"
+  },
+  {
+    "text": "Assistant Supervisor",
+    "value": "Assistant Supervisor"
+  },
+  {
+    "text": "Associate Account Manager",
+    "value": "Associate Account Manager"
+  },
+  {
+    "text": "Associate Brand Manager",
+    "value": "Associate Brand Manager"
+  },
+  {
+    "text": "Associate Manager",
+    "value": "Associate Manager"
+  },
+  {
+    "text": "Associate Project Manager",
+    "value": "Associate Project Manager"
+  },
+  {
+    "text": "Athletes",
+    "value": "Athletes"
+  },
+  {
+    "text": "Attorney",
+    "value": "Attorney"
+  },
+  {
+    "text": "Auditor",
+    "value": "Auditor"
+  },
+  {
+    "text": "Babysitter",
+    "value": "Babysitter"
+  },
+  {
+    "text": "Bank Employee",
+    "value": "Bank Employee"
+  },
+  {
+    "text": "Bank Teller",
+    "value": "Bank Teller"
+  },
+  {
+    "text": "Banker",
+    "value": "Banker"
+  },
+  {
+    "text": "Barista",
+    "value": "Barista"
+  },
+  {
+    "text": "Bartender",
+    "value": "Bartender"
+  },
+  {
+    "text": "Beauty Consultant",
+    "value": "Beauty Consultant"
+  },
+  {
+    "text": "Blogger",
+    "value": "Blogger"
+  },
+  {
+    "text": "Brand Manager",
+    "value": "Brand Manager"
+  },
+  {
+    "text": "Brand Specialist",
+    "value": "Brand Specialist"
+  },
+  {
+    "text": "Brand Strategy Manager",
+    "value": "Brand Strategy Manager"
+  },
+  {
+    "text": "Building Inspector",
+    "value": "Building Inspector"
+  },
+  {
+    "text": "Building Manager",
+    "value": "Building Manager"
+  },
+  {
+    "text": "Business Advisor",
+    "value": "Business Advisor"
+  },
+  {
+    "text": "Business Development",
+    "value": "Business Development"
+  },
+  {
+    "text": "Business Intelligence",
+    "value": "Business Intelligence"
+  },
+  {
+    "text": "Business Owner",
+    "value": "Business Owner"
+  },
+  {
+    "text": "Buyer",
+    "value": "Buyer"
+  },
+  {
+    "text": "Cabin Crew",
+    "value": "Cabin Crew"
+  },
+  {
+    "text": "Captain",
+    "value": "Captain"
+  },
+  {
+    "text": "Cardiologist",
+    "value": "Cardiologist"
+  },
+  {
+    "text": "Caretaker",
+    "value": "Caretaker"
+  },
+  {
+    "text": "Carpenter",
+    "value": "Carpenter"
+  },
+  {
+    "text": "Cashier",
+    "value": "Cashier"
+  },
+  {
+    "text": "Chef",
+    "value": "Chef"
+  },
+  {
+    "text": "Chemical Engineer",
+    "value": "Chemical Engineer"
+  },
+  {
+    "text": "Chemist",
+    "value": "Chemist"
+  },
+  {
+    "text": "Chief Commercial Officer",
+    "value": "Chief Commercial Officer"
+  },
+  {
+    "text": "Chief Development Officer",
+    "value": "Chief Development Officer"
+  },
+  {
+    "text": "Chief Executive Officer",
+    "value": "Chief Executive Officer"
+  },
+  {
+    "text": "Chief Financial Officer",
+    "value": "Chief Financial Officer"
+  },
+  {
+    "text": "Chief Human Resources Officer",
+    "value": "Chief Human Resources Officer"
+  },
+  {
+    "text": "Chief Marketing Officer",
+    "value": "Chief Marketing Officer"
+  },
+  {
+    "text": "Chief Operating Officer",
+    "value": "Chief Operating Officer"
+  },
+  {
+    "text": "Chief Product Officer",
+    "value": "Chief Product Officer"
+  },
+  {
+    "text": "Chief Sales Officer",
+    "value": "Chief Sales Officer"
+  },
+  {
+    "text": "Chief of Technology Officer",
+    "value": "Chief of Technology Officer"
+  },
+  {
+    "text": "Chiropractor",
+    "value": "Chiropractor"
+  },
+  {
+    "text": "Civil Engineer",
+    "value": "Civil Engineer"
+  },
+  {
+    "text": "Claims Supervisor",
+    "value": "Claims Supervisor"
+  },
+  {
+    "text": "Coach",
+    "value": "Coach"
+  },
+  {
+    "text": "Consultant",
+    "value": "Consultant"
+  },
+  {
+    "text": "Content Editor",
+    "value": "Content Editor"
+  },
+  {
+    "text": "Content Manager",
+    "value": "Content Manager"
+  },
+  {
+    "text": "Content Writer",
+    "value": "Content Writer"
+  },
+  {
+    "text": "Coordinator",
+    "value": "Coordinator"
+  },
+  {
+    "text": "Copywriter",
+    "value": "Copywriter"
+  },
+  {
+    "text": "Corporate Accounting Manager",
+    "value": "Corporate Accounting Manager"
+  },
+  {
+    "text": "Counselor",
+    "value": "Counselor"
+  },
+  {
+    "text": "County Manager",
+    "value": "County Manager"
+  },
+  {
+    "text": "Creative Copywriter",
+    "value": "Creative Copywriter"
+  },
+  {
+    "text": "Creative Producer",
+    "value": "Creative Producer"
+  },
+  {
+    "text": "Creative Writer",
+    "value": "Creative Writer"
+  },
+  {
+    "text": "Crew Manager",
+    "value": "Crew Manager"
+  },
+  {
+    "text": "Customer Service",
+    "value": "Customer Service"
+  },
+  {
+    "text": "Customer Service Specialist",
+    "value": "Customer Service Specialist"
+  },
+  {
+    "text": "Data Analyst",
+    "value": "Data Analyst"
+  },
+  {
+    "text": "Data Consultant",
+    "value": "Data Consultant"
+  },
+  {
+    "text": "Data Engineer",
+    "value": "Data Engineer"
+  },
+  {
+    "text": "Data Scientist",
+    "value": "Data Scientist"
+  },
+  {
+    "text": "Delivery Manager",
+    "value": "Delivery Manager"
+  },
+  {
+    "text": "Dentist",
+    "value": "Dentist"
+  },
+  {
+    "text": "Designer",
+    "value": "Designer"
+  },
+  {
+    "text": "Development Specialist",
+    "value": "Development Specialist"
+  },
+  {
+    "text": "Digital Content Manager",
+    "value": "Digital Content Manager"
+  },
+  {
+    "text": "Digital Marketing",
+    "value": "Digital Marketing"
+  },
+  {
+    "text": "Digital Marketing Director",
+    "value": "Digital Marketing Director"
+  },
+  {
+    "text": "Digital Marketing Manager",
+    "value": "Digital Marketing Manager"
+  },
+  {
+    "text": "Digital Marketing Specialist",
+    "value": "Digital Marketing Specialist"
+  },
+  {
+    "text": "Digital Media Manager",
+    "value": "Digital Media Manager"
+  },
+  {
+    "text": "Digital Planner",
+    "value": "Digital Planner"
+  },
+  {
+    "text": "Digital Strategist",
+    "value": "Digital Strategist"
+  },
+  {
+    "text": "Director",
+    "value": "Director"
+  },
+  {
+    "text": "Director Acquisition",
+    "value": "Director Acquisition"
+  },
+  {
+    "text": "Director Business Intelligence",
+    "value": "Director Business Intelligence"
+  },
+  {
+    "text": "Director Corporate Development",
+    "value": "Director Corporate Development"
+  },
+  {
+    "text": "Director Healthcare",
+    "value": "Director Healthcare"
+  },
+  {
+    "text": "Director Information Security",
+    "value": "Director Information Security"
+  },
+  {
+    "text": "Director Marketing Technology",
+    "value": "Director Marketing Technology"
+  },
+  {
+    "text": "Director Of Case Management",
+    "value": "Director Of Case Management"
+  },
+  {
+    "text": "Director Of Continuous Improvement",
+    "value": "Director Of Continuous Improvement"
+  },
+  {
+    "text": "Director Of Corporate Partnerships",
+    "value": "Director Of Corporate Partnerships"
+  },
+  {
+    "text": "Director Of Credit",
+    "value": "Director Of Credit"
+  },
+  {
+    "text": "Director Of Customer Service",
+    "value": "Director Of Customer Service"
+  },
+  {
+    "text": "Director Of Digital Media",
+    "value": "Director Of Digital Media"
+  },
+  {
+    "text": "Director Of Ecommerce",
+    "value": "Director Of Ecommerce"
+  },
+  {
+    "text": "Director Of Education",
+    "value": "Director Of Education"
+  },
+  {
+    "text": "Director Of Event Management",
+    "value": "Director Of Event Management"
+  },
+  {
+    "text": "Director Of Finance And Operations",
+    "value": "Director Of Finance And Operations"
+  },
+  {
+    "text": "Director Of Financial Planning",
+    "value": "Director Of Financial Planning"
+  },
+  {
+    "text": "Director Of Food And Beverage",
+    "value": "Director Of Food And Beverage"
+  },
+  {
+    "text": "Director Of Infrastructure",
+    "value": "Director Of Infrastructure"
+  },
+  {
+    "text": "Director Of Learning",
+    "value": "Director Of Learning"
+  },
+  {
+    "text": "Director Of Logistics",
+    "value": "Director Of Logistics"
+  },
+  {
+    "text": "Director Of Maintenance",
+    "value": "Director Of Maintenance"
+  },
+  {
+    "text": "Director Of Managed Care",
+    "value": "Director Of Managed Care"
+  },
+  {
+    "text": "Director Of Manufacturing",
+    "value": "Director Of Manufacturing"
+  },
+  {
+    "text": "Director Of Pricing",
+    "value": "Director Of Pricing"
+  },
+  {
+    "text": "Director Of Product Design",
+    "value": "Director Of Product Design"
+  },
+  {
+    "text": "Director Of Purchasing",
+    "value": "Director Of Purchasing"
+  },
+  {
+    "text": "Director Of Recruiting",
+    "value": "Director Of Recruiting"
+  },
+  {
+    "text": "Director Of Retail Operations",
+    "value": "Director Of Retail Operations"
+  },
+  {
+    "text": "Director Of Revenue",
+    "value": "Director Of Revenue"
+  },
+  {
+    "text": "Director Of Special Projects",
+    "value": "Director Of Special Projects"
+  },
+  {
+    "text": "Director Of Strategic Communications",
+    "value": "Director Of Strategic Communications"
+  },
+  {
+    "text": "Director Of Strategic Partnerships",
+    "value": "Director Of Strategic Partnerships"
+  },
+  {
+    "text": "Director Of Sustainability",
+    "value": "Director Of Sustainability"
+  },
+  {
+    "text": "Director Of Transportation",
+    "value": "Director Of Transportation"
+  },
+  {
+    "text": "Director Of Treasury",
+    "value": "Director Of Treasury"
+  },
+  {
+    "text": "Director Relations",
+    "value": "Director Relations"
+  },
+  {
+    "text": "Director Sales Operations",
+    "value": "Director Sales Operations"
+  },
+  {
+    "text": "Director Solutions Architecture",
+    "value": "Director Solutions Architecture"
+  },
+  {
+    "text": "Director Strategic Marketing",
+    "value": "Director Strategic Marketing"
+  },
+  {
+    "text": "Director of Account Management",
+    "value": "Director of Account Management"
+  },
+  {
+    "text": "Director of Product Engineering",
+    "value": "Director of Product Engineering"
+  },
+  {
+    "text": "Director of Risk Management",
+    "value": "Director of Risk Management"
+  },
+  {
+    "text": "Distributor",
+    "value": "Distributor"
+  },
+  {
+    "text": "Division Sales Manager",
+    "value": "Division Sales Manager"
+  },
+  {
+    "text": "Doctor",
+    "value": "Doctor"
+  },
+  {
+    "text": "Dog Groomer",
+    "value": "Dog Groomer"
+  },
+  {
+    "text": "Dog Trainer",
+    "value": "Dog Trainer"
+  },
+  {
+    "text": "Driver",
+    "value": "Driver"
+  },
+  {
+    "text": "Economist",
+    "value": "Economist"
+  },
+  {
+    "text": "Editor",
+    "value": "Editor"
+  },
+  {
+    "text": "Education Manager",
+    "value": "Education Manager"
+  },
+  {
+    "text": "Educational Advisor",
+    "value": "Educational Advisor"
+  },
+  {
+    "text": "Electrical Engineer",
+    "value": "Electrical Engineer"
+  },
+  {
+    "text": "Electrician",
+    "value": "Electrician"
+  },
+  {
+    "text": "Employee",
+    "value": "Employee"
+  },
+  {
+    "text": "English Language Instructor",
+    "value": "English Language Instructor"
+  },
+  {
+    "text": "English Lecturer",
+    "value": "English Lecturer"
+  },
+  {
+    "text": "English Second Language Tutor",
+    "value": "English Second Language Tutor"
+  },
+  {
+    "text": "English Teacher",
+    "value": "English Teacher"
+  },
+  {
+    "text": "Entertainer",
+    "value": "Entertainer"
+  },
+  {
+    "text": "Entrepreneur",
+    "value": "Entrepreneur"
+  },
+  {
+    "text": "Event Manager",
+    "value": "Event Manager"
+  },
+  {
+    "text": "Examiner",
+    "value": "Examiner"
+  },
+  {
+    "text": "Executive Chef",
+    "value": "Executive Chef"
+  },
+  {
+    "text": "Facilitator",
+    "value": "Facilitator"
+  },
+  {
+    "text": "Family Counselor",
+    "value": "Family Counselor"
+  },
+  {
+    "text": "Farmer",
+    "value": "Farmer"
+  },
+  {
+    "text": "Fashion Stylist",
+    "value": "Fashion Stylist"
+  },
+  {
+    "text": "Field Specialist",
+    "value": "Field Specialist"
+  },
+  {
+    "text": "Filmmaker",
+    "value": "Filmmaker"
+  },
+  {
+    "text": "Financial Advisor",
+    "value": "Financial Advisor"
+  },
+  {
+    "text": "Fitness Coach",
+    "value": "Fitness Coach"
+  },
+  {
+    "text": "Flourist",
+    "value": "Flourist"
+  },
+  {
+    "text": "Food Stylist",
+    "value": "Food Stylist"
+  },
+  {
+    "text": "Founder",
+    "value": "Founder"
+  },
+  {
+    "text": "Freelance",
+    "value": "Freelance"
+  },
+  {
+    "text": "Freelance Copywriter",
+    "value": "Freelance Copywriter"
+  },
+  {
+    "text": "Game Designer",
+    "value": "Game Designer"
+  },
+  {
+    "text": "Game Tester",
+    "value": "Game Tester"
+  },
+  {
+    "text": "Gardener",
+    "value": "Gardener"
+  },
+  {
+    "text": "General Engineer",
+    "value": "General Engineer"
+  },
+  {
+    "text": "Generalist",
+    "value": "Generalist"
+  },
+  {
+    "text": "Global Sales Director",
+    "value": "Global Sales Director"
+  },
+  {
+    "text": "Golfer",
+    "value": "Golfer"
+  },
+  {
+    "text": "Governement Officer",
+    "value": "Governement Officer"
+  },
+  {
+    "text": "Governor",
+    "value": "Governor"
+  },
+  {
+    "text": "Hairdresser",
+    "value": "Hairdresser"
+  },
+  {
+    "text": "Hairstylist",
+    "value": "Hairstylist"
+  },
+  {
+    "text": "Health Advisor",
+    "value": "Health Advisor"
+  },
+  {
+    "text": "Health Educator",
+    "value": "Health Educator"
+  },
+  {
+    "text": "Housekeeper",
+    "value": "Housekeeper"
+  },
+  {
+    "text": "Human Resource Development (HRD)",
+    "value": "Human Resource Development (HRD)"
+  },
+  {
+    "text": "Human Resources (HR)",
+    "value": "Human Resources (HR)"
+  },
+  {
+    "text": "Illustrator",
+    "value": "Illustrator"
+  },
+  {
+    "text": "Information Specialist",
+    "value": "Information Specialist"
+  },
+  {
+    "text": "Insurance Consultant",
+    "value": "Insurance Consultant"
+  },
+  {
+    "text": "Insurance Manager",
+    "value": "Insurance Manager"
+  },
+  {
+    "text": "Insurance Specialist",
+    "value": "Insurance Specialist"
+  },
+  {
+    "text": "Interior Design Assistant",
+    "value": "Interior Design Assistant"
+  },
+  {
+    "text": "Interior Designer",
+    "value": "Interior Designer"
+  },
+  {
+    "text": "Intern",
+    "value": "Intern"
+  },
+  {
+    "text": "Internal Auditor",
+    "value": "Internal Auditor"
+  },
+  {
+    "text": "Interpreter",
+    "value": "Interpreter"
+  },
+  {
+    "text": "Interviewer",
+    "value": "Interviewer"
+  },
+  {
+    "text": "Investor",
+    "value": "Investor"
+  },
+  {
+    "text": "Jeweler",
+    "value": "Jeweler"
+  },
+  {
+    "text": "Journalist",
+    "value": "Journalist"
+  },
+  {
+    "text": "Key Account Manager",
+    "value": "Key Account Manager"
+  },
+  {
+    "text": "Language Teacher",
+    "value": "Language Teacher"
+  },
+  {
+    "text": "Lawyer",
+    "value": "Lawyer"
+  },
+  {
+    "text": "Lecturer",
+    "value": "Lecturer"
+  },
+  {
+    "text": "Legal Counsel",
+    "value": "Legal Counsel"
+  },
+  {
+    "text": "Life Coach",
+    "value": "Life Coach"
+  },
+  {
+    "text": "Life Insurance Agent",
+    "value": "Life Insurance Agent"
+  },
+  {
+    "text": "Lifeguard",
+    "value": "Lifeguard"
+  },
+  {
+    "text": "Linguist",
+    "value": "Linguist"
+  },
+  {
+    "text": "Lobbyist",
+    "value": "Lobbyist"
+  },
+  {
+    "text": "Loss Prevention Officer",
+    "value": "Loss Prevention Officer"
+  },
+  {
+    "text": "Manager",
+    "value": "Manager"
+  },
+  {
+    "text": "Market Analyst",
+    "value": "Market Analyst"
+  },
+  {
+    "text": "Marketer",
+    "value": "Marketer"
+  },
+  {
+    "text": "Marketing Manager",
+    "value": "Marketing Manager"
+  },
+  {
+    "text": "Mechanic",
+    "value": "Mechanic"
+  },
+  {
+    "text": "Media Buyer",
+    "value": "Media Buyer"
+  },
+  {
+    "text": "Media Planner",
+    "value": "Media Planner"
+  },
+  {
+    "text": "Medical Sale Representative",
+    "value": "Medical Sale Representative"
+  },
+  {
+    "text": "Mentor",
+    "value": "Mentor"
+  },
+  {
+    "text": "Merchandise Buyer",
+    "value": "Merchandise Buyer"
+  },
+  {
+    "text": "Merchandise Specialist",
+    "value": "Merchandise Specialist"
+  },
+  {
+    "text": "Military Officer",
+    "value": "Military Officer"
+  },
+  {
+    "text": "Model",
+    "value": "Model"
+  },
+  {
+    "text": "Nanny",
+    "value": "Nanny"
+  },
+  {
+    "text": "Navy",
+    "value": "Navy"
+  },
+  {
+    "text": "Network Security Engineer",
+    "value": "Network Security Engineer"
+  },
+  {
+    "text": "Network Specialist",
+    "value": "Network Specialist"
+  },
+  {
+    "text": "Neurologist",
+    "value": "Neurologist"
+  },
+  {
+    "text": "News Anchor",
+    "value": "News Anchor"
+  },
+  {
+    "text": "News Writer",
+    "value": "News Writer"
+  },
+  {
+    "text": "Nurse",
+    "value": "Nurse"
+  },
+  {
+    "text": "Office Assistant",
+    "value": "Office Assistant"
+  },
+  {
+    "text": "Officer",
+    "value": "Officer"
+  },
+  {
+    "text": "Online Marketing Coordinator",
+    "value": "Online Marketing Coordinator"
+  },
+  {
+    "text": "Pharmacist",
+    "value": "Pharmacist"
+  },
+  {
+    "text": "Pilot",
+    "value": "Pilot"
+  },
+  {
+    "text": "Planner",
+    "value": "Planner"
+  },
+  {
+    "text": "Police Officer",
+    "value": "Police Officer"
+  },
+  {
+    "text": "Politician",
+    "value": "Politician"
+  },
+  {
+    "text": "Presenter",
+    "value": "Presenter"
+  },
+  {
+    "text": "Private Banker",
+    "value": "Private Banker"
+  },
+  {
+    "text": "Product Manager",
+    "value": "Product Manager"
+  },
+  {
+    "text": "Production Artist",
+    "value": "Production Artist"
+  },
+  {
+    "text": "Production Manager",
+    "value": "Production Manager"
+  },
+  {
+    "text": "Professor",
+    "value": "Professor"
+  },
+  {
+    "text": "Project Manager",
+    "value": "Project Manager"
+  },
+  {
+    "text": "Public Relations",
+    "value": "Public Relations"
+  },
+  {
+    "text": "Purchasing Representative",
+    "value": "Purchasing Representative"
+  },
+  {
+    "text": "Quality Analyst",
+    "value": "Quality Analyst"
+  },
+  {
+    "text": "Quality Assurance",
+    "value": "Quality Assurance"
+  },
+  {
+    "text": "Quality Assurance Manager",
+    "value": "Quality Assurance Manager"
+  },
+  {
+    "text": "Quality Control Technician",
+    "value": "Quality Control Technician"
+  },
+  {
+    "text": "Quality Inspector",
+    "value": "Quality Inspector"
+  },
+  {
+    "text": "Quality Representative",
+    "value": "Quality Representative"
+  },
+  {
+    "text": "Quality Specialist",
+    "value": "Quality Specialist"
+  },
+  {
+    "text": "Real Estate Analyst",
+    "value": "Real Estate Analyst"
+  },
+  {
+    "text": "Real Estate Broker",
+    "value": "Real Estate Broker"
+  },
+  {
+    "text": "Receptionist",
+    "value": "Receptionist"
+  },
+  {
+    "text": "Recruiter",
+    "value": "Recruiter"
+  },
+  {
+    "text": "Regional Manager",
+    "value": "Regional Manager"
+  },
+  {
+    "text": "Reporter",
+    "value": "Reporter"
+  },
+  {
+    "text": "Representative",
+    "value": "Representative"
+  },
+  {
+    "text": "Researcher",
+    "value": "Researcher"
+  },
+  {
+    "text": "Revenue Manager",
+    "value": "Revenue Manager"
+  },
+  {
+    "text": "Sales",
+    "value": "Sales"
+  },
+  {
+    "text": "Sales Engineer",
+    "value": "Sales Engineer"
+  },
+  {
+    "text": "Sales Officer",
+    "value": "Sales Officer"
+  },
+  {
+    "text": "Sales Representative",
+    "value": "Sales Representative"
+  },
+  {
+    "text": "Scientist",
+    "value": "Scientist"
+  },
+  {
+    "text": "Small Business Owner",
+    "value": "Small Business Owner"
+  },
+  {
+    "text": "Software / IT Engineer / Programmer",
+    "value": "Software / IT Engineer / Programmer"
+  },
+  {
+    "text": "Software Developer",
+    "value": "Software Developer"
+  },
+  {
+    "text": "Sound Designer",
+    "value": "Sound Designer"
+  },
+  {
+    "text": "Specialist",
+    "value": "Specialist"
+  },
+  {
+    "text": "Student",
+    "value": "Student"
+  },
+  {
+    "text": "Stylist",
+    "value": "Stylist"
+  },
+  {
+    "text": "Supervisor",
+    "value": "Supervisor"
+  },
+  {
+    "text": "Surgeon",
+    "value": "Surgeon"
+  },
+  {
+    "text": "Teacher",
+    "value": "Teacher"
+  },
+  {
+    "text": "Team Manager",
+    "value": "Team Manager"
+  },
+  {
+    "text": "Technician",
+    "value": "Technician"
+  },
+  {
+    "text": "Tester",
+    "value": "Tester"
+  },
+  {
+    "text": "Trader",
+    "value": "Trader"
+  },
+  {
+    "text": "Trainee",
+    "value": "Trainee"
+  },
+  {
+    "text": "Translator",
+    "value": "Translator"
+  },
+  {
+    "text": "Traveler",
+    "value": "Traveler"
+  },
+  {
+    "text": "Unemployed",
+    "value": "Unemployed"
+  },
+  {
+    "text": "University Student",
+    "value": "University Student"
+  },
+  {
+    "text": "Vice President",
+    "value": "Vice President"
+  },
+  {
+    "text": "Web Editor",
+    "value": "Web Editor"
+  },
+  {
+    "text": "Webmaster",
+    "value": "Webmaster"
+  },
+  {
+    "text": "Writer",
+    "value": "Writer"
+  },
+  {
+    "text": "Yoga Teacher",
+    "value": "Yoga Teacher"
+  },
+  {
+    "text": "Youtuber",
+    "value": "Youtuber"
+  }
+]
