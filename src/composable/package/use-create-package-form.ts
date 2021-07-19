@@ -3,31 +3,25 @@
  */
 
 import { Notyf } from 'notyf'
-import { reactive, toRefs } from 'vue'
+import { computed, onMounted, reactive, toRefs } from 'vue'
+import PackageService from '../../api/package.service'
+import { errMessage, isNil } from '../../helpers/filter.helper'
 import { themeColors } from '../../utils/themeColors'
 import { PrivateSlot } from '/@src/types/enums/package.enum'
-import { IUseCratePackageForm } from '/@src/types/interfaces/package.interface'
+import {
+  ICratePackageForm,
+  IUseCratePackageForm,
+} from '/@src/types/interfaces/package.interface'
 
 /**
  * global notify
  */
-const notyfSuccess = new Notyf({
+const notyfMessage = new Notyf({
   duration: 2000,
   position: {
     x: 'center',
     y: 'top',
   },
-  types: [
-    {
-      type: 'success',
-      background: themeColors.success,
-      icon: {
-        className: 'fas fa-check',
-        tagName: 'i',
-        text: '',
-      },
-    },
-  ],
 })
 
 export default function useCreatePackageForm() {
@@ -45,11 +39,11 @@ export default function useCreatePackageForm() {
    * use state
    */
   const state = reactive<IUseCratePackageForm>({
-    products: items,
-    curriculums: items,
-    featureGroups: items,
-    fmcPackages: items,
-    moocCourses: items,
+    products: [],
+    curriculums: [],
+    featureGroups: [],
+    fmcPackages: [],
+    moocCourses: [],
     createPackageForm: {
       packageName: '',
       packageNameInternal: '',
@@ -81,25 +75,88 @@ export default function useCreatePackageForm() {
   })
 
   /**
+   * computed
+   */
+  const disabledDone = computed(() => {
+    return (
+      !state.createPackageForm.packageName ||
+      !state.createPackageForm.productId ||
+      !state.createPackageForm.globishLevel ||
+      !state.createPackageForm.cefrLevel ||
+      !state.createPackageForm.price ||
+      isNil(state.createPackageForm.installmentMonth) ||
+      !state.createPackageForm.type ||
+      !state.createPackageForm.duration ||
+      !state.createPackageForm.ticketOneOnOne ||
+      !state.createPackageForm.privateSlot
+    )
+  })
+
+  /**
    * Methods
    */
-  const verifyPackage = () => {
-    console.log(state.createPackageForm)
+  const clearPackageState = () => {
+    state.createPackageForm = {
+      packageName: '',
+      packageNameInternal: '',
+      productId: NaN,
+      purchasable: false,
+      status: '0',
+      detail: '',
+      comment: '',
+      globishLevel: '',
+      cefrLevel: '',
+      price: undefined,
+      beforeDiscount: undefined,
+      installmentMonth: undefined,
+      engder: undefined,
+      type: '',
+      duration: undefined,
+      ticketOneOnOne: undefined,
+      ticketFreetalk: undefined,
+      ticketGroup: undefined,
+      ticketMaster: undefined,
+      photo: '',
+      curriculumSheet: '',
+      curriculumId: undefined,
+      featureGroupId: undefined,
+      findMycoachId: undefined,
+      moocCourseId: undefined,
+      privateSlot: undefined,
+    }
   }
-  const createPackage = () => {
-    notyfSuccess.open({
-      type: 'success',
-      message: 'Created Success!',
-    })
+  const createPackage = async () => {
+    // call API service for create package
+    const { status, message } = await PackageService.createPackage(
+      state.createPackageForm
+    )
+    if (status === 200) {
+      notyfMessage.open({
+        type: 'success',
+        message: 'Package was created!',
+      })
+    } else {
+      notyfMessage.open({
+        message: errMessage(message),
+        type: 'error',
+      })
+    }
+    // clear all data
+    clearPackageState()
   }
-  const logPackageName = (val: string) => {
-    console.log(val)
-  }
+
+  /**
+   * On Mounted
+   */
+  onMounted(async () => {
+    const { data } = await PackageService.getAllPackages()
+    state.products = data
+  })
 
   return {
     ...toRefs(state),
-    verifyPackage,
+    disabledDone,
     createPackage,
-    logPackageName,
+    clearPackageState,
   }
 }

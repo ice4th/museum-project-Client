@@ -2,7 +2,7 @@
 import { computed, defineProps } from 'vue'
 import type { PropType } from 'vue'
 import type { ICratePackageForm } from '/@src/types/interfaces/package.interface'
-import { addCommas } from '/@src/helpers/filter.helper'
+import { addCommas, isNil } from '/@src/helpers/filter.helper'
 import {
   GlobishLevel,
   PackageCefrLevel,
@@ -56,7 +56,7 @@ const cefrLevelItems = Object.values(PackageCefrLevel).map((value) => {
 })
 const installmentItems = Object.values(PackageInstallment).map((value) => {
   const key = value === '0' ? 'No installment' : `${value} Month`
-  return { key, value }
+  return { key, value: +value }
 })
 const packageEngderItems = Object.entries(PackageEngder).map(([key, value]) => {
   return { key: key.replace(/_/g, ' '), value }
@@ -86,6 +86,9 @@ const privateSlots = [
               class="input"
               placeholder="Package name"
             />
+            <p v-show="!createPackageForm.packageName" class="help text-danger">
+              Package name is required.
+            </p>
           </V-Control>
         </V-Field>
       </div>
@@ -127,6 +130,9 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
+            <p v-show="!createPackageForm.productId" class="help text-danger">
+              Choose product for this package.
+            </p>
           </V-Control>
         </V-Field>
       </div>
@@ -225,6 +231,12 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
+            <p
+              v-show="!createPackageForm.globishLevel"
+              class="help text-danger"
+            >
+              Choose globish level for this package.
+            </p>
           </V-Control>
         </V-Field>
       </div>
@@ -251,6 +263,9 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
+            <p v-show="!createPackageForm.cefrLevel" class="help text-danger">
+              Choose CEFR level for this package.
+            </p>
           </V-Control>
         </V-Field>
       </div>
@@ -269,9 +284,16 @@ const privateSlots = [
                   type="number"
                   class="input"
                   placeholder="Price"
+                  @change="
+                    props.createPackageForm.price =
+                      +props.createPackageForm.price
+                  "
                 />
               </V-Control>
             </V-Field>
+            <p v-show="!createPackageForm.price" class="help text-danger">
+              Price is required.
+            </p>
           </V-Control>
         </V-Field>
       </div>
@@ -293,9 +315,19 @@ const privateSlots = [
                   type="number"
                   class="input"
                   placeholder="Before Discount"
+                  @change="
+                    props.createPackageForm.beforeDiscount =
+                      +props.createPackageForm.beforeDiscount
+                  "
                 />
               </V-Control>
             </V-Field>
+            <p
+              v-show="!createPackageForm.beforeDiscount"
+              class="help text-danger"
+            >
+              BeforeDiscount is required.
+            </p>
           </V-Control>
         </V-Field>
       </div>
@@ -322,6 +354,12 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
+            <p
+              v-show="isNil(createPackageForm.installmentMonth)"
+              class="help text-danger"
+            >
+              Choose installment for this package.
+            </p>
           </V-Control>
         </V-Field>
       </div>
@@ -374,6 +412,9 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
+            <p v-show="!createPackageForm.type" class="help text-danger">
+              Choose type for this package.
+            </p>
           </V-Control>
         </V-Field>
       </div>
@@ -389,12 +430,19 @@ const privateSlots = [
                   type="number"
                   class="input"
                   placeholder="duration..."
+                  @change="
+                    props.createPackageForm.duration =
+                      +props.createPackageForm.duration
+                  "
                 />
               </V-Control>
               <V-Control>
                 <a class="button is-static">month</a>
               </V-Control>
             </V-Field>
+            <p v-show="!createPackageForm.duration" class="help text-danger">
+              Duration is required.
+            </p>
           </V-Control>
         </V-Field>
       </div>
@@ -408,8 +456,18 @@ const privateSlots = [
               type="number"
               class="input"
               placeholder="1 on 1 ticket..."
+              @change="
+                props.createPackageForm.ticketOneOnOne =
+                  +props.createPackageForm.ticketOneOnOne
+              "
             />
           </V-Control>
+          <p
+            v-show="!createPackageForm.ticketOneOnOne"
+            class="help text-danger"
+          >
+            1 on 1 ticket is required.
+          </p>
         </V-Field>
       </div>
       <!-- Freetalk Ticket -->
@@ -422,6 +480,10 @@ const privateSlots = [
               type="number"
               class="input"
               placeholder="freetalk ticket..."
+              @change="
+                props.createPackageForm.ticketFreetalk =
+                  +props.createPackageForm.ticketFreetalk
+              "
             />
           </V-Control>
         </V-Field>
@@ -436,6 +498,10 @@ const privateSlots = [
               type="number"
               class="input"
               placeholder="group class ticket..."
+              @change="
+                props.createPackageForm.ticketGroup =
+                  +props.createPackageForm.ticketGroup
+              "
             />
           </V-Control>
         </V-Field>
@@ -450,6 +516,10 @@ const privateSlots = [
               type="number"
               class="input"
               placeholder="master class ticket..."
+              @change="
+                props.createPackageForm.ticketMaster =
+                  +props.createPackageForm.ticketMaster
+              "
             />
           </V-Control>
         </V-Field>
@@ -568,7 +638,7 @@ const privateSlots = [
       <div class="column is-6">
         <V-Field>
           <label>Find My Coach</label>
-          <V-Control>
+          <V-Control :has-error="false">
             <Multiselect
               v-model="createPackageForm.findMycoachId"
               placeholder="Select find my coach"
@@ -639,6 +709,9 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
+            <p v-show="!createPackageForm.privateSlot" class="help text-danger">
+              Choose private class time for this package.
+            </p>
           </V-Control>
         </V-Field>
       </div>

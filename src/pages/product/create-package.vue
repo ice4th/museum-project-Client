@@ -42,10 +42,11 @@ const {
   fmcPackages,
   curriculums,
   products,
+  // computed
+  disabledDone,
   // methods
   createPackage,
-  verifyPackage,
-  logPackageName,
+  clearPackageState,
 } = useCreatePackageForm()
 
 const { y } = useWindowScroll()
@@ -90,17 +91,18 @@ const swapOrderIndex = () => {
                     <div class="right">
                       <div class="buttons">
                         <V-Button
-                          icon="lnir lnir-protection rem-100"
+                          icon="lnir lnir-close rem-100"
                           light
                           dark-outlined
-                          @click="verifyPackage"
+                          @click="clearPackageState"
                         >
-                          Verify
+                          Clear
                         </V-Button>
                         <V-Button
                           icon="lnir lnir-checkmark rem-100"
                           color="primary"
                           raised
+                          :disabled="disabledDone"
                           @click="createPackage"
                         >
                           Done
