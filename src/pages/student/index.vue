@@ -49,9 +49,68 @@ onMounted(() => {
     <SearchToolbar />
     <!--V-FlexTable-->
     <!-- <TableRowMedia :rows="data" :headers="headers"> </TableRowMedia> -->
-    <div class="flex-table-wrapper mt-4">
-      <TableFlexMedia :data="data" />
-    </div>
+    <!-- <div class="flex-table-wrapper mt-4"> -->
+    <!-- <TableFlexMedia :data="data" /> -->
+    <!-- </div> -->
+    <table class="table is-hoverable is-fullwidth mt-4">
+      <thead>
+        <tr>
+          <th scope="col" class="has-text-centered">ID</th>
+          <th scope="col" class="is-media"></th>
+          <th scope="col">Fullname</th>
+          <th scope="col">Nickname</th>
+          <th scope="col">Partner</th>
+          <th scope="col">Level</th>
+          <th scope="col">E-mail</th>
+          <th scope="col">Phone</th>
+          <th scope="col">Last Login</th>
+          <th scope="col">Last Package</th>
+          <th scope="col">Ticket</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(st, idxR) in data" :key="`r-${idxR}`">
+          <td>{{ st.studentId }}</td>
+          <td class="is-media">
+            <V-Avatar
+              size="small"
+              :picture="st.avatar"
+              :badge="flag[st.country]"
+            />
+          </td>
+          <td>
+            <router-link
+              :to="{ path: `/student/${st?.studentId}` }"
+              class="link"
+            >
+              {{ displayStudentFullname(st) }}
+            </router-link>
+          </td>
+          <td>{{ st.nickname?.th || st.nickname?.en }}</td>
+          <td>{{ st.partner?.name }}</td>
+          <td>{{ st.globishLevel }}</td>
+          <td>{{ st.email }}</td>
+          <td>{{ st.phone }}</td>
+          <td>
+            {{
+              st.lastLogin
+                ? moment(st.lastLogin).format('DD MMM YYYY, HH:mm')
+                : '-'
+            }}
+          </td>
+          <td>{{ st.package?.packageName || '-' }}</td>
+          <td class="is-flex">
+            Used: {{ st.ticketUsed || '-' }} | Available:
+            {{ st.ticketAvailable || '-' }}
+          </td>
+          <!-- <td class="is-end">
+          <div class="is-flex is-justify-content-flex-end">
+            <FlexTableDropdown />
+          </div>
+        </td> -->
+        </tr>
+      </tbody>
+    </table>
     <div class="flex-table-wrapper mt-4">
       <!--Table Pagination-->
       <V-FlexPagination
@@ -71,5 +130,8 @@ onMounted(() => {
   &:hover {
     color: #e9e9e9;
   }
+}
+thead {
+  height: 4rem;
 }
 </style>
