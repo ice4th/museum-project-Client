@@ -1,0 +1,32 @@
+<script setup lang="ts">
+import { defineEmit } from 'vue'
+
+const emit = defineEmit(['close'])
+</script>
+
+<template>
+  <div class="sidebar-panel is-generic">
+    <div class="subpanel-header">
+      <!-- <ProjectsQuickDropdown /> -->
+
+      <h3 class="no-mb">Role & Permission</h3>
+      <div class="panel-close" @click="emit('close')">
+        <i aria-hidden="true" class="iconify" data-icon="feather:x"></i>
+      </div>
+    </div>
+    <div class="inner" data-simplebar>
+      <ul>
+        <li>
+          <RouterLink :to="{ name: 'role-permission' }"
+            >Role & Permission</RouterLink
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<style lang="scss">
+@import '../../scss/abstracts/_variables.scss';
+@import '../../scss/layout/_sidebar-panel.scss';
+</style>
