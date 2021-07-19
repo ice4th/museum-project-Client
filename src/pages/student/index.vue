@@ -13,6 +13,7 @@
 
 import { useHead } from '@vueuse/head'
 import moment from 'moment'
+import { onMounted, computed } from 'vue'
 
 /**
  * activeSidebar is an exported ref() that we can use everywhere
@@ -37,18 +38,19 @@ interface IStudent {
 }
 
 const columns = [
-  'id',
-  'Picture',
-  'Firstname - Lastname',
+  'ID',
+  ' ',
+  'Fullname',
+  'Nickname',
   'Partner',
   'Level',
   'E-mail',
   'Phone',
-  'Last Login',
+  // 'Last Login',
   'Last Package',
-  'Ticket Available',
-  'Ticket Used',
-  'Country',
+  'Ticket',
+  // 'Ticket Available',
+  // 'Ticket Used',
 ]
 
 const headers = [
@@ -133,51 +135,157 @@ const headers = [
     },
   },
 ]
-const data = [
+const flag = {
+  th: '/@src/assets/img/th-flag.png',
+  vn: '/@src/assets/img/vn-flag.png',
+  kr: '/@src/assets/img/kr-flag.png',
+}
+const rows = [
   {
     id: 232322,
-    name: 'Erik K.',
-    nickname: 'Erik',
+    fullnameEn: 'Erik K.',
+    fullnameTh: '',
+    nicknameEn: 'Erik',
+    globishLevel: 0,
+    // partner: { name: 'Speaking Lab Vietnam' },
     picture:
       'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png',
-    badge:
-      'https://www.countryflags.com/wp-content/uploads/thailand-flag-png-xl.png',
     lastLogin: new Date(),
-    status: 'new',
+    email: 'new@gmail.com',
+    phone: '083943432',
     country: 'vn',
   },
   {
     id: 24293,
-    name: 'Dusadee Srijulpo',
-    nickname: 'Mookky',
+    fullnameTh: 'ดุษฎี ศรีจุลโพธิ์',
+    fullnameEn: 'Dusadee Srijulpo',
+    nicknameEn: 'Mookky',
+    nicknameTh: 'มุกกี้',
+    globishLevel: 'A1',
     picture:
       'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png',
-    badge:
-      'https://www.countryflags.com/wp-content/uploads/thailand-flag-png-xl.png',
     lastLogin: new Date(),
-    status: 'lost',
+    email: 'dusadee.srj@gmail.com',
+    phone: '0839434332 เบอร์คุณแม่',
     country: 'th',
+    package: { name: 'Business English G3' },
   },
   {
     id: 24294,
-    name: 'Kang Daniel',
-    nickname: 'Dan',
+    fullnameEn: 'Kang Daniel',
+    nicknameEn: 'Dan',
     picture:
-      'https://cdn.icon-icons.com/icons2/2643/PNG/512/male_boy_person_people_avatar_icon_159358.png',
-    badge:
-      'https://www.countryflags.com/wp-content/uploads/thailand-flag-png-xl.png',
+      'https://www.hallyukstar.com/wp-content/uploads/2019/03/KANG-DANIEL.jpg',
+    globishLevel: 'A2',
     lastLogin: new Date(),
-    status: 'ban',
+    email: 'Daniel@gmail.com',
+    phone: '034324234',
     country: 'kr',
+    package: { name: 'Business English G4' },
   },
 ]
+
+const data = Array(10).fill(rows[0])
+data.push(...Array(10).fill(rows[1]))
+data.push(...Array(10).fill(rows[2]))
+onMounted(() => {
+  console.log(data)
+})
 </script>
 
 <template>
   <div class="page-content-inner">
     <SearchToolbar />
     <!--V-FlexTable-->
-    <TableRowMedia :rows="data" :headers="headers" />
+    <!-- <TableRowMedia :rows="data" :headers="headers"> </TableRowMedia> -->
+
+    <div class="flex-table-wrapper mt-4">
+      <V-FlexTable>
+        <template #header>
+          <div class="flex-table-header">
+            <!-- <span
+              v-for="(col, idxH) in columns"
+              :key="`h-${idxH}`"
+              class="cell-center"
+            >
+              {{ col }}
+            </span> -->
+            <span>ID</span>
+            <span> </span>
+            <span class="is-grow">Fullname</span>
+            <span>Nickname</span>
+            <span>Partner</span>
+            <span>Level</span>
+            <span>E-mail</span>
+            <span>Phone</span>
+            <!-- <span>Last Login</span> -->
+            <span>Last Package</span>
+            <span>Ticket</span>
+            <!-- <span class="cell-end">Actions</span> -->
+          </div>
+        </template>
+        <template #body>
+          <div
+            v-for="(st, idxR) in data"
+            :key="`r-${idxR}`"
+            class="flex-table-item"
+          >
+            <div class="flex-table-cell" data-th="ID">
+              <span class="light-text">{{ st.id }}</span>
+            </div>
+            <div class="flex-table-cell" data-th="Picture">
+              <V-Avatar
+                size="small"
+                :picture="st.picture"
+                :badge="flag[st.country]"
+              />
+            </div>
+            <div class="flex-table-cell" data-th="Fullname">
+              <router-link
+                :to="{ path: '/student', query: { id: data?.id } }"
+                class="link"
+              >
+                {{ st.fullnameTh || st.fullnameEn }}</router-link
+              >
+            </div>
+            <div class="flex-table-cell" data-th="Nickname">
+              <span class="light-text">{{
+                st.nicknameTh || st.nicknameEn
+              }}</span>
+            </div>
+            <div class="flex-table-cell" data-th="Partner">
+              <span class="light-text">{{ st.partner?.name }}</span>
+            </div>
+            <div class="flex-table-cell" data-th="Level">
+              <span class="light-text">{{ st.globishLevel }}</span>
+            </div>
+            <div class="flex-table-cell" data-th="E-mail">
+              <span class="light-text">{{ st.email }}</span>
+            </div>
+            <div class="flex-table-cell" data-th="Phone">
+              <span class="light-text">{{ st.phone }}</span>
+            </div>
+            <!-- <div class="flex-table-cell" data-th="Last Login">
+              <span class="light-text">{{
+                moment(st.lastlogin).format('DD MMM YYYY, HH:mm')
+              }}</span>
+            </div> -->
+            <div class="flex-table-cell" data-th="Last Package">
+              <span class="light-text">{{ st?.package?.name || '-' }}</span>
+            </div>
+            <div class="flex-table-cell" data-th="Ticket Used">
+              <span class="light-text"
+                >Used: {{ st.ticketUsed || '-' }} | Available:
+                {{ st.ticketAvailable || '-' }}</span
+              >
+            </div>
+            <!-- <div class="flex-table-cell cell-center" data-th="Actions">
+              <span class="light-text">{{ st.ticketUsed }}</span>
+            </div> -->
+          </div>
+        </template>
+      </V-FlexTable>
+    </div>
     <div class="flex-table-wrapper mt-4">
       <!--Table Pagination-->
       <V-FlexPagination
@@ -189,3 +297,13 @@ const data = [
     </div>
   </div>
 </template>
+<style lang="scss" scoped>
+.link {
+  color: #a2a5b9;
+  // border-bottom: 1px solid white;
+  text-decoration: underline;
+  &:hover {
+    color: #e9e9e9;
+  }
+}
+</style>
