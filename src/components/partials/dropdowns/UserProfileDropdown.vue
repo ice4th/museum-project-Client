@@ -1,3 +1,13 @@
+<script setup lang="ts">
+// UserProfileDropdown Component
+import { provide } from 'vue'
+import useUserSession from '/@src/composable/useUserSession'
+
+import useAdminProfile from '/@src/composable/common/use-admin-profile'
+
+const { adminProfile: profile, logout } = useAdminProfile()
+const { user } = useUserSession()
+</script>
 <template>
   <V-Dropdown right spaced class="user-dropdown profile-dropdown">
     <template #button="{ toggle }">
@@ -6,17 +16,17 @@
         aria-haspopup="true"
         @click="toggle"
       >
-        <V-Avatar picture="/demo/avatars/8.jpg" />
+        <V-Avatar :picture="user.avatar" />
       </a>
     </template>
 
     <template #content>
       <div class="dropdown-head">
-        <V-Avatar size="large" picture="/demo/avatars/8.jpg" />
+        <V-Avatar size="large" :picture="user.avatar" />
 
         <div class="meta">
-          <span>Erik Kovalsky</span>
-          <span>Product Manager</span>
+          <span>{{ user.name }}</span>
+          <span>User Role</span>
         </div>
       </div>
 
@@ -74,6 +84,7 @@
           role="menuitem"
           raised
           fullwidth
+          @click="logout"
         >
           Logout
         </V-Button>

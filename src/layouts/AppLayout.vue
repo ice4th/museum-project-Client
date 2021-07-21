@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { defineProps, ref, watchEffect, watch } from 'vue'
+import { ref, watchPostEffect, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { activePanel } from '/@src/state/activePanelState'
@@ -53,23 +53,20 @@ function switchSidebar(id: string) {
 }
 
 /**
- * watchEffect callback will be executed each time dependent reactive values has changed
+ * watchPostEffect callback will be executed each time dependent reactive values has changed
  */
-watchEffect(
-  () => {
-    const isOpen = isDesktopSidebarOpen.value
-    const wrappers = document.querySelectorAll('.view-wrapper')
+watchPostEffect(() => {
+  const isOpen = isDesktopSidebarOpen.value
+  const wrappers = document.querySelectorAll('.view-wrapper')
 
-    wrappers.forEach((wrapper) => {
-      if (isOpen === false) {
-        wrapper.classList.remove('is-pushed-full')
-      } else if (!wrapper.classList.contains('is-pushed-full')) {
-        wrapper.classList.add('is-pushed-full')
-      }
-    })
-  },
-  { flush: 'post' }
-)
+  wrappers.forEach((wrapper) => {
+    if (isOpen === false) {
+      wrapper.classList.remove('is-pushed-full')
+    } else if (!wrapper.classList.contains('is-pushed-full')) {
+      wrapper.classList.add('is-pushed-full')
+    }
+  })
+})
 watch(
   () => route.fullPath,
   () => {
@@ -133,7 +130,7 @@ watch(
       </template>
 
       <template #bottom-links>
-        <li>
+        <!-- <li>
           <a @click="activePanel = 'search'">
             <i
               aria-hidden="true"
@@ -141,7 +138,7 @@ watch(
               data-icon="feather:search"
             ></i>
           </a>
-        </li>
+        </li> -->
         <li>
           <a href="#">
             <i
@@ -163,9 +160,6 @@ watch(
         v-else-if="isMobileSidebarOpen && activeMobileSubsidebar === 'product'"
       />
     </transition>
-
-    <!-- Desktop navigation -->
-    <!-- <CircularMenu /> -->
 
     <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
       <template #links>
@@ -216,29 +210,6 @@ watch(
       </template>
 
       <template #bottom-links>
-        <!-- Switch Sidebar  Layouts -->
-        <!-- <li>
-          <LayoutSwitcher />
-        </li> -->
-
-        <!-- Search -->
-        <li class="right-panel-trigger">
-          <a data-content="Search" @click="activePanel = 'search'">
-            <i
-              aria-hidden="true"
-              class="iconify sidebar-svg"
-              data-icon="feather-search"
-            />
-          </a>
-          <a class="is-hidden is-inactive" @click="activePanel = 'none'">
-            <i
-              aria-hidden="true"
-              class="iconify sidebar-svg"
-              data-icon="feather-x"
-            />
-          </a>
-        </li>
-
         <!-- Settings -->
         <li>
           <RouterLink
@@ -273,9 +244,6 @@ watch(
     </transition>
 
     <LanguagesPanel />
-    <!-- <ActivityPanel />
-    <SearchPanel />
-    <TaskPanel /> -->
 
     <div class="view-wrapper">
       <div class="page-content-wrapper">

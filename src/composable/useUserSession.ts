@@ -1,21 +1,24 @@
 import { InjectionKey, ref, computed, inject, reactive } from 'vue'
 import { useStorage } from '@vueuse/core'
+import { IAdminInfo } from '../types/interfaces/admin.interface'
 
 export const userSessionSymbol: InjectionKey<UserSessionData> = Symbol()
 
-export type UserData = Record<string, any> | null
-
+const ADMIN_ACCESS_TOKEN = 'wh_access_token'
+const ADMIN_PROFILE = 'wh_profile'
 export interface UserSessionData {
   token: string
-  user: UserData
+  user?: IAdminInfo
   isLoggedIn: boolean
 }
 
 export function initUserSession(): UserSessionData {
-  const token = useStorage('token', '')
-  const user = ref<UserData>(null)
+  const token = useStorage(ADMIN_ACCESS_TOKEN, '')
+  const userJsonString = useStorage(ADMIN_PROFILE, '')
+  const user = ref<IAdminInfo | undefined>(
+    JSON.parse(userJsonString.value) as IAdminInfo
+  )
   const isLoggedIn = computed(() => token.value !== '')
-
   return reactive({
     token,
     user,
@@ -23,8 +26,8 @@ export function initUserSession(): UserSessionData {
   })
 }
 
-export default function useUserSession() {
-  const userSession = inject(userSessionSymbol)
+export default function useUserSession(): UserSessionData {
+  const userSession = inject<UserSessionData>(userSessionSymbol)
   if (!userSession) {
     throw new Error('UserSession not properly injected in app')
   }

@@ -11,6 +11,10 @@ const dropdown = useDropdown(dropdownElement)
 
 const localFlagSrc = computed(() => {
   switch (locale.value) {
+    case 'th':
+      return '/images/icons/flags/thailand.svg'
+    case 'vn':
+      return '/images/icons/flags/vietnam.svg'
     case 'fr':
       return '/images/icons/flags/france.svg'
     case 'es':
