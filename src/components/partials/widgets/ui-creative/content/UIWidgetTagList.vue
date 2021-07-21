@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-defineProps({
+const props = defineProps({
   tags: {
     type: Array,
     required: true,
@@ -13,7 +11,7 @@ defineProps({
   <div class="widget-content">
     <div class="tags">
       <V-Tag
-        v-for="tag in tags"
+        v-for="tag in props.tags"
         :key="tag.id"
         :color="tag.color"
         curved

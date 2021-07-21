@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-defineProps({
+const props = defineProps({
   title: {
     type: String,
     default: 'Widget Title',
@@ -15,10 +13,6 @@ defineProps({
     default:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Bonum integritas corporis: misera debilitas. Ita ne hoc quidem modo paria.',
   },
-  straight: {
-    type: Boolean,
-    default: false,
-  },
 })
 </script>
 
@@ -26,10 +20,10 @@ defineProps({
   <div class="stat-widget flex-stat-widget is-straight">
     <div class="chart-media">
       <div class="meta">
-        <h4 class="dark-inverted">{{ title }}</h4>
-        <span class="is-dark-primary">${{ value }}</span>
+        <h4 class="dark-inverted">{{ props.title }}</h4>
+        <span class="is-dark-primary">${{ props.value }}</span>
         <p>
-          {{ text }}
+          {{ props.text }}
         </p>
       </div>
       <div class="chart-container">

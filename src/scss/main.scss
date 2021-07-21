@@ -76,24 +76,3 @@ SCSS Imports
 @import './layout/_responsive.scss';
 
 @import './abstracts/_dark.scss';
-
-html {
-  // Root font size for REM unit
-  font-size: 14px;
-  font-family: $font-alt;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-button {
-  font-family: $font-alt;
-}
-
-form label,
-input {
-  font-family: $font-alt;
-}

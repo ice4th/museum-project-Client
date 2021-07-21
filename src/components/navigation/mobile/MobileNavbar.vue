@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import { defineEmit, defineProps } from 'vue'
-
 const props = defineProps({
   isOpen: {
     type: Boolean,
     default: false,
   },
 })
-const emit = defineEmit(['toggle'])
-</script>
 
+const emit = defineEmits(['toggle'])
+</script>
 <template>
   <nav
     class="navbar mobile-navbar is-hidden-desktop is-hidden-tablet"
