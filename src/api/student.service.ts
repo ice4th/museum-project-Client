@@ -7,6 +7,7 @@ import {
 } from '../types/interfaces/common.interface'
 import {
   IStudentList,
+  IUpdateStudentProfile,
   StudentInfoResponse,
 } from '../types/interfaces/student.interface'
 import ApiService, { ApiServiceResponse } from './api.service'
@@ -16,17 +17,29 @@ export default class StudentService {
     studentId: number
   ): Promise<ApiServiceResponse<StudentInfoResponse>> {
     const res = await ApiService.get<StudentInfoResponse>(
-      `/Student/Info/${studentId}`
+      `/Students/Info/${studentId}`
     )
     return res
   }
 
   public static async getAllStudents(
-    params: IPaginationParams
+    params: IPaginationParams,
+    search?: string
   ): Promise<ApiServiceResponse<IPaginationResponse<IStudentList[]>>> {
     return await ApiService.get<IPaginationResponse<IStudentList[]>>(
-      `/Students`,
-      { params }
+      `/Students/Info/All`,
+      { params: { ...params, search } }
     )
+  }
+
+  public static async updateStudentInfoById(
+    studentId: number,
+    payload: IUpdateStudentProfile
+  ): Promise<ApiServiceResponse<StudentInfoResponse>> {
+    const res = await ApiService.put<StudentInfoResponse>(
+      `/Students/Info/${studentId}`,
+      payload
+    )
+    return res
   }
 }

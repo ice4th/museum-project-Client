@@ -13,45 +13,39 @@
 
 import { useHead } from '@vueuse/head'
 import moment from 'moment'
-import { onMounted, computed } from 'vue'
+import { onMounted, watch } from 'vue'
 import useStudentList from '/@src/composable/student/use-student-list'
-import { displayStudentFullname } from '/@src/helpers/student.helper'
-
-/**
- * activeSidebar is an exported ref() that we can use everywhere
- * @see /src/components/navigation/desktop/sidebar/subsidebars/GenericSidebar.vue
- */
-import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
+import {
+  displayStudentFullname,
+  countryFlag,
+} from '/@src/helpers/student.helper'
+import { useRoute, useRouter } from 'vue-router'
+import { toFormat } from '/@src/helpers/date.helper'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import { StudentCountry } from '/@src/types/enums/student.enum'
-import type { IStudentList } from '/@src/types/interfaces/student.interface'
-
+const route = useRoute()
 pageTitle.value = 'Student Information'
-const { data, totalPage, total, currentPage } = useStudentList()
+
+const { data, totalPage, total, currentPage, perPage } = useStudentList()
 
 useHead({
   title: 'Whitehouse: Student',
 })
 
+onMounted(() => {})
 const flag = {
   th: '/@src/assets/img/th-flag.png',
   vn: '/@src/assets/img/vn-flag.png',
   kr: '/@src/assets/img/kr-flag.png',
 }
-
-onMounted(() => {
-  // console.log(data)
-})
 </script>
 
 <template>
   <div class="page-content-inner">
-    <SearchToolbar />
-    <!--V-FlexTable-->
-    <!-- <TableRowMedia :rows="data" :headers="headers"> </TableRowMedia> -->
-    <!-- <div class="flex-table-wrapper mt-4"> -->
-    <!-- <TableFlexMedia :data="data" /> -->
-    <!-- </div> -->
+    <SearchToolbar
+      :placeholder="'search by name phone email'"
+      :model-search="route.query?.search"
+      :per-page="route.query?.perPage"
+    />
     <table class="table is-hoverable is-fullwidth mt-4">
       <thead>
         <tr>
@@ -75,7 +69,7 @@ onMounted(() => {
             <V-Avatar
               size="small"
               :picture="st.avatar"
-              :badge="flag[st.country]"
+              :badge="countryFlag[st.country]"
             />
           </td>
           <td>
@@ -93,9 +87,7 @@ onMounted(() => {
           <td>{{ st.phone }}</td>
           <td>
             {{
-              st.lastLogin
-                ? moment(st.lastLogin).format('DD MMM YYYY, HH:mm')
-                : '-'
+              st.lastLogin ? toFormat(st.lastLogin, 'DD MMM YYYY, HH:mm') : '-'
             }}
           </td>
           <td>{{ st.package?.packageName || '-' }}</td>
@@ -103,21 +95,16 @@ onMounted(() => {
             Used: {{ st.ticketUsed || '-' }} | Available:
             {{ st.ticketAvailable || '-' }}
           </td>
-          <!-- <td class="is-end">
-          <div class="is-flex is-justify-content-flex-end">
-            <FlexTableDropdown />
-          </div>
-        </td> -->
         </tr>
       </tbody>
     </table>
     <div class="flex-table-wrapper mt-4">
       <!--Table Pagination-->
       <V-FlexPagination
-        :item-per-page="5"
+        :item-per-page="perPage"
         :total-items="total"
         :current-page="currentPage"
-        :max-links-displayed="5"
+        :max-links-displayed="10"
       />
     </div>
   </div>
@@ -125,7 +112,6 @@ onMounted(() => {
 <style lang="scss" scoped>
 .link {
   color: #a2a5b9;
-  // border-bottom: 1px solid white;
   text-decoration: underline;
   &:hover {
     color: #e9e9e9;

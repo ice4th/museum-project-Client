@@ -80,6 +80,27 @@ export interface StudentInfoResponse {
   studentNote: IStudentNote
 }
 
-export interface IStudentList extends IStudentInfo {
+export interface IStudentList extends StudentInfoResponse {
   package?: IPackageInfo
+}
+
+export interface IUpdateStudentProfile {
+  firstnameTH?: string
+  lastnameTH?: string
+  nicknameTH?: string
+  firstnameEN?: string
+  lastnameEN?: string
+  nicknameEN?: string
+  gender?: StudentGender
+  dob?: string
+  phone?: string
+  email?: string
+  country?: StudentCountry
+  interests?: string
+  timezone?: string
+  industry?: string
+  school?: string
+  device?: string
+  occupation?: string
+  file?: File
 }
