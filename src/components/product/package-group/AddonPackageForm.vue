@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // AddonPackageForm Component
-import { computed, defineEmit, defineProps, ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { PropType } from 'vue'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
 import type {
@@ -22,7 +22,7 @@ const props = defineProps({
     default: undefined,
   },
 })
-const emit = defineEmit({
+const emit = defineEmits({
   cancel: null,
   add: Object,
 })
