@@ -48,7 +48,7 @@ const swapOrderIndex = () => {
 <template>
   <div class="page-content-inner">
     <!-- create group package -->
-    <div class="form-layout is-stacked">
+    <div class="form-layout">
       <V-Tabs
         selected="package-group"
         :tabs="[
@@ -248,9 +248,6 @@ const swapOrderIndex = () => {
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
 @import '../../scss/pages/generic/_forms.scss';
-.form-fieldset {
-  max-width: 540px;
-}
 .button-submit {
   text-align: end;
 }

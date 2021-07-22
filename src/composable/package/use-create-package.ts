@@ -12,6 +12,7 @@ import {
 import { GenerateTicket } from '/@src/types/enums/package.enum'
 import { Notyf } from 'notyf'
 import { themeColors } from '/@src/utils/themeColors'
+import { useRouter } from 'vue-router'
 
 /**
  * add type for render with type
@@ -77,6 +78,7 @@ export default function useCreatePackage() {
     addonPackages: [],
     currentAddonPackage: undefined,
   })
+  const router = useRouter()
 
   const displayPackageNameById = (id: number) => {
     return state.packages.find((pk) => pk.id === id)?.packageName || ''
@@ -181,7 +183,10 @@ export default function useCreatePackage() {
         type: 'success',
         message: 'Created Success!',
       })
-      // TODO: route to view package
+      router.push({
+        name: 'product-package-group-:packageid',
+        params: { packageid: `${state.mainPackageId}` },
+      })
       return
     }
     notyfWarning.open({
