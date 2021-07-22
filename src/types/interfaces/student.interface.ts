@@ -5,6 +5,7 @@ import {
   StudentPersonalTitle,
 } from '../enums/student.enum'
 import { INameLang } from './common.interface'
+import { IPackageInfo } from './package.interface'
 
 export interface IStudentInfo {
   id: number
@@ -77,4 +78,29 @@ export interface StudentInfoResponse {
   cefr?: string
   globishLevel?: string
   studentNote: IStudentNote
+}
+
+export interface IStudentList extends StudentInfoResponse {
+  package?: IPackageInfo
+}
+
+export interface IUpdateStudentProfile {
+  firstnameTH?: string
+  lastnameTH?: string
+  nicknameTH?: string
+  firstnameEN?: string
+  lastnameEN?: string
+  nicknameEN?: string
+  gender?: StudentGender
+  dob?: string
+  phone?: string
+  email?: string
+  country?: StudentCountry
+  interests?: string
+  timezone?: string
+  industry?: string
+  school?: string
+  device?: string
+  occupation?: string
+  file?: File
 }
