@@ -26,6 +26,8 @@ export enum PricingPackage {
 }
 
 export enum GlobishLevel {
+  PRE_LEVEL_PART_1 = '0.1',
+  PRE_LEVEL_PART_2 = '0.2',
   LEVEL_0 = '0',
   LEVEL_1 = '1',
   LEVEL_2 = '2',
@@ -37,6 +39,9 @@ export enum GlobishLevel {
   LEVEL_8 = '8',
   LEVEL_9 = '9',
   LEVEL_10 = '10',
+  LEVEL_11 = '11',
+  LEVEL_12 = '12',
+  LEVEL_13 = '13',
 }
 
 export enum PackageCefrLevel {

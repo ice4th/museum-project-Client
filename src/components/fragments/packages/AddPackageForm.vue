@@ -49,7 +49,7 @@ const props = defineProps({
  * Multi Select Items
  */
 const globishLevelItems = Object.entries(GlobishLevel).map(([key, value]) => {
-  return { key: key.replace('_', ' '), value }
+  return { key: key.replace(/_/g, ' '), value }
 })
 const cefrLevelItems = Object.values(PackageCefrLevel).map((value) => {
   return { key: value, value }
@@ -643,17 +643,17 @@ const privateSlots = [
               v-model="createPackageForm.findMycoachId"
               placeholder="Select find my coach"
               :options="fmcPackages"
-              track-by="name"
+              track-by="packageName"
               value-prop="id"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
-                  {{ value.name }}
+                  {{ value.packageName }}
                 </div>
               </template>
               <template #option="{ option }">
                 <span class="select-option-text">
-                  {{ option.name }}
+                  {{ option.packageName }}
                 </span>
               </template>
             </Multiselect>
@@ -669,17 +669,17 @@ const privateSlots = [
               v-model="createPackageForm.moocCourseId"
               placeholder="Select mooc course"
               :options="moocCourses"
-              track-by="name"
+              track-by="title"
               value-prop="id"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
-                  {{ value.name }}
+                  {{ value.title }}
                 </div>
               </template>
               <template #option="{ option }">
                 <span class="select-option-text">
-                  {{ option.name }}
+                  {{ option.title }}
                 </span>
               </template>
             </Multiselect>

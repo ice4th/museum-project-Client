@@ -4,14 +4,10 @@
 
 import { Notyf } from 'notyf'
 import { computed, onMounted, reactive, toRefs } from 'vue'
+import OptionService from '../../api/option.service'
 import PackageService from '../../api/package.service'
 import { errMessage, isNil } from '../../helpers/filter.helper'
-import { themeColors } from '../../utils/themeColors'
-import { PrivateSlot } from '/@src/types/enums/package.enum'
-import {
-  ICratePackageForm,
-  IUseCratePackageForm,
-} from '/@src/types/interfaces/package.interface'
+import { IUseCratePackageForm } from '/@src/types/interfaces/package.interface'
 
 /**
  * global notify
@@ -25,16 +21,6 @@ const notyfMessage = new Notyf({
 })
 
 export default function useCreatePackageForm() {
-  const items = [
-    { id: 1, name: 'item 001' },
-    { id: 2, name: 'item 002' },
-    { id: 3, name: 'item 003' },
-    { id: 4, name: 'item 004' },
-    { id: 5, name: 'item 005' },
-    { id: 6, name: 'item 006' },
-    { id: 7, name: 'item 007' },
-    { id: 8, name: 'item 008' },
-  ]
   /**
    * use state
    */
@@ -95,6 +81,8 @@ export default function useCreatePackageForm() {
   /**
    * Methods
    */
+
+  /** clear all package input */
   const clearPackageState = () => {
     state.createPackageForm = {
       packageName: '',
@@ -125,12 +113,13 @@ export default function useCreatePackageForm() {
       privateSlot: undefined,
     }
   }
+  /** create new package */
   const createPackage = async () => {
     // call API service for create package
     const { status, message } = await PackageService.createPackage(
       state.createPackageForm
     )
-    if (status === 200) {
+    if (status === 201) {
       notyfMessage.open({
         type: 'success',
         message: 'Package was created!',
@@ -149,8 +138,25 @@ export default function useCreatePackageForm() {
    * On Mounted
    */
   onMounted(async () => {
-    const { data } = await PackageService.getAllPackages()
-    state.products = data
+    // fetch all options
+    const [
+      { data: products },
+      { data: curriculums },
+      { data: featureGroups },
+      { data: fmcPackages },
+      { data: moocCourses },
+    ] = await Promise.all([
+      OptionService.products(),
+      OptionService.curriculums(),
+      OptionService.featureGroups(),
+      OptionService.fmcPackages(),
+      OptionService.MoocCourses(),
+    ])
+    state.products = products
+    state.curriculums = curriculums
+    state.featureGroups = featureGroups
+    state.fmcPackages = fmcPackages
+    state.moocCourses = moocCourses
   })
 
   return {
