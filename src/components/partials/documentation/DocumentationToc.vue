@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { computed, defineProps, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import VueScrollTo from 'vue-scrollto'
 
 type TocItem = {
@@ -11,10 +11,12 @@ type TocItem = {
 }
 
 const route = useRoute()
+const router = useRouter()
 
-defineProps({
+const props = defineProps({
   toc: {
     type: Array as PropType<TocItem[]>,
+    default: () => [],
   },
 })
 
@@ -29,6 +31,10 @@ const isActiveAnchor = computed(() => {
 
 const onTocClick = (id?: string) => {
   VueScrollTo.scrollTo(id ? `#${id}` : '#app', 500, { offset: -30 })
+  router.replace({
+    ...route,
+    hash: `#${id}`,
+  })
 }
 
 onMounted(() => {
@@ -45,19 +51,19 @@ onMounted(() => {
     <strong class="toc-title">Contents</strong>
     <ul>
       <li
-        v-for="item of toc"
+        v-for="item of props.toc"
         :key="item.id"
         :class="[`toc-level-${item.level}`]"
       >
         <a
           :href="`#${item.id}`"
           :class="[isActiveAnchor(item.id) && 'is-active']"
-          @click="() => onTocClick(item.id)"
+          @click.prevent="() => onTocClick(item.id)"
           >{{ item.title }}</a
         >
       </li>
       <li>
-        <a class="back-to-top" href="#" @click="() => onTocClick()">
+        <a class="back-to-top" href="#" @click.prevent="() => onTocClick()">
           <span>Back To Top</span>
         </a>
       </li>

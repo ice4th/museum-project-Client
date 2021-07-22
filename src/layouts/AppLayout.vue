@@ -1,0 +1,286 @@
+<script setup lang="ts">
+import type { PropType } from 'vue'
+import { ref, watchPostEffect, watch } from 'vue'
+import { useRoute } from 'vue-router'
+
+import { activePanel } from '/@src/state/activePanelState'
+import { pageTitle } from '/@src/state/sidebarLayoutState'
+
+type SidebarTheme =
+  | 'default'
+  | 'color'
+  | 'color-curved'
+  | 'curved'
+  | 'float'
+  | 'labels'
+  | 'labels-hover'
+
+const props = defineProps({
+  theme: {
+    type: String as PropType<SidebarTheme>,
+    default: 'labels',
+  },
+  defaultSidebar: {
+    type: String,
+    default: 'product',
+  },
+  closeOnChange: {
+    type: Boolean,
+    default: false,
+  },
+  openOnMounted: {
+    type: Boolean,
+    default: false,
+  },
+  nowrap: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const route = useRoute()
+const isMobileSidebarOpen = ref(false)
+const isDesktopSidebarOpen = ref(props.openOnMounted)
+const activeMobileSubsidebar = ref(props.defaultSidebar)
+
+function switchSidebar(id: string) {
+  if (id === activeMobileSubsidebar.value) {
+    isDesktopSidebarOpen.value = !isDesktopSidebarOpen.value
+  } else {
+    isDesktopSidebarOpen.value = true
+    activeMobileSubsidebar.value = id
+  }
+}
+
+/**
+ * watchPostEffect callback will be executed each time dependent reactive values has changed
+ */
+watchPostEffect(() => {
+  const isOpen = isDesktopSidebarOpen.value
+  const wrappers = document.querySelectorAll('.view-wrapper')
+
+  wrappers.forEach((wrapper) => {
+    if (isOpen === false) {
+      wrapper.classList.remove('is-pushed-full')
+    } else if (!wrapper.classList.contains('is-pushed-full')) {
+      wrapper.classList.add('is-pushed-full')
+    }
+  })
+})
+watch(
+  () => route.fullPath,
+  () => {
+    isMobileSidebarOpen.value = false
+
+    if (props.closeOnChange && isDesktopSidebarOpen.value) {
+      isDesktopSidebarOpen.value = false
+    }
+  }
+)
+</script>
+
+<template>
+  <div class="sidebar-layout">
+    <div class="app-overlay"></div>
+
+    <!-- Mobile navigation -->
+    <MobileNavbar
+      :is-open="isMobileSidebarOpen"
+      @toggle="isMobileSidebarOpen = !isMobileSidebarOpen"
+    >
+      <template #brand>
+        <RouterLink :to="{ name: 'index' }" class="navbar-item is-brand">
+          <AnimatedLogo width="38px" height="38px" />
+        </RouterLink>
+
+        <div class="brand-end">
+          <!-- <NotificationsMobileDropdown /> -->
+          <UserProfileDropdown />
+        </div>
+      </template>
+    </MobileNavbar>
+
+    <!-- Mobile sidebar links -->
+    <MobileSidebar
+      :is-open="isMobileSidebarOpen"
+      @toggle="isMobileSidebarOpen = !isMobileSidebarOpen"
+    >
+      <template #links>
+        <!-- Students -->
+        <li>
+          <RouterLink
+            :to="{ name: 'student' }"
+            :class="[activeMobileSubsidebar === 'student' && 'is-active']"
+            @click="activeMobileSubsidebar = 'dashboard'"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:users"></i>
+          </RouterLink>
+        </li>
+
+        <!-- Products & Packages -->
+        <li>
+          <RouterLink
+            :to="{ name: 'product' }"
+            :class="[activeMobileSubsidebar === 'product' && 'is-active']"
+            @click="activeMobileSubsidebar = 'product'"
+          >
+            <i aria-hidden="true" class="iconify" data-icon="feather:box"></i>
+          </RouterLink>
+        </li>
+      </template>
+
+      <template #bottom-links>
+        <!-- <li>
+          <a @click="activePanel = 'search'">
+            <i
+              aria-hidden="true"
+              class="iconify"
+              data-icon="feather:search"
+            ></i>
+          </a>
+        </li> -->
+        <li>
+          <a href="#">
+            <i
+              aria-hidden="true"
+              class="iconify"
+              data-icon="feather:settings"
+            ></i>
+          </a>
+        </li>
+      </template>
+    </MobileSidebar>
+
+    <!-- Mobile subsidebar links -->
+    <transition name="slide-x">
+      <StudentMobileSubsidebar
+        v-if="isMobileSidebarOpen && activeMobileSubsidebar === 'student'"
+      />
+      <ProductMobileSubsidebar
+        v-else-if="isMobileSidebarOpen && activeMobileSubsidebar === 'product'"
+      />
+    </transition>
+
+    <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
+      <template #links>
+        <!-- Students -->
+        <li>
+          <a
+            :class="[activeMobileSubsidebar === 'student' && 'is-active']"
+            data-content="Students"
+            @click="switchSidebar('student')"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:users"
+            ></i>
+          </a>
+        </li>
+        <!-- Products & Packages -->
+        <li>
+          <a
+            :class="[activeMobileSubsidebar === 'product' && 'is-active']"
+            data-content="Products & Packages"
+            @click="switchSidebar('product')"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:box"
+            ></i>
+          </a>
+        </li>
+
+        <!-- Code Management tab -->
+        <li>
+          <RouterLink
+            :to="{ name: 'code' }"
+            :class="[activeMobileSubsidebar === 'code' && 'is-active']"
+            data-content="Code Management"
+            @click="switchSidebar('code')"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:gift"
+            ></i>
+          </RouterLink>
+        </li>
+      </template>
+
+      <template #bottom-links>
+        <!-- Settings -->
+        <li>
+          <RouterLink
+            id="open-settings"
+            :to="{ name: 'index' }"
+            data-content="Settings"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:settings"
+            ></i>
+          </RouterLink>
+        </li>
+
+        <!-- Profile Dropdown -->
+        <li>
+          <UserProfileDropdown up />
+        </li>
+      </template>
+    </Sidebar>
+
+    <transition name="slide-x">
+      <StudentSubsidebar
+        v-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'student'"
+        @close="isDesktopSidebarOpen = false"
+      />
+      <ProductSubsidebar
+        v-else-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'product'"
+        @close="isDesktopSidebarOpen = false"
+      />
+    </transition>
+
+    <LanguagesPanel />
+
+    <div class="view-wrapper">
+      <div class="page-content-wrapper">
+        <template v-if="props.nowrap">
+          <slot></slot>
+        </template>
+        <div v-else class="page-content is-relative">
+          <div class="page-title has-text-centered">
+            <!-- Sidebar Trigger -->
+            <div
+              class="vuero-hamburger nav-trigger push-resize"
+              @click="isDesktopSidebarOpen = !isDesktopSidebarOpen"
+            >
+              <span class="menu-toggle has-chevron">
+                <span
+                  :class="[isDesktopSidebarOpen && 'active']"
+                  class="icon-box-toggle"
+                >
+                  <span class="rotate">
+                    <i aria-hidden="true" class="icon-line-top"></i>
+                    <i aria-hidden="true" class="icon-line-center"></i>
+                    <i aria-hidden="true" class="icon-line-bottom"></i>
+                  </span>
+                </span>
+              </span>
+            </div>
+
+            <div class="title-wrap">
+              <h1 class="title is-4">{{ pageTitle }}</h1>
+            </div>
+
+            <Toolbar class="desktop-toolbar" />
+          </div>
+
+          <slot></slot>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

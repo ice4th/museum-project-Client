@@ -5,11 +5,10 @@
 import moment from 'moment'
 import { onMounted, reactive, ref, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import usePackageApi from '../api/usePackageApi'
 import useNotyf from '../useNotyf'
-import PackageService from '/@src/api/package.service'
 import PartnerService from '/@src/api/partner.service'
 import RedeemService from '/@src/api/redeem.service'
-import router from '/@src/router'
 import { RedeemType } from '/@src/types/enums/redeem.enum'
 import { IPackageInfo } from '/@src/types/interfaces/package.interface'
 import { IPartnerDetail } from '/@src/types/interfaces/partner.interface'
@@ -55,6 +54,7 @@ export default function useRedeemTable() {
   const route = useRoute()
   const router = useRouter()
   const notyf = useNotyf()
+  const { getAllPackages } = usePackageApi()
 
   const fetchAllRedeem = async () => {
     const { data, status } = await RedeemService.getAllRedeems({
@@ -77,10 +77,13 @@ export default function useRedeemTable() {
   }
 
   const fetchPackages = async () => {
-    const { data, status } = await PackageService.getAllPackages()
-    if (status === 200 && data) {
-      state.packages = data
-    }
+    const data = await getAllPackages({
+      currentPage: 1,
+      perPage: 10,
+    })
+    // if (data) {
+    //   state.packages = data as IPackageInfo[]
+    // }
   }
 
   const fetchPartners = async () => {

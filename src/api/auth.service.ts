@@ -14,14 +14,17 @@ const ADMIN_ACCESS_TOKEN = 'wh_access_token'
 export default class AuthService {
   public static setCookie(token: string) {
     Cookies.set(ADMIN_ACCESS_TOKEN, token, { expires: 0.25 })
+    localStorage.setItem(ADMIN_ACCESS_TOKEN, token)
   }
 
-  public static getToken(): string | undefined {
-    return Cookies.get(ADMIN_ACCESS_TOKEN)
+  public static getToken(): string | null {
+    // return Cookies.get(ADMIN_ACCESS_TOKEN)
+    return localStorage.getItem(ADMIN_ACCESS_TOKEN)
   }
 
   public static removeCookie() {
     Cookies.remove(ADMIN_ACCESS_TOKEN)
+    localStorage.removeItem(ADMIN_ACCESS_TOKEN)
   }
 
   public static async registerAdmin(
