@@ -1,16 +1,4 @@
 <script setup lang="ts">
-/**
- * This is a Vue Component that will be
- * automatically mapped to a entry on vue-router.
- *
- * You will be able to access this page at http://localhost:8083/sidebar-blank-page-5
- * Page uri will match related path to src/pages folder
- *
- * Read more about routing:
- * @see /vite.config.ts
- * @see /src/router.ts
- */
-
 import { useHead } from '@vueuse/head'
 import moment from 'moment'
 import { onMounted, watch } from 'vue'

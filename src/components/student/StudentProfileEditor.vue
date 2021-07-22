@@ -19,6 +19,7 @@ import sleep from '/@src/utils/sleep'
 import occupationList from '/@src/data/occupation-list.json'
 import industryList from '/@src/data/industry-list.json'
 import moment from 'moment-timezone'
+import _ from 'lodash'
 
 const props = defineProps({
   studentInfo: {
@@ -26,7 +27,7 @@ const props = defineProps({
   },
   validation: {
     type: Object,
-    default: null,
+    default: {},
   },
 })
 const emit = defineEmit({
@@ -40,9 +41,14 @@ const isScrolling = computed(() => {
 
 const isEditMode = ref(false)
 const isLoading = ref(false)
-const internalStudentInfo = ref<StudentInfoResponse | undefined>(
-  props.studentInfo
+const internalStudentInfo = ref<StudentInfoResponse | undefined>(undefined)
+const internalValidation = ref(props.validation)
+
+watch(
+  () => props.validation,
+  () => (internalValidation.value = props.validation)
 )
+
 const age = computed(() =>
   moment(internalStudentInfo.value?.dob).isValid()
     ? moment().diff(internalStudentInfo.value?.dob, 'years')
@@ -76,19 +82,21 @@ const onSave = async () => {
     school: value?.studentNote?.school,
     device: value?.studentNote?.device?.join(','),
     occupation: value?.studentNote?.occupation,
-  }
+  } as IUpdateStudentProfile
   emit('on-update', data)
   isLoading.value = false
 }
 
 const onCancelEdit = () => {
   isEditMode.value = false
-  internalStudentInfo.value = Object.assign({}, props.studentInfo)
-  console.log(props.studentInfo)
-  console.log(internalStudentInfo.value)
+  internalStudentInfo.value = _.cloneDeep(props.studentInfo)
+  internalValidation.value = {}
 }
 
 onBeforeMount(() => {
+  if (props.studentInfo) {
+    internalStudentInfo.value = _.cloneDeep(props.studentInfo)
+  }
   if (
     !occupationOptions.some(
       (oc) => oc.value === props.studentInfo?.studentNote?.occupation
@@ -100,6 +108,10 @@ onBeforeMount(() => {
     })
   }
 })
+
+const removeValidation = (key: string) => {
+  delete internalValidation.value[key]
+}
 </script>
 
 <template>
@@ -158,10 +170,11 @@ onBeforeMount(() => {
                   placeholder="First Name (TH)"
                   autocomplete="given-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('firstnameTH')"
                 />
               </V-Control>
-              <h6 v-show="validation.firstnameTH" class="msg-error">
-                {{ validation.firstnameTH }}
+              <h6 v-show="internalValidation.firstnameTH" class="msg-error">
+                {{ internalValidation.firstnameTH }}
               </h6>
             </V-Field>
           </div>
@@ -177,8 +190,12 @@ onBeforeMount(() => {
                   placeholder="Last Name (TH)"
                   autocomplete="family-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('lastnameTH')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.lastnameTH" class="msg-error">
+                {{ internalValidation.lastnameTH }}
+              </h6>
             </V-Field>
           </div>
           <div class="column is-12">
@@ -192,8 +209,12 @@ onBeforeMount(() => {
                   placeholder="Nickname (TH)"
                   autocomplete="family-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('nicknameTH')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.nicknameTH" class="msg-error">
+                {{ internalValidation.nicknameTH }}
+              </h6>
             </V-Field>
           </div>
         </div>
@@ -219,8 +240,12 @@ onBeforeMount(() => {
                   placeholder="First Name (EN)"
                   autocomplete="given-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('firstnameEN')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.firstnameEN" class="msg-error">
+                {{ internalValidation.firstnameEN }}
+              </h6>
             </V-Field>
           </div>
           <!--Field-->
@@ -235,8 +260,12 @@ onBeforeMount(() => {
                   placeholder="Last Name (EN)"
                   autocomplete="family-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('lastnameEN')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.lastnameEN" class="msg-error">
+                {{ internalValidation.lastnameEN }}
+              </h6>
             </V-Field>
           </div>
           <div class="column is-12">
@@ -250,8 +279,12 @@ onBeforeMount(() => {
                   placeholder="Nick Name (EN)"
                   autocomplete="family-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('nicknameEN')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.nicknameEN" class="msg-error">
+                {{ internalValidation.nicknameEN }}
+              </h6>
             </V-Field>
           </div>
         </div>
@@ -276,10 +309,11 @@ onBeforeMount(() => {
                   class="input"
                   placeholder="Email"
                   autocomplete="email"
+                  @keypress="removeValidation('email')"
                 />
               </V-Control>
-              <h6 v-show="validation.email" class="msg-error">
-                {{ validation.email }}
+              <h6 v-show="internalValidation.email" class="msg-error">
+                {{ internalValidation.email }}
               </h6>
             </V-Field>
           </div>
@@ -295,8 +329,12 @@ onBeforeMount(() => {
                   placeholder="Phone"
                   autocomplete="phone"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('phone')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.phone" class="msg-error">
+                {{ internalValidation.phone }}
+              </h6>
             </V-Field>
           </div>
           <!--Field-->
@@ -320,28 +358,49 @@ onBeforeMount(() => {
                   :options="genderOptions"
                   placeholder="Gender"
                   :disabled="!isEditMode"
+                  @change="removeValidation('gender')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.gender" class="msg-error">
+                {{ internalValidation.gender }}
+              </h6>
             </V-Field>
           </div>
           <!--Field-->
           <div class="column is-9">
-            <V-Field>
-              <label>Date of birth</label>
-              <V-Control icon="feather:calendar">
-                <input
-                  v-model="internalStudentInfo.dob"
-                  type="text"
-                  class="input"
-                  placeholder="Date of birth"
-                  autocomplete="country-name"
-                  :readonly="!isEditMode"
-                />
-              </V-Control>
-              <h6 v-show="validation.dob" class="msg-error">
-                {{ validation.dob }}
-              </h6>
-            </V-Field>
+            <v-date-picker
+              v-model="internalStudentInfo.dob"
+              color="orange"
+              :model-config="{
+                type: 'string',
+                mask: 'YYYY-MM-DD',
+              }"
+              :masks="{
+                input: 'YYYY-MM-DD',
+              }"
+              trim-weeks
+              :popover="{ visibility: !isEditMode ? '' : 'click' }"
+            >
+              <template #default="{ inputValue, inputEvents }">
+                <V-Field>
+                  <label>Date of birth</label>
+                  <V-Control icon="feather:calendar">
+                    <input
+                      class="input"
+                      type="text"
+                      placeholder="Date of birth"
+                      :value="inputValue"
+                      v-on="inputEvents"
+                      :readonly="!isEditMode"
+                      @click="removeValidation('dob')"
+                    />
+                  </V-Control>
+                  <h6 v-show="internalValidation.dob" class="msg-error">
+                    {{ internalValidation.dob }}
+                  </h6>
+                </V-Field>
+              </template>
+            </v-date-picker>
           </div>
           <!--Field-->
           <div class="column is-3">
@@ -353,7 +412,6 @@ onBeforeMount(() => {
                   type="text"
                   class="input"
                   placeholder="Age"
-                  autocomplete="country-name"
                   readonly
                 />
               </V-Control>
@@ -369,9 +427,10 @@ onBeforeMount(() => {
                   v-model="internalStudentInfo.timezone"
                   type="text"
                   class="input"
-                  placeholder="Age"
+                  placeholder="Timezonev"
                   autocomplete="country-name"
                   :readonly="!isEditMode"
+                  @change="removeValidation('timezone')"
                 />
                 <Multiselect
                   v-show="isEditMode"
@@ -381,6 +440,9 @@ onBeforeMount(() => {
                   placeholder="timezone"
                   :disabled="!isEditMode"
                 />
+                <h6 v-show="internalValidation.timezone" class="msg-error">
+                  {{ internalValidation.timezone }}
+                </h6>
               </V-Control>
             </V-Field>
           </div>
