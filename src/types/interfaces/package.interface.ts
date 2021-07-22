@@ -43,6 +43,21 @@ export interface IPackageInfo {
   product?: IProduct
 }
 
+export interface IPackageTableInfo {
+  id: number
+  packageName: string
+  type: string
+  productName: string
+  productType: string
+  globishLevel: string
+  curriculumUrl: string
+  purchasable: Purchasable
+  ticket: number
+  freeTalkTicket: number
+  groupClassTicket: number
+  duration: number
+}
+
 export interface TPackageInfo {
   id: number
   packageName: string

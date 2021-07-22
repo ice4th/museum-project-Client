@@ -45,7 +45,7 @@ const data = [
 <template>
   <div class="page-content-inner">
     <p>Student Page</p>
-    <Datatable :headers="headers" :data="data">
+    <Datatable :can-searchable="false" :headers="headers" :data="data">
       <template #position="{ value }">
         <p>
           value: {{ value }}

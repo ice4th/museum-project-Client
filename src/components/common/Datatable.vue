@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import type { PropType } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 /**
  * @info header example
  * const headers = [
@@ -26,9 +27,6 @@ interface IHeader {
   label: string
   isEnd?: Boolean
 }
-type TabId = 'active' | 'inactive'
-const activeTab = ref<TabId>('active')
-const filters = ref('')
 const props = defineProps({
   total: {
     type: Number,
@@ -42,9 +40,17 @@ const props = defineProps({
     type: Number,
     default: 10,
   },
+  search: {
+    type: String,
+    default: '',
+  },
   canSearchable: {
     type: Boolean,
     default: true,
+  },
+  searchPlaceholder: {
+    type: String,
+    default: 'Filter...',
   },
   headers: {
     type: Object as PropType<IHeader[]>,
@@ -54,105 +60,136 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
 })
+
 const isDataOfArray = computed(
   () => props.data.length > 0 && Array.isArray(props.data[0])
 )
+const router = useRouter()
+const route = useRoute()
+const changePerPage = () => {
+  const query = {
+    ...route.query,
+    perPage: props.perPage,
+  }
+
+  router.push({
+    name: route.name,
+    params: route.params,
+    query,
+  })
+}
 </script>
 
 <template>
-  <div class="list-view-toolbar">
-    <V-Field v-show="canSearchable">
-      <V-Control icon="feather:search">
-        <input
-          v-model="filters"
-          class="input custom-text-filter"
-          placeholder="Search..."
-        />
-      </V-Control>
-    </V-Field>
+  <div class="flex-table-wrapper mt-4">
+    <!--Custom table toolbar-->
+    <div class="flex-table-toolbar">
+      <div v-show="canSearchable" class="left">
+        <V-Field>
+          <V-Control icon="feather:search">
+            <input
+              v-model="search"
+              type="text"
+              class="input is-rounded"
+              :placeholder="searchPlaceholder"
+            />
+          </V-Control>
+        </V-Field>
+      </div>
 
-    <div class="tabs-inner">
-      <slot name="tabs" />
-      <!-- <div class="tabs">
-        <ul>
-          <li :class="[activeTab === 'active' && 'is-active']">
-            <a @click="activeTab = 'active'"><span>Active</span></a>
-          </li>
-          <li :class="[activeTab === 'inactive' && 'is-active']">
-            <a @click="activeTab = 'inactive'"><span>Inactive</span></a>
-          </li>
-          <li class="tab-naver"></li>
-        </ul>
-      </div> -->
+      <div class="right">
+        <V-Field>
+          <V-Control>
+            <div class="select is-rounded">
+              <select v-model="perPage" @change="changePerPage">
+                <option :value="10">10 results per page</option>
+                <option :value="25">25 results per page</option>
+                <option :value="50">50 results per page</option>
+                <option :value="100">100 results per page</option>
+              </select>
+            </div>
+          </V-Control>
+        </V-Field>
+      </div>
     </div>
-  </div>
-  <div>
-    <table class="table is-hoverable is-fullwidth">
-      <thead>
-        <tr>
-          <th
-            v-for="(header, index) in headers"
-            :key="`h-${index}`"
-            scope="col"
-            :class="{
-              'is-end': header.isEnd,
-            }"
-          >
-            <span
-              :class="[
-                header.isEnd &&
-                  'dark-inverted is-flex is-justify-content-flex-end',
-              ]"
+
+    <!-- Datatable -->
+    <V-Loader size="large" translucent :active="isLoading">
+      <table class="table is-hoverable is-fullwidth">
+        <thead>
+          <tr v-if="!$slots.thead">
+            <th
+              v-for="(header, index) in headers"
+              :key="`h-${index}`"
+              scope="col"
+              :class="{
+                'is-end': header.isEnd,
+              }"
             >
-              {{ header.label }}
-            </span>
-          </th>
-        </tr>
-      </thead>
-      <tbody v-if="data.length">
-        <template v-if="isDataOfArray">
-          <tr v-for="(dataList, index) in data" :key="`tb-${index}`">
-            <td v-for="(d, i) in dataList" :key="`tb-data-${i}`">
-              <span v-if="!$slots[`custom-column-${i + 1}`]">{{ d }}</span>
-              <slot :name="`custom-column-${i + 1}`" :value="d" />
+              <span
+                :class="[
+                  header.isEnd &&
+                    'dark-inverted is-flex is-justify-content-flex-end',
+                ]"
+              >
+                {{ header.label }}
+              </span>
+            </th>
+          </tr>
+          <slot name="thead" />
+        </thead>
+        <tbody v-if="data.length">
+          <template v-if="isDataOfArray">
+            <tr v-for="(dataList, index) in data" :key="`tb-${index}`">
+              <td v-for="(d, i) in dataList" :key="`tb-data-${i}`">
+                <span v-if="!$slots[`custom-column-${i + 1}`]">{{ d }}</span>
+                <slot :name="`custom-column-${i + 1}`" :value="d" />
+              </td>
+            </tr>
+          </template>
+          <template v-else>
+            <tr v-for="(dataList, index) in data" :key="`tb-${index}`">
+              <td v-for="(header, i) in headers" :key="`tb-data-${i}`">
+                <span v-if="!$slots[header.key]">{{
+                  dataList[header.key]
+                }}</span>
+                <slot :name="header.key" :value="dataList[header.key]" />
+              </td>
+            </tr>
+          </template>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td :colspan="headers.length">
+              <!--Empty Placeholder-->
+              <V-PlaceholderSection
+                title="No data to show"
+                subtitle="There is currently no data to show in this list."
+              >
+                <template #image>
+                  <img
+                    class="light-image"
+                    src="/@src/assets/illustrations/placeholders/search-4.svg"
+                    alt=""
+                  />
+                  <img
+                    class="dark-image"
+                    src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+                    alt=""
+                  />
+                </template>
+              </V-PlaceholderSection>
             </td>
           </tr>
-        </template>
-        <template v-else>
-          <tr v-for="(dataList, index) in data" :key="`tb-${index}`">
-            <td v-for="(header, i) in headers" :key="`tb-data-${i}`">
-              <span v-if="!$slots[header.key]">{{ dataList[header.key] }}</span>
-              <slot :name="header.key" :value="dataList[header.key]" />
-            </td>
-          </tr>
-        </template>
-      </tbody>
-      <tbody v-else>
-        <tr>
-          <td :colspan="headers.length">
-            <!--Empty Placeholder-->
-            <V-PlaceholderSection
-              title="No data to show"
-              subtitle="There is currently no data to show in this list."
-            >
-              <template #image>
-                <img
-                  class="light-image"
-                  src="/@src/assets/illustrations/placeholders/search-4.svg"
-                  alt=""
-                />
-                <img
-                  class="dark-image"
-                  src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-                  alt=""
-                />
-              </template>
-            </V-PlaceholderSection>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </V-Loader>
+
     <V-FlexPagination
       :item-per-page="perPage"
       :total-items="total"

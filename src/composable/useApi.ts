@@ -1,5 +1,5 @@
 import { InjectionKey, inject } from 'vue'
-import axios, { AxiosInstance } from 'axios'
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 
 import { UserSessionData } from './useUserSession'
 
@@ -10,6 +10,14 @@ const HEADERS = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
+}
+
+export interface IErrorResponse {
+  error: string
+  message?: string | object
+  path: string
+  statusCode: number
+  timestamp: string
 }
 export function initApi(session: UserSessionData): AxiosInstance {
   // Here we set the base URL for all requests made to the api
@@ -39,25 +47,27 @@ export function initApi(session: UserSessionData): AxiosInstance {
       return { ...res, data: res.data?.data }
     },
     (error) => {
-      const response = error.response.data
-      const code = response?.statusCode
-      const message = response?.message
-      const err = {
-        error,
-        message,
-        code,
-      }
-      return err
+      // const response = error.response.data
+      // const code = response?.statusCode
+      // const message = response?.message
+      // const err = {
+      //   error,
+      //   message,
+      //   code,
+      // }
+      // return error.response.data as IErrorResponse
+      return error
     }
   )
 
   return api
 }
 
-export default function useApi(): AxiosInstance {
+export default function useApi() {
   const api = inject<AxiosInstance>(apiSymbol)
   if (!api) {
     throw new Error('Api not properly injected in app')
   }
+  console.log('useApi')
   return api
 }

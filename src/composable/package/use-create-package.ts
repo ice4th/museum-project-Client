@@ -13,6 +13,7 @@ import { GenerateTicket } from '/@src/types/enums/package.enum'
 import { Notyf } from 'notyf'
 import { themeColors } from '/@src/utils/themeColors'
 import { useRouter } from 'vue-router'
+import usePackageApi from '../api/usePackageApi'
 
 /**
  * add type for render with type
@@ -79,6 +80,7 @@ export default function useCreatePackage() {
     currentAddonPackage: undefined,
   })
   const router = useRouter()
+  const { getAllPackages } = usePackageApi()
 
   const displayPackageNameById = (id: number) => {
     return state.packages.find((pk) => pk.id === id)?.packageName || ''
@@ -90,11 +92,11 @@ export default function useCreatePackage() {
 
   const fetchAllPackage = async () => {
     state.isLoadingPackages = true
-    const { status, data } = await PackageService.getAllPackages()
+    const data = await getAllPackages({ currentPage: 1, perPage: 10 })
     state.isLoadingPackages = false
-    if (status === 200 && data) {
-      state.packages = data
-    }
+    // if (data) {
+    //   state.packages = data as IPackageInfo[]
+    // }
   }
 
   const toggleShowMainPackageSection = () => {
