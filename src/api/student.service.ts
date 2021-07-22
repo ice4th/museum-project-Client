@@ -5,6 +5,7 @@ import {
   IPaginationParams,
   IPaginationResponse,
 } from '../types/interfaces/common.interface'
+import { StudentPackageItemResponse } from '../types/interfaces/package-item.interface'
 import {
   IStudentList,
   IUpdateStudentProfile,
@@ -39,6 +40,15 @@ export default class StudentService {
     const res = await ApiService.put<StudentInfoResponse>(
       `/Students/Info/${studentId}`,
       payload
+    )
+    return res
+  }
+
+  public static async getStudentPackageItems(
+    studentId: number
+  ): Promise<ApiServiceResponse<StudentPackageItemResponse[]>> {
+    const res = await ApiService.get<StudentPackageItemResponse[]>(
+      `/Students/${studentId}/Packages`
     )
     return res
   }

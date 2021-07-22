@@ -1,5 +1,13 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import useStudentPackageItemState from '/@src/composable/student/use-student-package'
+const { packageItems, validation, activePackages } =
+  useStudentPackageItemState()
+</script>
 <template>
-  <div class="account-box">
-    <h1>My Package</h1>
-  </div>
+  <StudentPackageItem
+    v-if="packageItems"
+    :package-items="packageItems"
+    :active-packages="activePackages"
+  />
 </template>
