@@ -430,7 +430,7 @@ const removeValidation = (key: string) => {
                   placeholder="Timezone"
                   autocomplete="country-name"
                   :readonly="!isEditMode"
-                  @change="removeValidation('timezone')"
+                  @keypress="removeValidation('timezone')"
                 />
                 <Multiselect
                   v-show="isEditMode"
@@ -439,6 +439,7 @@ const removeValidation = (key: string) => {
                   :options="timezoneOptions"
                   placeholder="timezone"
                   :disabled="!isEditMode"
+                  @change="removeValidation('timezone')"
                 />
                 <h6 v-show="internalValidation.timezone" class="msg-error">
                   {{ internalValidation.timezone }}
