@@ -427,7 +427,7 @@ const removeValidation = (key: string) => {
                   v-model="internalStudentInfo.timezone"
                   type="text"
                   class="input"
-                  placeholder="Timezonev"
+                  placeholder="Timezone"
                   autocomplete="country-name"
                   :readonly="!isEditMode"
                   @change="removeValidation('timezone')"

@@ -18,13 +18,6 @@ const { data, totalPage, total, currentPage, perPage } = useStudentList()
 useHead({
   title: 'Whitehouse: Student',
 })
-
-onMounted(() => {})
-const flag = {
-  th: '/@src/assets/img/th-flag.png',
-  vn: '/@src/assets/img/vn-flag.png',
-  kr: '/@src/assets/img/kr-flag.png',
-}
 </script>
 
 <template>
