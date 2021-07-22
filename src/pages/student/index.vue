@@ -30,24 +30,28 @@ const flag = {
 <template>
   <div class="page-content-inner">
     <SearchToolbar
-      :placeholder="'search by name phone email'"
+      :placeholder="'search by id, name, phone, email'"
       :model-search="route.query?.search"
       :per-page="route.query?.perPage"
     />
     <table class="table is-hoverable is-fullwidth mt-4">
       <thead>
         <tr>
-          <th scope="col" class="has-text-centered">ID</th>
-          <th scope="col" class="is-media"></th>
-          <th scope="col">Fullname</th>
-          <th scope="col">Nickname</th>
-          <th scope="col">Partner</th>
-          <th scope="col">Level</th>
-          <th scope="col">E-mail</th>
-          <th scope="col">Phone</th>
-          <th scope="col">Last Login</th>
-          <th scope="col">Last Package</th>
-          <th scope="col">Ticket</th>
+          <th scope="col" rowspan="2" class="has-text-centered">ID</th>
+          <th scope="col" rowspan="2" class="is-media"></th>
+          <th scope="col" rowspan="2">Fullname</th>
+          <th scope="col" rowspan="2">Nickname</th>
+          <th scope="col" rowspan="2">Partner</th>
+          <th scope="col" rowspan="2">Level</th>
+          <th scope="col" rowspan="2">E-mail</th>
+          <th scope="col" rowspan="2">Phone</th>
+          <th scope="col" rowspan="2">Last Login</th>
+          <th scope="col" rowspan="2">Last Package</th>
+          <th scope="col" colspan="2" class="has-text-centered">Ticket</th>
+        </tr>
+        <tr>
+          <th class="has-text-centered">Used</th>
+          <th class="has-text-centered">Remain</th>
         </tr>
       </thead>
       <tbody>
@@ -68,21 +72,19 @@ const flag = {
               {{ displayStudentFullname(st) }}
             </router-link>
           </td>
-          <td>{{ st.nickname?.th || st.nickname?.en }}</td>
-          <td>{{ st.partner?.name }}</td>
-          <td>{{ st.globishLevel }}</td>
-          <td>{{ st.email }}</td>
-          <td>{{ st.phone }}</td>
+          <td>{{ st.nickname?.th || st.nickname?.en || '-' }}</td>
+          <td>{{ st.partner?.pop()?.partnerName || '-' }}</td>
+          <td>{{ st.lastUsedPackage?.globishLevel || '-' }}</td>
+          <td style="white-space: pre">{{ st.email || '-' }}</td>
+          <td>{{ st.phone || '-' }}</td>
           <td>
             {{
-              st.lastLogin ? toFormat(st.lastLogin, 'DD MMM YYYY, HH:mm') : '-'
+              st.lastLogin ? toFormat(st.lastLogin, 'DD/MM/YYYY, HH:mm') : '-'
             }}
           </td>
-          <td>{{ st.package?.packageName || '-' }}</td>
-          <td class="is-flex">
-            Used: {{ st.ticketUsed || '-' }} | Available:
-            {{ st.ticketAvailable || '-' }}
-          </td>
+          <td>{{ st.lastUsedPackage?.packageName || '-' }}</td>
+          <td class="has-text-centered">{{ st.ticket?.used || 0 }}</td>
+          <td class="has-text-centered">{{ st.ticket?.available || 0 }}</td>
         </tr>
       </tbody>
     </table>
@@ -107,5 +109,8 @@ const flag = {
 }
 thead {
   height: 4rem;
+}
+td {
+  font-size: 12px;
 }
 </style>
