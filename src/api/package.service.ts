@@ -1,4 +1,5 @@
 import {
+  ICratePackageForm,
   ICreatePackageGroup,
   IPackageGroupInfo,
   IPackageInfo,
@@ -23,6 +24,16 @@ export default class PackageService {
     return await ApiService.get<IPackageGroupInfo[]>(
       `/PackageGroups/Packages/${packageId}`
     )
+  }
+
+  public static async createPackage(
+    payload: ICratePackageForm
+  ): Promise<ApiServiceResponse<void>> {
+    return await ApiService.post('Packages', {
+      ...payload,
+      purchasable: payload.purchasable ? '1' : '0',
+      status: +payload.status,
+    })
   }
 
   public static async createPackageGroup(
