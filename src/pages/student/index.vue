@@ -19,16 +19,44 @@ import { useHead } from '@vueuse/head'
  */
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+import { toFormat } from '/@src/helpers/date.helper'
 
 pageTitle.value = 'Student Information'
 
 useHead({
   title: 'Whitehouse: Student',
 })
+const headers = [
+  { key: 'firstname', label: 'First name' },
+  { key: 'lastname', label: 'Last name' },
+  { key: 'position', label: 'Position' },
+  { key: 'action', label: 'Actions', isEnd: true },
+]
+
+const data = [
+  { firstname: 'Tina', lastname: 'Bergmann', position: 'Head of Sales' },
+  { firstname: 'John', lastname: 'Wistmus', position: 'Senior Executive' },
+  { firstname: 'Sam', lastname: 'Watson', position: 'Software Engineer' },
+  { firstname: 'Jolaine', lastname: 'Joestar', position: 'HR Manager' },
+  { firstname: 'Anders', lastname: 'Jensen', position: 'Accountant' },
+]
 </script>
 
 <template>
   <div class="page-content-inner">
     <p>Student Page</p>
+    <Datatable :headers="headers" :data="data">
+      <template #position="{ value }">
+        <p>
+          value: {{ value }}
+          <!-- <FlexTableDropdown /> -->
+        </p>
+      </template>
+      <template #action>
+        <div class="dark-inverted is-flex is-justify-content-flex-end">
+          <FlexTableDropdown />
+        </div>
+      </template>
+    </Datatable>
   </div>
 </template>
