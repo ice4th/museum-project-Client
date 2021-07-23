@@ -29,6 +29,7 @@ interface UseRedeemTableState {
   createNewRedeem: ICreateRedeem
   packages: PackageOption[]
   partners: PartnerOption[]
+  isLoading: Boolean
 }
 
 export default function useRedeemTable() {
@@ -51,6 +52,7 @@ export default function useRedeemTable() {
      */
     packages: [],
     partners: [],
+    isLoading: false,
   })
   const route = useRoute()
   const router = useRouter()
@@ -58,10 +60,20 @@ export default function useRedeemTable() {
   const { getPackages, getPartners } = useOptionApi()
 
   const fetchAllRedeem = async () => {
+    state.isLoading = true
+    const perPage = route.query.perPage as string
+    const page = route.query.page as string
+    if (route.query.currentPage) {
+      state.currentPage = +page
+    }
+    if (route.query.perPage) {
+      state.perPage = +perPage
+    }
     const { data, status } = await RedeemService.getAllRedeems({
       currentPage: state.currentPage,
       perPage: state.perPage,
     })
+    state.isLoading = false
     if (status === 200 && data) {
       state.data = data.data
       state.total = data.total
@@ -114,5 +126,16 @@ export default function useRedeemTable() {
     state.packages = packages
     state.partners = partners
   })
-  return { ...toRefs(state), fetchRedeemById, createRedeem }
+
+  const redeemTableHeaders = [
+    { key: 'id', label: 'ID' },
+    { key: 'type', label: 'Type' },
+    { key: 'partnerName', label: 'Partner' },
+    { key: 'packageName', label: 'Package' },
+    { key: 'status', label: 'Status' },
+    { key: 'usedDate', label: 'Activated' },
+    { key: 'createdAt', label: 'Created' },
+    { key: 'expireDate', label: 'Expire' },
+  ]
+  return { ...toRefs(state), fetchRedeemById, createRedeem, redeemTableHeaders }
 }

@@ -180,7 +180,7 @@ const parseData = (data: object, key: string) => {
               </td>
               <td v-if="isAction">
                 <FlexTableDropdown v-if="!$slots.action" />
-                <slot name="action" :data="dataList" />
+                <slot name="action" :value="dataList" />
               </td>
             </tr>
           </template>

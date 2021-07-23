@@ -71,7 +71,7 @@ const confirmRemovePackage = () => {
       :data="packages"
       is-action
     >
-      <template #action="{ data }">
+      <template #action="{ value }">
         <div class="dark-inverted is-flex is-justify-content-flex-end">
           <!-- {{ data }} -->
           <V-Button
@@ -79,7 +79,7 @@ const confirmRemovePackage = () => {
             icon="feather:arrow-down"
             :to="{
               name: 'product-package-group-:packageid',
-              params: { packageid: `${data.packageId}` },
+              params: { packageid: `${value.packageId}` },
             }"
             >View</V-Button
           >
@@ -87,7 +87,7 @@ const confirmRemovePackage = () => {
             color="danger"
             icon="feather:trash"
             class="ml-3"
-            @click="toggleConfirmRemovePopup(data)"
+            @click="toggleConfirmRemovePopup(value)"
             >Delete</V-Button
           >
         </div>

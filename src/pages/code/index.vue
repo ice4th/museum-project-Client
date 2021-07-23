@@ -22,6 +22,8 @@ const {
   createNewRedeem,
   packages,
   partners,
+  redeemTableHeaders,
+  isLoading,
 } = useRedeemTable()
 const showCreatePopup = ref(false)
 const toggleCreateRedeem = () => {
@@ -291,7 +293,39 @@ const tableOptions = computed(() => {
         >
       </template> -->
     </V-Modal>
-    <ListTable
+    <Datatable
+      :headers="redeemTableHeaders"
+      :data="data"
+      :current-page="currentPage"
+      :per-page="perPage"
+      :total="total"
+      :is-loading="isLoading"
+      is-action
+    >
+      <template #createdAt="{ value }">
+        {{ value ? toFormat(value) : '-' }}
+      </template>
+      <template #usedDate="{ value }">
+        {{ value ? toFormat(value) : '-' }}
+      </template>
+      <template #expireDate="{ value }">
+        {{ value ? toFormat(value) : '-' }}
+      </template>
+      <template #status="{ value }">
+        <V-Tag
+          :color="value ? 'success' : 'solid'"
+          :label="value ? 'Activated' : 'Deactivated'"
+          rounded
+          elevated
+        />
+      </template>
+      <template #action="{ value }">
+        <V-Button icon="lnil lnil-eye" @click="fetchRedeemById(value.id)"
+          >View</V-Button
+        >
+      </template>
+    </Datatable>
+    <!-- <ListTable
       v-if="data.length"
       :data="data"
       :current-page="currentPage"
@@ -323,7 +357,7 @@ const tableOptions = computed(() => {
           >
         </div>
       </template>
-    </ListTable>
+    </ListTable> -->
   </div>
 </template>
 

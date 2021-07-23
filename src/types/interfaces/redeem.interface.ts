@@ -12,6 +12,7 @@ export interface IRedeemDetail {
   status: RedeemStatus
   usedDate?: string
   ticketStartDate?: string
+  createdAt: string
   expireDate?: string
 }
 
