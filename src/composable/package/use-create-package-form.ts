@@ -4,9 +4,9 @@
 
 import { Notyf } from 'notyf'
 import { computed, onMounted, reactive, toRefs } from 'vue'
-import OptionService from '../../api/option.service'
 import PackageService from '../../api/package.service'
 import { errMessage, isNil } from '../../helpers/filter.helper'
+import useOptionApi from '../api/useOptionApi'
 import { IUseCratePackageForm } from '/@src/types/interfaces/package.interface'
 
 /**
@@ -59,6 +59,13 @@ export default function useCreatePackageForm() {
       privateSlot: undefined,
     },
   })
+  const {
+    getProducts,
+    getCurriculums,
+    getFeatureGroups,
+    getFmcPackages,
+    getMoocCourses,
+  } = useOptionApi()
 
   /**
    * computed
@@ -139,19 +146,14 @@ export default function useCreatePackageForm() {
    */
   onMounted(async () => {
     // fetch all options
-    const [
-      { data: products },
-      { data: curriculums },
-      { data: featureGroups },
-      { data: fmcPackages },
-      { data: moocCourses },
-    ] = await Promise.all([
-      OptionService.products(),
-      OptionService.curriculums(),
-      OptionService.featureGroups(),
-      OptionService.fmcPackages(),
-      OptionService.MoocCourses(),
-    ])
+    const [products, curriculums, featureGroups, fmcPackages, moocCourses] =
+      await Promise.all([
+        getProducts(),
+        getCurriculums(),
+        getFeatureGroups(),
+        getFmcPackages(),
+        getMoocCourses(),
+      ])
     state.products = products
     state.curriculums = curriculums
     state.featureGroups = featureGroups

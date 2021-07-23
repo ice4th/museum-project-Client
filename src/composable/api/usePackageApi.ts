@@ -5,43 +5,45 @@ import {
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
 import {
+  ICratePackageForm,
   IPackageTableInfo,
   IPackageGroupInfo,
   ICreatePackageGroup,
 } from '/@src/types/interfaces/package.interface'
 
-export default function useAuthApi() {
+export default function usePackageApi() {
   const api = useApi()
-
-  const getAllPackages = async (
-    params: IPaginationParams
-  ): Promise<IPackageTableInfo[] | null> => {
-    const res = await api.get<IPackageTableInfo[]>(`/Packages`, { params })
-    return checkResponseStatus(res)
-  }
 
   const getPackagesWithPagination = async (
     params: IPaginationParams
-  ): Promise<IPaginationResponse<IPackageTableInfo[]> | null> => {
+  ): Promise<IPaginationResponse<IPackageTableInfo[]>> => {
     const res = await api.get<IPaginationResponse<IPackageTableInfo[]>>(
       `/Packages`,
       { params }
     )
-    return checkResponseStatus(res)
+    return checkResponseStatus(res) || []
   }
 
-  const getAllPackagesGroup = async (): Promise<IPackageGroupInfo[] | null> => {
+  const getAllPackagesGroup = async (): Promise<IPackageGroupInfo[]> => {
     const res = await api.get<IPackageGroupInfo[]>(`/PackageGroups`)
-    return checkResponseStatus(res)
+    return checkResponseStatus(res) || []
   }
 
   const getAddonPackageByMainPackageId = async (
     packageId: number
-  ): Promise<IPackageGroupInfo[] | null> => {
+  ): Promise<IPackageGroupInfo[]> => {
     const res = await api.get<IPackageGroupInfo[]>(
       `/PackageGroups/Packages/${packageId}`
     )
-    return checkResponseStatus(res)
+    return checkResponseStatus(res) || []
+  }
+
+  const createPackage = async (payload: ICratePackageForm) => {
+    return await api.post('Packages', {
+      ...payload,
+      purchasable: payload.purchasable ? '1' : '0',
+      status: +payload.status,
+    })
   }
 
   const createPackageGroup = async (payload: ICreatePackageGroup) => {
@@ -63,10 +65,10 @@ export default function useAuthApi() {
   }
 
   return {
-    getAllPackages,
     getPackagesWithPagination,
     getAllPackagesGroup,
     getAddonPackageByMainPackageId,
+    createPackage,
     createPackageGroup,
     updatePackageGroup,
     deletePackageGroupByMainPackageId,

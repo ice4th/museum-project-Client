@@ -4,10 +4,8 @@
 import { ref } from 'vue'
 import type { PropType } from 'vue'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
-import type {
-  IPackageInfo,
-  IUpdateAddonPackage,
-} from '/@src/types/interfaces/package.interface'
+import type { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
+import type { PackageOption } from '/@src/types/interfaces/option.interface'
 
 const props = defineProps({
   mainPackage: {
@@ -15,7 +13,7 @@ const props = defineProps({
     default: undefined,
   },
   packages: {
-    type: Array as PropType<IPackageInfo[]>,
+    type: Array as PropType<PackageOption[]>,
     default: () => [],
   },
 })

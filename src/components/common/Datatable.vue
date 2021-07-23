@@ -7,8 +7,7 @@ import { useRoute, useRouter } from 'vue-router'
  * const headers = [
     { key: 'firstname', label: 'First name' },
     { key: 'lastname', label: 'Last name' },
-    { key: 'position', label: 'Position' },
-    { key: 'action', label: 'Actions', isEnd: true },
+    { key: 'position', label: 'Position', isEnd: true }
   ]
  */
 
@@ -64,6 +63,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isAction: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const isDataOfArray = computed(
@@ -82,6 +85,13 @@ const changePerPage = () => {
     params: route.params,
     query,
   })
+}
+
+const parseData = (data: object, key: string) => {
+  const splitingKey = key.split('.')
+  return splitingKey.reduce((text, current) => {
+    return text[current]
+  }, data)
 }
 </script>
 
@@ -140,6 +150,11 @@ const changePerPage = () => {
                 {{ header.label }}
               </span>
             </th>
+            <th v-if="isAction" scope="col" class="is-end">
+              <span class="dark-inverted is-flex is-justify-content-center">
+                Action
+              </span>
+            </th>
           </tr>
           <slot name="thead" />
         </thead>
@@ -156,9 +171,16 @@ const changePerPage = () => {
             <tr v-for="(dataList, index) in data" :key="`tb-${index}`">
               <td v-for="(header, i) in headers" :key="`tb-data-${i}`">
                 <span v-if="!$slots[header.key]">{{
-                  dataList[header.key]
+                  parseData(dataList, header.key)
                 }}</span>
-                <slot :name="header.key" :value="dataList[header.key]" />
+                <slot
+                  :name="header.key"
+                  :value="parseData(dataList, header.key)"
+                />
+              </td>
+              <td v-if="isAction">
+                <FlexTableDropdown v-if="!$slots.action" />
+                <slot name="action" :data="dataList" />
               </td>
             </tr>
           </template>

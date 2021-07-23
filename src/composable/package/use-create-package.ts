@@ -6,14 +6,13 @@ import { onMounted, reactive, ref, toRefs, watch } from 'vue'
 import PackageService from '/@src/api/package.service'
 import {
   ICreateAddonPackage,
-  IPackageInfo,
   IUpdateAddonPackage,
 } from '/@src/types/interfaces/package.interface'
-import { GenerateTicket } from '/@src/types/enums/package.enum'
 import { Notyf } from 'notyf'
 import { themeColors } from '/@src/utils/themeColors'
 import { useRouter } from 'vue-router'
-import usePackageApi from '../api/usePackageApi'
+import useOptionApi from '../api/useOptionApi'
+import { PackageOption } from '/@src/types/interfaces/option.interface'
 
 /**
  * add type for render with type
@@ -24,8 +23,8 @@ export interface IAddonPackageWithType extends ICreateAddonPackage {
 export interface IUseCreatePackageState {
   mainPackageId: number
   isLoadingPackages: boolean
-  packages: IPackageInfo[]
-  dependOnPackageList: IPackageInfo[]
+  packages: PackageOption[]
+  dependOnPackageList: PackageOption[]
   mainSelectedPackage?: IUpdateAddonPackage
   addonPackages: IUpdateAddonPackage[]
   currentAddonPackage?: IAddonPackageWithType
@@ -80,7 +79,7 @@ export default function useCreatePackage() {
     currentAddonPackage: undefined,
   })
   const router = useRouter()
-  const { getAllPackages } = usePackageApi()
+  const { getPackages } = useOptionApi()
 
   const displayPackageNameById = (id: number) => {
     return state.packages.find((pk) => pk.id === id)?.packageName || ''
@@ -92,11 +91,9 @@ export default function useCreatePackage() {
 
   const fetchAllPackage = async () => {
     state.isLoadingPackages = true
-    const data = await getAllPackages({ currentPage: 1, perPage: 10 })
+    const data = await getPackages()
     state.isLoadingPackages = false
-    // if (data) {
-    //   state.packages = data as IPackageInfo[]
-    // }
+    state.packages = data
   }
 
   const toggleShowMainPackageSection = () => {

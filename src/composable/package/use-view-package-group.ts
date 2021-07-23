@@ -3,20 +3,14 @@
  */
 
 import { onMounted, reactive, ref, toRefs } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import usePackageApi from '../api/usePackageApi'
 import useNotyf from '../useNotyf'
-import { IAddonPackageWithType } from './use-create-package'
 import PackageService from '/@src/api/package.service'
-import router from '/@src/router'
-import {
-  IPackageGroupInfo,
-  IPackageInfo,
-  IUpdateAddonPackage,
-} from '/@src/types/interfaces/package.interface'
+import { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
 interface UseViewPackageGroupState {
   isLoading: boolean
   isUpdating: boolean
-  packages: IPackageInfo[]
   addonPackages: IUpdateAddonPackage[]
   mainPackage?: IUpdateAddonPackage
 }
@@ -24,19 +18,19 @@ export default function useViewPackageGroup() {
   const state = reactive<UseViewPackageGroupState>({
     isLoading: false,
     isUpdating: false,
-    packages: [],
     addonPackages: [],
     mainPackage: undefined,
   })
 
   const route = useRoute()
+  const router = useRouter()
   const notyf = useNotyf()
   const mainPackageId = ref<number>(+(route.params.packageid as string))
 
+  const { getAddonPackageByMainPackageId } = usePackageApi()
   const fetchAddonPackage = async () => {
-    const { status, data } =
-      await PackageService.getAddonPackageByMainPackageId(mainPackageId.value)
-    if (status === 200) {
+    const data = await getAddonPackageByMainPackageId(mainPackageId.value)
+    if (data.length) {
       const findMainPackage = data.find((pk) => pk.isMainPackage)
       state.mainPackage = {
         ...findMainPackage,

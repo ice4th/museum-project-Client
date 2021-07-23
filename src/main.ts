@@ -13,6 +13,7 @@
 
 import { createApp } from './app'
 import VCalendar from 'v-calendar'
+import VueDraggable from 'vuedraggable'
 import VueMultiselect from '@vueform/multiselect'
 import VueSlider from '@vueform/slider'
 import VueApexCharts from 'vue3-apexcharts'
@@ -63,6 +64,7 @@ createApp({
       },
     })
 
+    app.component('VueDraggable', VueDraggable)
     app.component(VueMultiselect.name, VueMultiselect)
     app.component(VueSlider.name, VueSlider)
 

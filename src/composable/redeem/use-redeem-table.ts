@@ -3,15 +3,16 @@
  */
 
 import moment from 'moment'
-import { onMounted, reactive, ref, toRefs } from 'vue'
+import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import usePackageApi from '../api/usePackageApi'
+import useOptionApi from '../api/useOptionApi'
 import useNotyf from '../useNotyf'
-import PartnerService from '/@src/api/partner.service'
 import RedeemService from '/@src/api/redeem.service'
 import { RedeemType } from '/@src/types/enums/redeem.enum'
-import { IPackageInfo } from '/@src/types/interfaces/package.interface'
-import { IPartnerDetail } from '/@src/types/interfaces/partner.interface'
+import {
+  PackageOption,
+  PartnerOption,
+} from '/@src/types/interfaces/option.interface'
 import {
   ICreateRedeem,
   IRedeemDetail,
@@ -26,8 +27,8 @@ interface UseRedeemTableState {
   currentRedeemId?: number
   redeemDetail: IRedeemDetail[]
   createNewRedeem: ICreateRedeem
-  packages: IPackageInfo[]
-  partners: IPartnerDetail[]
+  packages: PackageOption[]
+  partners: PartnerOption[]
 }
 
 export default function useRedeemTable() {
@@ -54,7 +55,7 @@ export default function useRedeemTable() {
   const route = useRoute()
   const router = useRouter()
   const notyf = useNotyf()
-  const { getAllPackages } = usePackageApi()
+  const { getPackages, getPartners } = useOptionApi()
 
   const fetchAllRedeem = async () => {
     const { data, status } = await RedeemService.getAllRedeems({
@@ -73,23 +74,6 @@ export default function useRedeemTable() {
     if (status === 200 && data) {
       state.currentRedeemId = id
       state.redeemDetail = data
-    }
-  }
-
-  const fetchPackages = async () => {
-    const data = await getAllPackages({
-      currentPage: 1,
-      perPage: 10,
-    })
-    // if (data) {
-    //   state.packages = data as IPackageInfo[]
-    // }
-  }
-
-  const fetchPartners = async () => {
-    const { data, status } = await PartnerService.getAllPartner()
-    if (status === 200 && data) {
-      state.partners = data
     }
   }
 
@@ -114,7 +98,7 @@ export default function useRedeemTable() {
     return status === 201
   }
 
-  onMounted(() => {
+  onMounted(async () => {
     const page = route.query.page as string
     if (page) {
       state.currentPage = +page
@@ -122,8 +106,13 @@ export default function useRedeemTable() {
     const today = moment().format('YYYY-MM-DD')
     const todayIso = moment(today).toISOString()
     state.createNewRedeem.ticketStartDate = todayIso
-    fetchAllRedeem()
-    Promise.all([fetchPackages(), fetchPartners()])
+    const [packages, partners] = await Promise.all([
+      getPackages(),
+      getPartners(),
+      fetchAllRedeem(),
+    ])
+    state.packages = packages
+    state.partners = partners
   })
   return { ...toRefs(state), fetchRedeemById, createRedeem }
 }
