@@ -6,12 +6,18 @@ import {
   StudentPackageItemResponse,
 } from '/@src/types/interfaces/package-item.interface'
 import { TicketType } from '../../types/enums/ticket.enum'
+import {
+  IAddTicketStudent,
+  IExpireTicketStudent,
+} from '/@src/types/interfaces/ticket.interface'
+import moment from 'moment'
 
 interface UseStudentPackageItemState {
   validation?: object
   inactivePackages: IStudentPackageItems[]
   activePackages: IStudentPackageItems[]
   expirePackages: IStudentPackageItems[]
+  todayIso: string
 }
 
 export default function useStudentPackageItem() {
@@ -20,6 +26,7 @@ export default function useStudentPackageItem() {
     inactivePackages: [],
     activePackages: [],
     expirePackages: [],
+    todayIso: '',
   })
   const route = useRoute()
 
@@ -111,8 +118,22 @@ export default function useStudentPackageItem() {
     }
   }
 
+  const addTicketStudent = (payload: IAddTicketStudent) => {
+    console.log('addTicketStudent:', payload)
+    fetchStudentPackages()
+    return payload
+  }
+
+  const expireTicketStudent = (payload: IExpireTicketStudent) => {
+    console.log('expireTicketStudent:', payload)
+    fetchStudentPackages()
+    return payload
+  }
+
   onMounted(() => {
+    const today = moment().format('YYYY-MM-DD')
+    state.todayIso = moment(today).toISOString()
     fetchStudentPackages()
   })
-  return { ...toRefs(state) }
+  return { ...toRefs(state), addTicketStudent, expireTicketStudent }
 }

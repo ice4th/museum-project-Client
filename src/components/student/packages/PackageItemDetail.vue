@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { defineProps, onMounted, ref } from 'vue'
-import type { PropType } from 'vue'
+import ticketType from '/@src/data/ticket-type.json'
 import { toFormat } from '/@src/helpers/date.helper'
+
+const ticketTypeOptions = ticketType
 
 const props = defineProps({
   packageItems: {
@@ -18,14 +20,6 @@ const props = defineProps({
   },
 })
 const internalPackageItems = ref(props.packageItems)
-const TicketTypeName = {
-  package: 'Private Class',
-  group_class: 'Dicussion Class',
-  master_class: 'Master Class',
-  freetalk: 'Freetalk',
-  subscription: 'Speaking Lab',
-  globish_plus: 'Globish Plus',
-}
 </script>
 <template>
   <V-CardAction
@@ -37,7 +31,10 @@ const TicketTypeName = {
     class="mb-5"
   >
     <template #action>
-      <PackageAction :can-activate="canActivate" />
+      <PackageAction
+        :can-activate="canActivate"
+        :package-item-id="packageItem.packageItemId"
+      />
     </template>
     <table class="table is-hoverable is-fullwidth">
       <thead>
@@ -58,7 +55,12 @@ const TicketTypeName = {
           v-for="(ticket, idxTicket) in packageItem.tickets"
           :key="`ticket-${idxTicket}-${idx}`"
         >
-          <td>{{ TicketTypeName[ticket.type] }}</td>
+          <td>
+            {{
+              ticketTypeOptions.find((type) => type.value == ticket.type)
+                ?.text || '-'
+            }}
+          </td>
           <td class="has-text-centered">{{ ticket.remain }}</td>
           <td class="has-text-centered">
             {{

@@ -10,3 +10,17 @@ export interface ITicketInfo {
   comment?: string
   partner?: number
 }
+
+export interface IAddTicketStudent {
+  type: string
+  amount: number
+  comment: string
+  packageItemId: number
+}
+
+export interface IExpireTicketStudent {
+  type?: string
+  expireDate: string
+  comment: string
+  packageItemId: number
+}
