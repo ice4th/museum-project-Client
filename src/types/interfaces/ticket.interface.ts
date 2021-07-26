@@ -4,7 +4,7 @@ export interface ITicketInfo {
   id: number
   type: TicketType
   packageItemId: number
-  startDate: Date
+  startDate?: Date
   expireDate: Date
   studentId: number
   comment?: string

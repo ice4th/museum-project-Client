@@ -46,8 +46,8 @@ export default class StudentService {
 
   public static async getStudentPackageItems(
     studentId: number
-  ): Promise<ApiServiceResponse<StudentPackageItemResponse[]>> {
-    const res = await ApiService.get<StudentPackageItemResponse[]>(
+  ): Promise<ApiServiceResponse<StudentPackageItemResponse>> {
+    const res = await ApiService.get<StudentPackageItemResponse>(
       `/Students/${studentId}/Packages`
     )
     return res

@@ -30,7 +30,11 @@ const studentFlag = computed(() => {
         <!--Navigation-->
         <div class="column is-4">
           <div class="account-box is-navigation">
-            <V-Block :title="studentName" :subtitle="studentInfo?.email" center>
+            <V-Block
+              :title="`(${studentInfo?.studentId}) ${studentName}`"
+              :subtitle="studentInfo?.email"
+              center
+            >
               <template #icon>
                 <V-Avatar
                   size="large"

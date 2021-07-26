@@ -10,8 +10,9 @@ type MyCustomType = {
 }
 
 const props = defineProps({
-  myCustomObject: {
-    type: Object,
+  canActivate: {
+    type: Boolean,
+    default: false,
   },
   myStringArray: {
     type: Array as PropType<string[]>,
@@ -22,29 +23,35 @@ const props = defineProps({
 </script>
 <template>
   <V-Dropdown
-    icon="feather:more-vertical"
+    title="Manage Package"
     class="is-pushed-mobile"
+    color="primary"
     spaced
     right
   >
     <template #content>
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+      <a
+        role="menuitem"
+        href="#"
+        class="dropdown-item is-media"
+        v-show="canActivate"
+      >
         <div class="icon">
-          <i aria-hidden="true" class="lnil lnil-briefcase"></i>
+          <i aria-hidden="true" class="lnil lnil-rocket"></i>
         </div>
         <div class="meta">
-          <span>Send</span>
-          <span>Send Package</span>
+          <span>Activate</span>
+          <span>Activate Package</span>
         </div>
       </a>
 
       <a role="menuitem" href="#" class="dropdown-item is-media">
         <div class="icon">
-          <i aria-hidden="true" class="lnil lnil-change"></i>
+          <i aria-hidden="true" class="lnil lnil-circle-plus"></i>
         </div>
         <div class="meta">
-          <span>Change</span>
-          <span>Change Package</span>
+          <span>Add</span>
+          <span>Add Ticket</span>
         </div>
       </a>
 
@@ -54,7 +61,27 @@ const props = defineProps({
         </div>
         <div class="meta">
           <span>Expire</span>
-          <span>Expire Package</span>
+          <span>Change Expire Package</span>
+        </div>
+      </a>
+
+      <a role="menuitem" href="#" class="dropdown-item is-media">
+        <div class="icon">
+          <i aria-hidden="true" class="lnil lnil-reply"></i>
+        </div>
+        <div class="meta">
+          <span>Send</span>
+          <span>Send Package to another student</span>
+        </div>
+      </a>
+
+      <a role="menuitem" href="#" class="dropdown-item is-media">
+        <div class="icon">
+          <i aria-hidden="true" class="lnil lnil-share"></i>
+        </div>
+        <div class="meta">
+          <span>Change</span>
+          <span>Change Package</span>
         </div>
       </a>
 
@@ -71,3 +98,9 @@ const props = defineProps({
     </template>
   </V-Dropdown>
 </template>
+<style lang="scss" scoped>
+a.dropdown-item,
+button.dropdown-item {
+  width: 90%;
+}
+</style>
