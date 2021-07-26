@@ -10,7 +10,7 @@ const route = useRoute()
   <SidebarLayout
     :theme="sidebarTheme"
     close-on-change
-    default-sidebar="student"
+    default-sidebar="role-permission"
   >
     <!-- <ProductSidebar /> -->
     <!-- <ProductMobileSubsidebar /> -->

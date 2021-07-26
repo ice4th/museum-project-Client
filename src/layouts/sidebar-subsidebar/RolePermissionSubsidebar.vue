@@ -7,8 +7,6 @@ const emit = defineEmit(['close'])
 <template>
   <div class="sidebar-panel is-generic">
     <div class="subpanel-header">
-      <!-- <ProjectsQuickDropdown /> -->
-
       <h3 class="no-mb">Role & Permission</h3>
       <div class="panel-close" @click="emit('close')">
         <i aria-hidden="true" class="iconify" data-icon="feather:x"></i>
@@ -16,10 +14,62 @@ const emit = defineEmit(['close'])
     </div>
     <div class="inner" data-simplebar>
       <ul>
-        <li>
-          <RouterLink :to="{ name: 'role-permission' }"
-            >Role & Permission</RouterLink
-          >
+        <li v-has-nested-router-link class="has-children">
+          <div class="collapse-wrap">
+            <a class="parent-link">
+              Permission
+              <i class="iconify" data-icon="feather:chevron-right" />
+            </a>
+          </div>
+          <ul>
+            <li>
+              <RouterLink
+                :to="{ name: 'role-permission-permission' }"
+                class="is-submenu"
+              >
+                <i class="lnil lnil-books"></i>
+                <span>Permission Page</span>
+              </RouterLink>
+            </li>
+          </ul>
+        </li>
+        <li v-has-nested-router-link class="has-children">
+          <div class="collapse-wrap">
+            <a class="parent-link">
+              Role
+              <i class="iconify" data-icon="feather:chevron-right" />
+            </a>
+          </div>
+          <ul>
+            <li>
+              <RouterLink
+                :to="{ name: 'role-permission-role' }"
+                class="is-submenu"
+              >
+                <i class="lnil lnil-books"></i>
+                <span>Role Page</span>
+              </RouterLink>
+            </li>
+          </ul>
+        </li>
+        <li v-has-nested-router-link class="has-children">
+          <div class="collapse-wrap">
+            <a class="parent-link">
+              Team
+              <i class="iconify" data-icon="feather:chevron-right" />
+            </a>
+          </div>
+          <ul>
+            <li>
+              <RouterLink
+                :to="{ name: 'role-permission-team' }"
+                class="is-submenu"
+              >
+                <i class="lnil lnil-books"></i>
+                <span>Team Page</span>
+              </RouterLink>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>
