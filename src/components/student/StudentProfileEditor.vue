@@ -1,30 +1,60 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
-import { computed, defineProps, onBeforeMount, ref } from 'vue'
+import {
+  computed,
+  defineEmit,
+  defineProps,
+  onBeforeMount,
+  ref,
+  watch,
+} from 'vue'
 import type { PropType } from 'vue'
 import useNotyf from '/@src/composable/useNotyf'
 import type {
   IStudentInfo,
+  IUpdateStudentProfile,
   StudentInfoResponse,
 } from '/@src/types/interfaces/student.interface'
 import sleep from '/@src/utils/sleep'
 import occupationList from '/@src/data/occupation-list.json'
 import industryList from '/@src/data/industry-list.json'
 import moment from 'moment-timezone'
+import _ from 'lodash'
+
 const props = defineProps({
   studentInfo: {
     type: Object as PropType<StudentInfoResponse>,
   },
+  validation: {
+    type: Object,
+    default: {},
+  },
 })
-const isUploading = ref(false)
-const isLoading = ref(false)
-const experience = ref('')
-const firstJob = ref('')
-const flexibility = ref('')
-const remote = ref('')
-const age = ref(moment().diff(props.studentInfo?.dob, 'years'))
-const devicesOptions = ['IOS', 'Mac', 'Android', 'PC']
+const emit = defineEmit({
+  'on-update': Object,
+})
 
+const { y } = useWindowScroll()
+const isScrolling = computed(() => {
+  return y.value > 30
+})
+
+const isEditMode = ref(false)
+const isLoading = ref(false)
+const internalStudentInfo = ref<StudentInfoResponse | undefined>(undefined)
+const internalValidation = ref(props.validation)
+
+watch(
+  () => props.validation,
+  () => (internalValidation.value = props.validation)
+)
+
+const age = computed(() =>
+  moment(internalStudentInfo.value?.dob).isValid()
+    ? moment().diff(internalStudentInfo.value?.dob, 'years')
+    : ''
+)
+const devicesOptions = ['IOS', 'Mac', 'Android', 'PC']
 const industryOptions = industryList
 const occupationOptions = occupationList
 const timezoneOptions = moment.tz.names()
@@ -33,38 +63,40 @@ const genderOptions = {
   female: 'Female',
 }
 
-const notyf = useNotyf()
-const { y } = useWindowScroll()
-
-const isScrolling = computed(() => {
-  return y.value > 30
-})
-
-const onAddFile = (error: any, file: any) => {
-  if (error) {
-    console.error(error)
-    return
-  }
-
-  console.log('file added', file)
-}
-const onRemoveFile = (error: any, file: any) => {
-  if (error) {
-    console.error(error)
-    return
-  }
-
-  console.log('file removed', file)
-}
 const onSave = async () => {
   isLoading.value = true
-  await sleep()
-  notyf.success('Your changes have been successfully saved!')
+  const { value } = internalStudentInfo
+  const data = {
+    firstnameTH: value?.firstname.th,
+    lastnameTH: value?.lastname.th,
+    nicknameTH: value?.nickname.th,
+    firstnameEN: value?.firstname.en,
+    lastnameEN: value?.lastname.en,
+    nicknameEN: value?.nickname.en,
+    gender: value?.gender,
+    dob: value?.dob,
+    phone: value?.phone,
+    email: value?.email,
+    timezone: value?.timezone,
+    industry: value?.studentNote?.industry,
+    school: value?.studentNote?.school,
+    device: value?.studentNote?.device?.join(','),
+    occupation: value?.studentNote?.occupation,
+  } as IUpdateStudentProfile
+  emit('on-update', data)
   isLoading.value = false
 }
-const isEditMode = ref(false)
+
+const onCancelEdit = () => {
+  isEditMode.value = false
+  internalStudentInfo.value = _.cloneDeep(props.studentInfo)
+  internalValidation.value = {}
+}
 
 onBeforeMount(() => {
+  if (props.studentInfo) {
+    internalStudentInfo.value = _.cloneDeep(props.studentInfo)
+  }
   if (
     !occupationOptions.some(
       (oc) => oc.value === props.studentInfo?.studentNote?.occupation
@@ -76,6 +108,10 @@ onBeforeMount(() => {
     })
   }
 })
+
+const removeValidation = (key: string) => {
+  delete internalValidation.value[key]
+}
 </script>
 
 <template>
@@ -92,9 +128,9 @@ onBeforeMount(() => {
               icon="lnir lnir-arrow-left rem-100"
               light
               dark-outlined
-              @click="isEditMode = false"
+              @click="onCancelEdit()"
             >
-              Go Back
+              Cancel
             </V-Button>
             <V-Button
               color="primary"
@@ -115,61 +151,6 @@ onBeforeMount(() => {
     </div>
     <div class="form-body">
       <!--Fieldset-->
-      <!-- <div v-show="isEditMode" class="fieldset">
-        <div class="fieldset-heading">
-          <h4>Profile Picture</h4>
-          <p>This is how others will recognize you</p>
-        </div>
-
-        <V-Avatar size="xl" class="profile-v-avatar">
-          <template #avatar>
-            <img
-              v-if="!isUploading"
-              class="avatar"
-              src="/demo/avatars/8.jpg"
-              alt=""
-              @error.once="
-                $event.target.src = 'https://via.placeholder.com/150x150'
-              "
-            />
-            <V-FilePond
-              v-else
-              class="profile-filepond"
-              name="profile_filepond"
-              :chunk-retry-delays="[500, 1000, 3000]"
-              label-idle="<i class='lnil lnil-cloud-upload'></i>"
-              :accepted-file-types="['image/png', 'image/jpeg', 'image/gif']"
-              :image-preview-height="140"
-              :image-resize-target-width="140"
-              :image-resize-target-height="140"
-              image-crop-aspect-ratio="1:1"
-              style-panel-layout="compact circle"
-              style-load-indicator-position="center bottom"
-              style-progress-indicator-position="right bottom"
-              style-button-remove-item-position="left bottom"
-              style-button-process-item-position="right bottom"
-              @addfile="onAddFile"
-              @removefile="onRemoveFile"
-            />
-            <V-IconButton
-              v-if="!isUploading"
-              icon="feather:edit-2"
-              class="edit-button is-edit"
-              circle
-              @click="isUploading = true"
-            />
-            <V-IconButton
-              v-else
-              icon="feather:arrow-left"
-              class="edit-button is-back"
-              circle
-              @click="isUploading = false"
-            />
-          </template>
-        </V-Avatar>
-      </div> -->
-
-      <!--Fieldset-->
       <div class="fieldset">
         <div class="fieldset-heading">
           <h4>Personal Info (TH)</h4>
@@ -183,14 +164,18 @@ onBeforeMount(() => {
               <label>First name (TH)</label>
               <V-Control icon="feather:user">
                 <input
-                  v-model="studentInfo.firstname.th"
+                  v-model="internalStudentInfo.firstname.th"
                   type="text"
                   class="input"
                   placeholder="First Name (TH)"
                   autocomplete="given-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('firstnameTH')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.firstnameTH" class="msg-error">
+                {{ internalValidation.firstnameTH }}
+              </h6>
             </V-Field>
           </div>
           <!--Field-->
@@ -199,14 +184,18 @@ onBeforeMount(() => {
               <label>Last name (TH)</label>
               <V-Control icon="feather:user">
                 <input
-                  v-model="studentInfo.lastname.th"
+                  v-model="internalStudentInfo.lastname.th"
                   type="text"
                   class="input"
                   placeholder="Last Name (TH)"
                   autocomplete="family-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('lastnameTH')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.lastnameTH" class="msg-error">
+                {{ internalValidation.lastnameTH }}
+              </h6>
             </V-Field>
           </div>
           <div class="column is-12">
@@ -214,14 +203,18 @@ onBeforeMount(() => {
               <label>Nickname (TH)</label>
               <V-Control icon="feather:user">
                 <input
-                  v-model="studentInfo.nickname.th"
+                  v-model="internalStudentInfo.nickname.th"
                   type="text"
                   class="input"
                   placeholder="Nickname (TH)"
                   autocomplete="family-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('nicknameTH')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.nicknameTH" class="msg-error">
+                {{ internalValidation.nicknameTH }}
+              </h6>
             </V-Field>
           </div>
         </div>
@@ -241,14 +234,18 @@ onBeforeMount(() => {
               <label>First name (EN)</label>
               <V-Control icon="feather:user">
                 <input
-                  v-model="studentInfo.firstname.en"
+                  v-model="internalStudentInfo.firstname.en"
                   type="text"
                   class="input"
                   placeholder="First Name (EN)"
                   autocomplete="given-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('firstnameEN')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.firstnameEN" class="msg-error">
+                {{ internalValidation.firstnameEN }}
+              </h6>
             </V-Field>
           </div>
           <!--Field-->
@@ -257,14 +254,18 @@ onBeforeMount(() => {
               <label>Last name (EN)</label>
               <V-Control icon="feather:user">
                 <input
-                  v-model="studentInfo.lastname.en"
+                  v-model="internalStudentInfo.lastname.en"
                   type="text"
                   class="input"
                   placeholder="Last Name (EN)"
                   autocomplete="family-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('lastnameEN')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.lastnameEN" class="msg-error">
+                {{ internalValidation.lastnameEN }}
+              </h6>
             </V-Field>
           </div>
           <div class="column is-12">
@@ -272,14 +273,18 @@ onBeforeMount(() => {
               <label>Nickname (EN)</label>
               <V-Control icon="feather:user">
                 <input
-                  v-model="studentInfo.nickname.en"
+                  v-model="internalStudentInfo.nickname.en"
                   type="text"
                   class="input"
                   placeholder="Nick Name (EN)"
                   autocomplete="family-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('nicknameEN')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.nicknameEN" class="msg-error">
+                {{ internalValidation.nicknameEN }}
+              </h6>
             </V-Field>
           </div>
         </div>
@@ -299,14 +304,17 @@ onBeforeMount(() => {
               <label>Email</label>
               <V-Control icon="feather:user">
                 <input
-                  v-model="studentInfo.email"
+                  v-model="internalStudentInfo.email"
                   type="text"
                   class="input"
                   placeholder="Email"
                   autocomplete="email"
-                  readonly
+                  @keypress="removeValidation('email')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.email" class="msg-error">
+                {{ internalValidation.email }}
+              </h6>
             </V-Field>
           </div>
           <!--Field-->
@@ -315,14 +323,18 @@ onBeforeMount(() => {
               <label>Phone</label>
               <V-Control icon="feather:phone">
                 <input
-                  v-model="studentInfo.phone"
+                  v-model="internalStudentInfo.phone"
                   type="text"
                   class="input"
                   placeholder="Phone"
                   autocomplete="phone"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('phone')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.phone" class="msg-error">
+                {{ internalValidation.phone }}
+              </h6>
             </V-Field>
           </div>
           <!--Field-->
@@ -332,7 +344,7 @@ onBeforeMount(() => {
               <V-Control>
                 <input
                   v-show="!isEditMode"
-                  v-model="studentInfo.gender"
+                  v-model="internalStudentInfo.gender"
                   type="text"
                   class="input gender"
                   placeholder="Gender"
@@ -341,30 +353,54 @@ onBeforeMount(() => {
                 />
                 <Multiselect
                   v-show="isEditMode"
-                  v-model="studentInfo.gender"
+                  v-model="internalStudentInfo.gender"
                   :searchable="true"
                   :options="genderOptions"
                   placeholder="Gender"
                   :disabled="!isEditMode"
+                  @change="removeValidation('gender')"
                 />
               </V-Control>
+              <h6 v-show="internalValidation.gender" class="msg-error">
+                {{ internalValidation.gender }}
+              </h6>
             </V-Field>
           </div>
           <!--Field-->
           <div class="column is-9">
-            <V-Field>
-              <label>Date of birth</label>
-              <V-Control icon="feather:calendar">
-                <input
-                  v-model="studentInfo.dob"
-                  type="text"
-                  class="input"
-                  placeholder="Date of birth"
-                  autocomplete="country-name"
-                  :readonly="!isEditMode"
-                />
-              </V-Control>
-            </V-Field>
+            <v-date-picker
+              v-model="internalStudentInfo.dob"
+              color="orange"
+              :model-config="{
+                type: 'string',
+                mask: 'YYYY-MM-DD',
+              }"
+              :masks="{
+                input: 'YYYY-MM-DD',
+              }"
+              trim-weeks
+              :popover="{ visibility: !isEditMode ? '' : 'click' }"
+            >
+              <template #default="{ inputValue, inputEvents }">
+                <V-Field>
+                  <label>Date of birth</label>
+                  <V-Control icon="feather:calendar">
+                    <input
+                      class="input"
+                      type="text"
+                      placeholder="Date of birth"
+                      :value="inputValue"
+                      v-on="inputEvents"
+                      :readonly="!isEditMode"
+                      @click="removeValidation('dob')"
+                    />
+                  </V-Control>
+                  <h6 v-show="internalValidation.dob" class="msg-error">
+                    {{ internalValidation.dob }}
+                  </h6>
+                </V-Field>
+              </template>
+            </v-date-picker>
           </div>
           <!--Field-->
           <div class="column is-3">
@@ -376,7 +412,6 @@ onBeforeMount(() => {
                   type="text"
                   class="input"
                   placeholder="Age"
-                  autocomplete="country-name"
                   readonly
                 />
               </V-Control>
@@ -389,21 +424,26 @@ onBeforeMount(() => {
               <V-Control icon="feather:clock">
                 <input
                   v-show="!isEditMode"
-                  v-model="studentInfo.timezone"
+                  v-model="internalStudentInfo.timezone"
                   type="text"
                   class="input"
-                  placeholder="Age"
+                  placeholder="Timezone"
                   autocomplete="country-name"
                   :readonly="!isEditMode"
+                  @keypress="removeValidation('timezone')"
                 />
                 <Multiselect
                   v-show="isEditMode"
-                  v-model="studentInfo.timezone"
+                  v-model="internalStudentInfo.timezone"
                   :searchable="true"
                   :options="timezoneOptions"
                   placeholder="timezone"
                   :disabled="!isEditMode"
+                  @change="removeValidation('timezone')"
                 />
+                <h6 v-show="internalValidation.timezone" class="msg-error">
+                  {{ internalValidation.timezone }}
+                </h6>
               </V-Control>
             </V-Field>
           </div>
@@ -441,7 +481,7 @@ onBeforeMount(() => {
               <V-Control icon="feather:briefcase">
                 <input
                   v-show="!isEditMode"
-                  v-model="studentInfo.studentNote.industry"
+                  v-model="internalStudentInfo.studentNote.industry"
                   type="text"
                   class="input"
                   placeholder="Industry"
@@ -450,7 +490,7 @@ onBeforeMount(() => {
                 />
                 <Multiselect
                   v-show="isEditMode"
-                  v-model="studentInfo.studentNote.industry"
+                  v-model="internalStudentInfo.studentNote.industry"
                   :searchable="true"
                   :options="industryOptions"
                   placeholder="Industry"
@@ -476,7 +516,7 @@ onBeforeMount(() => {
               <V-Control icon="feather:briefcase">
                 <input
                   v-show="!isEditMode"
-                  v-model="studentInfo.studentNote.occupation"
+                  v-model="internalStudentInfo.studentNote.occupation"
                   type="text"
                   class="input"
                   placeholder="Occupation"
@@ -485,7 +525,7 @@ onBeforeMount(() => {
                 />
                 <Multiselect
                   v-show="isEditMode"
-                  v-model="studentInfo.studentNote.occupation"
+                  v-model="internalStudentInfo.studentNote.occupation"
                   :searchable="true"
                   :options="occupationOptions"
                   placeholder="Occupation"
@@ -526,7 +566,7 @@ onBeforeMount(() => {
               <V-Control>
                 <input
                   v-show="!isEditMode"
-                  v-model="studentInfo.studentNote.device"
+                  v-model="internalStudentInfo.studentNote.device"
                   type="text"
                   class="input"
                   placeholder="Add devices"
@@ -535,7 +575,7 @@ onBeforeMount(() => {
                 />
                 <Multiselect
                   v-show="isEditMode"
-                  v-model="studentInfo.studentNote.device"
+                  v-model="internalStudentInfo.studentNote.device"
                   mode="tags"
                   :searchable="true"
                   :create-tag="true"
@@ -553,7 +593,11 @@ onBeforeMount(() => {
 </template>
 
 <style lang="scss" scoped>
+@import '../../scss/abstracts/_variables.scss';
 .input.gender {
   text-transform: capitalize;
+}
+h6.msg-error {
+  color: $danger;
 }
 </style>
