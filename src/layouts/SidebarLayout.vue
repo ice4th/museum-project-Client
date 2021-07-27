@@ -131,23 +131,6 @@ watch(
           </RouterLink>
         </li>
 
-        <!-- Roles & Permissions -->
-        <li>
-          <RouterLink
-            :to="{ name: 'role-permission' }"
-            :class="[
-              activeMobileSubsidebar === 'role-permission' && 'is-active',
-            ]"
-            @click="activeMobileSubsidebar = 'role-permission'"
-          >
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:shield"
-            ></i>
-          </RouterLink>
-        </li>
-
         <!-- Permissions -->
         <li>
           <RouterLink
@@ -194,11 +177,6 @@ watch(
       <ProductMobileSubsidebar
         v-else-if="isMobileSidebarOpen && activeMobileSubsidebar === 'product'"
       />
-      <RolePermissionMobileSubsidebar
-        v-else-if="
-          isMobileSidebarOpen && activeMobileSubsidebar === 'role-permission'
-        "
-      />
       <PermissionMobileSubsidebar
         v-else-if="
           isMobileSidebarOpen && activeMobileSubsidebar === 'permission'
@@ -237,23 +215,6 @@ watch(
               aria-hidden="true"
               class="iconify sidebar-svg"
               data-icon="feather:box"
-            ></i>
-          </a>
-        </li>
-
-        <!-- Roles & Permissions -->
-        <li>
-          <a
-            :class="[
-              activeMobileSubsidebar === 'role-permission' && 'is-active',
-            ]"
-            data-content="Roles & Permissions"
-            @click="switchSidebar('role-permission')"
-          >
-            <i
-              aria-hidden="true"
-              class="iconify sidebar-svg"
-              data-icon="feather:shield"
             ></i>
           </a>
         </li>
@@ -327,12 +288,6 @@ watch(
       />
       <ProductSubsidebar
         v-else-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'product'"
-        @close="isDesktopSidebarOpen = false"
-      />
-      <RolePermissionSubsidebar
-        v-else-if="
-          isDesktopSidebarOpen && activeMobileSubsidebar === 'role-permission'
-        "
         @close="isDesktopSidebarOpen = false"
       />
       <PermissionSubsidebar
