@@ -147,6 +147,21 @@ watch(
             ></i>
           </RouterLink>
         </li>
+
+        <!-- Permissions -->
+        <li>
+          <RouterLink
+            :to="{ name: 'permission' }"
+            :class="[activeMobileSubsidebar === 'permission' && 'is-active']"
+            @click="activeMobileSubsidebar = 'permission'"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify"
+              data-icon="feather:unlock"
+            ></i>
+          </RouterLink>
+        </li>
       </template>
 
       <template #bottom-links>
@@ -182,6 +197,11 @@ watch(
       <RolePermissionMobileSubsidebar
         v-else-if="
           isMobileSidebarOpen && activeMobileSubsidebar === 'role-permission'
+        "
+      />
+      <PermissionMobileSubsidebar
+        v-else-if="
+          isMobileSidebarOpen && activeMobileSubsidebar === 'permission'
         "
       />
     </transition>
@@ -234,6 +254,21 @@ watch(
               aria-hidden="true"
               class="iconify sidebar-svg"
               data-icon="feather:shield"
+            ></i>
+          </a>
+        </li>
+
+        <!-- Permissions -->
+        <li>
+          <a
+            :class="[activeMobileSubsidebar === 'permission' && 'is-active']"
+            data-content="Permissions"
+            @click="switchSidebar('permission')"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:unlock"
             ></i>
           </a>
         </li>
@@ -297,6 +332,12 @@ watch(
       <RolePermissionSubsidebar
         v-else-if="
           isDesktopSidebarOpen && activeMobileSubsidebar === 'role-permission'
+        "
+        @close="isDesktopSidebarOpen = false"
+      />
+      <PermissionSubsidebar
+        v-else-if="
+          isDesktopSidebarOpen && activeMobileSubsidebar === 'permission'
         "
         @close="isDesktopSidebarOpen = false"
       />
