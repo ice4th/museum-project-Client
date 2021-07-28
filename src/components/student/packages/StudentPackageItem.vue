@@ -3,6 +3,8 @@ import { defineProps, onBeforeMount, onMounted, ref } from 'vue'
 import type { PropType } from 'vue'
 import type { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 import _ from 'lodash'
+import { useRoute } from 'vue-router'
+
 const props = defineProps({
   inactivePackages: {
     type: Array as PropType<IStudentPackageItems[]>,

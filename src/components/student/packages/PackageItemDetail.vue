@@ -18,6 +18,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  studentId: {
+    type: Number,
+    require: true,
+  },
 })
 const internalPackageItems = ref(props.packageItems)
 </script>
@@ -34,6 +38,7 @@ const internalPackageItems = ref(props.packageItems)
       <PackageAction
         :can-activate="canActivate"
         :package-item-id="packageItem.packageItemId"
+        :student-id="studentId"
       />
     </template>
     <table class="table is-hoverable is-fullwidth">

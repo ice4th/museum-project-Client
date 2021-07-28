@@ -106,21 +106,23 @@ export default function useStudentPackageItem() {
     expirePackages: [],
   }
   const fetchStudentPackages = async () => {
-    const id = route.params.id as string
-    const { data, status } = await StudentService.getStudentPackageItems(+id)
-    if (status === 200 && data) {
-      state.activePackages = response.activePackages
-      state.inactivePackages = response.inactivePackages
-      state.expirePackages = response.expirePackages
-      // state.activePackages = data.activePackages
-      // state.inactivePackage = data.inactivePackage
-      // state.expirePackages = data.expirePackages
-    }
+    const studentId = route.params.id as string
+
+    state.activePackages = response.activePackages
+    state.inactivePackages = response.inactivePackages
+    state.expirePackages = response.expirePackages
+    // const { data, status } = await StudentService.getStudentPackageItems(+studentId)
+    // if (status === 200 && data) {
+    //   state.activePackages = data.activePackages
+    //   state.inactivePackages = data.inactivePackages
+    //   state.expirePackages = data.expirePackages
+    // }
   }
 
   const addTicketStudent = (payload: IAddTicketStudent) => {
+    const studentId = route.params.id as string
     console.log('addTicketStudent:', payload)
-    fetchStudentPackages()
+    // fetchStudentPackages()
     return payload
   }
 

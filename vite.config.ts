@@ -26,6 +26,10 @@ export default defineConfig({
   publicDir: 'public',
   // Adjust console output verbosity.
   logLevel: 'info',
+  // Adjust server
+  server: {
+    port: 3010,
+  },
   // Will be passed to @rollup/plugin-alias as its entries option.
   resolve: {
     alias: [

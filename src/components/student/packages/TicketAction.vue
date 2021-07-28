@@ -1,23 +1,35 @@
 <script setup lang="ts">
 // Ticket Action Component
-
 import type { PropType } from 'vue'
-import { defineProps } from 'vue'
-
-type MyCustomType = {
-  id: number
-  name: string
-}
-
+import { ref, defineProps } from 'vue'
+import useStudentPackageItemState from '/@src/composable/student/use-student-package'
+import type { IExpireTicketStudent } from '/@src/types/interfaces/ticket.interface'
+const { expireTicketStudent, todayIso } = useStudentPackageItemState()
 const props = defineProps({
   isStartDate: {
     type: Boolean,
     default: true,
   },
-  myStringArray: {
-    type: Array as PropType<string[]>,
+  packageItemId: {
+    type: Number,
+    require: true,
+  },
+  ticketType: {
+    type: String,
+    require: true,
   },
 })
+const openExpireTicketModal = ref(false)
+const internalTicketType = ref(props.ticketType)
+const expireTicketState = ref({
+  packageItemId: props.packageItemId || 0,
+  comment: '',
+  expireDate: todayIso.value,
+  type: internalTicketType.value,
+  amount: 1,
+})
+const expireTicketInput = ref<IExpireTicketStudent>(expireTicketState.value)
+const onExpirePackage = {}
 </script>
 <template>
   <V-Dropdown

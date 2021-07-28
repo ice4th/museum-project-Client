@@ -55,7 +55,6 @@ const studentFlag = computed(() => {
                           updateStudentProfile({ country: $event.target.value })
                         "
                       >
-                        <option value="">Select a country</option>
                         <option value="th">TH</option>
                         <option value="vn">VN</option>
                       </select>

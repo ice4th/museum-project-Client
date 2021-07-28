@@ -161,8 +161,8 @@ onMounted(() => {})
       <V-Button color="primary" raised @click="onAddTicket">Add</V-Button>
     </template>
   </V-Modal>
-  <!-- [Modal]: Add Ticket -->
 
+  <!-- [Modal]: Expire Package -->
   <V-Modal
     :open="openExpirePackageModal"
     title="Expire Package"

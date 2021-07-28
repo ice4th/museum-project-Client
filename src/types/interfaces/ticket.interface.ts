@@ -16,6 +16,8 @@ export interface IAddTicketStudent {
   amount: number
   comment: string
   packageItemId: number
+  startDate?: string
+  expireDate?: string
 }
 
 export interface IExpireTicketStudent {
