@@ -5,6 +5,7 @@
 import { computed, onMounted, reactive, toRefs } from 'vue'
 import usePackageApi from '../api/usePackageApi'
 import useNotyf from '../useNotyf'
+import { errMessage } from '/@src/helpers/filter.helper'
 import { IPackageGroupInfo } from '/@src/types/interfaces/package.interface'
 
 interface UsePackageTableState {
@@ -74,13 +75,14 @@ export default function usePackageGroupTable() {
   }
 
   const removePackageGroup = async (packageId: number) => {
-    const { status } = await deletePackageGroupByMainPackageId(packageId)
+    const { status, message } = await deletePackageGroupByMainPackageId(
+      packageId
+    )
 
     if (status === 200) {
       await fetchAllPackages()
     } else {
-      // TODO: handle error
-      // noty.error(message || 'Fail !')
+      noty.error(errMessage(message) || 'Fail !')
     }
   }
 

@@ -2,8 +2,7 @@
  * useCreatePackage Composition API
  */
 
-import { onMounted, reactive, ref, toRefs, watch } from 'vue'
-import PackageService from '/@src/api/package.service'
+import { onMounted, reactive, ref, toRefs } from 'vue'
 import {
   ICreateAddonPackage,
   IUpdateAddonPackage,
@@ -13,6 +12,8 @@ import { themeColors } from '/@src/utils/themeColors'
 import { useRouter } from 'vue-router'
 import useOptionApi from '../api/useOptionApi'
 import { PackageOption } from '/@src/types/interfaces/option.interface'
+import usePackageApi from '../api/usePackageApi'
+import { errMessage } from '/@src/helpers/filter.helper'
 
 /**
  * add type for render with type
@@ -80,6 +81,7 @@ export default function useCreatePackage() {
   })
   const router = useRouter()
   const { getPackages } = useOptionApi()
+  const { createPackageGroup: createPackageGroupApi } = usePackageApi()
 
   const displayPackageNameById = (id: number) => {
     return state.packages.find((pk) => pk.id === id)?.packageName || ''
@@ -173,7 +175,7 @@ export default function useCreatePackage() {
   }
 
   const createPackageGroup = async () => {
-    const { status, message } = await PackageService.createPackageGroup({
+    const { status, message } = await createPackageGroupApi({
       mainPackageId: state.mainPackageId,
       addonPackages: state.addonPackages,
     })
@@ -190,7 +192,7 @@ export default function useCreatePackage() {
     }
     notyfWarning.open({
       type: 'error',
-      message,
+      message: errMessage(message),
     })
   }
 

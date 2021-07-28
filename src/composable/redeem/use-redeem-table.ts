@@ -8,6 +8,7 @@ import { useRoute, useRouter } from 'vue-router'
 import useOptionApi from '../api/useOptionApi'
 import useRedeemApi from '../api/useRedeemApi'
 import useNotyf from '../useNotyf'
+import { errMessage } from '/@src/helpers/filter.helper'
 import { RedeemType } from '/@src/types/enums/redeem.enum'
 import {
   PackageOption,
@@ -95,17 +96,14 @@ export default function useRedeemTable() {
       notyf.error('Please Select Package')
       return
     }
-    const { status } = await redeemApi.createRedeem(state.createNewRedeem)
+    const { status, message } = await redeemApi.createRedeem(
+      state.createNewRedeem
+    )
     if (status === 201) {
       notyf.success('Create Redeem Success!')
       router.push({ name: 'code' })
     } else {
-      // TODO: throw message error
-      // if (typeof message === 'object') {
-      //   notyf.error(JSON.stringify(message) || 'Fail')
-      // } else {
-      //   notyf.error(message || 'Fail')
-      // }
+      notyf.error(errMessage(message) || 'Fail')
     }
     return status === 201
   }

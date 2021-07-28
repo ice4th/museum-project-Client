@@ -1,5 +1,5 @@
 import { checkResponseStatus } from '.'
-import useApi from '../useApi'
+import useApi, { ApiResponse } from '../useApi'
 import {
   IPaginationParams,
   IPaginationResponse,
@@ -39,7 +39,7 @@ export default function usePackageApi() {
   }
 
   const createPackage = async (payload: ICratePackageForm) => {
-    return await api.post('Packages', {
+    return await api.post<any, ApiResponse>('Packages', {
       ...payload,
       purchasable: payload.purchasable ? '1' : '0',
       status: +payload.status,
@@ -47,21 +47,25 @@ export default function usePackageApi() {
   }
 
   const createPackageGroup = async (payload: ICreatePackageGroup) => {
-    return await api.post(`/PackageGroups`, payload)
+    return await api.post<any, ApiResponse>(`/PackageGroups`, payload)
   }
 
   const updatePackageGroup = async (payload: ICreatePackageGroup) => {
-    return await api.put(`/PackageGroups`, payload)
+    return await api.put<any, ApiResponse>(`/PackageGroups`, payload)
   }
 
   // remove alll package in group by main package
   const deletePackageGroupByMainPackageId = async (packageId: number) => {
-    return await api.delete(`/PackageGroups/Packages/${packageId}`)
+    return await api.delete<any, ApiResponse>(
+      `/PackageGroups/Packages/${packageId}`
+    )
   }
 
   // remove package by addon package **cannot remove main package
   const deleteAddonPackageGroupById = async (packageGroupId: number) => {
-    return await api.delete(`/PackageGroups/${packageGroupId}`)
+    return await api.delete<any, ApiResponse>(
+      `/PackageGroups/${packageGroupId}`
+    )
   }
 
   return {

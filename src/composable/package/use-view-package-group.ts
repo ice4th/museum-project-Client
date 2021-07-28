@@ -6,7 +6,7 @@ import { onMounted, reactive, ref, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import usePackageApi from '../api/usePackageApi'
 import useNotyf from '../useNotyf'
-import PackageService from '/@src/api/package.service'
+import { errMessage } from '/@src/helpers/filter.helper'
 import { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
 interface UseViewPackageGroupState {
   isLoading: boolean
@@ -25,6 +25,7 @@ export default function useViewPackageGroup() {
   const route = useRoute()
   const router = useRouter()
   const notyf = useNotyf()
+  const { updatePackageGroup, deleteAddonPackageGroupById } = usePackageApi()
   const mainPackageId = ref<number>(+(route.params.packageid as string))
 
   const { getAddonPackageByMainPackageId } = usePackageApi()
@@ -50,8 +51,9 @@ export default function useViewPackageGroup() {
   }
 
   const removeAddonPackage = async (packageGroupId: number) => {
-    const { status, message } =
-      await PackageService.deleteAddonPackageGroupById(packageGroupId)
+    const { status, message } = await deleteAddonPackageGroupById(
+      packageGroupId
+    )
     if (status === 200) {
       await fetchAddonPackage()
       notyf.success('Remove Success!!')
@@ -95,7 +97,7 @@ export default function useViewPackageGroup() {
       }
     }) as IUpdateAddonPackage[]
 
-    const { status } = await PackageService.updatePackageGroup({
+    const { status, message } = await updatePackageGroup({
       mainPackageId: mainId || mainPackageId.value,
       addonPackages: parsedPackages,
     })
@@ -109,8 +111,9 @@ export default function useViewPackageGroup() {
         name: 'product-package-group-:packageid',
         params: { packageid: `${mainId || mainPackageId.value}` },
       })
+    } else {
+      notyf.error(errMessage(message) || 'Fail!')
     }
-    console.log(status)
   }
 
   onMounted(async () => {

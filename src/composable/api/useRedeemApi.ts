@@ -1,5 +1,5 @@
 import { checkResponseStatus } from '.'
-import useApi from '../useApi'
+import useApi, { ApiResponse } from '../useApi'
 import {
   IPaginationParams,
   IPaginationResponse,
@@ -28,7 +28,7 @@ export default function useRedeemApi() {
   }
 
   const createRedeem = async (payload: ICreateRedeem) => {
-    return await api.post(`/Redeems`, {
+    return await api.post<any, ApiResponse>(`/Redeems`, {
       ...payload,
       amount: payload.amount ? +payload.amount : undefined,
     })

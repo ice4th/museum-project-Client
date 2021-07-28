@@ -4,9 +4,9 @@
 
 import { Notyf } from 'notyf'
 import { computed, onMounted, reactive, toRefs } from 'vue'
-import PackageService from '../../api/package.service'
 import { errMessage, isNil } from '../../helpers/filter.helper'
 import useOptionApi from '../api/useOptionApi'
+import usePackageApi from '../api/usePackageApi'
 import { IUseCratePackageForm } from '/@src/types/interfaces/package.interface'
 
 /**
@@ -67,6 +67,8 @@ export default function useCreatePackageForm() {
     getMoocCourses,
   } = useOptionApi()
 
+  const { createPackage: createPackageApi } = usePackageApi()
+
   /**
    * computed
    */
@@ -123,9 +125,7 @@ export default function useCreatePackageForm() {
   /** create new package */
   const createPackage = async () => {
     // call API service for create package
-    const { status, message } = await PackageService.createPackage(
-      state.createPackageForm
-    )
+    const { status, message } = await createPackageApi(state.createPackageForm)
     if (status === 201) {
       notyfMessage.open({
         type: 'success',
