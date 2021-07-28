@@ -1,11 +1,7 @@
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
-import StudentService from '/@src/api/student.service'
-import { StudentCountry, StudentLanguage } from '/@src/types/enums/student.enum'
-import {
-  IStudentInfo,
-  StudentInfoResponse,
-} from '/@src/types/interfaces/student.interface'
+import useStudentApi from '../api/useStudentApi'
+import { StudentInfoResponse } from '/@src/types/interfaces/student.interface'
 interface UseStudentInfoState {
   studentInfo?: StudentInfoResponse
 }
@@ -14,12 +10,13 @@ export default function useStudentInfo() {
     studentInfo: undefined,
   })
   const route = useRoute()
+  const { getStudentInfoById } = useStudentApi()
 
   const fetchStudentInfoById = async () => {
     const id = route.params.id as string
     if (!id) return
-    const { status, data } = await StudentService.getStudentInfoById(+id)
-    if (status === 200) {
+    const data = await getStudentInfoById(+id)
+    if (data) {
       state.studentInfo = data
     }
   }

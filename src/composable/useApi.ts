@@ -1,7 +1,13 @@
 import { InjectionKey, inject } from 'vue'
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  AxiosResponse,
+} from 'axios'
 
-import { UserSessionData } from './useUserSession'
+import Cookies from 'js-cookie'
+import { ADMIN_ACCESS_TOKEN } from './api'
 
 export const apiSymbol: InjectionKey<AxiosInstance> = Symbol()
 export const apiBaseUrl =
@@ -11,15 +17,13 @@ const HEADERS = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
 }
-
-export interface IErrorResponse {
-  error: string
-  message?: string | object
-  path: string
-  statusCode: number
-  timestamp: string
+export interface ApiResponse<T = any> extends AxiosResponse {
+  data: T
+  error?: AxiosError
+  code?: number
+  message: any
 }
-export function initApi(session: UserSessionData): AxiosInstance {
+export function initApi(): AxiosInstance {
   // Here we set the base URL for all requests made to the api
   const api = axios.create({
     baseURL: apiBaseUrl,
@@ -30,8 +34,9 @@ export function initApi(session: UserSessionData): AxiosInstance {
   // include Bearer token to the request if user is logged in
   api.interceptors.request.use(
     (config) => {
-      if (session.token) {
-        config.headers.Authorization = `Bearer ${session.token}`
+      const token = Cookies.get(ADMIN_ACCESS_TOKEN)
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
       }
 
       return config
@@ -47,16 +52,15 @@ export function initApi(session: UserSessionData): AxiosInstance {
       return { ...res, data: res.data?.data }
     },
     (error) => {
-      // const response = error.response.data
-      // const code = response?.statusCode
-      // const message = response?.message
-      // const err = {
-      //   error,
-      //   message,
-      //   code,
-      // }
-      // return error.response.data as IErrorResponse
-      return error
+      const response = error.response.data
+      const code = response?.statusCode
+      const message = response?.message
+      const err = {
+        error,
+        message,
+        code,
+      }
+      return err
     }
   )
 

@@ -6,8 +6,8 @@ import moment from 'moment'
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useOptionApi from '../api/useOptionApi'
+import useRedeemApi from '../api/useRedeemApi'
 import useNotyf from '../useNotyf'
-import RedeemService from '/@src/api/redeem.service'
 import { RedeemType } from '/@src/types/enums/redeem.enum'
 import {
   PackageOption,
@@ -36,7 +36,7 @@ export default function useRedeemTable() {
   const state = reactive<UseRedeemTableState>({
     data: [],
     currentPage: 1,
-    perPage: 15,
+    perPage: 10,
     totalPage: 1,
     total: 1,
     currentRedeemId: undefined,
@@ -58,6 +58,7 @@ export default function useRedeemTable() {
   const router = useRouter()
   const notyf = useNotyf()
   const { getPackages, getPartners } = useOptionApi()
+  const redeemApi = useRedeemApi()
 
   const fetchAllRedeem = async () => {
     state.isLoading = true
@@ -69,12 +70,12 @@ export default function useRedeemTable() {
     if (route.query.perPage) {
       state.perPage = +perPage
     }
-    const { data, status } = await RedeemService.getAllRedeems({
+    const data = await redeemApi.getAllRedeems({
       currentPage: state.currentPage,
       perPage: state.perPage,
     })
     state.isLoading = false
-    if (status === 200 && data) {
+    if (data.total) {
       state.data = data.data
       state.total = data.total
       state.totalPage = data.totalPage
@@ -82,8 +83,8 @@ export default function useRedeemTable() {
   }
 
   const fetchRedeemById = async (id: number) => {
-    const { data, status } = await RedeemService.getRedeemById(id)
-    if (status === 200 && data) {
+    const data = await redeemApi.getRedeemById(id)
+    if (data.length) {
       state.currentRedeemId = id
       state.redeemDetail = data
     }
@@ -94,18 +95,17 @@ export default function useRedeemTable() {
       notyf.error('Please Select Package')
       return
     }
-    const { status, message } = await RedeemService.createRedeem(
-      state.createNewRedeem
-    )
+    const { status } = await redeemApi.createRedeem(state.createNewRedeem)
     if (status === 201) {
       notyf.success('Create Redeem Success!')
       router.push({ name: 'code' })
     } else {
-      if (typeof message === 'object') {
-        notyf.error(JSON.stringify(message) || 'Fail')
-      } else {
-        notyf.error(message || 'Fail')
-      }
+      // TODO: throw message error
+      // if (typeof message === 'object') {
+      //   notyf.error(JSON.stringify(message) || 'Fail')
+      // } else {
+      //   notyf.error(message || 'Fail')
+      // }
     }
     return status === 201
   }

@@ -293,6 +293,11 @@ const tableOptions = computed(() => {
         >
       </template> -->
     </V-Modal>
+    <div class="is-flex is-justify-content-flex-end">
+      <V-Button color="primary" @click="toggleCreateRedeem"
+        >Create Redeem</V-Button
+      >
+    </div>
     <Datatable
       :headers="redeemTableHeaders"
       :data="data"
@@ -302,6 +307,14 @@ const tableOptions = computed(() => {
       :is-loading="isLoading"
       is-action
     >
+      <template #type="{ value }">
+        <V-Tag
+          :color="value === 'default' ? 'purple' : 'danger'"
+          :label="value"
+          curved
+          outlined
+        />
+      </template>
       <template #createdAt="{ value }">
         {{ value ? toFormat(value) : '-' }}
       </template>
@@ -325,39 +338,6 @@ const tableOptions = computed(() => {
         >
       </template>
     </Datatable>
-    <!-- <ListTable
-      v-if="data.length"
-      :data="data"
-      :current-page="currentPage"
-      :per-page="perPage"
-      :total="total"
-    >
-      <template #item="{ item }">
-        <div class="meta-left">
-          <h3>ID: {{ item.id }}</h3>
-          <h3>Type: {{ item.type }}</h3>
-          <h3>Partner: {{ item.partnerName }}</h3>
-          <h3>Package: {{ item.packageName }}</h3>
-          <span v-if="item.usedDate">
-            Activated at: {{ toFormat(item.usedDate) }}
-          </span>
-        </div>
-        <div class="right">
-          <V-Button @click="fetchRedeemById(item.id)">View</V-Button>
-          <h3>Created at: {{ toFormat(item.createdAt) }}</h3>
-          <h3 v-if="item.expireDate">
-            Expire date: {{ toFormat(item.expireDate, 'YYYY-MM-DD') }}
-          </h3>
-        </div>
-      </template>
-      <template #tabs>
-        <div>
-          <V-Button color="primary" @click="toggleCreateRedeem"
-            >Create Redeem</V-Button
-          >
-        </div>
-      </template>
-    </ListTable> -->
   </div>
 </template>
 

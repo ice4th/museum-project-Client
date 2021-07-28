@@ -31,6 +31,7 @@ useHead({
 })
 const showSuccessPopup = ref(false)
 const handleRegister = async () => {
+  console.log('handleRegister')
   const res = await register()
   if (res) showSuccessPopup.value = true
 }
@@ -230,6 +231,7 @@ const handleRegister = async () => {
                       bold
                       fullwidth
                       raised
+                      @click="handleRegister"
                     >
                       Sign Up
                     </V-Button>

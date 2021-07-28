@@ -2,11 +2,11 @@
  * useRegister Composition API
  */
 import { reactive, ref, toRefs } from 'vue'
-import useNotyf from '/@src/composable/useNotyf'
-import AuthService from '/@src/api/auth.service'
 import { ICreateAdminUser } from '/@src/types/interfaces/auth.interface'
 import { Notyf } from 'notyf'
 import { themeColors } from '/@src/utils/themeColors'
+import useAuthApi from '../api/useAuthApi'
+import { checkResponseStatus } from '../api'
 
 interface UseRegisterState {
   name: string
@@ -40,7 +40,9 @@ export default function useRegister() {
     validation: {},
   })
 
+  const { registerAdmin } = useAuthApi()
   const register = async () => {
+    console.log('register')
     const { name, email, password, firstname, lastname, phone, dob } = state
     const payload = {
       name,
@@ -52,16 +54,13 @@ export default function useRegister() {
       dob,
     } as ICreateAdminUser
     isLoading.value = true
-    const { status, message } = await AuthService.registerAdmin(payload)
+    const res = await registerAdmin(payload)
     isLoading.value = false
-    if (status === 201) {
-      return true
+    if (checkResponseStatus(res)) return true
+    if (typeof res?.message === 'object') {
+      state.validation = res.message
     }
-    if (typeof message === 'object') {
-      state.validation = message
-      return
-    }
-    notyf.error(message || 'Fail! Please try again')
+    notyf.error(res?.message || 'Fail! Please try again')
   }
 
   return { ...toRefs(state), isLoading, register }

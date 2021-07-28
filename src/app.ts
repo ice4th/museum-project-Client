@@ -28,7 +28,7 @@ export async function createApp({ enhanceApp }: VueroAppOptions) {
   const i18n = createI18n()
   const router = createRouter()
   const session = initUserSession()
-  const api = initApi(session)
+  const api = initApi()
 
   /**
    * Here you can check if your user has a token stored
@@ -121,7 +121,7 @@ export async function createApp({ enhanceApp }: VueroAppOptions) {
 
       return {
         // Will follow the redirection set in /@src/pages/auth/index.vue
-        name: 'auth',
+        name: 'auth-login',
         // save the location we were at to come back later
         query: { redirect: to.fullPath },
       }

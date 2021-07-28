@@ -1,12 +1,11 @@
 <script setup lang="ts">
 // UserProfileDropdown Component
 import { provide } from 'vue'
+import useAuthApi from '/@src/composable/api/useAuthApi'
 import useUserSession from '/@src/composable/useUserSession'
 
-import useAdminProfile from '/@src/composable/common/use-admin-profile'
-
-const { adminProfile: profile, logout } = useAdminProfile()
 const { user } = useUserSession()
+const { logout } = useAuthApi()
 </script>
 <template>
   <V-Dropdown right spaced class="user-dropdown profile-dropdown">

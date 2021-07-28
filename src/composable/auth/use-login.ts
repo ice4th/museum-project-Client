@@ -2,10 +2,10 @@
  * useRegister Composition API
  */
 import { reactive, ref, toRefs } from 'vue'
-import AuthService from '/@src/api/auth.service'
 import { Notyf } from 'notyf'
 import { useRouter } from 'vue-router'
-import useAdminProfile from '../common/use-admin-profile'
+import useAuthApi from '../api/useAuthApi'
+import { errMessage } from '/@src/helpers/filter.helper'
 
 interface UseLoginState {
   email: string
@@ -20,29 +20,25 @@ export default function useLogin() {
     },
   })
   const router = useRouter()
-  const { fetchProfile } = useAdminProfile()
   const isLoading = ref(false)
   const state = reactive<UseLoginState>({
     email: '',
     password: '',
   })
+  const { loginAdmin } = useAuthApi()
 
   const login = async () => {
     isLoading.value = true
-    const { status, message, data } = await AuthService.loginAdmin({
+    const { status, message } = await loginAdmin({
       email: state.email,
       password: state.password,
     })
     isLoading.value = false
     if (status === 201) {
-      await fetchProfile()
-      router.push('/')
+      router.push({ name: 'index' })
       return
     }
-    if (typeof message === 'object') {
-      return
-    }
-    notyf.error(message || 'Fail! Please try again')
+    notyf.error(errMessage(message) || 'Fail! Please try again')
   }
 
   return { ...toRefs(state), login }
