@@ -2,9 +2,8 @@
 // Ticket Action Component
 import type { PropType } from 'vue'
 import { ref, defineProps } from 'vue'
-import useStudentPackageItemState from '/@src/composable/student/use-student-package'
+import { toFormat } from '/@src/helpers/date.helper'
 import type { IExpireTicketStudent } from '/@src/types/interfaces/ticket.interface'
-const { expireTicketStudent, todayIso } = useStudentPackageItemState()
 const props = defineProps({
   isStartDate: {
     type: Boolean,
@@ -24,7 +23,7 @@ const internalTicketType = ref(props.ticketType)
 const expireTicketState = ref({
   packageItemId: props.packageItemId || 0,
   comment: '',
-  expireDate: todayIso.value,
+  expireDate: toFormat(new Date(), 'YYYY-MM-DD'),
   type: internalTicketType.value,
   amount: 1,
 })

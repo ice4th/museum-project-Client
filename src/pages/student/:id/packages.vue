@@ -1,13 +1,49 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import useStudentPackageItemState from '/@src/composable/student/use-student-package'
-const { validation, activePackages, inactivePackages, expirePackages } =
+const { validation, packageItems, fetchStudentPackages } =
   useStudentPackageItemState()
+
+onMounted(() => {
+  fetchStudentPackages()
+})
 </script>
 <template>
-  <StudentPackageItem
-    :inactive-packages="inactivePackages"
-    :active-packages="activePackages"
-    :expire-packages="expirePackages"
-  />
+  <CollapseContent
+    with-chevron
+    title="Inactive Package"
+    v-if="packageItems.inactivePackages.length"
+  >
+    <template #collapse-content>
+      <StudentPackageItem
+        :package-items="packageItems.inactivePackages"
+        @fetch-package-items="fetchStudentPackages"
+        can-activate
+      />
+    </template>
+  </CollapseContent>
+  <CollapseContent
+    with-chevron
+    title="Active Package"
+    v-if="packageItems.activePackages.length"
+  >
+    <template #collapse-content>
+      <StudentPackageItem
+        :package-items="packageItems.activePackages"
+        @fetch-package-items="fetchStudentPackages"
+      />
+    </template>
+  </CollapseContent>
+  <CollapseContent
+    with-chevron
+    title="Expired Package"
+    v-if="packageItems.expirePackages.length"
+  >
+    <template #collapse-content>
+      <StudentPackageItem
+        :package-items="packageItems.expirePackages"
+        @fetch-package-items="fetchStudentPackages"
+      />
+    </template>
+  </CollapseContent>
 </template>

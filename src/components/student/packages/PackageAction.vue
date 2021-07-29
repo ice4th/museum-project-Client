@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // PackageAction Component
 
-import { onMounted, ref, watch } from 'vue'
+import { computed, defineEmit, onMounted, ref, watch } from 'vue'
 import { defineProps } from 'vue'
 import ticketType from '/@src/data/ticket-type.json'
 import type { PropType } from 'vue'
@@ -10,9 +10,8 @@ import type {
   IExpireTicketStudent,
 } from '/@src/types/interfaces/ticket.interface'
 import useStudentPackageItemState from '/@src/composable/student/use-student-package'
-import moment from 'moment'
-const { addTicketStudent, expireTicketStudent, todayIso } =
-  useStudentPackageItemState()
+import { toFormat } from '/@src/helpers/date.helper'
+const { addTicketStudent, expireTicketStudent } = useStudentPackageItemState()
 
 const ticketTypeOptions = ticketType
 
@@ -25,6 +24,10 @@ const props = defineProps({
     type: Number,
     require: true,
   },
+  packageName: {
+    type: String,
+    require: true,
+  },
 })
 const addTicketState = ref({
   packageItemId: props.packageItemId || 0,
@@ -35,22 +38,27 @@ const addTicketState = ref({
 const expirePackageState = ref({
   packageItemId: props.packageItemId || 0,
   comment: '',
-  expireDate: todayIso.value,
+  expireDate: toFormat(new Date(), 'YYYY-MM-DD'),
 })
+const customDateAddTicket = ref(false)
 const openAddTicketModal = ref(false)
 const openExpirePackageModal = ref(false)
 const addTicketInput = ref<IAddTicketStudent>(addTicketState.value)
 const expirePackageInput = ref<IExpireTicketStudent>(expirePackageState.value)
 const internalackageItemId = ref<number>(props.packageItemId || 0)
+const emit = defineEmit(['fetch-package-items'])
+
 const onAddTicket = async () => {
   const data = {
     packageItemId: internalackageItemId.value,
     amount: addTicketInput?.value?.amount,
     comment: addTicketInput?.value?.comment,
     type: addTicketInput?.value?.type,
+    startDate: addTicketInput?.value?.startDate,
+    expireDate: addTicketInput?.value?.expireDate,
   } as IAddTicketStudent
   const res = await addTicketStudent(data)
-  console.log('onAddTicket', res)
+  emit('fetch-package-items')
   if (res) toggleAddTicket()
 }
 
@@ -81,7 +89,7 @@ const toggleExpirePackage = () => {
   if (!openExpirePackageModal.value) {
     expirePackageInput.value = {
       packageItemId: props.packageItemId || 0,
-      expireDate: todayIso.value,
+      expireDate: toFormat(new Date(), 'YYYY-MM-DD'),
       comment: '',
     }
   }
@@ -97,71 +105,14 @@ onMounted(() => {})
 </script>
 <template>
   <!-- [Modal]: Add Ticket -->
-  <V-Modal
-    :open="openAddTicketModal"
-    title="Add Ticket"
-    size="medium"
-    actions="right"
-    @close="toggleAddTicket"
-  >
-    <template #content>
-      <form class="modal-form">
-        <V-Field class="is-autocomplete-select">
-          <label>Ticket Type</label>
-          <V-Control icon="feather:book">
-            <Multiselect
-              v-model="addTicketInput.type"
-              :searchable="true"
-              :options="ticketTypeOptions"
-              placeholder="Ticket Type"
-              track-by="text"
-              value-prop="value"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.text }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.text }}
-                </span>
-              </template>
-            </Multiselect>
-          </V-Control>
-        </V-Field>
-        <V-Field>
-          <label>Amount</label>
-          <V-Control icon="feather:hash">
-            <input
-              v-model="addTicketInput.amount"
-              type="number"
-              class="input"
-              placeholder="ระบุเป็นจำนวนเต็มเท่านั้น"
-              min="1"
-              required
-            />
-          </V-Control>
-        </V-Field>
-        <V-Field>
-          <label>Comment</label>
-          <V-Control>
-            <input
-              v-model="addTicketInput.comment"
-              type="textarea"
-              class="textarea is-primary-focus"
-              rows="2"
-              placeholder="หมายเหตุ"
-            />
-          </V-Control>
-        </V-Field>
-      </form>
-    </template>
-    <template #action>
-      <V-Button color="primary" raised @click="onAddTicket">Add</V-Button>
-    </template>
-  </V-Modal>
-
+  <ModalAddTicket
+    :title="packageName"
+    :open-modal="openAddTicketModal"
+    :input="addTicketInput"
+    @toggle-close="toggleAddTicket"
+    @on-add="onAddTicket"
+    :custom-date="customDateAddTicket"
+  />
   <!-- [Modal]: Expire Package -->
   <V-Modal
     :open="openExpirePackageModal"
@@ -307,6 +258,6 @@ button.dropdown-item {
   width: 90%;
 }
 .v-modal .modal-content .modal-card .modal-card-body .modal-form {
-  height: 280px;
+  height: 350px;
 }
 </style>

@@ -17,3 +17,7 @@ export interface INameLang {
   en?: string
   th?: string
 }
+
+export interface ISuccessMessage {
+  message: string
+}
