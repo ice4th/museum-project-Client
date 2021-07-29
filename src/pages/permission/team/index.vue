@@ -149,9 +149,7 @@ const data = [
         </V-Control>
       </V-Field>
       <V-Buttons>
-        <V-Button color="primary" icon="fas fa-plus" elevated>
-          Add Team
-        </V-Button>
+        <V-Button color="primary" icon="fas fa-plus"> Add Team </V-Button>
       </V-Buttons>
     </div>
 

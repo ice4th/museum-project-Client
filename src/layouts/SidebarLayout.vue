@@ -134,7 +134,7 @@ watch(
         <!-- Permissions -->
         <li>
           <RouterLink
-            :to="{ name: 'permission' }"
+            :to="{ name: 'permission-role' }"
             :class="[activeMobileSubsidebar === 'permission' && 'is-active']"
             @click="activeMobileSubsidebar = 'permission'"
           >
