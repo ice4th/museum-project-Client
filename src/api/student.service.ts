@@ -4,13 +4,16 @@
 import {
   IPaginationParams,
   IPaginationResponse,
+  ISuccessMessage,
 } from '../types/interfaces/common.interface'
+import { StudentPackageItemResponse } from '../types/interfaces/package-item.interface'
 import {
   IStudentList,
   IUpdateStudentProfile,
   StudentInfoResponse,
 } from '../types/interfaces/student.interface'
 import ApiService, { ApiServiceResponse } from './api.service'
+import { IAddTicketStudent } from '../types/interfaces/ticket.interface'
 
 export default class StudentService {
   public static async getStudentInfoById(
@@ -41,5 +44,21 @@ export default class StudentService {
       payload
     )
     return res
+  }
+
+  public static async getStudentPackageItems(
+    studentId: number
+  ): Promise<ApiServiceResponse<StudentPackageItemResponse>> {
+    const res = await ApiService.get<StudentPackageItemResponse>(
+      `/Students/${studentId}/Packages`
+    )
+    return res
+  }
+
+  public static async addNewTicketStudent(
+    studentId: number,
+    payload: IAddTicketStudent
+  ): Promise<ApiServiceResponse> {
+    return await ApiService.post(`/Tickets/${studentId}/Add`, payload)
   }
 }
