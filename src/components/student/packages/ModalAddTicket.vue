@@ -26,7 +26,7 @@ const props = defineProps({
     default: '',
   },
 })
-
+console.log('customDate:', props.customDate)
 watch(
   () => props.customDate,
   () => {
