@@ -30,6 +30,7 @@ const props = defineProps({
 watch(
   () => props.customDate,
   () => {
+    console.log(props.customDate)
     if (!props.customDate) {
       delete props.input.startDate
       delete props.input.expireDate
@@ -163,7 +164,7 @@ const emit = defineEmit(['toggle-close', 'on-add'])
                       placeholder="Expire Date"
                       :value="inputValue"
                       v-on="inputEvents"
-                      :required="customDateAddTicket"
+                      :required="customDate"
                     />
                   </V-Control>
                 </V-Field>
