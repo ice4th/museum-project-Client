@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import type { PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 /**
@@ -25,6 +25,7 @@ interface IHeader {
   key: string
   label: string
   isEnd?: Boolean
+  isRaw?: Boolean
 }
 const props = defineProps({
   total: {
@@ -87,12 +88,26 @@ const changePerPage = () => {
   })
 }
 
-const parseData = (data: object, key: string) => {
+const parseData = (data: object, key: string, isRaw?: false) => {
   const splitingKey = key.split('.')
-  return splitingKey.reduce((text, current) => {
+  const value = splitingKey.reduce((text, current) => {
     return text[current]
   }, data)
+  return isRaw ? data : value
 }
+const setSearch = () => {
+  router.push({
+    query: {
+      ...route.query,
+      page: 1,
+      search: props.search,
+    },
+  })
+}
+watch(
+  () => props.search.value,
+  () => (props.search.value.length === 0 ? setSearch() : null)
+)
 </script>
 
 <template>
@@ -107,6 +122,7 @@ const parseData = (data: object, key: string) => {
               type="text"
               class="input is-rounded"
               :placeholder="searchPlaceholder"
+              @keyup.enter="setSearch"
             />
           </V-Control>
         </V-Field>
@@ -175,7 +191,7 @@ const parseData = (data: object, key: string) => {
                 }}</span>
                 <slot
                   :name="header.key"
-                  :value="parseData(dataList, header.key)"
+                  :value="parseData(dataList, header.key, header.isRaw)"
                 />
               </td>
               <td v-if="isAction">

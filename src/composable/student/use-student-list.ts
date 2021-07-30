@@ -1,6 +1,6 @@
 import { onMounted, reactive, toRefs, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import StudentService from '/@src/api/student.service'
+import useStudentApi from '../api/useStudentApi'
 import { IStudentList } from '/@src/types/interfaces/student.interface'
 interface UseStudentListState {
   data: IStudentList[]
@@ -9,6 +9,7 @@ interface UseStudentListState {
   perPage: number
   total: number
   search: string
+  isLoading: Boolean
 }
 
 export default function useStudentList() {
@@ -19,18 +20,21 @@ export default function useStudentList() {
     perPage: 10,
     total: 0,
     search: '',
+    isLoading: true,
   })
   const route = useRoute()
+  const { getAllStudents } = useStudentApi()
   const fetchAllStudents = async () => {
-    console.log('search', state.search)
-    const { data, status } = await StudentService.getAllStudents(
+    state.isLoading = true
+    const data = await getAllStudents(
       {
         currentPage: state.currentPage,
         perPage: state.perPage,
       },
       state.search
     )
-    if (status === 200 && data) {
+    state.isLoading = false
+    if (data) {
       state.data = data.data
       state.total = data.total
       state.totalPage = data.totalPage
