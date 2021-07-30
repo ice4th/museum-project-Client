@@ -82,6 +82,7 @@ const toggleAddTicket = () => {
       amount: 1,
       comment: '',
     }
+    customDateAddTicket.value = !customDateAddTicket.value
   }
 }
 const toggleExpirePackage = () => {
@@ -112,6 +113,7 @@ onMounted(() => {})
     @toggle-close="toggleAddTicket"
     @on-add="onAddTicket"
     :custom-date="customDateAddTicket"
+    @update:customDate="customDateAddTicket = $event"
   />
   <!-- [Modal]: Expire Package -->
   <V-Modal
