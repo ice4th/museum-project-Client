@@ -2,7 +2,7 @@ import { Notyf } from 'notyf'
 import { themeColors } from '/@src/utils/themeColors'
 
 const notyf = new Notyf({
-  duration: 2000,
+  duration: 3000,
   position: {
     x: 'right',
     y: 'bottom',

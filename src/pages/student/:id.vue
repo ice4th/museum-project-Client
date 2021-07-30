@@ -10,7 +10,7 @@ pageTitle.value = 'Student Information'
 useHead({
   title: 'Whitehouse: Student',
 })
-const { studentInfo } = useStudentInfo()
+const { studentInfo, updateStudentProfile } = useStudentInfo()
 
 const studentName = computed(() => displayStudentFullname(studentInfo?.value))
 const studentFlag = computed(() => {
@@ -45,7 +45,12 @@ const studentFlag = computed(() => {
                   <label>Change Country</label>
                   <V-Control>
                     <div class="select">
-                      <select v-model="studentInfo.country">
+                      <select
+                        v-model="studentInfo.country"
+                        @change="
+                          updateStudentProfile({ country: $event.target.value })
+                        "
+                      >
                         <option value="">Select a country</option>
                         <option value="th">TH</option>
                         <option value="vn">VN</option>
