@@ -82,6 +82,8 @@ const toggleAddTicket = () => {
       amount: 1,
       comment: '',
     }
+  }
+  if (customDateAddTicket.value) {
     customDateAddTicket.value = !customDateAddTicket.value
   }
 }
