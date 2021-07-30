@@ -26,19 +26,8 @@ const props = defineProps({
     default: '',
   },
 })
-console.log('customDate:', props.customDate)
-watch(
-  () => props.customDate,
-  () => {
-    console.log(props.customDate)
-    if (!props.customDate) {
-      delete props.input.startDate
-      delete props.input.expireDate
-    }
-  }
-)
 
-const emit = defineEmit(['toggle-close', 'on-add'])
+const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
 </script>
 
 <template>
@@ -106,6 +95,7 @@ const emit = defineEmit(['toggle-close', 'on-add'])
             v-model="customDate"
             label="Need to custom start date and expire date"
             color="primary"
+            @update:modelValue="emit('update:customDate', $event)"
           />
         </V-Control>
         <div class="columns is-multiline">
