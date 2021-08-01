@@ -11,7 +11,8 @@ import type {
 } from '/@src/types/interfaces/ticket.interface'
 import useStudentPackageItemState from '/@src/composable/student/use-student-package'
 import { toFormat } from '/@src/helpers/date.helper'
-const { addTicketStudent, expireTicketStudent } = useStudentPackageItemState()
+const { addTicketStudent, changeExpireDateTicketStudent, activatePackageItem } =
+  useStudentPackageItemState()
 
 const ticketTypeOptions = ticketType
 
@@ -62,17 +63,6 @@ const onAddTicket = async () => {
   if (res) toggleAddTicket()
 }
 
-const onExpirePackage = async () => {
-  const data = {
-    packageItemId: internalackageItemId.value,
-    expireDate: expirePackageInput?.value?.expireDate,
-    comment: expirePackageInput?.value?.comment,
-  } as IExpireTicketStudent
-  const res = await expireTicketStudent(data)
-  console.log('onExpirePackage', res)
-  if (res) toggleExpirePackage()
-}
-
 const toggleAddTicket = () => {
   openAddTicketModal.value = !openAddTicketModal.value
   if (!openAddTicketModal.value) {
@@ -87,6 +77,19 @@ const toggleAddTicket = () => {
     customDateAddTicket.value = !customDateAddTicket.value
   }
 }
+
+const onExpirePackage = async () => {
+  const data = {
+    packageItemId: internalackageItemId.value,
+    expireDate: expirePackageInput?.value?.expireDate,
+    comment: expirePackageInput?.value?.comment,
+  } as IExpireTicketStudent
+  console.log(data)
+  const res = await changeExpireDateTicketStudent(data)
+  emit('fetch-package-items')
+  if (res) toggleExpirePackage()
+}
+
 const toggleExpirePackage = () => {
   openExpirePackageModal.value = !openExpirePackageModal.value
   if (!openExpirePackageModal.value) {
@@ -96,6 +99,11 @@ const toggleExpirePackage = () => {
       comment: '',
     }
   }
+}
+
+const onActivatePackage = async () => {
+  const res = await activatePackageItem(internalackageItemId.value)
+  emit('fetch-package-items')
 }
 
 watch(
@@ -109,7 +117,7 @@ onMounted(() => {})
 <template>
   <!-- [Modal]: Add Ticket -->
   <ModalAddTicket
-    :title="packageName"
+    :title="`Add ticket: ${packageName}`"
     :open-modal="openAddTicketModal"
     :input="addTicketInput"
     @toggle-close="toggleAddTicket"
@@ -118,64 +126,14 @@ onMounted(() => {})
     @update:customDate="customDateAddTicket = $event"
   />
   <!-- [Modal]: Expire Package -->
-  <V-Modal
-    :open="openExpirePackageModal"
-    title="Expire Package"
-    size="medium"
-    actions="right"
-    @close="toggleExpirePackage"
-  >
-    <template #content>
-      <form class="modal-form">
-        <v-date-picker
-          v-model="expirePackageInput.expireDate"
-          color="orange"
-          :model-config="{
-            type: 'string',
-            mask: 'YYYY-MM-DD',
-          }"
-          :masks="{
-            input: 'DD/MM/YYYY',
-          }"
-          trim-weeks
-          :popover="{ visibility: 'click' }"
-        >
-          <template #default="{ inputValue, inputEvents }">
-            <V-Field>
-              <label>Expire Package Date </label>
-              <V-Control icon="feather:calendar">
-                <input
-                  class="input"
-                  type="text"
-                  placeholder="Expire Package Date"
-                  :value="inputValue"
-                  v-on="inputEvents"
-                  required
-                />
-              </V-Control>
-            </V-Field>
-          </template>
-        </v-date-picker>
-        <V-Field>
-          <label>Comment</label>
-          <V-Control>
-            <textarea
-              v-model="expirePackageInput.comment"
-              type="textarea"
-              class="textarea is-primary-focus"
-              rows="2"
-              placeholder="หมายเหตุ"
-            />
-          </V-Control>
-        </V-Field>
-      </form>
-    </template>
-    <template #action>
-      <V-Button color="primary" raised @click="onExpirePackage"
-        >Save Expire</V-Button
-      >
-    </template>
-  </V-Modal>
+  <ModalSetDateTicket
+    :title="`Expire package: ${packageName}`"
+    :open-modal="openExpirePackageModal"
+    :input="expirePackageInput"
+    @toggle-close="toggleExpirePackage"
+    @on-change="onExpirePackage"
+    type-date="expireDate"
+  />
   <!-- [Dropdown]: Manage Package -->
   <V-Dropdown
     title="Manage Package"
@@ -185,7 +143,12 @@ onMounted(() => {})
     right
   >
     <template #content>
-      <a role="menuitem" class="dropdown-item is-media" v-show="canActivate">
+      <a
+        role="menuitem"
+        class="dropdown-item is-media"
+        v-show="canActivate"
+        @click="onActivatePackage"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-rocket"></i>
         </div>

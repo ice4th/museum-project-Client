@@ -3,6 +3,7 @@
 import type { PropType } from 'vue'
 import { ref, defineProps } from 'vue'
 import { toFormat } from '/@src/helpers/date.helper'
+import { TicketType } from '/@src/types/enums/ticket.enum'
 import type { IExpireTicketStudent } from '/@src/types/interfaces/ticket.interface'
 const props = defineProps({
   isStartDate: {
@@ -14,18 +15,18 @@ const props = defineProps({
     require: true,
   },
   ticketType: {
-    type: String,
+    type: String as PropType<TicketType>,
     require: true,
+    default: TicketType.PACKAGE,
   },
 })
 const openExpireTicketModal = ref(false)
-const internalTicketType = ref(props.ticketType)
+const internalTicketType = ref<TicketType>(props.ticketType)
 const expireTicketState = ref({
   packageItemId: props.packageItemId || 0,
   comment: '',
   expireDate: toFormat(new Date(), 'YYYY-MM-DD'),
   type: internalTicketType.value,
-  amount: 1,
 })
 const expireTicketInput = ref<IExpireTicketStudent>(expireTicketState.value)
 const onExpirePackage = {}
@@ -44,7 +45,7 @@ const onExpirePackage = {}
         </div>
         <div class="meta">
           <span>Start Date</span>
-          <span>Change Start Date Ticket</span>
+          <span>Change start date ticket</span>
         </div>
       </a>
 
@@ -54,7 +55,7 @@ const onExpirePackage = {}
         </div>
         <div class="meta">
           <span>Expire Date</span>
-          <span>Change Expire Date Ticket</span>
+          <span>Change expire sate ticket</span>
         </div>
       </a>
 
@@ -66,7 +67,7 @@ const onExpirePackage = {}
         </div>
         <div class="meta">
           <span>Delete</span>
-          <span>Delete Ticket</span>
+          <span>Delete ticket</span>
         </div>
       </a>
     </template>

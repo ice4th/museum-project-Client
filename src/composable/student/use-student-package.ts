@@ -9,6 +9,7 @@ import { TicketType } from '../../types/enums/ticket.enum'
 import {
   IAddTicketStudent,
   IExpireTicketStudent,
+  IStartTicketStudent,
 } from '/@src/types/interfaces/ticket.interface'
 import moment from 'moment'
 import useNotyf from '../useNotyf'
@@ -48,11 +49,11 @@ export default function useStudentPackageItem() {
 
   const addTicketStudent = async (payload: IAddTicketStudent) => {
     const studentId = route.params.id as string
-    console.log('api add ticket:', payload)
-    const { status, message } = await StudentService.addNewTicketStudent(
-      +studentId,
-      payload
-    )
+    console.log('add ticket:', payload)
+    const { status, message } = await StudentService.addNewTicketStudent({
+      ...payload,
+      studentId: +studentId,
+    })
     if (status === 201) {
       notyf.success('Adding ticket(s) completed!')
       return status
@@ -64,10 +65,57 @@ export default function useStudentPackageItem() {
     }
   }
 
-  const expireTicketStudent = async (payload: IExpireTicketStudent) => {
+  const activatePackageItem = async (
+    packageItemId: number,
+    startDate?: string
+  ) => {
+    const { status, message } = await StudentService.activatePackageItemById(
+      packageItemId,
+      { startDate }
+    )
+    if (status === 201) {
+      notyf.success('Activate package is completed!')
+      return status
+    } else {
+      if (typeof message === 'object') {
+        state.validation = message
+      }
+      notyf.error(message || 'Fail! Please try again')
+    }
+  }
+
+  const changeExpireDateTicketStudent = async (
+    payload: IExpireTicketStudent
+  ) => {
     console.log('expireTicketStudent:', payload)
-    fetchStudentPackages()
-    return payload
+    const { status, message } = await StudentService.changeExpireDateTicket(
+      payload
+    )
+    if (status === 200) {
+      notyf.success('Change expire date is completed!')
+      return status
+    } else {
+      if (typeof message === 'object') {
+        state.validation = message
+      }
+      notyf.error(message || 'Fail! Please try again')
+    }
+  }
+
+  const changeStartDateTicketStudent = async (payload: IStartTicketStudent) => {
+    console.log('StartTicketStudent:', payload)
+    const { status, message } = await StudentService.changeStartDateTicket(
+      payload
+    )
+    if (status === 200) {
+      notyf.success('Change start date is completed!')
+      return status
+    } else {
+      if (typeof message === 'object') {
+        state.validation = message
+      }
+      notyf.error(message || 'Fail! Please try again')
+    }
   }
   watch(
     () => state.packageItems,
@@ -80,7 +128,9 @@ export default function useStudentPackageItem() {
   return {
     ...toRefs(state),
     addTicketStudent,
-    expireTicketStudent,
+    changeExpireDateTicketStudent,
+    changeStartDateTicketStudent,
     fetchStudentPackages,
+    activatePackageItem,
   }
 }

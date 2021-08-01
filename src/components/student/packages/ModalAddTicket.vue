@@ -33,7 +33,7 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
 <template>
   <V-Modal
     :open="openModal"
-    :title="`Add ticket: ${title}`"
+    :title="title"
     size="medium"
     actions="right"
     @close="emit('toggle-close')"
