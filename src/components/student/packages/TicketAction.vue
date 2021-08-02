@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Ticket Action Component
-import { ref, defineProps, defineEmit } from 'vue'
+import { ref, defineProps, defineEmit, watch, computed } from 'vue'
 import type { PropType } from 'vue'
 import useStudentPackageItemState from '/@src/composable/student/use-student-package'
 import { toFormat } from '/@src/helpers/date.helper'
@@ -42,28 +42,32 @@ const props = defineProps({
 const openExpireTicketModal = ref(false)
 const openStartTicketModal = ref(false)
 const customStartDate = ref(false)
-
+const defaultStart = computed(() =>
+  // toFormat(props.defaultStart || new Date(), 'YYYY-MM-DD')
+  toFormat(new Date(), 'YYYY-MM-DD')
+)
+const defaultExpire = computed(() =>
+  // toFormat(props.defaultExpire || new Date(), 'YYYY-MM-DD')
+  toFormat(new Date(), 'YYYY-MM-DD')
+)
 const ticketTypeName = ref(
   ticketTypeOptions.find((type) => type.value == props.ticketType)?.text
 )
-const expireTicketState = ref({
-  packageItemId: props.packageItemId || 0,
-  comment: '',
-  expireDate: toFormat(props.defaultExpire || new Date(), 'YYYY-MM-DD'),
-  type: props.ticketType,
-})
-
-const startTicketState = ref({
-  packageItemId: props.packageItemId || 0,
-  comment: '',
-  startDate: toFormat(props.defaultStart || new Date(), 'YYYY-MM-DD'),
-  type: props.ticketType,
-})
 
 const emit = defineEmit(['fetch-package-items'])
 
-const expireTicketInput = ref<IExpireTicketStudent>(expireTicketState.value)
-const startTicketInput = ref<IStartTicketStudent>(startTicketState.value)
+const expireTicketInput = ref<IExpireTicketStudent>({
+  packageItemId: props.packageItemId || 0,
+  comment: '',
+  expireDate: defaultExpire.value,
+  type: props.ticketType,
+})
+const startTicketInput = ref<IStartTicketStudent>({
+  packageItemId: props.packageItemId || 0,
+  comment: '',
+  startDate: defaultStart.value,
+  type: props.ticketType,
+})
 
 const onStartTicket = async () => {
   const data = {
@@ -84,7 +88,7 @@ const toggleStartTicket = () => {
   if (!openStartTicketModal.value) {
     startTicketInput.value = {
       packageItemId: props.packageItemId || 0,
-      startDate: toFormat(props.defaultStart || new Date(), 'YYYY-MM-DD'),
+      startDate: defaultStart.value,
       comment: '',
       type: props.ticketType,
     }
@@ -111,7 +115,7 @@ const toggleExpireTicket = () => {
   if (!openExpireTicketModal.value) {
     expireTicketInput.value = {
       packageItemId: props.packageItemId || 0,
-      expireDate: toFormat(props.defaultExpire || new Date(), 'YYYY-MM-DD'),
+      expireDate: defaultExpire.value,
       comment: '',
       type: props.ticketType,
     }
