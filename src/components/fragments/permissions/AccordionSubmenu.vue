@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { defineProps, reactive } from 'vue'
+import { defineEmit, defineProps, reactive } from 'vue'
 
 type AccordionItem = {
   title: string
@@ -9,7 +9,7 @@ type AccordionItem = {
 
 const props = defineProps({
   items: {
-    type: Array as PropType<AccordionItem[]>,
+    type: Array as PropType<any[]>,
     required: true,
   },
   openItems: {
@@ -22,7 +22,20 @@ const props = defineProps({
   },
 })
 
+/**
+ * Define Emit
+ */
+const emit = defineEmit(['selected'])
+
+/**
+ * Variables
+ */
 const internalOpenItems = reactive(props.openItems)
+let selectedSubMenus = reactive<any[]>([])
+
+/**
+ * Methods
+ */
 const toggle = (key: number) => {
   const wasOpen = internalOpenItems.includes(key)
 
@@ -42,19 +55,35 @@ const toggle = (key: number) => {
     internalOpenItems.push(key)
   }
 }
-
-const actionItems = reactive([
-  { id: 1, title: 'Create', description: 'Create new Item', selected: false },
-  { id: 2, title: 'View', description: 'View all', selected: false },
-  { id: 3, title: 'Update', description: 'Update Item', selected: false },
-  { id: 4, title: 'Remove', description: 'Remove Item', selected: false },
-  { id: 5, title: 'Details', description: 'See details', selected: false },
-])
-
-const toggleSelect = (id: number) => {
-  const actionIdx = actionItems.findIndex((i) => i.id === id)
-  console.log(actionIdx)
-  actionItems[actionIdx].selected = !actionItems[actionIdx].selected
+const onSelected = (key: number, tag: string) => {
+  const item = props.items[key]
+  // find exist sub menu
+  let subMenuItem = selectedSubMenus.find(
+    ({ subMenu }) => subMenu === item.subMenu
+  )
+  if (!subMenuItem) {
+    subMenuItem = {
+      subMenu: item.subMenu,
+      actions: [],
+    }
+  }
+  // add or remove tag in sub menu
+  if (subMenuItem.actions.includes(tag)) {
+    subMenuItem.actions = subMenuItem.actions.filter(
+      (action: string) => action !== tag
+    )
+  } else {
+    subMenuItem.actions.push(tag)
+  }
+  // update sub menu in selected items
+  selectedSubMenus = selectedSubMenus.filter(
+    ({ subMenu: sm }) => sm !== subMenuItem.subMenu
+  )
+  if (subMenuItem.actions.length > 0) {
+    selectedSubMenus.push(subMenuItem)
+  }
+  // emit selected items
+  emit('selected', selectedSubMenus)
 }
 </script>
 
@@ -68,29 +97,37 @@ const toggleSelect = (id: number) => {
       :class="[internalOpenItems.includes(key) && 'is-active']"
     >
       <summary class="accordion-header" @click="() => toggle(key)">
-        {{ item.title }}
+        {{ item.subMenu }}
       </summary>
       <div class="accordion-content">
         <div class="submenu-actions">
           <div
-            v-for="action in actionItems"
+            v-for="action in item.actions"
             :key="action.id"
             class="action-wrapper"
-            @click="toggleSelect(action.id)"
+            @click="
+              onSelected(key, action.name), (action.selected = !action.selected)
+            "
           >
             <V-Card :class="action.selected ? 'selected' : 'deselected'">
               <V-Block
-                :title="action.title"
+                :title="action.name.replace(/_/g, ' ')"
                 :subtitle="action.description"
                 center
               >
                 <template #icon>
                   <VIconBox
-                    :color="action.selected ? 'green' : ''"
-                    size="medium"
+                    :color="action.selected ? 'info' : ''"
+                    size="small"
                     rounded
                   >
-                    <i class="iconify" data-icon="feather:chrome"></i>
+                    <i
+                      :class="
+                        action.selected
+                          ? 'lnir lnir-lock-alt-1'
+                          : 'lnir lnir-lock-alt-2'
+                      "
+                    ></i>
                   </VIconBox>
                 </template>
               </V-Block>
@@ -123,14 +160,14 @@ summary {
   .submenu-actions {
     display: grid;
     grid-template-columns: auto auto;
-    padding: 10px;
+    padding: 20px;
 
     .action-wrapper {
       padding: 5px;
       cursor: pointer;
 
       .selected {
-        border: #93e088 solid 2px;
+        border: #039be5 solid 2px;
       }
 
       .deselected {
