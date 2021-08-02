@@ -14,11 +14,11 @@ anchors:
     KUBE_CERTIFICATE:
       from_secret: kubernetes_certificate
   - &install-dependencies
-    image: node:14.15.5
+    image: node:14.17.0
     commands:
       - yarn
   # - &run-test
-  #   image: node:14.15.5
+  #   image: node:14.17.0
   #   commands:
   #     - yarn run jest
 
@@ -76,12 +76,12 @@ steps:
   #         - master
 
   - name: build-app-master
-    image: node:14.15.5
+    image: node:14.17.0
     environment:
-      VERSION: "${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}"
-      VITE_APP_ADMIN_BASE_URL: "https://admin-api.globish.co.th"
-      BRANCH: "${DRONE_BRANCH}"
-      DOMAIN: "globish.co.th"
+      VERSION: '${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}'
+      VITE_APP_ADMIN_BASE_URL: 'https://admin-api.globish.co.th'
+      BRANCH: '${DRONE_BRANCH}'
+      DOMAIN: 'globish.co.th'
     commands:
       - yarn run build
     when:
@@ -91,12 +91,12 @@ steps:
         - master
 
   - name: build-app-staging
-    image: node:14.15.5
+    image: node:14.17.0
     environment:
-      VERSION: "${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}"
-      VITE_APP_ADMIN_BASE_URL: "https://admin-api.globish.site"
-      BRANCH: "${DRONE_BRANCH}"
-      DOMAIN: "globish.site"
+      VERSION: '${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}'
+      VITE_APP_ADMIN_BASE_URL: 'https://admin-api.globish.site'
+      BRANCH: '${DRONE_BRANCH}'
+      DOMAIN: 'globish.site'
     commands:
       - yarn run build
     when:
@@ -106,12 +106,12 @@ steps:
         - staging
 
   - name: build-app-dev
-    image: node:14.15.5
+    image: node:14.17.0
     environment:
-      VERSION: "${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}"
-      VITE_APP_ADMIN_BASE_URL: "https://admin-api.globish.dev"
-      BRANCH: "${DRONE_BRANCH}"
-      DOMAIN: "globish.dev"
+      VERSION: '${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}'
+      VITE_APP_ADMIN_BASE_URL: 'https://admin-api.globish.dev'
+      BRANCH: '${DRONE_BRANCH}'
+      DOMAIN: 'globish.dev'
     commands:
       - yarn run build
     when:
@@ -240,7 +240,6 @@ steps:
         - master
         - staging
         - dev
-
 # Per repository secret
 # drone encrypt globish/globish-admin-frontend <SECRET>
 
