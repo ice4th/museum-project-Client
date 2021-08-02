@@ -10,10 +10,6 @@ const props = defineProps({
     type: Array,
     default: [],
   },
-  validation: {
-    type: Object,
-    default: {},
-  },
   canActivate: {
     type: Boolean,
     default: false,
@@ -23,7 +19,6 @@ const props = defineProps({
     require: true,
   },
 })
-
 const emit = defineEmit(['fetch-package-items'])
 </script>
 <template>
@@ -84,7 +79,15 @@ const emit = defineEmit(['fetch-package-items'])
           </td>
           <td class="is-end">
             <div class="is-flex is-justify-content-flex-end">
-              <TicketAction />
+              <TicketAction
+                :is-start-date="!canActivate"
+                :package-item-id="packageItem.packageItemId"
+                :package-name="packageItem.packageName"
+                :ticket-type="ticket.type"
+                :default-expire="ticket.expireDate"
+                :default-start="ticket.startDate"
+                @fetch-package-items="emit('fetch-package-items')"
+              />
             </div>
           </td>
         </tr>
