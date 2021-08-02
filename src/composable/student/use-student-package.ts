@@ -55,7 +55,7 @@ export default function useStudentPackageItem() {
         Object.keys(message).map((key) => {
           notyf.error(`${key}: ${message[key]}`)
         })
-      } else notyf.error('Fail! Please try again')
+      } else notyf.error(message || 'Fail! Please try again')
     }
   }
 
@@ -76,7 +76,7 @@ export default function useStudentPackageItem() {
         Object.keys(message).map((key) => {
           notyf.error(`${key}: ${message[key]}`)
         })
-      } else notyf.error('Fail! Please try again')
+      } else notyf.error(message || 'Fail! Please try again')
     }
   }
 
@@ -95,7 +95,7 @@ export default function useStudentPackageItem() {
         Object.keys(message).map((key) => {
           notyf.error(`${key}: ${message[key]}`)
         })
-      } else notyf.error('Fail! Please try again')
+      } else notyf.error(message || 'Fail! Please try again')
     }
   }
 
@@ -112,7 +112,7 @@ export default function useStudentPackageItem() {
         Object.keys(message).map((key) => {
           notyf.error(`${key}: ${message[key]}`)
         })
-      } else notyf.error('Fail! Please try again')
+      } else notyf.error(message || 'Fail! Please try again')
     }
   }
   return {

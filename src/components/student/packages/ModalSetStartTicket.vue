@@ -44,7 +44,7 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
       <form class="modal-form">
         <V-Control>
           <V-SwitchBlock
-            v-model="customDate"
+            :model-value="customDate"
             label="Need to reset start date like inactive ticket (NULL)"
             color="primary"
             @update:modelValue="emit('update:customDate', $event)"

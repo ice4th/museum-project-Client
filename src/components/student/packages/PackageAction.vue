@@ -30,22 +30,21 @@ const props = defineProps({
   },
 })
 const currentDate = ref(toFormat(new Date(), 'YYYY-MM-DD'))
-const addTicketState = ref({
+
+const customDateAddTicket = ref(false)
+const openAddTicketModal = ref(false)
+const openExpirePackageModal = ref(false)
+const addTicketInput = ref<IAddTicketStudent>({
   packageItemId: props.packageItemId || 0,
   type: 'package',
   amount: 1,
   comment: '',
 })
-const expirePackageState = ref({
+const expirePackageInput = ref<IExpireTicketStudent>({
   packageItemId: props.packageItemId || 0,
   comment: '',
   expireDate: currentDate.value,
 })
-const customDateAddTicket = ref(false)
-const openAddTicketModal = ref(false)
-const openExpirePackageModal = ref(false)
-const addTicketInput = ref<IAddTicketStudent>(addTicketState.value)
-const expirePackageInput = ref<IExpireTicketStudent>(expirePackageState.value)
 
 const emit = defineEmit(['fetch-package-items'])
 

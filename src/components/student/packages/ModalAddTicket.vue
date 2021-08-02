@@ -92,7 +92,7 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
         </V-Field>
         <V-Control>
           <V-SwitchBlock
-            v-model="customDate"
+            :model-value="customDate"
             label="Need to custom start date and expire date"
             color="primary"
             @update:modelValue="emit('update:customDate', $event)"
