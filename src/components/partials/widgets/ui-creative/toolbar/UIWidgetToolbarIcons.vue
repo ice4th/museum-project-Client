@@ -1,27 +1,28 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
+import { ref } from 'vue'
 
-defineProps({
+const props = defineProps({
   tabs: {
     type: Array,
     required: true,
   },
-  currentTab: {
+  activeTab: {
     type: Number,
     default: 0,
   },
 })
+const currentTab = ref(props.activeTab)
 </script>
 
 <template>
   <div class="icon-toolbar">
-    <div v-for="(tab, index) in tabs" :key="tab.id" class="toolbar-icon">
+    <div v-for="(tab, index) in props.tabs" :key="tab.id" class="toolbar-icon">
       <a
         class="inner-icon"
         :class="{ 'is-active': currentTab === index }"
         @click="currentTab = index"
       >
-        <i aria-hidden="true" class="iconify" :data-icon="tab.icon"></i>
+        <i aria-hidden="true" class="iconify" :data-icon="currentTab.icon"></i>
       </a>
     </div>
   </div>

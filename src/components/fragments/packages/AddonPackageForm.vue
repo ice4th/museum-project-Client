@@ -1,16 +1,14 @@
 <script setup lang="ts">
 // AddonPackageForm Component
-import { computed, defineEmit, defineProps, ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { PropType } from 'vue'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
-import type {
-  IPackageInfo,
-  IUpdateAddonPackage,
-} from '/@src/types/interfaces/package.interface'
+import type { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
+import type { PackageOption } from '/@src/types/interfaces/option.interface'
 
 const props = defineProps({
   packages: {
-    type: Array as PropType<IPackageInfo[]>,
+    type: Array as PropType<PackageOption[]>,
     required: true,
   },
   groupPackages: {
@@ -22,11 +20,11 @@ const props = defineProps({
     default: undefined,
   },
 })
-const emit = defineEmit({
+const emit = defineEmits({
   cancel: null,
   add: Object,
 })
-const allGroupPackages = ref<IPackageInfo[]>(
+const allGroupPackages = ref<PackageOption[]>(
   props.packages.filter((pk) =>
     props.groupPackages.some(
       (gpk) =>

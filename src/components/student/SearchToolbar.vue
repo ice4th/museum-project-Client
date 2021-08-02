@@ -52,9 +52,9 @@ watch(
         <V-Field class="width-search">
           <V-Control icon="feather:search">
             <input
+              v-model="internalModelSearch"
               type="text"
               class="input is-rounded"
-              v-model="internalModelSearch"
               :placeholder="placeholder"
               @keyup.enter="setSearch"
             />

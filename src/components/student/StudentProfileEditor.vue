@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
-import {
-  computed,
-  defineEmit,
-  defineProps,
-  onBeforeMount,
-  ref,
-  watch,
-} from 'vue'
+import { computed, defineEmit, onBeforeMount, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 import useNotyf from '/@src/composable/useNotyf'
 import type {
@@ -24,10 +17,11 @@ import _ from 'lodash'
 const props = defineProps({
   studentInfo: {
     type: Object as PropType<StudentInfoResponse>,
+    required: true,
   },
   validation: {
     type: Object,
-    default: {},
+    default: () => {},
   },
 })
 const emit = defineEmit({
@@ -390,8 +384,8 @@ const removeValidation = (key: string) => {
                       type="text"
                       placeholder="Date of birth"
                       :value="inputValue"
-                      v-on="inputEvents"
                       :readonly="!isEditMode"
+                      v-on="inputEvents"
                       @click="removeValidation('dob')"
                     />
                   </V-Control>

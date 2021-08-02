@@ -139,12 +139,14 @@ watchEffect(() => {
           </RouterLink>
         </div>
         <div class="navbar-item">
-          <RouterLink
+          <V-Button
             :to="{ name: 'auth-signup-1' }"
-            class="button v-button is-rounded is-primary is-raised"
+            color="primary"
+            rounded
+            raised
           >
             <strong>Sign up</strong>
-          </RouterLink>
+          </V-Button>
         </div>
       </div>
     </div>

@@ -3,16 +3,17 @@
  */
 
 import moment from 'moment'
-import { onMounted, reactive, ref, toRefs } from 'vue'
+import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import useOptionApi from '../api/useOptionApi'
+import useRedeemApi from '../api/useRedeemApi'
 import useNotyf from '../useNotyf'
-import PackageService from '/@src/api/package.service'
-import PartnerService from '/@src/api/partner.service'
-import RedeemService from '/@src/api/redeem.service'
-import router from '/@src/router'
+import { errMessage } from '/@src/helpers/filter.helper'
 import { RedeemType } from '/@src/types/enums/redeem.enum'
-import { IPackageInfo } from '/@src/types/interfaces/package.interface'
-import { IPartnerDetail } from '/@src/types/interfaces/partner.interface'
+import {
+  PackageOption,
+  PartnerOption,
+} from '/@src/types/interfaces/option.interface'
 import {
   ICreateRedeem,
   IRedeemDetail,
@@ -27,15 +28,16 @@ interface UseRedeemTableState {
   currentRedeemId?: number
   redeemDetail: IRedeemDetail[]
   createNewRedeem: ICreateRedeem
-  packages: IPackageInfo[]
-  partners: IPartnerDetail[]
+  packages: PackageOption[]
+  partners: PartnerOption[]
+  isLoading: Boolean
 }
 
 export default function useRedeemTable() {
   const state = reactive<UseRedeemTableState>({
     data: [],
     currentPage: 1,
-    perPage: 15,
+    perPage: 10,
     totalPage: 1,
     total: 1,
     currentRedeemId: undefined,
@@ -51,17 +53,30 @@ export default function useRedeemTable() {
      */
     packages: [],
     partners: [],
+    isLoading: false,
   })
   const route = useRoute()
   const router = useRouter()
   const notyf = useNotyf()
+  const { getPackages, getPartners } = useOptionApi()
+  const redeemApi = useRedeemApi()
 
   const fetchAllRedeem = async () => {
-    const { data, status } = await RedeemService.getAllRedeems({
+    state.isLoading = true
+    const perPage = route.query.perPage as string
+    const page = route.query.page as string
+    if (route.query.currentPage) {
+      state.currentPage = +page
+    }
+    if (route.query.perPage) {
+      state.perPage = +perPage
+    }
+    const data = await redeemApi.getAllRedeems({
       currentPage: state.currentPage,
       perPage: state.perPage,
     })
-    if (status === 200 && data) {
+    state.isLoading = false
+    if (data.total) {
       state.data = data.data
       state.total = data.total
       state.totalPage = data.totalPage
@@ -69,24 +84,10 @@ export default function useRedeemTable() {
   }
 
   const fetchRedeemById = async (id: number) => {
-    const { data, status } = await RedeemService.getRedeemById(id)
-    if (status === 200 && data) {
+    const data = await redeemApi.getRedeemById(id)
+    if (data.length) {
       state.currentRedeemId = id
       state.redeemDetail = data
-    }
-  }
-
-  const fetchPackages = async () => {
-    const { data, status } = await PackageService.getAllPackages()
-    if (status === 200 && data) {
-      state.packages = data
-    }
-  }
-
-  const fetchPartners = async () => {
-    const { data, status } = await PartnerService.getAllPartner()
-    if (status === 200 && data) {
-      state.partners = data
     }
   }
 
@@ -95,23 +96,19 @@ export default function useRedeemTable() {
       notyf.error('Please Select Package')
       return
     }
-    const { status, message } = await RedeemService.createRedeem(
+    const { status, message } = await redeemApi.createRedeem(
       state.createNewRedeem
     )
     if (status === 201) {
       notyf.success('Create Redeem Success!')
       router.push({ name: 'code' })
     } else {
-      if (typeof message === 'object') {
-        notyf.error(JSON.stringify(message) || 'Fail')
-      } else {
-        notyf.error(message || 'Fail')
-      }
+      notyf.error(errMessage(message) || 'Fail')
     }
     return status === 201
   }
 
-  onMounted(() => {
+  onMounted(async () => {
     const page = route.query.page as string
     if (page) {
       state.currentPage = +page
@@ -119,8 +116,24 @@ export default function useRedeemTable() {
     const today = moment().format('YYYY-MM-DD')
     const todayIso = moment(today).toISOString()
     state.createNewRedeem.ticketStartDate = todayIso
-    fetchAllRedeem()
-    Promise.all([fetchPackages(), fetchPartners()])
+    const [packages, partners] = await Promise.all([
+      getPackages(),
+      getPartners(),
+      fetchAllRedeem(),
+    ])
+    state.packages = packages
+    state.partners = partners
   })
-  return { ...toRefs(state), fetchRedeemById, createRedeem }
+
+  const redeemTableHeaders = [
+    { key: 'id', label: 'ID' },
+    { key: 'type', label: 'Type' },
+    { key: 'partnerName', label: 'Partner' },
+    { key: 'packageName', label: 'Package' },
+    { key: 'status', label: 'Status' },
+    { key: 'usedDate', label: 'Activated' },
+    { key: 'createdAt', label: 'Created' },
+    { key: 'expireDate', label: 'Expire' },
+  ]
+  return { ...toRefs(state), fetchRedeemById, createRedeem, redeemTableHeaders }
 }
