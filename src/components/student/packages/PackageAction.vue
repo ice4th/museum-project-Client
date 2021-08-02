@@ -1,10 +1,8 @@
 <script setup lang="ts">
 // PackageAction Component
 
-import { computed, defineEmit, onMounted, ref, watch } from 'vue'
-import { defineProps } from 'vue'
+import { defineEmit, ref, watch, defineProps } from 'vue'
 import ticketType from '/@src/data/ticket-type.json'
-import type { PropType } from 'vue'
 import type {
   IAddTicketStudent,
   IExpireTicketStudent,
@@ -24,12 +22,14 @@ const props = defineProps({
   packageItemId: {
     type: Number,
     require: true,
+    default: 0,
   },
   packageName: {
     type: String,
     require: true,
   },
 })
+const currentDate = ref(toFormat(new Date(), 'YYYY-MM-DD'))
 const addTicketState = ref({
   packageItemId: props.packageItemId || 0,
   type: 'package',
@@ -39,19 +39,19 @@ const addTicketState = ref({
 const expirePackageState = ref({
   packageItemId: props.packageItemId || 0,
   comment: '',
-  expireDate: toFormat(new Date(), 'YYYY-MM-DD'),
+  expireDate: currentDate.value,
 })
 const customDateAddTicket = ref(false)
 const openAddTicketModal = ref(false)
 const openExpirePackageModal = ref(false)
 const addTicketInput = ref<IAddTicketStudent>(addTicketState.value)
 const expirePackageInput = ref<IExpireTicketStudent>(expirePackageState.value)
-const internalackageItemId = ref<number>(props.packageItemId || 0)
+
 const emit = defineEmit(['fetch-package-items'])
 
 const onAddTicket = async () => {
   const data = {
-    packageItemId: internalackageItemId.value,
+    packageItemId: props.packageItemId,
     amount: addTicketInput?.value?.amount,
     comment: addTicketInput?.value?.comment,
     type: addTicketInput?.value?.type,
@@ -67,7 +67,7 @@ const toggleAddTicket = () => {
   openAddTicketModal.value = !openAddTicketModal.value
   if (!openAddTicketModal.value) {
     addTicketInput.value = {
-      packageItemId: props.packageItemId || 0,
+      packageItemId: props.packageItemId,
       type: 'package',
       amount: 1,
       comment: '',
@@ -80,11 +80,10 @@ const toggleAddTicket = () => {
 
 const onExpirePackage = async () => {
   const data = {
-    packageItemId: internalackageItemId.value,
+    packageItemId: props.packageItemId,
     expireDate: expirePackageInput?.value?.expireDate,
     comment: expirePackageInput?.value?.comment,
   } as IExpireTicketStudent
-  console.log(data)
   const res = await changeExpireDateTicketStudent(data)
   emit('fetch-package-items')
   if (res) toggleExpirePackage()
@@ -94,45 +93,36 @@ const toggleExpirePackage = () => {
   openExpirePackageModal.value = !openExpirePackageModal.value
   if (!openExpirePackageModal.value) {
     expirePackageInput.value = {
-      packageItemId: props.packageItemId || 0,
-      expireDate: toFormat(new Date(), 'YYYY-MM-DD'),
+      packageItemId: props.packageItemId,
+      expireDate: currentDate.value,
       comment: '',
     }
   }
 }
 
 const onActivatePackage = async () => {
-  const res = await activatePackageItem(internalackageItemId.value)
+  const res = await activatePackageItem(props.packageItemId)
   emit('fetch-package-items')
 }
-
-watch(
-  () => expirePackageInput,
-  () => {
-    console.log('expirePackageInput:', expirePackageInput.value)
-  }
-)
-onMounted(() => {})
 </script>
 <template>
   <!-- [Modal]: Add Ticket -->
   <ModalAddTicket
-    :title="`Add ticket: ${packageName}`"
+    :title="`Add ticket: (Item ID: ${packageItemId}) ${packageName}`"
     :open-modal="openAddTicketModal"
     :input="addTicketInput"
-    @toggle-close="toggleAddTicket"
-    @on-add="onAddTicket"
     :custom-date="customDateAddTicket"
     @update:customDate="customDateAddTicket = $event"
+    @toggle-close="toggleAddTicket"
+    @on-add="onAddTicket"
   />
   <!-- [Modal]: Expire Package -->
-  <ModalSetDateTicket
-    :title="`Expire package: ${packageName}`"
+  <ModalSetExpireTicket
+    :title="`Expire package: (Item ID: ${packageItemId}) ${packageName}`"
     :open-modal="openExpirePackageModal"
     :input="expirePackageInput"
     @toggle-close="toggleExpirePackage"
     @on-change="onExpirePackage"
-    type-date="expireDate"
   />
   <!-- [Dropdown]: Manage Package -->
   <V-Dropdown

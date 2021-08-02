@@ -30,7 +30,7 @@ export interface IExpireTicketStudent {
 
 export interface IStartTicketStudent {
   type?: string
-  startDate?: string
+  startDate: string | null
   comment: string
   packageItemId: number
 }

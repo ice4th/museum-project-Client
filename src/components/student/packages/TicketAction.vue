@@ -1,10 +1,19 @@
 <script setup lang="ts">
 // Ticket Action Component
+import { ref, defineProps, defineEmit } from 'vue'
 import type { PropType } from 'vue'
-import { ref, defineProps } from 'vue'
+import useStudentPackageItemState from '/@src/composable/student/use-student-package'
 import { toFormat } from '/@src/helpers/date.helper'
+const { changeExpireDateTicketStudent, changeStartDateTicketStudent } =
+  useStudentPackageItemState()
 import { TicketType } from '/@src/types/enums/ticket.enum'
-import type { IExpireTicketStudent } from '/@src/types/interfaces/ticket.interface'
+import type {
+  IExpireTicketStudent,
+  IStartTicketStudent,
+} from '/@src/types/interfaces/ticket.interface'
+import ticketType from '/@src/data/ticket-type.json'
+const ticketTypeOptions = ticketType
+
 const props = defineProps({
   isStartDate: {
     type: Boolean,
@@ -14,24 +23,123 @@ const props = defineProps({
     type: Number,
     require: true,
   },
+  packageName: {
+    type: String,
+    require: true,
+  },
   ticketType: {
     type: String as PropType<TicketType>,
     require: true,
     default: TicketType.PACKAGE,
   },
+  defaultExpire: {
+    type: String,
+  },
+  defaultStart: {
+    type: String,
+  },
 })
 const openExpireTicketModal = ref(false)
-const internalTicketType = ref<TicketType>(props.ticketType)
+const openStartTicketModal = ref(false)
+const customStartDate = ref(false)
+
+const ticketTypeName = ref(
+  ticketTypeOptions.find((type) => type.value == props.ticketType)?.text
+)
 const expireTicketState = ref({
   packageItemId: props.packageItemId || 0,
   comment: '',
-  expireDate: toFormat(new Date(), 'YYYY-MM-DD'),
-  type: internalTicketType.value,
+  expireDate: toFormat(props.defaultExpire || new Date(), 'YYYY-MM-DD'),
+  type: props.ticketType,
 })
+
+const startTicketState = ref({
+  packageItemId: props.packageItemId || 0,
+  comment: '',
+  startDate: toFormat(props.defaultStart || new Date(), 'YYYY-MM-DD'),
+  type: props.ticketType,
+})
+
+const emit = defineEmit(['fetch-package-items'])
+
 const expireTicketInput = ref<IExpireTicketStudent>(expireTicketState.value)
-const onExpirePackage = {}
+const startTicketInput = ref<IStartTicketStudent>(startTicketState.value)
+
+const onStartTicket = async () => {
+  const data = {
+    packageItemId: props.packageItemId,
+    startDate: customStartDate.value
+      ? null
+      : startTicketInput?.value?.startDate,
+    comment: startTicketInput?.value?.comment,
+    type: startTicketInput?.value?.type,
+  } as IStartTicketStudent
+  const res = await changeStartDateTicketStudent(data)
+  emit('fetch-package-items')
+  if (res) toggleStartTicket()
+}
+
+const toggleStartTicket = () => {
+  openStartTicketModal.value = !openStartTicketModal.value
+  if (!openStartTicketModal.value) {
+    startTicketInput.value = {
+      packageItemId: props.packageItemId || 0,
+      startDate: toFormat(props.defaultStart || new Date(), 'YYYY-MM-DD'),
+      comment: '',
+      type: props.ticketType,
+    }
+  }
+  if (customStartDate.value) {
+    customStartDate.value = !customStartDate.value
+  }
+}
+
+const onExpireTicket = async () => {
+  const data = {
+    packageItemId: props.packageItemId,
+    expireDate: expireTicketInput?.value?.expireDate,
+    comment: expireTicketInput?.value?.comment,
+    type: expireTicketInput?.value?.type,
+  } as IExpireTicketStudent
+  const res = await changeExpireDateTicketStudent(data)
+  emit('fetch-package-items')
+  if (res) toggleExpireTicket()
+}
+
+const toggleExpireTicket = () => {
+  openExpireTicketModal.value = !openExpireTicketModal.value
+  if (!openExpireTicketModal.value) {
+    expireTicketInput.value = {
+      packageItemId: props.packageItemId || 0,
+      expireDate: toFormat(props.defaultExpire || new Date(), 'YYYY-MM-DD'),
+      comment: '',
+      type: props.ticketType,
+    }
+  }
+}
 </script>
 <template>
+  <!-- [Modal]: Expire Package -->
+  <ModalSetExpireTicket
+    :title="`Expire ticket : (Item ID: ${packageItemId}) ${packageName} `"
+    :open-modal="openExpireTicketModal"
+    :input="expireTicketInput"
+    :ticket-type="ticketTypeName"
+    @toggle-close="toggleExpireTicket"
+    @on-change="onExpireTicket"
+  />
+  <!-- [Modal]: Start Package -->
+  <ModalSetStartTicket
+    :title="`Start ticket : (Item ID: ${packageItemId}) ${packageName} `"
+    :open-modal="openStartTicketModal"
+    :input="startTicketInput"
+    :ticket-type="ticketTypeName"
+    :custom-date="customStartDate"
+    @update:customDate="customStartDate = $event"
+    @toggle-close="toggleStartTicket"
+    @on-change="onStartTicket"
+  />
+  <!-- [Dropdown]: Manage Ticket -->
   <V-Dropdown
     icon="feather:more-vertical"
     class="is-pushed-mobile"
@@ -39,23 +147,32 @@ const onExpirePackage = {}
     right
   >
     <template #content>
-      <a role="menuitem" href="#" class="dropdown-item is-media" isStartDate>
+      <a
+        role="menuitem"
+        class="dropdown-item is-media"
+        v-show="isStartDate"
+        @click="openStartTicketModal = true"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-calendar"></i>
         </div>
         <div class="meta">
-          <span>Start Date</span>
+          <span>Start</span>
           <span>Change start date ticket</span>
         </div>
       </a>
 
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+      <a
+        role="menuitem"
+        class="dropdown-item is-media"
+        @click="openExpireTicketModal = true"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-calendar"></i>
         </div>
         <div class="meta">
-          <span>Expire Date</span>
-          <span>Change expire sate ticket</span>
+          <span>Expire</span>
+          <span>Change expire date ticket</span>
         </div>
       </a>
 

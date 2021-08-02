@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import useStudentPackageItemState from '/@src/composable/student/use-student-package'
-const { validation, packageItems, fetchStudentPackages } =
-  useStudentPackageItemState()
+const { packageItems, fetchStudentPackages } = useStudentPackageItemState()
 
 onMounted(() => {
   fetchStudentPackages()

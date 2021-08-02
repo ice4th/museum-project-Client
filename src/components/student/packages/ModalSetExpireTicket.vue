@@ -1,12 +1,9 @@
 <script setup lang="ts">
-// ModalSetDateTicket Component
+// ModalSetExpireTicket Component
 
-import { defineEmit, ref, watch } from 'vue'
-import { defineProps } from 'vue'
+import { defineProps, defineEmit } from 'vue'
 import type { IExpireTicketStudent } from '/@src/types/interfaces/ticket.interface'
 import type { PropType } from 'vue'
-import ticketType from '/@src/data/ticket-type.json'
-const ticketTypeOptions = ticketType
 
 const props = defineProps({
   openModal: {
@@ -17,22 +14,17 @@ const props = defineProps({
     type: Object as PropType<IExpireTicketStudent>,
     default: {},
   },
-  customDate: {
-    type: Boolean,
-    default: false,
-  },
   title: {
     type: String,
     default: '',
   },
-  typeDate: {
-    type: String as PropType<'startDate' | 'expireDate'>,
-    require: true,
-    default: 'expireDate',
+  ticketType: {
+    type: String,
+    default: undefined,
   },
 })
-const internalTypeDate = ref<'startDate' | 'expireDate'>(props.typeDate)
-const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
+
+const emit = defineEmit(['toggle-close', 'on-change'])
 </script>
 
 <template>
@@ -44,6 +36,7 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
     @close="emit('toggle-close')"
   >
     <template #content>
+      <h3 v-show="ticketType">Ticket Type: {{ ticketType }}</h3>
       <form class="modal-form">
         <v-date-picker
           v-model="input.expireDate"
@@ -60,12 +53,12 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
         >
           <template #default="{ inputValue, inputEvents }">
             <V-Field>
-              <label>Expire Package Date </label>
+              <label>Expire Date</label>
               <V-Control icon="feather:calendar">
                 <input
                   class="input"
                   type="text"
-                  placeholder="Expire Package Date"
+                  placeholder="Expire Date"
                   :value="inputValue"
                   v-on="inputEvents"
                   required
@@ -83,6 +76,7 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
               class="textarea is-primary-focus"
               rows="2"
               placeholder="หมายเหตุ"
+              required
             />
           </V-Control>
         </V-Field>
@@ -90,7 +84,7 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
     </template>
     <template #action>
       <V-Button color="primary" raised @click="emit('on-change')"
-        >Save Expire</V-Button
+        >Save Expire Date</V-Button
       >
     </template>
   </V-Modal>

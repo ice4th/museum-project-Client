@@ -1,21 +1,15 @@
-import { onMounted, reactive, toRefs, computed, watch } from 'vue'
+import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
 import StudentService from '/@src/api/student.service'
-import {
-  IStudentPackageItems,
-  StudentPackageItemResponse,
-} from '/@src/types/interfaces/package-item.interface'
-import { TicketType } from '../../types/enums/ticket.enum'
+import { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 import {
   IAddTicketStudent,
   IExpireTicketStudent,
   IStartTicketStudent,
 } from '/@src/types/interfaces/ticket.interface'
-import moment from 'moment'
 import useNotyf from '../useNotyf'
 
 interface UseStudentPackageItemState {
-  validation?: object
   todayIso: string
   packageItems: {
     inactivePackages: IStudentPackageItems[]
@@ -26,7 +20,6 @@ interface UseStudentPackageItemState {
 
 export default function useStudentPackageItem() {
   const state = reactive<UseStudentPackageItemState>({
-    validation: {},
     packageItems: {
       inactivePackages: [],
       activePackages: [],
@@ -59,9 +52,10 @@ export default function useStudentPackageItem() {
       return status
     } else {
       if (typeof message === 'object') {
-        state.validation = message
-      }
-      notyf.error(message || 'Fail! Please try again')
+        Object.keys(message).map((key) => {
+          notyf.error(`${key}: ${message[key]}`)
+        })
+      } else notyf.error('Fail! Please try again')
     }
   }
 
@@ -69,6 +63,7 @@ export default function useStudentPackageItem() {
     packageItemId: number,
     startDate?: string
   ) => {
+    console.log('ActivatePackageItem:', packageItemId)
     const { status, message } = await StudentService.activatePackageItemById(
       packageItemId,
       { startDate }
@@ -78,16 +73,17 @@ export default function useStudentPackageItem() {
       return status
     } else {
       if (typeof message === 'object') {
-        state.validation = message
-      }
-      notyf.error(message || 'Fail! Please try again')
+        Object.keys(message).map((key) => {
+          notyf.error(`${key}: ${message[key]}`)
+        })
+      } else notyf.error('Fail! Please try again')
     }
   }
 
   const changeExpireDateTicketStudent = async (
     payload: IExpireTicketStudent
   ) => {
-    console.log('expireTicketStudent:', payload)
+    console.log('ExpireTicketStudent:', payload)
     const { status, message } = await StudentService.changeExpireDateTicket(
       payload
     )
@@ -96,9 +92,10 @@ export default function useStudentPackageItem() {
       return status
     } else {
       if (typeof message === 'object') {
-        state.validation = message
-      }
-      notyf.error(message || 'Fail! Please try again')
+        Object.keys(message).map((key) => {
+          notyf.error(`${key}: ${message[key]}`)
+        })
+      } else notyf.error('Fail! Please try again')
     }
   }
 
@@ -112,19 +109,12 @@ export default function useStudentPackageItem() {
       return status
     } else {
       if (typeof message === 'object') {
-        state.validation = message
-      }
-      notyf.error(message || 'Fail! Please try again')
+        Object.keys(message).map((key) => {
+          notyf.error(`${key}: ${message[key]}`)
+        })
+      } else notyf.error('Fail! Please try again')
     }
   }
-  watch(
-    () => state.packageItems,
-    () => console.log('update state packageItems::', state.packageItems)
-  )
-  onMounted(() => {
-    const today = moment().format('YYYY-MM-DD')
-    state.todayIso = moment(today).toISOString()
-  })
   return {
     ...toRefs(state),
     addTicketStudent,
