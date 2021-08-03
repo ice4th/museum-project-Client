@@ -163,6 +163,20 @@ watch(
 
     <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
       <template #links>
+        <!-- Admin -->
+        <li>
+          <a
+            :class="[activeMobileSubsidebar === 'admin' && 'is-active']"
+            data-content="Admin"
+            @click="switchSidebar('admin')"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:users"
+            ></i>
+          </a>
+        </li>
         <!-- Students -->
         <li>
           <a
@@ -233,8 +247,12 @@ watch(
     </Sidebar>
 
     <transition name="slide-x">
+      <AdminSubsidebar
+        v-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'admin'"
+        @close="isDesktopSidebarOpen = false"
+      />
       <StudentSubsidebar
-        v-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'student'"
+        v-else-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'student'"
         @close="isDesktopSidebarOpen = false"
       />
       <ProductSubsidebar
