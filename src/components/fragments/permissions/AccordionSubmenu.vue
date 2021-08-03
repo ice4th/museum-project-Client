@@ -55,29 +55,30 @@ const toggle = (key: number) => {
     internalOpenItems.push(key)
   }
 }
-const onSelected = (key: number, tag: string) => {
+const onSelected = (key: number, val: any) => {
   const item = props.items[key]
   // find exist sub menu
   let subMenuItem = selectedSubMenus.find(
-    ({ subMenu }) => subMenu === item.subMenu
+    ({ subMenu }) => subMenu === item.name
   )
   if (!subMenuItem) {
     subMenuItem = {
-      subMenu: item.subMenu,
+      subMenu: item.name,
       actions: [],
+      key,
     }
   }
   // add or remove tag in sub menu
-  if (subMenuItem.actions.includes(tag)) {
+  if (subMenuItem.actions.some((x: any) => x.id === val.id)) {
     subMenuItem.actions = subMenuItem.actions.filter(
-      (action: string) => action !== tag
+      (action: any) => action.id !== val.id
     )
   } else {
-    subMenuItem.actions.push(tag)
+    subMenuItem.actions.push(val)
   }
   // update sub menu in selected items
   selectedSubMenus = selectedSubMenus.filter(
-    ({ subMenu: sm }) => sm !== subMenuItem.subMenu
+    ({ subMenu }) => subMenu !== subMenuItem.subMenu
   )
   if (subMenuItem.actions.length > 0) {
     selectedSubMenus.push(subMenuItem)
@@ -97,7 +98,7 @@ const onSelected = (key: number, tag: string) => {
       :class="[internalOpenItems.includes(key) && 'is-active']"
     >
       <summary class="accordion-header" @click="() => toggle(key)">
-        {{ item.subMenu }}
+        {{ item.name }}
       </summary>
       <div class="accordion-content">
         <div class="submenu-actions">
@@ -106,10 +107,10 @@ const onSelected = (key: number, tag: string) => {
             :key="action.id"
             class="action-wrapper"
             @click="
-              onSelected(key, action.name), (action.selected = !action.selected)
+              onSelected(key, action), (action.selected = !action.selected)
             "
           >
-            <V-Card :class="action.selected ? 'selected' : 'deselected'">
+            <V-Card :class="action.selected ? 'selected' : undefined">
               <V-Block
                 :title="action.name.replace(/_/g, ' ')"
                 :subtitle="action.description"
@@ -117,7 +118,7 @@ const onSelected = (key: number, tag: string) => {
               >
                 <template #icon>
                   <VIconBox
-                    :color="action.selected ? 'info' : ''"
+                    :color="action.selected ? 'info' : undefined"
                     size="small"
                     rounded
                   >
@@ -159,7 +160,7 @@ summary {
 
   .submenu-actions {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: repeat(2, 1fr);
     padding: 20px;
 
     .action-wrapper {
@@ -167,12 +168,7 @@ summary {
       cursor: pointer;
 
       .selected {
-        border: #039be5 solid 2px;
-      }
-
-      .deselected {
-        border: transparent solid 2px;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+        border: #039be5 dashed 1px;
       }
 
       .r-card {

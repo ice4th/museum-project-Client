@@ -1,0 +1,25 @@
+export interface IMenu {
+  id: number
+  name: string
+  subMenus: ISubMenu[]
+}
+
+export interface ISubMenu {
+  id: number
+  name: string
+  permissions: IPermission[]
+}
+
+export interface IPermission {
+  id: number
+  name: string
+  description: string
+  actionName: string
+}
+
+export interface ICreateRolePayload {
+  teamId: number
+  name: string
+  description: string
+  permissions: number[]
+}

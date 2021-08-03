@@ -26,18 +26,25 @@ let selectedMainMenus = reactive<any[]>([])
 /**
  * Methods
  */
-const onSelected = (val: any, key: number) => {
+const onSelected = (value: any, key: number) => {
   const item = props.items[key]
-  const mainMenuItem = {
-    mainMenu: item.mainMenu,
-    icon: item.icon,
+
+  let mainMenuItem = selectedMainMenus.find(
+    ({ mainMenu }) => mainMenu === item.name
+  )
+
+  const val = value.sort((a: any, b: any) => a.key - b.key)
+  mainMenuItem = {
+    key,
+    mainMenu: mainMenuItem?.mainMenu || item.name,
+    icon: mainMenuItem?.icon || item.icon,
     subtitles: val.length,
     actions: val.map((v: any) => v.actions).flat().length,
     subMenus: val,
   }
   // update main menu in selected items
   selectedMainMenus = selectedMainMenus.filter(
-    ({ mainMenu: menu }) => menu !== mainMenuItem.mainMenu
+    ({ mainMenu }) => mainMenu !== mainMenuItem.mainMenu
   )
   if (mainMenuItem.subMenus.length > 0) {
     selectedMainMenus.push(mainMenuItem)
@@ -59,7 +66,7 @@ const onSelected = (val: any, key: number) => {
     <div v-for="(menu, key) in items" :key="key" class="box-menu">
       <div class="main-menu">
         <V-Card>
-          <V-Block :title="menu.mainMenu" center>
+          <V-Block :title="menu.name" center>
             <template #icon>
               <VIconBox color="info" size="medium" rounded>
                 <i class="iconify" :data-icon="menu.icon"></i>
@@ -74,7 +81,7 @@ const onSelected = (val: any, key: number) => {
             </template>
             <template #action>
               <V-Button
-                :color="menu.show ? 'secondary' : 'primary'"
+                :color="menu.show ? undefined : 'primary'"
                 :icon="menu.show ? 'lnir lnir-close' : 'lnir lnir-plus'"
                 @click="menu.show = !menu.show"
               >
@@ -86,7 +93,7 @@ const onSelected = (val: any, key: number) => {
       </div>
       <div v-show="menu.show" class="box-accordion">
         <AccordionSubmenu
-          :items="menu.subMenu"
+          :items="menu.subMenus"
           @selected="onSelected($event, key)"
         />
       </div>
