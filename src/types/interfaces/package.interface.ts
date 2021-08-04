@@ -109,3 +109,70 @@ export interface ICreatePackageGroup {
   mainPackageId: number
   addonPackages: IUpdateAddonPackage[] // include main package
 }
+
+export interface ICratePackageForm {
+  packageName: string
+  packageNameInternal?: string
+  productId: number
+  purchasable: boolean
+  status: '0' | '1'
+  detail?: string
+  comment?: string
+  globishLevel: string
+  cefrLevel: string
+  price?: number
+  beforeDiscount?: number
+  installmentMonth?: string
+  engder?: string
+  type: string
+  duration?: number
+  ticketOneOnOne?: number
+  ticketFreetalk?: number
+  ticketGroup?: number
+  ticketMaster?: number
+  photo?: string
+  curriculumSheet?: string
+  curriculumId?: number
+  featureGroupId?: number
+  findMycoachId?: number
+  moocCourseId?: number
+  privateSlot?: number
+}
+
+export interface ICratePackage {
+  packageName: string
+  packageNameInternal?: string
+  productId: number
+  purchasable: Purchasable
+  status: StatusPackage
+  detail?: string
+  comment?: string
+  globishLevel: string
+  cefrLevel: string
+  price: number
+  beforeDiscount: number
+  installmentMonth: number
+  engder?: string
+  type: string
+  duration?: number
+  ticketOneOnOne?: number
+  ticketFreetalk?: number
+  ticketGroup?: number
+  ticketMaster?: number
+  photo?: string
+  curriculumSheet?: string
+  curriculumId?: number
+  featureGroupId?: number
+  findMycoachId?: number
+  moocCourseId?: number
+  privateSlot?: number
+}
+
+export interface IUseCratePackageForm {
+  products: any[]
+  curriculums: any[]
+  featureGroups: any[]
+  fmcPackages: any[]
+  moocCourses: any[]
+  createPackageForm: ICratePackageForm
+}
