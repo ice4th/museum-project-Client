@@ -27,7 +27,7 @@ const props = defineProps({
   },
   validation: {
     type: Object,
-    default: {},
+    default: () => {},
   },
 })
 const emit = defineEmit({

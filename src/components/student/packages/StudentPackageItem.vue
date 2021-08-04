@@ -8,7 +8,7 @@ const ticketTypeOptions = ticketType
 const props = defineProps({
   packageItems: {
     type: Array,
-    default: [],
+    default: () => [],
   },
   canActivate: {
     type: Boolean,

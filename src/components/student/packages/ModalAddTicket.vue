@@ -15,7 +15,7 @@ const props = defineProps({
   },
   input: {
     type: Object as PropType<IAddTicketStudent>,
-    default: {},
+    default: () => {},
   },
   customDate: {
     type: Boolean,

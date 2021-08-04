@@ -12,7 +12,7 @@ const props = defineProps({
   },
   input: {
     type: Object as PropType<IExpireTicketStudent>,
-    default: {},
+    default: () => {},
   },
   title: {
     type: String,

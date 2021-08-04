@@ -12,7 +12,7 @@ const props = defineProps({
   },
   input: {
     type: Object as PropType<IStartTicketStudent>,
-    default: {},
+    default: () => {},
   },
   customDate: {
     type: Boolean,
