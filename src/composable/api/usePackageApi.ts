@@ -14,6 +14,11 @@ import {
 export default function usePackageApi() {
   const api = useApi()
 
+  const getPackageById = async (id: number): Promise<any> => {
+    const res = await api.get(`/Packages/${id}`)
+    return checkResponseStatus(res) || undefined
+  }
+
   const getPackagesWithPagination = async (
     params: IPaginationParams
   ): Promise<IPaginationResponse<IPackageTableInfo[]>> => {
@@ -69,6 +74,7 @@ export default function usePackageApi() {
   }
 
   return {
+    getPackageById,
     getPackagesWithPagination,
     getAllPackagesGroup,
     getAddonPackageByMainPackageId,

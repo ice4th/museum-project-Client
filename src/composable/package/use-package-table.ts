@@ -16,6 +16,19 @@ interface UsePackageTableState {
   perPage: number
 }
 export default function usePackageTable() {
+  /**
+   * Use Api
+   */
+  const { getPackagesWithPagination } = usePackageApi()
+
+  /**
+   * Router
+   */
+  const route = useRoute()
+
+  /**
+   * State
+   */
   const state = reactive<UsePackageTableState>({
     isLoading: false,
     packages: [],
@@ -23,8 +36,23 @@ export default function usePackageTable() {
     currentPage: 1,
     perPage: 10,
   })
-  const route = useRoute()
-  const { getPackagesWithPagination } = usePackageApi()
+
+  /**
+   * Variable
+   */
+  const packageTableHeaders = [
+    { key: 'id', label: 'ID' },
+    { key: 'packageName', label: 'Package Name' },
+    { key: 'type', label: 'Type' },
+    { key: 'purchasable', label: 'Purchasable' },
+    { key: 'price', label: 'Price' },
+    { key: 'duration', label: 'Duration' },
+    { key: 'actions', label: '', isRaw: true },
+  ]
+
+  /**
+   * Methods
+   */
   const fetchAllPackages = async () => {
     const page = route.query.page as string
     const perPage = route.query.perPage as string
@@ -45,16 +73,13 @@ export default function usePackageTable() {
       state.currentPage = res.currentPage
     }
   }
+  const onEdit = () => {
+    route.path
+  }
 
-  const packageTableHeaders = [
-    { key: 'id', label: 'ID' },
-    { key: 'packageName', label: 'Package Name' },
-    { key: 'type', label: 'Type' },
-    { key: 'purchasable', label: 'Purchasable' },
-    { key: 'price', label: 'Price' },
-    { key: 'duration', label: 'Duration' },
-  ]
-
+  /**
+   * On Mounted
+   */
   onMounted(() => {
     fetchAllPackages()
   })
