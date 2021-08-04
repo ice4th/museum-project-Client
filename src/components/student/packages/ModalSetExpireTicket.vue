@@ -1,7 +1,5 @@
 <script setup lang="ts">
 // ModalSetExpireTicket Component
-
-import { defineProps, defineEmit } from 'vue'
 import type { IExpireTicketStudent } from '/@src/types/interfaces/ticket.interface'
 import type { PropType } from 'vue'
 
@@ -24,7 +22,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmit(['toggle-close', 'on-change'])
+const emit = defineEmits(['toggle-close', 'on-change'])
 </script>
 
 <template>
@@ -60,8 +58,8 @@ const emit = defineEmit(['toggle-close', 'on-change'])
                   type="text"
                   placeholder="Expire Date"
                   :value="inputValue"
-                  v-on="inputEvents"
                   required
+                  v-on="inputEvents"
                 />
               </V-Control>
             </V-Field>

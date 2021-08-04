@@ -36,7 +36,6 @@ const headers = [
 
 <template>
   <div class="page-content-inner">
-    <p>Student Page</p>
     <Datatable
       :is-loading="isLoading"
       search-placeholder="search by id, name, phone, email"

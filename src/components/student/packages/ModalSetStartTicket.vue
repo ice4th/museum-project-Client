@@ -1,7 +1,5 @@
 <script setup lang="ts">
 // ModalSetStartTicket Component
-
-import { defineEmit, defineProps } from 'vue'
 import type { IStartTicketStudent } from '/@src/types/interfaces/ticket.interface'
 import type { PropType } from 'vue'
 
@@ -28,7 +26,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
+const emit = defineEmits(['toggle-close', 'on-change', 'update:customDate'])
 </script>
 
 <template>
@@ -73,8 +71,8 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
                   type="text"
                   placeholder="Start Date"
                   :value="inputValue"
-                  v-on="inputEvents"
                   required
+                  v-on="inputEvents"
                 />
               </V-Control>
             </V-Field>

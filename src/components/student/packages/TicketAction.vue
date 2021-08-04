@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Ticket Action Component
-import { ref, defineProps, defineEmit, watch, computed } from 'vue'
+import { ref, watch, computed } from 'vue'
 import type { PropType } from 'vue'
 import useStudentPackageItemState from '/@src/composable/student/use-student-package'
 import { toFormat } from '/@src/helpers/date.helper'
@@ -54,7 +54,7 @@ const ticketTypeName = ref(
   ticketTypeOptions.find((type) => type.value == props.ticketType)?.text
 )
 
-const emit = defineEmit(['fetch-package-items'])
+const emit = defineEmits(['fetch-package-items'])
 
 const expireTicketInput = ref<IExpireTicketStudent>({
   packageItemId: props.packageItemId || 0,
@@ -152,9 +152,9 @@ const toggleExpireTicket = () => {
   >
     <template #content>
       <a
+        v-show="isStartDate"
         role="menuitem"
         class="dropdown-item is-media"
-        v-show="isStartDate"
         @click="openStartTicketModal = true"
       >
         <div class="icon">

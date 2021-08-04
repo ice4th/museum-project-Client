@@ -1,8 +1,7 @@
 <script setup lang="ts">
 // ModalAddTicket Component
 
-import { defineEmit, ref, watch } from 'vue'
-import { defineProps } from 'vue'
+import { ref, watch } from 'vue'
 import type { IAddTicketStudent } from '/@src/types/interfaces/ticket.interface'
 import type { PropType } from 'vue'
 import ticketType from '/@src/data/ticket-type.json'
@@ -27,7 +26,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
+const emit = defineEmits(['toggle-close', 'on-add', 'update:customDate'])
 </script>
 
 <template>
@@ -122,8 +121,8 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
                       type="text"
                       placeholder="Start Date"
                       :value="inputValue"
-                      v-on="inputEvents"
                       :required="customDate"
+                      v-on="inputEvents"
                     />
                   </V-Control>
                 </V-Field>
@@ -153,8 +152,8 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
                       type="text"
                       placeholder="Expire Date"
                       :value="inputValue"
-                      v-on="inputEvents"
                       :required="customDate"
+                      v-on="inputEvents"
                     />
                   </V-Control>
                 </V-Field>

@@ -31,7 +31,6 @@ useHead({
 })
 const showSuccessPopup = ref(false)
 const handleRegister = async () => {
-  console.log('handleRegister')
   const res = await register()
   if (res) showSuccessPopup.value = true
 }

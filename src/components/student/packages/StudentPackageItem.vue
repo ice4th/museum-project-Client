@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmit, defineProps, onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import ticketType from '/@src/data/ticket-type.json'
 import { toFormat } from '/@src/helpers/date.helper'
 
@@ -19,7 +19,7 @@ const props = defineProps({
     require: true,
   },
 })
-const emit = defineEmit(['fetch-package-items'])
+const emit = defineEmits(['fetch-package-items'])
 </script>
 <template>
   <V-CardAction

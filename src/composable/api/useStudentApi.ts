@@ -4,11 +4,17 @@ import {
   IPaginationParams,
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
+import { StudentPackageItemResponse } from '/@src/types/interfaces/package-item.interface'
 import {
   IStudentList,
   IUpdateStudentProfile,
   StudentInfoResponse,
 } from '/@src/types/interfaces/student.interface'
+import {
+  IAddTicketStudent,
+  IStartTicketStudent,
+  IExpireTicketStudent,
+} from '/@src/types/interfaces/ticket.interface'
 
 export default function useStudentApi() {
   const api = useApi()
@@ -44,5 +50,55 @@ export default function useStudentApi() {
     return res
   }
 
-  return { getStudentInfoById, getAllStudents, updateStudentInfoById }
+  const getStudentPackageItems = async (
+    studentId: number
+  ): Promise<StudentPackageItemResponse | null> => {
+    const res = await api.get<StudentPackageItemResponse>(
+      `/Students/${studentId}/Packages`
+    )
+    return checkResponseStatus(res)
+  }
+
+  const addNewTicketStudent = async (payload: IAddTicketStudent) => {
+    const res = await api.post<any, ApiResponse>(
+      `/Tickets/${payload.packageItemId}/Add`,
+      payload
+    )
+    return res
+  }
+
+  const activatePackageItemById = async (
+    packageItemId: number,
+    payload: { startDate?: string }
+  ) => {
+    return await api.post<any, ApiResponse>(
+      `/Tickets/${packageItemId}/Activate`,
+      payload
+    )
+  }
+
+  const changeStartDateTicket = async (payload: IStartTicketStudent) => {
+    return await api.put<any, ApiResponse>(
+      `/Tickets/${payload.packageItemId}/StartDate`,
+      payload
+    )
+  }
+
+  const changeExpireDateTicket = async (payload: IExpireTicketStudent) => {
+    return await api.put<any, ApiResponse>(
+      `/Tickets/${payload.packageItemId}/ExpireDate`,
+      payload
+    )
+  }
+
+  return {
+    getStudentInfoById,
+    getAllStudents,
+    updateStudentInfoById,
+    getStudentPackageItems,
+    addNewTicketStudent,
+    activatePackageItemById,
+    changeStartDateTicket,
+    changeExpireDateTicket,
+  }
 }
