@@ -8,7 +8,7 @@ const { studentInfo, updateStudentProfile, validation } = useStudentInfo()
   <StudentProfileEditor
     v-if="studentInfo"
     :student-info="studentInfo"
-    @on-update="updateStudentProfile"
     :validation="validation"
+    @on-update="updateStudentProfile"
   />
 </template>

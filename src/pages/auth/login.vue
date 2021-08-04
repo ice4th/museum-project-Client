@@ -114,6 +114,7 @@ useHead({
                   bold
                   fullwidth
                   raised
+                  @click="login"
                 >
                   Sign In
                 </V-Button>

@@ -7,7 +7,7 @@ const filters = ref('')
 const props = defineProps({
   data: {
     type: Array,
-    default: [],
+    default: () => [],
   },
   total: {
     type: Number,

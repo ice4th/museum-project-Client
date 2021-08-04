@@ -1,13 +1,11 @@
 <script setup lang="ts">
 // MainPackageForm Component
 
-import { defineEmit, defineProps, ref } from 'vue'
+import { ref } from 'vue'
 import type { PropType } from 'vue'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
-import type {
-  IPackageInfo,
-  IUpdateAddonPackage,
-} from '/@src/types/interfaces/package.interface'
+import type { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
+import type { PackageOption } from '/@src/types/interfaces/option.interface'
 
 const props = defineProps({
   mainPackage: {
@@ -15,8 +13,8 @@ const props = defineProps({
     default: undefined,
   },
   packages: {
-    type: Array as PropType<IPackageInfo[]>,
-    default: [],
+    type: Array as PropType<PackageOption[]>,
+    default: () => [],
   },
 })
 
@@ -24,7 +22,7 @@ const mainPackageId = ref<number>(props.mainPackage?.packageId || 0)
 const generateTicket = ref<GenerateTicket>(
   props.mainPackage?.generateTicket || GenerateTicket.NOT_GENERATE_TICKET
 )
-const emit = defineEmit({
+const emit = defineEmits({
   'on-update': Object,
 })
 

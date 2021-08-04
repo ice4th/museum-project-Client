@@ -4,13 +4,11 @@ import 'simple-datatables/src/style.css'
 
 <script setup lang="ts">
 import {
-  defineProps,
   isReactive,
   onBeforeUnmount,
   onMounted,
   ref,
   watch,
-  defineEmit,
   reactive,
 } from 'vue'
 import { DataTable } from 'simple-datatables'
@@ -35,7 +33,7 @@ const lastSort = reactive({
   direction: '',
 })
 
-const emit = defineEmit([
+const emit = defineEmits([
   'init',
   'refresh',
   'update',

@@ -22,6 +22,8 @@ const {
   createNewRedeem,
   packages,
   partners,
+  redeemTableHeaders,
+  isLoading,
 } = useRedeemTable()
 const showCreatePopup = ref(false)
 const toggleCreateRedeem = () => {
@@ -291,39 +293,51 @@ const tableOptions = computed(() => {
         >
       </template> -->
     </V-Modal>
-    <ListTable
-      v-if="data.length"
+    <div class="is-flex is-justify-content-flex-end">
+      <V-Button color="primary" @click="toggleCreateRedeem"
+        >Create Redeem</V-Button
+      >
+    </div>
+    <Datatable
+      :headers="redeemTableHeaders"
       :data="data"
       :current-page="currentPage"
       :per-page="perPage"
       :total="total"
+      :is-loading="isLoading"
+      is-action
     >
-      <template #item="{ item }">
-        <div class="meta-left">
-          <h3>ID: {{ item.id }}</h3>
-          <h3>Type: {{ item.type }}</h3>
-          <h3>Partner: {{ item.partnerName }}</h3>
-          <h3>Package: {{ item.packageName }}</h3>
-          <span v-if="item.usedDate">
-            Activated at: {{ toFormat(item.usedDate) }}
-          </span>
-        </div>
-        <div class="right">
-          <V-Button @click="fetchRedeemById(item.id)">View</V-Button>
-          <h3>Created at: {{ toFormat(item.createdAt) }}</h3>
-          <h3 v-if="item.expireDate">
-            Expire date: {{ toFormat(item.expireDate, 'YYYY-MM-DD') }}
-          </h3>
-        </div>
+      <template #type="{ value }">
+        <V-Tag
+          :color="value === 'default' ? 'purple' : 'danger'"
+          :label="value"
+          curved
+          outlined
+        />
       </template>
-      <template #tabs>
-        <div>
-          <V-Button color="primary" @click="toggleCreateRedeem"
-            >Create Redeem</V-Button
-          >
-        </div>
+      <template #createdAt="{ value }">
+        {{ value ? toFormat(value) : '-' }}
       </template>
-    </ListTable>
+      <template #usedDate="{ value }">
+        {{ value ? toFormat(value) : '-' }}
+      </template>
+      <template #expireDate="{ value }">
+        {{ value ? toFormat(value) : '-' }}
+      </template>
+      <template #status="{ value }">
+        <V-Tag
+          :color="value ? 'success' : 'solid'"
+          :label="value ? 'Activated' : 'Deactivated'"
+          rounded
+          elevated
+        />
+      </template>
+      <template #action="{ value }">
+        <V-Button icon="lnil lnil-eye" @click="fetchRedeemById(value.id)"
+          >View</V-Button
+        >
+      </template>
+    </Datatable>
   </div>
 </template>
 

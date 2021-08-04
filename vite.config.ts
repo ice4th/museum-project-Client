@@ -9,7 +9,7 @@ import PurgeIcons from 'vite-plugin-purge-icons'
 import { imagetools } from 'vite-imagetools'
 import ImageMin from 'vite-plugin-imagemin'
 import VueI18n from '@intlify/vite-plugin-vue-i18n'
-// import VueroDocumentation from './vite-plugin-vuero-doc/index'
+import VueroDocumentation from './vite-plugin-vuero-doc/index'
 import { VitePWA } from 'vite-plugin-pwa'
 
 /**
@@ -21,6 +21,9 @@ export default defineConfig({
   // Project root directory (where index.html is located).
   root: process.cwd(),
   // Base public path when served in development or production.
+  // You also need to add this base like `history: createWebHistory('my-subdirectory')`
+  // in ./src/router.ts
+  // base: '/my-subdirectory/',
   base: '/',
   // Directory to serve as plain static assets.
   publicDir: 'public',
@@ -46,11 +49,9 @@ export default defineConfig({
      * Uncomment this section to build the demo with missing images
      * Don't forget to remove this section when you replaced assets with yours
      */
-    // rollupOptions: {
-    //   external: [
-    //     /\/demo\/.*/,
-    //   ]
-    // }
+    rollupOptions: {
+      external: [/\/demo\/.*/],
+    },
   },
   plugins: [
     /**
@@ -93,7 +94,7 @@ export default defineConfig({
      * @see /src/components/partials/documentation/DocumentationItem.vue
      * @see /src/composable/useMarkdownToc.ts
      * */
-    // VueroDocumentation(),
+    VueroDocumentation(),
 
     /**
      * vite-plugin-components plugin is responsible of autoloading components
@@ -211,10 +212,12 @@ export default defineConfig({
       svgo: {
         plugins: [
           {
-            removeViewBox: false,
+            name: 'removeViewBox',
+            active: false,
           },
           {
-            removeEmptyAttrs: false,
+            name: 'removeEmptyAttrs',
+            active: false,
           },
         ],
       },

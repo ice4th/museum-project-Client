@@ -9,28 +9,48 @@ import {
 import { useRoute, useRouter } from 'vue-router'
 import { toFormat } from '/@src/helpers/date.helper'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+
 const route = useRoute()
 pageTitle.value = 'Student Information'
 
-const { data, totalPage, total, currentPage, perPage } = useStudentList()
+const { data, totalPage, total, currentPage, perPage, isLoading, search } =
+  useStudentList()
 
 useHead({
   title: 'Whitehouse: Student',
 })
+const headers = [
+  { key: 'studentId', label: 'ID' },
+  { key: 'fullname', label: 'Fullname', isRaw: true },
+  { key: 'nickname', label: 'Nickname' },
+  { key: 'partner', label: 'Partner' },
+  { key: 'level', label: 'level', isRaw: true },
+  { key: 'email', label: 'Email' },
+  { key: 'phone', label: 'Phone' },
+  { key: 'lastLogin', label: 'lastLogin' },
+  { key: 'lastUsedPackage', label: 'lastUsedPackage' },
+  { key: 'ticket.used', label: 'Used' },
+  { key: 'ticket.available', label: 'Available' },
+]
 </script>
 
 <template>
   <div class="page-content-inner">
-    <SearchToolbar
-      :placeholder="'search by id, name, phone, email'"
-      :model-search="route.query?.search"
-      :per-page="route.query?.perPage"
-    />
-    <table class="table is-hoverable is-fullwidth mt-4">
-      <thead>
+    <p>Student Page</p>
+    <Datatable
+      :is-loading="isLoading"
+      search-placeholder="search by id, name, phone, email"
+      :search="search"
+      :headers="headers"
+      :data="data"
+      :current-page="currentPage"
+      :per-page="perPage"
+      :total="total"
+      :total-page="totalPage"
+    >
+      <template #thead>
         <tr>
           <th scope="col" rowspan="2" class="has-text-centered">ID</th>
-          <th scope="col" rowspan="2" class="is-media"></th>
           <th scope="col" rowspan="2">Fullname</th>
           <th scope="col" rowspan="2">Nickname</th>
           <th scope="col" rowspan="2">Partner</th>
@@ -45,50 +65,49 @@ useHead({
           <th class="has-text-centered">Used</th>
           <th class="has-text-centered">Remain</th>
         </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(st, idxR) in data" :key="`r-${idxR}`">
-          <td>{{ st.studentId }}</td>
-          <td class="is-media">
-            <V-Avatar
-              size="small"
-              :picture="st.avatar"
-              :badge="countryFlag[st.country]"
-            />
-          </td>
-          <td>
-            <router-link
-              :to="{ path: `/student/${st?.studentId}` }"
-              class="link"
-            >
-              {{ displayStudentFullname(st) }}
-            </router-link>
-          </td>
-          <td>{{ st.nickname?.th || st.nickname?.en || '-' }}</td>
-          <td>{{ st.partner?.pop()?.partnerName || '-' }}</td>
-          <td>{{ st.lastUsedPackage?.globishLevel || '-' }}</td>
-          <td style="white-space: pre">{{ st.email || '-' }}</td>
-          <td>{{ st.phone || '-' }}</td>
-          <td>
-            {{
-              st.lastLogin ? toFormat(st.lastLogin, 'DD/MM/YYYY, HH:mm') : '-'
-            }}
-          </td>
-          <td>{{ st.lastUsedPackage?.packageName || '-' }}</td>
-          <td class="has-text-centered">{{ st.ticket?.used || 0 }}</td>
-          <td class="has-text-centered">{{ st.ticket?.available || 0 }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="flex-table-wrapper mt-4">
-      <!--Table Pagination-->
-      <V-FlexPagination
-        :item-per-page="perPage"
-        :total-items="total"
-        :current-page="currentPage"
-        :max-links-displayed="10"
-      />
-    </div>
+      </template>
+      <template #fullname="{ value }">
+        <div class="student-name-col">
+          <V-Avatar
+            size="small"
+            :picture="value.avatar"
+            :badge="countryFlag[value.country]"
+          />
+          <router-link
+            :to="{ path: `/student/${value?.studentId}` }"
+            class="link"
+          >
+            {{ displayStudentFullname(value) }}
+          </router-link>
+        </div>
+      </template>
+      <template #nickname="{ value }">
+        {{ value?.th || value?.en || '-' }}
+      </template>
+      <template #partner="{ value }">
+        {{ value?.pop()?.partnerName || '-' }}
+      </template>
+      <template #level="{ value }">
+        {{ value.lastUsedPackage?.globishLevel || '-' }}
+      </template>
+      <template #email="{ value }">
+        {{ value || '-' }}
+      </template>
+      <template #phone="{ value }">
+        {{ value || '-' }}
+      </template>
+      <template #lastLogin="{ value }">
+        {{ value ? toFormat(value, 'DD/MM/YYYY, HH:mm') : '-' }}
+      </template>
+      <template #lastUsedPackage="{ value }">
+        {{ value?.packageName || '-' }}
+      </template>
+      <template #action>
+        <div class="dark-inverted is-flex is-justify-content-flex-end">
+          <FlexTableDropdown />
+        </div>
+      </template>
+    </Datatable>
   </div>
 </template>
 <style lang="scss" scoped>
@@ -104,5 +123,12 @@ thead {
 }
 td {
   font-size: 12px;
+}
+.student-name-col {
+  display: flex;
+  align-items: center;
+  > a {
+    margin-left: 10px;
+  }
 }
 </style>

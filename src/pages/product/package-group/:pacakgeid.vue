@@ -30,6 +30,7 @@ const {
   addonPackages: rawAddonPackages,
   isLoading,
   updatePackage,
+  isUpdating,
 } = useViewPackageGroup()
 onBeforeUpdate(() => {
   showMainPackageSection.value = false
@@ -101,7 +102,6 @@ const reload = () => {
             </div>
           </div>
           <div class="form-body">
-            <div>{{ addonPackages.length }}</div>
             <div v-if="addonPackages.length" class="form-section is-grey">
               <VueDraggable
                 v-model="addonPackages"

@@ -3,20 +3,14 @@
  */
 
 import { onMounted, reactive, ref, toRefs } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import usePackageApi from '../api/usePackageApi'
 import useNotyf from '../useNotyf'
-import { IAddonPackageWithType } from './use-create-package'
-import PackageService from '/@src/api/package.service'
-import router from '/@src/router'
-import {
-  IPackageGroupInfo,
-  IPackageInfo,
-  IUpdateAddonPackage,
-} from '/@src/types/interfaces/package.interface'
+import { errMessage } from '/@src/helpers/filter.helper'
+import { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
 interface UseViewPackageGroupState {
   isLoading: boolean
   isUpdating: boolean
-  packages: IPackageInfo[]
   addonPackages: IUpdateAddonPackage[]
   mainPackage?: IUpdateAddonPackage
 }
@@ -24,19 +18,20 @@ export default function useViewPackageGroup() {
   const state = reactive<UseViewPackageGroupState>({
     isLoading: false,
     isUpdating: false,
-    packages: [],
     addonPackages: [],
     mainPackage: undefined,
   })
 
   const route = useRoute()
+  const router = useRouter()
   const notyf = useNotyf()
+  const { updatePackageGroup, deleteAddonPackageGroupById } = usePackageApi()
   const mainPackageId = ref<number>(+(route.params.packageid as string))
 
+  const { getAddonPackageByMainPackageId } = usePackageApi()
   const fetchAddonPackage = async () => {
-    const { status, data } =
-      await PackageService.getAddonPackageByMainPackageId(mainPackageId.value)
-    if (status === 200) {
+    const data = await getAddonPackageByMainPackageId(mainPackageId.value)
+    if (data.length) {
       const findMainPackage = data.find((pk) => pk.isMainPackage)
       state.mainPackage = {
         ...findMainPackage,
@@ -56,8 +51,9 @@ export default function useViewPackageGroup() {
   }
 
   const removeAddonPackage = async (packageGroupId: number) => {
-    const { status, message } =
-      await PackageService.deleteAddonPackageGroupById(packageGroupId)
+    const { status, message } = await deleteAddonPackageGroupById(
+      packageGroupId
+    )
     if (status === 200) {
       await fetchAddonPackage()
       notyf.success('Remove Success!!')
@@ -101,7 +97,7 @@ export default function useViewPackageGroup() {
       }
     }) as IUpdateAddonPackage[]
 
-    const { status } = await PackageService.updatePackageGroup({
+    const { status, message } = await updatePackageGroup({
       mainPackageId: mainId || mainPackageId.value,
       addonPackages: parsedPackages,
     })
@@ -115,8 +111,9 @@ export default function useViewPackageGroup() {
         name: 'product-package-group-:packageid',
         params: { packageid: `${mainId || mainPackageId.value}` },
       })
+    } else {
+      notyf.error(errMessage(message) || 'Fail!')
     }
-    console.log(status)
   }
 
   onMounted(async () => {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, ref, watchEffect } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { isDark } from '/@src/state/darkModeState'
@@ -9,12 +9,14 @@ import { activePanel } from '/@src/state/activePanelState'
 const { locale } = useI18n()
 const { y } = useWindowScroll()
 const isOpen = ref(false)
-const isScrolling = computed(() => {
+const isScrolling = ref(false)
+
+watchEffect(() => {
   if (y.value <= 30) {
     isOpen.value = false
   }
 
-  return y.value > 30
+  isScrolling.value = y.value > 30
 })
 
 const localFlagSrc = computed(() => {

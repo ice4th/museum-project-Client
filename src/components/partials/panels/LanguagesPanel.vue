@@ -32,6 +32,30 @@ const { locale, t } = useI18n()
                 v-model="locale"
                 type="radio"
                 name="language_selection"
+                value="en"
+              />
+              <div class="language-option-inner">
+                <img
+                  src="/images/icons/flags/united-states-of-america.svg"
+                  alt=""
+                />
+                <div class="indicator">
+                  <i
+                    aria-hidden="true"
+                    class="iconify"
+                    data-icon="feather:check"
+                  ></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="language-box">
+            <div class="language-option">
+              <input
+                v-model="locale"
+                type="radio"
+                name="language_selection"
                 value="th"
               />
               <div class="language-option-inner">
@@ -46,6 +70,7 @@ const { locale, t } = useI18n()
               </div>
             </div>
           </div>
+
           <div class="language-box">
             <div class="language-option">
               <input
@@ -56,30 +81,6 @@ const { locale, t } = useI18n()
               />
               <div class="language-option-inner">
                 <img src="/images/icons/flags/vietnam.svg" alt="" />
-                <div class="indicator">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  ></i>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="language-box">
-            <div class="language-option">
-              <input
-                v-model="locale"
-                type="radio"
-                name="language_selection"
-                value="en"
-                checked
-              />
-              <div class="language-option-inner">
-                <img
-                  src="/images/icons/flags/united-states-of-america.svg"
-                  alt=""
-                />
                 <div class="indicator">
                   <i
                     aria-hidden="true"

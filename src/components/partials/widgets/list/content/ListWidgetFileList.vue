@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-defineProps({
+const props = defineProps({
   files: {
     type: Array,
     required: true,
-    default: [],
+    default: () => [],
   },
 })
 </script>
@@ -13,7 +11,7 @@ defineProps({
 <template>
   <div>
     <div
-      v-for="file in files"
+      v-for="file in props.files"
       :key="file.id"
       class="inner-list-item media-flex-center"
     >
