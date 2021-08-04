@@ -1,6 +1,5 @@
-import { onMounted, reactive, toRefs } from 'vue'
+import { reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
-import StudentService from '/@src/api/student.service'
 import { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 import {
   IAddTicketStudent,
@@ -8,8 +7,10 @@ import {
   IStartTicketStudent,
 } from '/@src/types/interfaces/ticket.interface'
 import useNotyf from '../useNotyf'
+import useStudentApi from '../api/useStudentApi'
 
 interface UseStudentPackageItemState {
+  isLoading: Boolean
   todayIso: string
   packageItems: {
     inactivePackages: IStudentPackageItems[]
@@ -20,6 +21,7 @@ interface UseStudentPackageItemState {
 
 export default function useStudentPackageItem() {
   const state = reactive<UseStudentPackageItemState>({
+    isLoading: true,
     packageItems: {
       inactivePackages: [],
       activePackages: [],
@@ -30,20 +32,35 @@ export default function useStudentPackageItem() {
   const route = useRoute()
   const notyf = useNotyf()
 
+  const {
+    getStudentPackageItems,
+    addNewTicketStudent,
+    activatePackageItemById,
+    changeExpireDateTicket,
+    changeStartDateTicket,
+  } = useStudentApi()
+
+  const notyfError = (message: any) => {
+    if (typeof message === 'object') {
+      Object.keys(message).map((key) => {
+        notyf.error(`${key}: ${message[key]}`)
+      })
+    } else notyf.error(message || 'Fail! Please try again')
+  }
+
   const fetchStudentPackages = async () => {
+    state.isLoading = true
     const studentId = route.params.id as string
-    const { data, status } = await StudentService.getStudentPackageItems(
-      +studentId
-    )
-    if (status === 200 && data) {
+    const data = await getStudentPackageItems(+studentId)
+    state.isLoading = false
+    if (data) {
       state.packageItems = data
     }
   }
 
   const addTicketStudent = async (payload: IAddTicketStudent) => {
     const studentId = route.params.id as string
-    console.log('add ticket:', payload)
-    const { status, message } = await StudentService.addNewTicketStudent({
+    const { status, message } = await addNewTicketStudent({
       ...payload,
       studentId: +studentId,
     })
@@ -51,11 +68,7 @@ export default function useStudentPackageItem() {
       notyf.success('Adding ticket(s) completed!')
       return status
     } else {
-      if (typeof message === 'object') {
-        Object.keys(message).map((key) => {
-          notyf.error(`${key}: ${message[key]}`)
-        })
-      } else notyf.error(message || 'Fail! Please try again')
+      notyfError(message)
     }
   }
 
@@ -63,56 +76,36 @@ export default function useStudentPackageItem() {
     packageItemId: number,
     startDate?: string
   ) => {
-    console.log('ActivatePackageItem:', packageItemId)
-    const { status, message } = await StudentService.activatePackageItemById(
-      packageItemId,
-      { startDate }
-    )
+    const { status, message } = await activatePackageItemById(packageItemId, {
+      startDate,
+    })
     if (status === 201) {
       notyf.success('Activate package is completed!')
       return status
     } else {
-      if (typeof message === 'object') {
-        Object.keys(message).map((key) => {
-          notyf.error(`${key}: ${message[key]}`)
-        })
-      } else notyf.error(message || 'Fail! Please try again')
+      notyfError(message)
     }
   }
 
   const changeExpireDateTicketStudent = async (
     payload: IExpireTicketStudent
   ) => {
-    console.log('ExpireTicketStudent:', payload)
-    const { status, message } = await StudentService.changeExpireDateTicket(
-      payload
-    )
+    const { status, message } = await changeExpireDateTicket(payload)
     if (status === 200) {
       notyf.success('Change expire date is completed!')
       return status
     } else {
-      if (typeof message === 'object') {
-        Object.keys(message).map((key) => {
-          notyf.error(`${key}: ${message[key]}`)
-        })
-      } else notyf.error(message || 'Fail! Please try again')
+      notyfError(message)
     }
   }
 
   const changeStartDateTicketStudent = async (payload: IStartTicketStudent) => {
-    console.log('StartTicketStudent:', payload)
-    const { status, message } = await StudentService.changeStartDateTicket(
-      payload
-    )
+    const { status, message } = await changeStartDateTicket(payload)
     if (status === 200) {
       notyf.success('Change start date is completed!')
       return status
     } else {
-      if (typeof message === 'object') {
-        Object.keys(message).map((key) => {
-          notyf.error(`${key}: ${message[key]}`)
-        })
-      } else notyf.error(message || 'Fail! Please try again')
+      notyfError(message)
     }
   }
   return {

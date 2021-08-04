@@ -72,6 +72,5 @@ export default function useApi() {
   if (!api) {
     throw new Error('Api not properly injected in app')
   }
-  console.log('useApi')
   return api
 }

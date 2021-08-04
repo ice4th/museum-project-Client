@@ -1,12 +1,7 @@
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
 import useStudentApi from '../api/useStudentApi'
-import StudentService from '/@src/api/student.service'
-import { StudentCountry, StudentLanguage } from '/@src/types/enums/student.enum'
-import {
-  IStudentInfo,
-  StudentInfoResponse,
-} from '/@src/types/interfaces/student.interface'
+import { StudentInfoResponse } from '/@src/types/interfaces/student.interface'
 import useNotyf from '/@src/composable/useNotyf'
 import { IUpdateStudentProfile } from '/@src/types/interfaces/student.interface'
 import { errMessage } from '/@src/helpers/filter.helper'

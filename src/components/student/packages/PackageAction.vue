@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // PackageAction Component
 
-import { defineEmit, ref, watch, defineProps } from 'vue'
+import { ref, watch } from 'vue'
 import ticketType from '/@src/data/ticket-type.json'
 import type {
   IAddTicketStudent,
@@ -46,7 +46,7 @@ const expirePackageInput = ref<IExpireTicketStudent>({
   expireDate: currentDate.value,
 })
 
-const emit = defineEmit(['fetch-package-items'])
+const emit = defineEmits(['fetch-package-items'])
 
 const onAddTicket = async () => {
   const data = {
@@ -133,9 +133,9 @@ const onActivatePackage = async () => {
   >
     <template #content>
       <a
+        v-show="canActivate"
         role="menuitem"
         class="dropdown-item is-media"
-        v-show="canActivate"
         @click="onActivatePackage"
       >
         <div class="icon">
