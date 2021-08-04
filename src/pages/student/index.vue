@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import moment from 'moment'
 import { onMounted, watch } from 'vue'
 import useStudentList from '/@src/composable/student/use-student-list'
 import {
