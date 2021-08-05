@@ -19,7 +19,12 @@ const props = defineProps({
     require: true,
   },
 })
-const emit = defineEmits(['fetch-package-items', 'send-package'])
+const emit = defineEmits([
+  'fetch-package-items',
+  'send-package',
+  'change-package',
+  'remove-package',
+])
 </script>
 <template>
   <V-CardAction
@@ -38,6 +43,8 @@ const emit = defineEmits(['fetch-package-items', 'send-package'])
         :package-name="packageItem.packageName"
         @fetch-package-items="emit('fetch-package-items')"
         @send-package="emit('send-package', packageItem)"
+        @change-package="emit('change-package', packageItem)"
+        @remove-package="emit('remove-package', packageItem)"
       />
     </template>
     <table class="table is-hoverable is-fullwidth">

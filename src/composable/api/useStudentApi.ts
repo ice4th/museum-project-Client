@@ -116,10 +116,13 @@ export default function useStudentApi() {
     )
   }
 
-  const deletePackage = async (packageItemId: number, comment: string) => {
-    return await api.post<any, ApiResponse>(
-      `PackageItems/${packageItemId}/ChangePackage`,
-      { comment }
+  const deletePackageByPackageItem = async (
+    packageItemId: number,
+    comment: string
+  ) => {
+    return await api.delete<any, ApiResponse>(
+      `PackageItems/${packageItemId}/Delete`,
+      { data: { comment } }
     )
   }
 
@@ -135,6 +138,6 @@ export default function useStudentApi() {
     deleteTicketByPackageItem,
     sendPackageToAnotherStudent,
     changePackage,
-    deletePackage,
+    deletePackageByPackageItem,
   }
 }

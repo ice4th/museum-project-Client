@@ -42,7 +42,7 @@ const emit = defineEmits(['toggle-close', 'on-change'])
         <V-Control>
           <Multiselect
             v-model="student"
-            placeholder="Select a main package"
+            placeholder="Select student for send package"
             :options="studentList"
             :searchable="true"
             track-by="id"
@@ -76,7 +76,11 @@ const emit = defineEmits(['toggle-close', 'on-change'])
       </form>
     </template>
     <template #action>
-      <V-Button color="primary" raised @click="emit('on-change', student)"
+      <V-Button
+        color="primary"
+        :disabled="!student"
+        raised
+        @click="emit('on-change', student)"
         >Submit</V-Button
       >
     </template>

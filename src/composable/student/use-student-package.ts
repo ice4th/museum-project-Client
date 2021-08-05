@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router'
 import { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 import {
   IAddTicketStudent,
+  IDeleteTicketPayload,
   IExpireTicketStudent,
   IStartTicketStudent,
 } from '/@src/types/interfaces/ticket.interface'
@@ -42,7 +43,10 @@ export default function useStudentPackageItem() {
     activatePackageItemById,
     changeExpireDateTicket,
     changeStartDateTicket,
+    deleteTicketByPackageItem,
     sendPackageToAnotherStudent,
+    changePackage,
+    deletePackageByPackageItem,
   } = useStudentApi()
 
   const notyfError = (message: any) => {
@@ -104,6 +108,18 @@ export default function useStudentPackageItem() {
     }
   }
 
+  const removeTicket = async (payload: IDeleteTicketPayload) => {
+    const { status, message } = await deleteTicketByPackageItem(payload)
+    if (status === 201) {
+      notyf.success(
+        `Remove ticket type ${payload.type} (amount: ${payload.amount}) is completed!`
+      )
+      return status
+    } else {
+      notyfError(message)
+    }
+  }
+
   const changeStartDateTicketStudent = async (payload: IStartTicketStudent) => {
     const { status, message } = await changeStartDateTicket(payload)
     if (status === 200) {
@@ -127,6 +143,34 @@ export default function useStudentPackageItem() {
       notyfError(message)
     }
   }
+
+  const changeToNewPackage = async (newPackageId: number) => {
+    if (!state.currentPackageItem) return
+    const { status, message } = await changePackage(
+      state.currentPackageItem.packageItemId,
+      newPackageId
+    )
+    if (status === 201) {
+      notyf.success('Change package is completed!')
+      return status
+    } else {
+      notyfError(message)
+    }
+  }
+
+  const removePackage = async (comment: string) => {
+    if (!state.currentPackageItem) return
+    const { status, message } = await deletePackageByPackageItem(
+      state.currentPackageItem.packageItemId,
+      comment
+    )
+    if (status === 200) {
+      notyf.success('Remove package is completed!')
+      return status
+    } else {
+      notyfError(message)
+    }
+  }
   return {
     ...toRefs(state),
     addTicketStudent,
@@ -134,6 +178,9 @@ export default function useStudentPackageItem() {
     changeStartDateTicketStudent,
     fetchStudentPackages,
     activatePackageItem,
+    removeTicket,
     sendPackage,
+    changeToNewPackage,
+    removePackage,
   }
 }
