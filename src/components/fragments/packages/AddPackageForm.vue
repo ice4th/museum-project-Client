@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, defineProps } from 'vue'
 import type { PropType } from 'vue'
-import type { ICratePackageForm } from '/@src/types/interfaces/package.interface'
+import type { IFormPackageInfo } from '/@src/types/interfaces/package.interface'
 import { addCommas, isNil } from '/@src/helpers/filter.helper'
 import {
   GlobishLevel,
@@ -40,8 +40,12 @@ const props = defineProps({
     default: '',
   },
   createPackageForm: {
-    type: Object as PropType<ICratePackageForm>,
+    type: Object as PropType<IFormPackageInfo>,
     default: undefined,
+  },
+  loadingOptions: {
+    type: Boolean,
+    default: false,
   },
 })
 
@@ -75,6 +79,12 @@ const privateSlots = [
 <template>
   <div class="form-fieldset">
     <div class="fieldset columns is-multiline">
+      <!-- Form Header -->
+      <!-- Package Detail -->
+      <div class="form-header column is-12">
+        <h3>Package Detail</h3>
+      </div>
+
       <!-- Field Package Name -->
       <div class="column is-6">
         <V-Field>
@@ -110,7 +120,7 @@ const privateSlots = [
       <div class="column is-12">
         <V-Field class="is-autocomplete-select">
           <label>Product</label>
-          <V-Control icon="feather:search">
+          <V-Control icon="feather:search" :loading="loadingOptions">
             <Multiselect
               v-model="createPackageForm.productId"
               placeholder="Select product"
@@ -208,67 +218,13 @@ const privateSlots = [
           </V-Control>
         </V-Field>
       </div>
-      <!-- Globish Level -->
-      <div class="column is-6">
-        <V-Field>
-          <label>Globish Level</label>
-          <V-Control>
-            <Multiselect
-              v-model="createPackageForm.globishLevel"
-              placeholder="Select globish level"
-              :options="globishLevelItems"
-              track-by="key"
-              value-prop="value"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.key }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.key }}
-                </span>
-              </template>
-            </Multiselect>
-            <p
-              v-show="!createPackageForm.globishLevel"
-              class="help text-danger"
-            >
-              Choose globish level for this package.
-            </p>
-          </V-Control>
-        </V-Field>
+
+      <!-- Form Header -->
+      <!-- Price & Ticket -->
+      <div class="form-header column is-12">
+        <h3>Price & Ticket</h3>
       </div>
-      <!-- CEFR Level -->
-      <div class="column is-6">
-        <V-Field>
-          <label>CEFR Level</label>
-          <V-Control>
-            <Multiselect
-              v-model="createPackageForm.cefrLevel"
-              placeholder="Select CEFR level"
-              :options="cefrLevelItems"
-              track-by="key"
-              value-prop="value"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.key }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.key }}
-                </span>
-              </template>
-            </Multiselect>
-            <p v-show="!createPackageForm.cefrLevel" class="help text-danger">
-              Choose CEFR level for this package.
-            </p>
-          </V-Control>
-        </V-Field>
-      </div>
+
       <!-- Price -->
       <div class="column is-6">
         <V-Field>
@@ -283,7 +239,7 @@ const privateSlots = [
                   v-model="props.createPackageForm.price"
                   type="number"
                   class="input"
-                  placeholder="Price"
+                  placeholder="Amount..."
                   @change="
                     props.createPackageForm.price =
                       +props.createPackageForm.price
@@ -314,7 +270,7 @@ const privateSlots = [
                   v-model="props.createPackageForm.beforeDiscount"
                   type="number"
                   class="input"
-                  placeholder="Before Discount"
+                  placeholder="Amount..."
                   @change="
                     props.createPackageForm.beforeDiscount =
                       +props.createPackageForm.beforeDiscount
@@ -363,61 +319,6 @@ const privateSlots = [
           </V-Control>
         </V-Field>
       </div>
-      <!-- Engder -->
-      <div class="column is-6">
-        <V-Field>
-          <label>Engder</label>
-          <V-Control>
-            <Multiselect
-              v-model="createPackageForm.engder"
-              placeholder="Select package engder"
-              :options="packageEngderItems"
-              track-by="key"
-              value-prop="value"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.key }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.key }}
-                </span>
-              </template>
-            </Multiselect>
-          </V-Control>
-        </V-Field>
-      </div>
-      <!-- Type -->
-      <div class="column is-6">
-        <V-Field>
-          <label>Type</label>
-          <V-Control>
-            <Multiselect
-              v-model="createPackageForm.type"
-              placeholder="Select package type"
-              :options="packageTypeItems"
-              track-by="key"
-              value-prop="value"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.key }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.key }}
-                </span>
-              </template>
-            </Multiselect>
-            <p v-show="!createPackageForm.type" class="help text-danger">
-              Choose type for this package.
-            </p>
-          </V-Control>
-        </V-Field>
-      </div>
       <!-- Duration -->
       <div class="column is-6">
         <V-Field>
@@ -447,7 +348,7 @@ const privateSlots = [
         </V-Field>
       </div>
       <!-- 1 on 1 Ticket -->
-      <div class="column is-6">
+      <div class="column is-4 is-6">
         <V-Field>
           <label>1 on 1 Ticket</label>
           <V-Control icon="lnil lnil-ticket">
@@ -525,6 +426,148 @@ const privateSlots = [
         </V-Field>
       </div>
 
+      <!-- Form Header -->
+      <!-- Course Detail -->
+      <div class="form-header column is-12">
+        <h3>Course Detail</h3>
+      </div>
+
+      <!-- Private class time -->
+      <div class="column is-12">
+        <V-Field>
+          <label>Private class time</label>
+          <V-Control>
+            <Multiselect
+              v-model="createPackageForm.privateSlot"
+              placeholder="Select private class time"
+              :options="privateSlots"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
+            <p v-show="!createPackageForm.privateSlot" class="help text-danger">
+              Choose private class time for this package.
+            </p>
+          </V-Control>
+        </V-Field>
+      </div>
+      <!-- Type -->
+      <div class="column is-12">
+        <V-Field>
+          <label>Type</label>
+          <V-Control>
+            <V-Radio
+              v-for="(type, idx) in packageTypeItems"
+              :key="idx"
+              v-model="createPackageForm.type"
+              :value="type.value"
+              :label="type.key"
+              :name="type.key"
+              color="primary"
+              square
+            />
+          </V-Control>
+        </V-Field>
+      </div>
+      <!-- <div class="column is-6">
+        <V-Field>
+          <label>Type</label>
+          <V-Control>
+            <Multiselect
+              v-model="createPackageForm.type"
+              placeholder="Select package type"
+              :options="packageTypeItems"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
+            <p v-show="!createPackageForm.type" class="help text-danger">
+              Choose type for this package.
+            </p>
+          </V-Control>
+        </V-Field>
+      </div> -->
+      <!-- Globish Level -->
+      <div class="column is-6">
+        <V-Field>
+          <label>Globish Level</label>
+          <V-Control>
+            <Multiselect
+              v-model="createPackageForm.globishLevel"
+              placeholder="Select globish level"
+              :options="globishLevelItems"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
+            <p
+              v-show="!createPackageForm.globishLevel"
+              class="help text-danger"
+            >
+              Choose globish level for this package.
+            </p>
+          </V-Control>
+        </V-Field>
+      </div>
+      <!-- CEFR Level -->
+      <div class="column is-6">
+        <V-Field>
+          <label>CEFR Level</label>
+          <V-Control>
+            <Multiselect
+              v-model="createPackageForm.cefrLevel"
+              placeholder="Select CEFR level"
+              :options="cefrLevelItems"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
+                </span>
+              </template>
+            </Multiselect>
+            <p v-show="!createPackageForm.cefrLevel" class="help text-danger">
+              Choose CEFR level for this package.
+            </p>
+          </V-Control>
+        </V-Field>
+      </div>
       <!-- Photo -->
       <div class="column is-12">
         <V-Field>
@@ -552,6 +595,12 @@ const privateSlots = [
             />
           </V-Control>
         </V-Field>
+      </div>
+
+      <!-- Form Header -->
+      <!-- Addon Package -->
+      <div class="form-header column is-12">
+        <h3>Package's addons</h3>
       </div>
 
       <!-- Curriculum (Old) -->
@@ -583,7 +632,7 @@ const privateSlots = [
         </V-Field>
       </div>
       <!-- Curriculum (New) -->
-      <div class="column is-6">
+      <div class="column is-12">
         <V-Field>
           <label>Curriculum (New)</label>
           <V-Control>
@@ -602,6 +651,32 @@ const privateSlots = [
               <template #option="{ option }">
                 <span class="select-option-text">
                   {{ option.name }}
+                </span>
+              </template>
+            </Multiselect>
+          </V-Control>
+        </V-Field>
+      </div>
+      <!-- Engder -->
+      <div class="column is-6">
+        <V-Field>
+          <label>Engder</label>
+          <V-Control>
+            <Multiselect
+              v-model="createPackageForm.engder"
+              placeholder="Select package engder"
+              :options="packageEngderItems"
+              track-by="key"
+              value-prop="value"
+            >
+              <template #singlelabel="{ value }">
+                <div class="multiselect-single-label">
+                  {{ value.key }}
+                </div>
+              </template>
+              <template #option="{ option }">
+                <span class="select-option-text">
+                  {{ option.key }}
                 </span>
               </template>
             </Multiselect>
@@ -686,35 +761,6 @@ const privateSlots = [
           </V-Control>
         </V-Field>
       </div>
-      <!-- Private class time -->
-      <div class="column is-6">
-        <V-Field>
-          <label>Private class time</label>
-          <V-Control>
-            <Multiselect
-              v-model="createPackageForm.privateSlot"
-              placeholder="Select private class time"
-              :options="privateSlots"
-              track-by="key"
-              value-prop="value"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.key }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.key }}
-                </span>
-              </template>
-            </Multiselect>
-            <p v-show="!createPackageForm.privateSlot" class="help text-danger">
-              Choose private class time for this package.
-            </p>
-          </V-Control>
-        </V-Field>
-      </div>
 
       <!-- <div class="column is-12">
         <V-Field>
@@ -776,3 +822,20 @@ const privateSlots = [
     </div>
   </div>
 </template>
+
+<style lang="scss" scoped>
+@import '../../../scss/abstracts/_variables.scss';
+
+.form-header {
+  padding-top: 60px !important;
+
+  h3 {
+    font-weight: 600;
+    color: $dark-text;
+  }
+
+  &:first-child {
+    padding-top: 0 !important;
+  }
+}
+</style>

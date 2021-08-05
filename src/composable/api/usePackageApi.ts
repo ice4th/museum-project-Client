@@ -5,17 +5,18 @@ import {
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
 import {
-  ICratePackageForm,
+  IFormPackageInfo,
   IPackageTableInfo,
   IPackageGroupInfo,
   ICreatePackageGroup,
+  IPackageDetail,
 } from '/@src/types/interfaces/package.interface'
 
 export default function usePackageApi() {
   const api = useApi()
 
-  const getPackageById = async (id: number): Promise<any> => {
-    const res = await api.get(`/Packages/${id}`)
+  const getPackageById = async (id: number): Promise<IPackageDetail> => {
+    const res = await api.get<IPackageDetail>(`/Packages/${id}`)
     return checkResponseStatus(res) || undefined
   }
 
@@ -43,7 +44,7 @@ export default function usePackageApi() {
     return checkResponseStatus(res) || []
   }
 
-  const createPackage = async (payload: ICratePackageForm) => {
+  const createPackage = async (payload: IFormPackageInfo) => {
     return await api.post<any, ApiResponse>('Packages', {
       ...payload,
       purchasable: payload.purchasable ? '1' : '0',
