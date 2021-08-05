@@ -19,110 +19,18 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  packageItemId: {
-    type: Number,
-    require: true,
-    default: 0,
-  },
-  packageName: {
-    type: String,
-    require: true,
-  },
-})
-const currentDate = ref(toFormat(new Date(), 'YYYY-MM-DD'))
-
-const customDateAddTicket = ref(false)
-const openAddTicketModal = ref(false)
-const openExpirePackageModal = ref(false)
-const addTicketInput = ref<IAddTicketStudent>({
-  packageItemId: props.packageItemId || 0,
-  type: 'package',
-  amount: 1,
-  comment: '',
-})
-const expirePackageInput = ref<IExpireTicketStudent>({
-  packageItemId: props.packageItemId || 0,
-  comment: '',
-  expireDate: currentDate.value,
 })
 
-const emit = defineEmits(['fetch-package-items'])
-
-const onAddTicket = async () => {
-  const data = {
-    packageItemId: props.packageItemId,
-    amount: addTicketInput?.value?.amount,
-    comment: addTicketInput?.value?.comment,
-    type: addTicketInput?.value?.type,
-    startDate: addTicketInput?.value?.startDate,
-    expireDate: addTicketInput?.value?.expireDate,
-  } as IAddTicketStudent
-  const res = await addTicketStudent(data)
-  emit('fetch-package-items')
-  if (res) toggleAddTicket()
-}
-
-const toggleAddTicket = () => {
-  openAddTicketModal.value = !openAddTicketModal.value
-  if (!openAddTicketModal.value) {
-    addTicketInput.value = {
-      packageItemId: props.packageItemId,
-      type: 'package',
-      amount: 1,
-      comment: '',
-    }
-  }
-  if (customDateAddTicket.value) {
-    customDateAddTicket.value = !customDateAddTicket.value
-  }
-}
-
-const onExpirePackage = async () => {
-  const data = {
-    packageItemId: props.packageItemId,
-    expireDate: expirePackageInput?.value?.expireDate,
-    comment: expirePackageInput?.value?.comment,
-  } as IExpireTicketStudent
-  const res = await changeExpireDateTicketStudent(data)
-  emit('fetch-package-items')
-  if (res) toggleExpirePackage()
-}
-
-const toggleExpirePackage = () => {
-  openExpirePackageModal.value = !openExpirePackageModal.value
-  if (!openExpirePackageModal.value) {
-    expirePackageInput.value = {
-      packageItemId: props.packageItemId,
-      expireDate: currentDate.value,
-      comment: '',
-    }
-  }
-}
-
-const onActivatePackage = async () => {
-  const res = await activatePackageItem(props.packageItemId)
-  emit('fetch-package-items')
-}
+const emit = defineEmits([
+  'activate-package',
+  'add-ticket',
+  'change-expire',
+  'send-package',
+  'change-package',
+  'remove-package',
+])
 </script>
 <template>
-  <!-- [Modal]: Add Ticket -->
-  <ModalAddTicket
-    :title="`Add ticket: (Item ID: ${packageItemId}) ${packageName}`"
-    :open-modal="openAddTicketModal"
-    :input="addTicketInput"
-    :custom-date="customDateAddTicket"
-    @update:customDate="customDateAddTicket = $event"
-    @toggle-close="toggleAddTicket"
-    @on-add="onAddTicket"
-  />
-  <!-- [Modal]: Expire Package -->
-  <ModalSetExpireTicket
-    :title="`Expire package: (Item ID: ${packageItemId}) ${packageName}`"
-    :open-modal="openExpirePackageModal"
-    :input="expirePackageInput"
-    @toggle-close="toggleExpirePackage"
-    @on-change="onExpirePackage"
-  />
   <!-- [Dropdown]: Manage Package -->
   <V-Dropdown
     title="Manage Package"
@@ -136,7 +44,7 @@ const onActivatePackage = async () => {
         v-show="canActivate"
         role="menuitem"
         class="dropdown-item is-media"
-        @click="onActivatePackage"
+        @click="emit('active-package')"
       >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-rocket"></i>
@@ -150,7 +58,7 @@ const onActivatePackage = async () => {
       <a
         role="menuitem"
         class="dropdown-item is-media"
-        @click="openAddTicketModal = true"
+        @click="emit('add-ticket')"
       >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-circle-plus"></i>
@@ -164,7 +72,7 @@ const onActivatePackage = async () => {
       <a
         role="menuitem"
         class="dropdown-item is-media"
-        @click="openExpirePackageModal = true"
+        @click="emit('change-expire')"
       >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-calendar"></i>
@@ -175,7 +83,12 @@ const onActivatePackage = async () => {
         </div>
       </a>
 
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+      <a
+        role="menuitem"
+        href="#"
+        class="dropdown-item is-media"
+        @click="emit('send-package')"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-reply"></i>
         </div>
@@ -185,7 +98,12 @@ const onActivatePackage = async () => {
         </div>
       </a>
 
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+      <a
+        role="menuitem"
+        href="#"
+        class="dropdown-item is-media"
+        @click="emit('change-package')"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-share"></i>
         </div>
@@ -196,7 +114,12 @@ const onActivatePackage = async () => {
       </a>
 
       <hr class="dropdown-divider" />
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+      <a
+        role="menuitem"
+        href="#"
+        class="dropdown-item is-media"
+        @click="emit('remove-package')"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>
         </div>

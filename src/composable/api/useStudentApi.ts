@@ -14,6 +14,7 @@ import {
   IAddTicketStudent,
   IStartTicketStudent,
   IExpireTicketStudent,
+  IDeleteTicketPayload,
 } from '/@src/types/interfaces/ticket.interface'
 
 export default function useStudentApi() {
@@ -72,7 +73,7 @@ export default function useStudentApi() {
     payload: { startDate?: string }
   ) => {
     return await api.post<any, ApiResponse>(
-      `/Tickets/${packageItemId}/Activate`,
+      `/PackageItems/${packageItemId}/Activate`,
       payload
     )
   }
@@ -91,6 +92,40 @@ export default function useStudentApi() {
     )
   }
 
+  const deleteTicketByPackageItem = async (payload: IDeleteTicketPayload) => {
+    return await api.post<any, ApiResponse>(
+      `Tickets/${payload.packageItemId}/Delete`,
+      payload
+    )
+  }
+
+  const sendPackageToAnotherStudent = async (
+    packageItemId: number,
+    studentId: number
+  ) => {
+    return await api.post<any, ApiResponse>(
+      `PackageItems/${packageItemId}/SendPackage`,
+      { studentId }
+    )
+  }
+
+  const changePackage = async (packageItemId: number, newPackageId: number) => {
+    return await api.post<any, ApiResponse>(
+      `PackageItems/${packageItemId}/ChangePackage`,
+      { newPackageId }
+    )
+  }
+
+  const deletePackageByPackageItem = async (
+    packageItemId: number,
+    comment: string
+  ) => {
+    return await api.delete<any, ApiResponse>(
+      `PackageItems/${packageItemId}/Delete`,
+      { data: { comment } }
+    )
+  }
+
   return {
     getStudentInfoById,
     getAllStudents,
@@ -100,5 +135,9 @@ export default function useStudentApi() {
     activatePackageItemById,
     changeStartDateTicket,
     changeExpireDateTicket,
+    deleteTicketByPackageItem,
+    sendPackageToAnotherStudent,
+    changePackage,
+    deletePackageByPackageItem,
   }
 }

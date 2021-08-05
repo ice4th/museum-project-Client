@@ -19,12 +19,22 @@ const props = defineProps({
     require: true,
   },
 })
-const emit = defineEmits(['fetch-package-items'])
+const emit = defineEmits([
+  'activate-package',
+  'add-ticket',
+  'change-expire',
+  'send-package',
+  'change-package',
+  'remove-package',
+  'change-start-ticket',
+  'change-expire-ticket',
+  'remove-ticket',
+])
 </script>
 <template>
   <V-CardAction
-    v-for="(packageItem, idx) in packageItems"
-    :key="`pk-${idx}`"
+    v-for="packageItem in packageItems"
+    :key="`pk-${packageItem.packageItemId}`"
     :avatar="packageItem.packageImage"
     :title="`(ID: ${packageItem.packageId}) ${packageItem.packageName}`"
     :subtitle="`Package Item ID: ${packageItem.packageItemId}`"
@@ -33,10 +43,12 @@ const emit = defineEmits(['fetch-package-items'])
     <template #action>
       <PackageAction
         :can-activate="canActivate"
-        :package-item-id="packageItem.packageItemId"
-        :student-id="studentId"
-        :package-name="packageItem.packageName"
-        @fetch-package-items="emit('fetch-package-items')"
+        @activate-package="emit('activate-package', packageItem.packageItemId)"
+        @add-ticket="emit('add-ticket', packageItem)"
+        @change-expire="emit('change-expire', packageItem)"
+        @send-package="emit('send-package', packageItem)"
+        @change-package="emit('change-package', packageItem)"
+        @remove-package="emit('remove-package', packageItem)"
       />
     </template>
     <table class="table is-hoverable is-fullwidth">
@@ -56,7 +68,7 @@ const emit = defineEmits(['fetch-package-items'])
       <tbody>
         <tr
           v-for="(ticket, idxTicket) in packageItem.tickets"
-          :key="`ticket-${idxTicket}-${idx}`"
+          :key="`ticket-${packageItem.packageItemId}-${idxTicket}`"
         >
           <td>
             {{
@@ -81,12 +93,20 @@ const emit = defineEmits(['fetch-package-items'])
             <div class="is-flex is-justify-content-flex-end">
               <TicketAction
                 :is-start-date="!canActivate"
-                :package-item-id="packageItem.packageItemId"
-                :package-name="packageItem.packageName"
-                :ticket-type="ticket.type"
-                :default-expire="ticket.expireDate"
-                :default-start="ticket.startDate"
-                @fetch-package-items="emit('fetch-package-items')"
+                @change-start-ticket="
+                  emit('change-start-ticket', {
+                    packageItem,
+                    ticketType: ticket.type,
+                    date: ticket.startDate,
+                  })
+                "
+                @change-expire-ticket="
+                  emit('change-expire-ticket', {
+                    packageItem,
+                    ticketType: ticket.type,
+                    date: ticket.expireDate,
+                  })
+                "
               />
             </div>
           </td>

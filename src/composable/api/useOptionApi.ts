@@ -8,6 +8,7 @@ import {
   CurriculumOption,
   FeatureGroupOption,
   FindMyCoachOption,
+  StudentOption,
 } from '/@src/types/interfaces/option.interface'
 
 export default function useOptionApi() {
@@ -51,6 +52,12 @@ export default function useOptionApi() {
     )
     return checkResponseStatus(res) || []
   }
+
+  const getStudents = async (): Promise<StudentOption[]> => {
+    const res = await api.get<StudentOption[]>('/Options/Students')
+    console.log(res.data)
+    return checkResponseStatus(res) || []
+  }
   return {
     getProducts,
     getPackages,
@@ -59,5 +66,6 @@ export default function useOptionApi() {
     getCurriculums,
     getFeatureGroups,
     getFmcPackages,
+    getStudents,
   }
 }
