@@ -55,19 +55,6 @@ const emit = defineEmits(['toggle-close', 'on-change'])
             </template>
           </Multiselect>
         </V-Control>
-        <!-- <V-Field>
-          <label>Comment</label>
-          <V-Control>
-            <textarea
-              v-model="input.comment"
-              type="textarea"
-              class="textarea is-primary-focus"
-              rows="2"
-              placeholder="หมายเหตุ"
-              required
-            />
-          </V-Control>
-        </V-Field> -->
       </form>
     </template>
     <template #action>

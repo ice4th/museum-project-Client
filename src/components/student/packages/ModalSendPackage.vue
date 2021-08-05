@@ -1,6 +1,5 @@
 <script setup lang="ts">
-// ModalSetStartTicket Component
-import type { IStartTicketStudent } from '/@src/types/interfaces/ticket.interface'
+// ModalSendPackage Component
 import { onBeforeMount, ref } from 'vue'
 import type { PropType } from 'vue'
 import type { StudentOption } from '/@src/types/interfaces/option.interface'
@@ -10,10 +9,6 @@ const props = defineProps({
   openModal: {
     type: Boolean,
     default: false,
-  },
-  input: {
-    type: Object as PropType<IStartTicketStudent>,
-    default: () => {},
   },
   title: {
     type: String,
@@ -60,19 +55,6 @@ const emit = defineEmits(['toggle-close', 'on-change'])
             </template>
           </Multiselect>
         </V-Control>
-        <!-- <V-Field>
-          <label>Comment</label>
-          <V-Control>
-            <textarea
-              v-model="input.comment"
-              type="textarea"
-              class="textarea is-primary-focus"
-              rows="2"
-              placeholder="หมายเหตุ"
-              required
-            />
-          </V-Control>
-        </V-Field> -->
       </form>
     </template>
     <template #action>

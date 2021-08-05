@@ -20,10 +20,15 @@ const props = defineProps({
   },
 })
 const emit = defineEmits([
-  'fetch-package-items',
+  'activate-package',
+  'add-ticket',
+  'change-expire',
   'send-package',
   'change-package',
   'remove-package',
+  'change-start-ticket',
+  'change-expire-ticket',
+  'remove-ticket',
 ])
 </script>
 <template>
@@ -38,10 +43,9 @@ const emit = defineEmits([
     <template #action>
       <PackageAction
         :can-activate="canActivate"
-        :package-item-id="packageItem.packageItemId"
-        :student-id="studentId"
-        :package-name="packageItem.packageName"
-        @fetch-package-items="emit('fetch-package-items')"
+        @activate-package="emit('activate-package', packageItem.packageItemId)"
+        @add-ticket="emit('add-ticket', packageItem)"
+        @change-expire="emit('change-expire', packageItem)"
         @send-package="emit('send-package', packageItem)"
         @change-package="emit('change-package', packageItem)"
         @remove-package="emit('remove-package', packageItem)"
@@ -89,12 +93,20 @@ const emit = defineEmits([
             <div class="is-flex is-justify-content-flex-end">
               <TicketAction
                 :is-start-date="!canActivate"
-                :package-item-id="packageItem.packageItemId"
-                :package-name="packageItem.packageName"
-                :ticket-type="ticket.type"
-                :default-expire="ticket.expireDate"
-                :default-start="ticket.startDate"
-                @fetch-package-items="emit('fetch-package-items')"
+                @change-start-ticket="
+                  emit('change-start-ticket', {
+                    packageItem,
+                    ticketType: ticket.type,
+                    date: ticket.startDate,
+                  })
+                "
+                @change-expire-ticket="
+                  emit('change-expire-ticket', {
+                    packageItem,
+                    ticketType: ticket.type,
+                    date: ticket.expireDate,
+                  })
+                "
               />
             </div>
           </td>
