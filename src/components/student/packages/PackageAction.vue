@@ -46,7 +46,7 @@ const expirePackageInput = ref<IExpireTicketStudent>({
   expireDate: currentDate.value,
 })
 
-const emit = defineEmits(['fetch-package-items'])
+const emit = defineEmits(['fetch-package-items', 'send-package'])
 
 const onAddTicket = async () => {
   const data = {
@@ -175,7 +175,12 @@ const onActivatePackage = async () => {
         </div>
       </a>
 
-      <a role="menuitem" href="#" class="dropdown-item is-media">
+      <a
+        role="menuitem"
+        href="#"
+        class="dropdown-item is-media"
+        @click="emit('send-package')"
+      >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-reply"></i>
         </div>

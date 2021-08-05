@@ -8,6 +8,7 @@ import {
 } from '/@src/types/interfaces/ticket.interface'
 import useNotyf from '../useNotyf'
 import useStudentApi from '../api/useStudentApi'
+import useOptionApi from '../api/useOptionApi'
 
 interface UseStudentPackageItemState {
   isLoading: Boolean
@@ -17,6 +18,7 @@ interface UseStudentPackageItemState {
     activePackages: IStudentPackageItems[]
     expirePackages: IStudentPackageItems[]
   }
+  currentPackageItem?: IStudentPackageItems
 }
 
 export default function useStudentPackageItem() {
@@ -28,9 +30,11 @@ export default function useStudentPackageItem() {
       expirePackages: [],
     },
     todayIso: '',
+    currentPackageItem: undefined,
   })
   const route = useRoute()
   const notyf = useNotyf()
+  const { getStudents } = useOptionApi()
 
   const {
     getStudentPackageItems,
@@ -38,6 +42,7 @@ export default function useStudentPackageItem() {
     activatePackageItemById,
     changeExpireDateTicket,
     changeStartDateTicket,
+    sendPackageToAnotherStudent,
   } = useStudentApi()
 
   const notyfError = (message: any) => {
@@ -108,6 +113,20 @@ export default function useStudentPackageItem() {
       notyfError(message)
     }
   }
+
+  const sendPackage = async (studentId: number) => {
+    if (!state.currentPackageItem) return
+    const { status, message } = await sendPackageToAnotherStudent(
+      state.currentPackageItem.packageItemId,
+      studentId
+    )
+    if (status === 201) {
+      notyf.success('Send package is completed!')
+      return status
+    } else {
+      notyfError(message)
+    }
+  }
   return {
     ...toRefs(state),
     addTicketStudent,
@@ -115,5 +134,6 @@ export default function useStudentPackageItem() {
     changeStartDateTicketStudent,
     fetchStudentPackages,
     activatePackageItem,
+    sendPackage,
   }
 }

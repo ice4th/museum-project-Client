@@ -19,12 +19,12 @@ const props = defineProps({
     require: true,
   },
 })
-const emit = defineEmits(['fetch-package-items'])
+const emit = defineEmits(['fetch-package-items', 'send-package'])
 </script>
 <template>
   <V-CardAction
-    v-for="(packageItem, idx) in packageItems"
-    :key="`pk-${idx}`"
+    v-for="packageItem in packageItems"
+    :key="`pk-${packageItem.packageItemId}`"
     :avatar="packageItem.packageImage"
     :title="`(ID: ${packageItem.packageId}) ${packageItem.packageName}`"
     :subtitle="`Package Item ID: ${packageItem.packageItemId}`"
@@ -37,6 +37,7 @@ const emit = defineEmits(['fetch-package-items'])
         :student-id="studentId"
         :package-name="packageItem.packageName"
         @fetch-package-items="emit('fetch-package-items')"
+        @send-package="emit('send-package', packageItem)"
       />
     </template>
     <table class="table is-hoverable is-fullwidth">
@@ -56,7 +57,7 @@ const emit = defineEmits(['fetch-package-items'])
       <tbody>
         <tr
           v-for="(ticket, idxTicket) in packageItem.tickets"
-          :key="`ticket-${idxTicket}-${idx}`"
+          :key="`ticket-${packageItem.packageItemId}-${idxTicket}`"
         >
           <td>
             {{
