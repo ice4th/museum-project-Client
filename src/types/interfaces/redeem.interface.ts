@@ -1,5 +1,4 @@
 import { RedeemStatus, RedeemType } from '../enums/redeem.enum'
-import { IPackageInfo } from './package.interface'
 
 export interface IRedeemDetail {
   id: number
@@ -13,6 +12,7 @@ export interface IRedeemDetail {
   status: RedeemStatus
   usedDate?: string
   ticketStartDate?: string
+  createdAt: string
   expireDate?: string
 }
 

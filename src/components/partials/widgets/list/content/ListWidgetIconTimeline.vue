@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-defineProps({
+const props = defineProps({
   items: {
     type: Array,
     required: true,
-    default: [],
+    default: () => [],
   },
   squared: {
     type: Boolean,
@@ -20,10 +18,13 @@ defineProps({
 
 <template>
   <div class="icon-timeline">
-    <div v-for="item in items" :key="item.id" class="timeline-item">
+    <div v-for="item in props.items" :key="item.id" class="timeline-item">
       <div
         class="timeline-icon"
-        :class="[squared && 'is-squared', colored && 'is-' + item.color]"
+        :class="[
+          props.squared && 'is-squared',
+          props.colored && 'is-' + item.color,
+        ]"
       >
         <img
           v-if="item.picture"

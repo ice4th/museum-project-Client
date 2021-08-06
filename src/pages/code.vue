@@ -1,3 +1,8 @@
+<route lang="yaml">
+meta:
+  requiresAuth: true
+</route>
+
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
@@ -7,7 +12,7 @@ const route = useRoute()
 </script>
 
 <template>
-  <SidebarLayout :theme="sidebarTheme" close-on-change default-sidebar="code">
+  <AppLayout :theme="sidebarTheme" close-on-change default-sidebar="code">
     <!-- <ProductSidebar /> -->
     <!-- <ProductMobileSubsidebar /> -->
 
@@ -17,5 +22,5 @@ const route = useRoute()
         <component :is="Component" :key="route.fullPath" />
       </transition>
     </RouterView>
-  </SidebarLayout>
+  </AppLayout>
 </template>

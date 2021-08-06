@@ -4,13 +4,20 @@
 import {
   IPaginationParams,
   IPaginationResponse,
+  ISuccessMessage,
 } from '../types/interfaces/common.interface'
+import { StudentPackageItemResponse } from '../types/interfaces/package-item.interface'
 import {
   IStudentList,
   IUpdateStudentProfile,
   StudentInfoResponse,
 } from '../types/interfaces/student.interface'
 import ApiService, { ApiServiceResponse } from './api.service'
+import {
+  IAddTicketStudent,
+  IExpireTicketStudent,
+  IStartTicketStudent,
+} from '../types/interfaces/ticket.interface'
 
 export default class StudentService {
   public static async getStudentInfoById(
@@ -41,5 +48,48 @@ export default class StudentService {
       payload
     )
     return res
+  }
+
+  public static async getStudentPackageItems(
+    studentId: number
+  ): Promise<ApiServiceResponse<StudentPackageItemResponse>> {
+    const res = await ApiService.get<StudentPackageItemResponse>(
+      `/Students/${studentId}/Packages`
+    )
+    return res
+  }
+
+  public static async addNewTicketStudent(
+    payload: IAddTicketStudent
+  ): Promise<ApiServiceResponse> {
+    return await ApiService.post(
+      `/Tickets/${payload.packageItemId}/Add`,
+      payload
+    )
+  }
+
+  public static async activatePackageItemById(
+    packageItemId: number,
+    payload: { startDate?: string }
+  ): Promise<ApiServiceResponse> {
+    return await ApiService.post(`/Tickets/${packageItemId}/Activate`, payload)
+  }
+
+  public static async changeStartDateTicket(
+    payload: IStartTicketStudent
+  ): Promise<ApiServiceResponse> {
+    return await ApiService.put(
+      `/Tickets/${payload.packageItemId}/StartDate`,
+      payload
+    )
+  }
+
+  public static async changeExpireDateTicket(
+    payload: IExpireTicketStudent
+  ): Promise<ApiServiceResponse> {
+    return await ApiService.put(
+      `/Tickets/${payload.packageItemId}/ExpireDate`,
+      payload
+    )
   }
 }

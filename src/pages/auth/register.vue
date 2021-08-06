@@ -230,6 +230,7 @@ const handleRegister = async () => {
                       bold
                       fullwidth
                       raised
+                      @click="handleRegister"
                     >
                       Sign Up
                     </V-Button>

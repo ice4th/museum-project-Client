@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
-import {
-  computed,
-  defineEmit,
-  defineProps,
-  onBeforeMount,
-  ref,
-  watch,
-} from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 import useNotyf from '/@src/composable/useNotyf'
 import type {
@@ -24,13 +17,14 @@ import _ from 'lodash'
 const props = defineProps({
   studentInfo: {
     type: Object as PropType<StudentInfoResponse>,
+    required: true,
   },
   validation: {
     type: Object,
-    default: {},
+    default: () => {},
   },
 })
-const emit = defineEmit({
+const emit = defineEmits({
   'on-update': Object,
 })
 
@@ -119,8 +113,8 @@ const removeValidation = (key: string) => {
     <div class="form-head stuck-header" :class="[isScrolling && 'is-stuck']">
       <div class="form-head-inner">
         <div class="left">
-          <h3>General Info</h3>
-          <p>Edit your account's general information</p>
+          <h3>Student Information</h3>
+          <p>Edit student's information</p>
         </div>
         <div class="right">
           <div v-show="isEditMode" class="buttons">
@@ -153,8 +147,8 @@ const removeValidation = (key: string) => {
       <!--Fieldset-->
       <div class="fieldset">
         <div class="fieldset-heading">
-          <h4>Personal Info (TH)</h4>
-          <p>Others diserve to know you more</p>
+          <h4>Name Info (TH)</h4>
+          <p>Information in Thai</p>
         </div>
 
         <div class="columns is-multiline">
@@ -223,8 +217,8 @@ const removeValidation = (key: string) => {
       <!--Fieldset-->
       <div class="fieldset">
         <div class="fieldset-heading">
-          <h4>Personal Info (EN)</h4>
-          <p>Others diserve to know you more</p>
+          <h4>Name Info (EN)</h4>
+          <p>Information in English</p>
         </div>
 
         <div class="columns is-multiline">
@@ -390,8 +384,8 @@ const removeValidation = (key: string) => {
                       type="text"
                       placeholder="Date of birth"
                       :value="inputValue"
-                      v-on="inputEvents"
                       :readonly="!isEditMode"
+                      v-on="inputEvents"
                       @click="removeValidation('dob')"
                     />
                   </V-Control>

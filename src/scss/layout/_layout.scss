@@ -152,11 +152,11 @@ body {
 
 .page-content-wrapper {
   width: 100%;
-  max-width: 1200px;
+  // max-width: 1200px;
   margin: 0 auto;
 
   .page-content {
-    padding: 0 40px;
+    padding: 0 1rem;
 
     &.is-relative {
       position: relative;

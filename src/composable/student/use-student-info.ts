@@ -1,13 +1,10 @@
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
-import StudentService from '/@src/api/student.service'
-import { StudentCountry, StudentLanguage } from '/@src/types/enums/student.enum'
-import {
-  IStudentInfo,
-  StudentInfoResponse,
-} from '/@src/types/interfaces/student.interface'
+import useStudentApi from '../api/useStudentApi'
+import { StudentInfoResponse } from '/@src/types/interfaces/student.interface'
 import useNotyf from '/@src/composable/useNotyf'
 import { IUpdateStudentProfile } from '/@src/types/interfaces/student.interface'
+import { errMessage } from '/@src/helpers/filter.helper'
 
 interface UseStudentInfoState {
   studentInfo?: StudentInfoResponse
@@ -19,13 +16,14 @@ export default function useStudentInfo() {
     validation: {},
   })
   const route = useRoute()
+  const { getStudentInfoById, updateStudentInfoById } = useStudentApi()
   const notyf = useNotyf()
 
   const fetchStudentInfoById = async () => {
     const id = route.params.id as string
     if (!id) return
-    const { status, data } = await StudentService.getStudentInfoById(+id)
-    if (status === 200) {
+    const data = await getStudentInfoById(+id)
+    if (data) {
       state.studentInfo = data
     }
   }
@@ -33,8 +31,7 @@ export default function useStudentInfo() {
   const updateStudentProfile = async (payload: IUpdateStudentProfile) => {
     const id = route.params.id as string
     console.table(payload)
-    const { status, data, error, message } =
-      await StudentService.updateStudentInfoById(+id, payload)
+    const { status, data, message } = await updateStudentInfoById(+id, payload)
     if (status === 200) {
       state.studentInfo = data
       notyf.success('Your changes have been successfully saved!')
@@ -43,7 +40,7 @@ export default function useStudentInfo() {
         state.validation = message
         return
       }
-      notyf.error(message || 'Fail! Please try again')
+      notyf.error(errMessage(message) || 'Fail! Please try again')
     }
   }
 

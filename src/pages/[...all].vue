@@ -12,26 +12,12 @@
 
 import { useHead } from '@vueuse/head'
 import { onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const router = useRouter()
-
-onMounted(() => {
-  /**
-   * replacing path with a leading /404 allow us to detect this
-   * on nginx to return a real 404 status code
-   *
-   * @see /src/nginx/vuejs.conf
-   */
-  if (!route.path.startsWith('/404')) {
-    // window.location.href = `/404${route.fullPath}`
-    router.replace(`/404${route.fullPath}`)
-  }
-})
 
 useHead({
-  title: 'Page not found - Whitehouse',
+  title: 'Page not found - Vuero',
   meta: [
     {
       name: 'robots',
@@ -42,17 +28,16 @@ useHead({
 </script>
 
 <template>
-  <MinimalLayout>
+  <LandingLayout>
     <div class="error-container">
       <div class="error-wrapper">
         <div class="error-inner has-text-centered">
           <div class="bg-number">404</div>
           <img
-            class="dark-image"
-            src="/@src/assets/illustrations/placeholders/error-4-dark.svg"
+            src="/@src/assets/illustrations/placeholders/error-1.svg"
             alt=""
           />
-          <h3 class="dark-inverted">We couldn't find that page</h3>
+          <h3>We couldn't find that page</h3>
           <p>
             Looks like we couldn't find that page. Please try again or contact
             an administrator if the problem persists.
@@ -65,7 +50,7 @@ useHead({
         </div>
       </div>
     </div>
-  </MinimalLayout>
+  </LandingLayout>
 </template>
 
 <style lang="scss">

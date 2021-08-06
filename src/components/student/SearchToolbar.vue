@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, computed, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
 const router = useRouter()
@@ -52,9 +52,9 @@ watch(
         <V-Field class="width-search">
           <V-Control icon="feather:search">
             <input
+              v-model="internalModelSearch"
               type="text"
               class="input is-rounded"
-              v-model="internalModelSearch"
               :placeholder="placeholder"
               @keyup.enter="setSearch"
             />

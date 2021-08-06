@@ -13,15 +13,6 @@ const router = useRouter()
 const notif = useNotyf()
 
 const { email, password, login } = useLogin()
-const handleLogin = async () => {
-  if (!isLoading.value) {
-    isLoading.value = true
-    await sleep(2000)
-    notif.success('Welcome back, Erik Kovalsky')
-    router.push({ name: 'sidebar-dashboards' })
-    isLoading.value = false
-  }
-}
 
 useHead({
   title: 'WH | Login',
@@ -114,6 +105,7 @@ useHead({
                   bold
                   fullwidth
                   raised
+                  @click="login"
                 >
                   Sign In
                 </V-Button>
