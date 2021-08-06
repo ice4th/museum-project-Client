@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-defineProps({
+const props = defineProps({
   rows: {
     type: Array,
     required: true,
@@ -10,7 +8,7 @@ defineProps({
 </script>
 
 <template>
-  <div v-for="row in rows" :key="row.id" class="flex-table-item">
+  <div v-for="row in props.rows" :key="row.id" class="flex-table-item">
     <div class="flex-table-cell is-bold" data-th="Company">
       <span class="dark-text">{{ row.company }}</span>
     </div>

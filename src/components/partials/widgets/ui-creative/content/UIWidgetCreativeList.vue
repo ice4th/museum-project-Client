@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-defineProps({
+const props = defineProps({
   list: {
     type: Array,
     required: true,
@@ -16,12 +14,12 @@ defineProps({
 <template>
   <div class="creative-list">
     <div
-      v-for="item in list"
+      v-for="item in props.list"
       :key="item.id"
       class="creative-list-item"
       :class="'is-' + item.color"
     >
-      <V-Avatar :picture="item.picture" :squared="squared" />
+      <V-Avatar :picture="item.picture" :squared="props.squared" />
       <div class="meta">
         <span>{{ item.name }}</span>
       </div>

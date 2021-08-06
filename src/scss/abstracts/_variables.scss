@@ -1,4 +1,5 @@
 /*! _variables.scss | Vuero | Css ninja 2020-2021 */
+@import 'font';
 
 /*
     1. Main Colors
@@ -142,8 +143,8 @@ $vuero-colors: (
 4. Fonts
 ========================================================================== */
 
-$font: 'Roboto', sans-serif;
-$font-alt: 'Montserrat', sans-serif;
+$font: 'Rubik', 'Kanit', sans-serif;
+$font-alt: 'Rubik', 'Kanit', sans-serif;
 $font-monospace: 'Fira Code', monospace;
 
 /* ==========================================================================

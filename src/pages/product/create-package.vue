@@ -4,6 +4,7 @@ import { computed, reactive, ref } from 'vue'
 import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import useCreatePackage from '/@src/composable/package/use-create-package'
+import useCreatePackageForm from '/@src/composable/package/use-create-package-form'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 pageTitle.value = 'Package Management'
@@ -33,6 +34,21 @@ const {
   toggleShowMainPackageSection,
 } = useCreatePackage()
 
+const {
+  // state
+  createPackageForm,
+  featureGroups,
+  moocCourses,
+  fmcPackages,
+  curriculums,
+  products,
+  // computed
+  disabledDone,
+  // methods
+  createPackage,
+  clearPackageState,
+} = useCreatePackageForm()
+
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
   return y.value > 30
@@ -48,17 +64,67 @@ const swapOrderIndex = () => {
 <template>
   <div class="page-content-inner">
     <!-- create group package -->
-    <div class="form-layout is-stacked">
+    <div class="form-layout">
       <V-Tabs
-        selected="package-group"
+        selected="package"
         :tabs="[
           { label: 'Package', value: 'package' },
           { label: 'Package Group', value: 'package-group' },
         ]"
       >
         <template #tab="{ activeValue }">
-          <p v-if="activeValue === 'package'">Create normal package</p>
-          <p v-else-if="activeValue === 'package-group'">
+          <div v-if="activeValue === 'package'">
+            <V-Loader
+              size="small"
+              lighter
+              grey
+              translucent
+              :active="isLoadingPackages"
+            >
+              <div class="form-outer">
+                <div
+                  :class="[isStuck && 'is-stuck']"
+                  class="form-header stuck-header"
+                >
+                  <div class="form-header-inner">
+                    <div class="left"><h3>Create Package</h3></div>
+                    <div class="right">
+                      <div class="buttons">
+                        <V-Button
+                          icon="lnir lnir-close rem-100"
+                          light
+                          dark-outlined
+                          @click="clearPackageState"
+                        >
+                          Clear
+                        </V-Button>
+                        <V-Button
+                          icon="lnir lnir-checkmark rem-100"
+                          color="primary"
+                          raised
+                          :disabled="disabledDone"
+                          @click="createPackage"
+                        >
+                          Done
+                        </V-Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-body">
+                  <AddPackageForm
+                    :create-package-form="createPackageForm"
+                    :feature-groups="featureGroups"
+                    :mooc-courses="moocCourses"
+                    :fmc-packages="fmcPackages"
+                    :curriculums="curriculums"
+                    :products="products"
+                  />
+                </div>
+              </div>
+            </V-Loader>
+          </div>
+          <div v-else-if="activeValue === 'package-group'">
             <V-Loader
               size="small"
               lighter
@@ -237,7 +303,7 @@ const swapOrderIndex = () => {
                 </div>
               </div>
             </V-Loader>
-          </p>
+          </div>
         </template>
       </V-Tabs>
     </div>
@@ -248,9 +314,6 @@ const swapOrderIndex = () => {
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
 @import '../../scss/pages/generic/_forms.scss';
-.form-fieldset {
-  max-width: 540px;
-}
 .button-submit {
   text-align: end;
 }

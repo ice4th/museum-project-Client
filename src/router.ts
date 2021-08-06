@@ -1,4 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {
+  createRouter as createClientRouter,
+  createWebHistory,
+} from 'vue-router'
 import * as NProgress from 'nprogress'
 
 /**
@@ -7,7 +10,6 @@ import * as NProgress from 'nprogress'
  * @see https://github.com/hannoeru/vite-plugin-pages
  */
 import routes from 'pages-generated'
-import AuthService from './api/auth.service'
 
 /**
  * Here is how a simple route is generated:
@@ -18,6 +20,9 @@ import AuthService from './api/auth.service'
  *    name: 'wizard-v1',
  *    path: '/wizard-v1',
  *    props: true,
+ *    meta: {
+ *      requiresAuth: true
+ *    },
  * }]
  *
  * Here is how nested routes are generated:
@@ -32,7 +37,7 @@ import AuthService from './api/auth.service'
  *        component: () => import('/src/pages/auth/login-1.vue'),
  *        name: 'auth-login-1',
  *        path: 'login-1',
- *        props: true,
+ *        props: true
  *      },
  *    ],
  * }]
@@ -41,29 +46,27 @@ import AuthService from './api/auth.service'
  */
 // console.log(routes)
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-})
+export function createRouter() {
+  const router = createClientRouter({
+    /**
+     * If you need to serve vuero under a subdirectory,
+     * you have to set the name of the directory in createWebHistory here
+     * and update "base" config in vite.config.ts
+     */
+    // history: createWebHistory('my-subdirectory'),
+    history: createWebHistory(),
+    routes,
+  })
 
-/**
- * Handle NProgress display on page changes
- */
-/**
- * TODO: handle auth guard
- */
-router.beforeEach((to, from, next) => {
-  const publicRoute = ['auth-login', 'auth-register', 'auth-confirm-register']
-  const isPublicRoute = publicRoute.some((r) => r === to.name)
-  const isLoggedIn = !!AuthService.getToken()
-  if (!(isLoggedIn || isPublicRoute)) {
-    next({ name: 'auth-login' })
-  }
-  NProgress.start()
-  next()
-})
-router.afterEach(() => {
-  NProgress.done()
-})
+  /**
+   * Handle NProgress display on page changes
+   */
+  router.beforeEach(() => {
+    NProgress.start()
+  })
+  router.afterEach(() => {
+    NProgress.done()
+  })
 
-export default router
+  return router
+}
