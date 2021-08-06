@@ -4,7 +4,7 @@ import { computed, reactive, ref } from 'vue'
 import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import useCreatePackage from '/@src/composable/package/use-create-package'
-import useCreatePackageForm from '/@src/composable/package/use-create-package-form'
+import useFormPackageInfo from '/@src/composable/package/use-form-package-info'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 pageTitle.value = 'Package Management'
@@ -36,7 +36,7 @@ const {
 
 const {
   // state
-  createPackageForm,
+  formPackageInfo,
   featureGroups,
   moocCourses,
   fmcPackages,
@@ -45,9 +45,8 @@ const {
   // computed
   disabledDone,
   // methods
-  createPackage,
-  clearPackageState,
-} = useCreatePackageForm()
+  savePackage,
+} = useFormPackageInfo()
 
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
@@ -91,19 +90,19 @@ const swapOrderIndex = () => {
                     <div class="right">
                       <div class="buttons">
                         <V-Button
-                          icon="lnir lnir-close rem-100"
-                          light
+                          :to="{ name: 'product-package' }"
+                          icon="lnir lnir-arrow-left rem-100"
                           dark-outlined
-                          @click="clearPackageState"
+                          light
                         >
-                          Clear
+                          Back
                         </V-Button>
                         <V-Button
                           icon="lnir lnir-checkmark rem-100"
                           color="primary"
                           raised
                           :disabled="disabledDone"
-                          @click="createPackage"
+                          @click="savePackage"
                         >
                           Done
                         </V-Button>
@@ -112,8 +111,8 @@ const swapOrderIndex = () => {
                   </div>
                 </div>
                 <div class="form-body">
-                  <AddPackageForm
-                    :create-package-form="createPackageForm"
+                  <FormPackageInfo
+                    :create-package-form="formPackageInfo"
                     :feature-groups="featureGroups"
                     :mooc-courses="moocCourses"
                     :fmc-packages="fmcPackages"

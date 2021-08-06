@@ -5,14 +5,20 @@ import {
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
 import {
-  ICratePackageForm,
+  IFormPackageInfo,
   IPackageTableInfo,
   IPackageGroupInfo,
   ICreatePackageGroup,
+  IPackageDetail,
 } from '/@src/types/interfaces/package.interface'
 
 export default function usePackageApi() {
   const api = useApi()
+
+  const getPackageById = async (id: number): Promise<IPackageDetail> => {
+    const res = await api.get<IPackageDetail>(`/Packages/${id}`)
+    return checkResponseStatus(res) || undefined
+  }
 
   const getPackagesWithPagination = async (
     params: IPaginationParams
@@ -38,9 +44,10 @@ export default function usePackageApi() {
     return checkResponseStatus(res) || []
   }
 
-  const createPackage = async (payload: ICratePackageForm) => {
+  const createPackage = async (payload: IFormPackageInfo) => {
     return await api.post<any, ApiResponse>('Packages', {
       ...payload,
+      installmentMonth: parseInt(`${payload.installmentMonth || '0'}`),
       purchasable: payload.purchasable ? '1' : '0',
       status: +payload.status,
     })
@@ -52,6 +59,15 @@ export default function usePackageApi() {
 
   const updatePackageGroup = async (payload: ICreatePackageGroup) => {
     return await api.put<any, ApiResponse>(`/PackageGroups`, payload)
+  }
+
+  const updatePackage = async (payload: IFormPackageInfo) => {
+    return await api.put<any, ApiResponse>(`/Packages/${payload.packageId}`, {
+      ...payload,
+      installmentMonth: parseInt(`${payload.installmentMonth || '0'}`),
+      purchasable: payload.purchasable ? '1' : '0',
+      status: +payload.status,
+    })
   }
 
   // remove alll package in group by main package
@@ -69,11 +85,13 @@ export default function usePackageApi() {
   }
 
   return {
+    getPackageById,
     getPackagesWithPagination,
     getAllPackagesGroup,
     getAddonPackageByMainPackageId,
     createPackage,
     createPackageGroup,
+    updatePackage,
     updatePackageGroup,
     deletePackageGroupByMainPackageId,
     deleteAddonPackageGroupById,

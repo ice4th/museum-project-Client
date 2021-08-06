@@ -29,12 +29,47 @@ const {
       :current-page="currentPage"
       :total="paginationData?.total"
       :per-page="perPage"
+      is-action
     >
-      <!-- <template #action>
-        <div class="dark-inverted is-flex is-justify-content-flex-end">
-          <FlexTableDropdown />
+      <template #purchasable="{ value }">
+        <div class="flex-table-cell">
+          <span
+            class="tag is-rounded"
+            :class="[value === '1' && 'is-primary', value === '0' && '']"
+            >{{ value === '1' ? 'Sale' : 'Not for Sale' }}</span
+          >
         </div>
-      </template> -->
+      </template>
+      <template #action="{ value }">
+        <div class="dark-inverted is-flex is-justify-content-flex-end">
+          <V-Button
+            rounded
+            outlined
+            color="primary"
+            class="action-btn"
+            :to="{
+              name: 'product-package-:id-update',
+              params: { id: value.id },
+            }"
+          >
+            Edit
+          </V-Button>
+        </div>
+      </template>
     </Datatable>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.tag {
+  margin-bottom: 0 !important;
+  line-height: 1.5rem;
+  height: 1.8em;
+}
+
+.action-btn {
+  padding: 4px 16px;
+  line-height: 1.5rem;
+  height: 28px;
+}
+</style>
