@@ -33,7 +33,7 @@ export default function useFormPackageInfo() {
     getFmcPackages,
     getMoocCourses,
   } = useOptionApi()
-  const { getPackageById, createPackage: savePkg } = usePackageApi()
+  const { getPackageById, createPackage, updatePackage } = usePackageApi()
 
   /**
    * Router
@@ -92,7 +92,8 @@ export default function useFormPackageInfo() {
       !state.formPackageInfo.productId ||
       !state.formPackageInfo.globishLevel ||
       !state.formPackageInfo.cefrLevel ||
-      !state.formPackageInfo.price ||
+      parseInt(`${state.formPackageInfo.price}`) < 0 ||
+      parseInt(`${state.formPackageInfo.beforeDiscount}`) < 0 ||
       isNil(state.formPackageInfo.installmentMonth) ||
       !state.formPackageInfo.type ||
       !state.formPackageInfo.duration ||
@@ -132,6 +133,7 @@ export default function useFormPackageInfo() {
 
     if (res) {
       state.formPackageInfo = {
+        packageId: res.id,
         packageName: res.packageName,
         packageNameInternal: res.packageNameInternal,
         productId: res.productInfo.id,
@@ -141,23 +143,23 @@ export default function useFormPackageInfo() {
         comment: res.comment,
         globishLevel: res.globishLevel,
         cefrLevel: res.cefrLevel || '',
-        price: res.price,
-        beforeDiscount: res.beforeDiscount,
+        price: parseInt(`${res.price}`) || 0,
+        beforeDiscount: parseInt(`${res.beforeDiscount}`) || 0,
         installmentMonth: `${res.installmentMonth}`,
-        engder: res.engder,
+        engder: res.engder || undefined,
         type: res.type,
         duration: res.duration,
-        ticketOneOnOne: res.ticket,
-        ticketFreetalk: res.freeTalkTicket,
-        ticketGroup: res.groupClassTicket,
-        ticketMaster: res.masterClassTicket,
-        photo: res.photo,
-        curriculumSheet: res.curriculumSheet,
-        curriculumId: res.curriculumId,
-        featureGroupId: res.featureGroupId,
-        findMycoachId: res.fmcId,
-        moocCourseId: res.courseId,
-        privateSlot: res.privateSlot,
+        ticketOneOnOne: res.ticket || 0,
+        ticketFreetalk: res.freeTalkTicket || 0,
+        ticketGroup: res.groupClassTicket || 0,
+        ticketMaster: res.masterClassTicket || 0,
+        photo: res.photo || undefined,
+        curriculumSheet: res.curriculumSheet || undefined,
+        curriculumId: res.curriculumId || undefined,
+        featureGroupId: res.featureGroupId || undefined,
+        findMycoachId: res.fmcId || undefined,
+        moocCourseId: res.courseId || undefined,
+        privateSlot: res.privateSlot || undefined,
       }
     } else {
       state.notFoundPackage = true
@@ -167,8 +169,26 @@ export default function useFormPackageInfo() {
   }
   const savePackage = async () => {
     // save form package info
-    const { status, message } = await savePkg(state.formPackageInfo)
+    const { status, message } = await createPackage(state.formPackageInfo)
     if (status === 201) {
+      await fetchPackage()
+      notyfMessage.open({
+        type: 'success',
+        message: 'Package was created!',
+      })
+    } else {
+      notyfMessage.open({
+        message: errMessage(message),
+        type: 'error',
+      })
+    }
+  }
+  const editPackage = async () => {
+    // save form package info
+    const { status, message } = await updatePackage(state.formPackageInfo)
+    if (status === 200) {
+      await fetchPackage()
+      router.push({ name: 'product-package' })
       notyfMessage.open({
         type: 'success',
         message: 'Package was created!',
@@ -198,5 +218,6 @@ export default function useFormPackageInfo() {
     disabledDone,
     //  Methods
     savePackage,
+    editPackage,
   }
 }

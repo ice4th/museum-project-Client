@@ -26,7 +26,7 @@ const {
   // computed
   disabledDone,
   // methods
-  savePackage,
+  editPackage,
 } = useFormPackageInfo()
 
 /**
@@ -87,7 +87,7 @@ const isStuck = computed(() => {
                   color="primary"
                   raised
                   :disabled="disabledDone"
-                  @click="savePackage"
+                  @click="editPackage"
                 >
                   Done
                 </V-Button>
@@ -96,7 +96,7 @@ const isStuck = computed(() => {
           </div>
         </div>
         <div class="form-body">
-          <AddPackageForm
+          <FormPackageInfo
             :create-package-form="formPackageInfo"
             :feature-groups="featureGroups"
             :mooc-courses="moocCourses"

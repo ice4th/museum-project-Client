@@ -173,6 +173,7 @@ export interface ICreatePackageGroup {
 }
 
 export interface IFormPackageInfo {
+  packageId?: number
   packageName: string
   packageNameInternal?: string
   productId: number

@@ -47,6 +47,7 @@ export default function usePackageApi() {
   const createPackage = async (payload: IFormPackageInfo) => {
     return await api.post<any, ApiResponse>('Packages', {
       ...payload,
+      installmentMonth: parseInt(`${payload.installmentMonth || '0'}`),
       purchasable: payload.purchasable ? '1' : '0',
       status: +payload.status,
     })
@@ -58,6 +59,15 @@ export default function usePackageApi() {
 
   const updatePackageGroup = async (payload: ICreatePackageGroup) => {
     return await api.put<any, ApiResponse>(`/PackageGroups`, payload)
+  }
+
+  const updatePackage = async (payload: IFormPackageInfo) => {
+    return await api.put<any, ApiResponse>(`/Packages/${payload.packageId}`, {
+      ...payload,
+      installmentMonth: parseInt(`${payload.installmentMonth || '0'}`),
+      purchasable: payload.purchasable ? '1' : '0',
+      status: +payload.status,
+    })
   }
 
   // remove alll package in group by main package
@@ -81,6 +91,7 @@ export default function usePackageApi() {
     getAddonPackageByMainPackageId,
     createPackage,
     createPackageGroup,
+    updatePackage,
     updatePackageGroup,
     deletePackageGroupByMainPackageId,
     deleteAddonPackageGroupById,

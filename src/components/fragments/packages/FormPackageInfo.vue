@@ -247,8 +247,11 @@ const privateSlots = [
                 />
               </V-Control>
             </V-Field>
-            <p v-show="!createPackageForm.price" class="help text-danger">
-              Price is required.
+            <p
+              v-show="parseInt(`${createPackageForm.price}`) < 0"
+              class="help text-danger"
+            >
+              Price is must be positive number or zero.
             </p>
           </V-Control>
         </V-Field>
@@ -279,10 +282,10 @@ const privateSlots = [
               </V-Control>
             </V-Field>
             <p
-              v-show="!createPackageForm.beforeDiscount"
+              v-show="parseInt(`${createPackageForm.beforeDiscount}`) < 0"
               class="help text-danger"
             >
-              BeforeDiscount is required.
+              BeforeDiscount must be positive number or zero.
             </p>
           </V-Control>
         </V-Field>
@@ -479,34 +482,6 @@ const privateSlots = [
           </V-Control>
         </V-Field>
       </div>
-      <!-- <div class="column is-6">
-        <V-Field>
-          <label>Type</label>
-          <V-Control>
-            <Multiselect
-              v-model="createPackageForm.type"
-              placeholder="Select package type"
-              :options="packageTypeItems"
-              track-by="key"
-              value-prop="value"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.key }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.key }}
-                </span>
-              </template>
-            </Multiselect>
-            <p v-show="!createPackageForm.type" class="help text-danger">
-              Choose type for this package.
-            </p>
-          </V-Control>
-        </V-Field>
-      </div> -->
       <!-- Globish Level -->
       <div class="column is-6">
         <V-Field>
