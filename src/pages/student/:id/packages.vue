@@ -45,6 +45,7 @@ const {
   sendPackage,
   changeToNewPackage,
   removePackage,
+  studentOptions,
 } = useStudentPackageItemState()
 const customDate = ref(toFormat(undefined, 'YYYY-MM-DD'))
 type modalComponent =
@@ -165,7 +166,7 @@ const modalProps = computed(() => {
     case 'change-package':
       return defaultProps
     case 'send-package':
-      return defaultProps
+      return { ...defaultProps, studentOptions: studentOptions.value }
     case 'remove-package':
       return { ...defaultProps, packageItem: currentPackageItem?.value }
     /**
@@ -251,9 +252,6 @@ const onActivatePackage = async (packageItemId: number) => {
   await activatePackageItem(packageItemId)
   await fetchStudentPackages()
 }
-onMounted(() => {
-  fetchStudentPackages()
-})
 </script>
 <template>
   <div v-if="!isLoading">

@@ -1,15 +1,5 @@
 <script setup lang="ts">
 // Ticket Action Component
-import { ref, watch, computed } from 'vue'
-import type { PropType } from 'vue'
-import useStudentPackageItemState from '/@src/composable/student/use-student-package'
-import { toFormat } from '/@src/helpers/date.helper'
-const { changeExpireDateTicketStudent, changeStartDateTicketStudent } =
-  useStudentPackageItemState()
-import type {
-  IExpireTicketStudent,
-  IStartTicketStudent,
-} from '/@src/types/interfaces/ticket.interface'
 
 const props = defineProps({
   isStartDate: {

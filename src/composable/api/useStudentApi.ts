@@ -1,5 +1,4 @@
-import { checkResponseStatus } from '.'
-import useApi, { ApiResponse } from '../useApi'
+import useApi, { apiHandleError, ApiResponse } from '../useApi'
 import {
   IPaginationParams,
   IPaginationResponse,
@@ -19,11 +18,12 @@ import {
 
 export default function useStudentApi() {
   const api = useApi()
+  const { checkResponseStatus } = apiHandleError()
 
   const getStudentInfoById = async (
     studentId: number
-  ): Promise<StudentInfoResponse | null> => {
-    const res = await api.get<StudentInfoResponse>(
+  ): Promise<StudentInfoResponse | undefined> => {
+    const res = await api.get<StudentInfoResponse, ApiResponse>(
       `/Students/Info/${studentId}`
     )
     return checkResponseStatus(res)
@@ -33,7 +33,7 @@ export default function useStudentApi() {
     params: IPaginationParams,
     search?: string
   ): Promise<IPaginationResponse<IStudentList[]>> => {
-    const res = await api.get<IPaginationResponse<IStudentList[]>>(
+    const res = await api.get<IPaginationResponse<IStudentList[]>, ApiResponse>(
       `/Students/Info/All`,
       { params: { ...params, search } }
     )
@@ -54,7 +54,7 @@ export default function useStudentApi() {
   const getStudentPackageItems = async (
     studentId: number
   ): Promise<StudentPackageItemResponse | null> => {
-    const res = await api.get<StudentPackageItemResponse>(
+    const res = await api.get<StudentPackageItemResponse, ApiResponse>(
       `/Students/${studentId}/Packages`
     )
     return checkResponseStatus(res)
