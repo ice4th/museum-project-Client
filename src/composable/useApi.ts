@@ -92,7 +92,7 @@ export function apiHandleError() {
       query: { from: route.fullPath },
     })
   }
-  const checkResponseStatus = (res: ApiResponse) => {
+  const catchReponse = (res: ApiResponse) => {
     if (res.status === 200 || res.status === 201) {
       return res.data
     }
@@ -102,5 +102,5 @@ export function apiHandleError() {
     return null
   }
 
-  return { checkResponseStatus, redirectNotFound }
+  return { catchReponse, redirectNotFound }
 }

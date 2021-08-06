@@ -10,14 +10,17 @@ import {
   FeatureGroupOption,
   FindMyCoachOption,
   StudentOption,
+  TeamOption,
 } from '/@src/types/interfaces/option.interface'
 interface UseOptionApiState {
   studentOptions: StudentOption[]
+  teamOptions: TeamOption[]
 }
 export default function useOptionApi() {
   const api = useApi()
   const state = reactive<UseOptionApiState>({
     studentOptions: [],
+    teamOptions: [],
   })
 
   const getProducts = async (): Promise<ProductOption[]> => {
@@ -64,6 +67,12 @@ export default function useOptionApi() {
     state.studentOptions = checkResponseStatus(res) || []
     return checkResponseStatus(res) || []
   }
+
+  const getTeams = async (): Promise<TeamOption[]> => {
+    const res = await api.get<StudentOption[]>('/Options/Teams')
+    state.teamOptions = checkResponseStatus(res) || []
+    return checkResponseStatus(res) || []
+  }
   return {
     ...toRefs(state),
     getProducts,
@@ -74,5 +83,6 @@ export default function useOptionApi() {
     getFeatureGroups,
     getFmcPackages,
     getStudents,
+    getTeams,
   }
 }

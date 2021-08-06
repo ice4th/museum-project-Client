@@ -40,7 +40,7 @@ export default function useAuthApi() {
   }
 
   const registerAdmin = async (payload: ICreateAdminUser) => {
-    return await api.post<any, ApiResponse>(`/Auth/Register`, payload)
+    return api.post<any, ApiResponse>(`/Auth/Register`, payload)
   }
 
   const loginAdmin = async (payload: ILoginPayload) => {
