@@ -128,7 +128,7 @@ watch(
           </RouterLink>
         </li>
 
-        <!-- Permissions -->
+        <!-- Roles & Permissions -->
         <li>
           <RouterLink
             :to="{ name: 'permission-role' }"
@@ -197,6 +197,7 @@ watch(
             ></i>
           </a>
         </li>
+
         <!-- Products & Packages -->
         <li>
           <a
@@ -208,6 +209,21 @@ watch(
               aria-hidden="true"
               class="iconify sidebar-svg"
               data-icon="feather:box"
+            ></i>
+          </a>
+        </li>
+
+        <!-- Roles & Permission -->
+        <li>
+          <a
+            :class="[activeMobileSubsidebar === 'permission' && 'is-active']"
+            data-content="Roles & Permissions"
+            @click="switchSidebar('permission')"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:unlock"
             ></i>
           </a>
         </li>

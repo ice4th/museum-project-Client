@@ -7,19 +7,11 @@ const route = useRoute()
 </script>
 
 <template>
-  <SidebarLayout
-    :theme="sidebarTheme"
-    close-on-change
-    default-sidebar="permission"
-  >
-    <!-- <ProductSidebar /> -->
-    <!-- <ProductMobileSubsidebar /> -->
-
-    <!-- Content Wrapper -->
+  <AppLayout :theme="sidebarTheme" close-on-change default-sidebar="permission">
     <RouterView v-slot="{ Component }">
       <transition name="fade-fast" mode="out-in">
         <component :is="Component" :key="route.fullPath" />
       </transition>
     </RouterView>
-  </SidebarLayout>
+  </AppLayout>
 </template>
