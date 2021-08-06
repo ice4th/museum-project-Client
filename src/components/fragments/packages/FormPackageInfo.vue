@@ -464,10 +464,10 @@ const privateSlots = [
           </V-Control>
         </V-Field>
       </div>
-      <!-- Type -->
+      <!-- Package Type -->
       <div class="column is-12">
         <V-Field>
-          <label>Type</label>
+          <label>Package Type</label>
           <V-Control>
             <V-Radio
               v-for="(type, idx) in packageTypeItems"
@@ -479,6 +479,9 @@ const privateSlots = [
               color="primary"
               square
             />
+            <p v-show="!createPackageForm.type" class="help text-danger">
+              Choose private class time for this package.
+            </p>
           </V-Control>
         </V-Field>
       </div>
