@@ -11,27 +11,50 @@ import { useRoute, useRouter } from 'vue-router'
 import { toFormat } from '/@src/helpers/date.helper'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
+const router = useRouter()
 const route = useRoute()
 pageTitle.value = 'Admin list'
 
-const { data, totalPage, total, currentPage, perPage, isLoading, search } =
-  useAdminList()
+const {
+  data,
+  totalPage,
+  total,
+  currentPage,
+  perPage,
+  isLoading,
+  search,
+  status,
+  activateAccount,
+  deactivateAccount,
+} = useAdminList()
 
 useHead({
   title: 'Whitehouse: Admin list',
 })
 const headers = [
   { key: 'id', label: 'ID' },
-  { key: 'avatar', label: 'Avatar' },
+  { key: 'avatar', label: 'Avatar', isRaw: true },
   { key: 'name', label: 'Name' },
-  { key: 'fullname', label: 'Fullname', isRaw: true },
-  { key: 'dob', label: 'DOB (DD/MM/YYYY)', isRaw: true },
+  { key: 'fullname', label: 'Fullname' },
   { key: 'email', label: 'Email' },
   { key: 'phone', label: 'Phone' },
-  { key: 'lastLogin', label: 'Last login' },
+  { key: 'country', label: 'Country' },
   { key: 'status', label: 'Status' },
   { key: 'action', label: 'Action', isRaw: true },
 ]
+
+const onStatusChange = () => {
+  const query = {
+    ...route.query,
+    status: status.value,
+  }
+
+  router.push({
+    name: route.name,
+    params: route.params,
+    query,
+  })
+}
 </script>
 
 <template>
@@ -48,51 +71,31 @@ const headers = [
       :total="total"
       :total-page="totalPage"
     >
-      <!-- <template #thead>
-        <tr>
-          <th scope="col" rowspan="2" class="has-text-centered">ID</th>
-          <th scope="col" rowspan="2">Fullname</th>
-          <th scope="col" rowspan="2">Nickname</th>
-          <th scope="col" rowspan="2">Partner</th>
-          <th scope="col" rowspan="2">Level</th>
-          <th scope="col" rowspan="2">E-mail</th>
-          <th scope="col" rowspan="2">Phone</th>
-          <th scope="col" rowspan="2">Last Login</th>
-          <th scope="col" rowspan="2">Last Package</th>
-          <th scope="col" colspan="2" class="has-text-centered">Ticket</th>
-        </tr>
-        <tr>
-          <th class="has-text-centered">Used</th>
-          <th class="has-text-centered">Remain</th>
-        </tr>
-      </template> -->
-      <!-- <template #fullname="{ value }">
-        <div class="student-name-col">
-          <V-Avatar
-            size="small"
-            :picture="value.avatar"
-            :badge="countryFlag[value.country]"
-          />
-          <router-link
-            :to="{ path: `/student/${value?.studentId}` }"
-            class="link"
-          >
-            {{ displayStudentFullname(value) }}
-          </router-link>
+      <template #custom-left>
+        <div>
+          <V-Field>
+            <V-Control>
+              <div class="select is-rounded">
+                <select v-model="status" @change="onStatusChange">
+                  <option :value="undefined">All</option>
+                  <option value="activate">Activate</option>
+                  <option value="deactivate">Deactivate</option>
+                </select>
+              </div>
+            </V-Control>
+          </V-Field>
         </div>
-      </template> -->
+      </template>
       <template #avatar="{ value }">
-        <V-Avatar size="small" :picture="value" :badge="countryFlag.th" />
+        <V-Avatar
+          size="small"
+          :picture="value.avatar"
+          :badge="countryFlag[value.country]"
+        />
       </template>
-      <template #fullname="{ value }">
+      <!-- <template #fullname="{ value }">
         {{ `${value.firstname} ${value.lastname}` }}
-      </template>
-      <template #dob="{ value }">
-        {{ value ? toFormat(value, 'DD/MM/YYYY') : '-' }}
-      </template>
-      <template #lastLogin="{ value }">
-        {{ value ? toFormat(value, 'DD/MM/YYYY, HH:mm') : '-' }}
-      </template>
+      </template> -->
       <template #status="{ value }">
         <!-- {{ value ? toFormat(value, 'DD/MM/YYYY, HH:mm') : '-' }} -->
         <V-Tag
@@ -102,9 +105,49 @@ const headers = [
           elevated
         />
       </template>
-      <template #action>
+      <template #action="{ value }">
         <div class="dark-inverted is-flex is-justify-content-flex-end">
-          <FlexTableDropdown />
+          <V-Dropdown
+            icon="feather:more-vertical"
+            class="is-pushed-mobile"
+            spaced
+            right
+          >
+            <template #content>
+              <a
+                v-show="!value.status"
+                role="menuitem"
+                href="#"
+                class="dropdown-item is-media"
+                @click="activateAccount"
+              >
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-calendar"></i>
+                </div>
+                <div class="meta">
+                  <span>Activate</span>
+                  <span>Resend email for activate</span>
+                </div>
+              </a>
+
+              <!-- <hr class="dropdown-divider" /> -->
+
+              <a
+                v-show="value.status"
+                role="menuitem"
+                href="#"
+                class="dropdown-item is-media"
+                @click="deactivateAccount(value)"
+              >
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>
+                </div>
+                <div class="meta">
+                  <span>Deactivate</span>
+                </div>
+              </a>
+            </template>
+          </V-Dropdown>
         </div>
       </template>
     </Datatable>

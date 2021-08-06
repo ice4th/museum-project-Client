@@ -114,8 +114,8 @@ watch(
   <div class="flex-table-wrapper mt-4">
     <!--Custom table toolbar-->
     <div class="flex-table-toolbar">
-      <div v-show="canSearchable" class="left">
-        <V-Field>
+      <div class="left">
+        <V-Field v-show="canSearchable">
           <V-Control icon="feather:search">
             <input
               v-model="search"
@@ -126,6 +126,7 @@ watch(
             />
           </V-Control>
         </V-Field>
+        <slot name="custom-left" />
       </div>
 
       <div class="right">

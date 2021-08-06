@@ -18,7 +18,7 @@ import {
 
 export default function useStudentApi() {
   const api = useApi()
-  const { checkResponseStatus } = apiHandleError()
+  const { catchReponse } = apiHandleError()
 
   const getStudentInfoById = async (
     studentId: number
@@ -26,7 +26,7 @@ export default function useStudentApi() {
     const res = await api.get<StudentInfoResponse, ApiResponse>(
       `/Students/Info/${studentId}`
     )
-    return checkResponseStatus(res)
+    return catchReponse(res)
   }
 
   const getAllStudents = async (
@@ -37,7 +37,7 @@ export default function useStudentApi() {
       `/Students/Info/All`,
       { params: { ...params, search } }
     )
-    return checkResponseStatus(res)
+    return catchReponse(res)
   }
 
   const updateStudentInfoById = async (
@@ -57,7 +57,7 @@ export default function useStudentApi() {
     const res = await api.get<StudentPackageItemResponse, ApiResponse>(
       `/Students/${studentId}/Packages`
     )
-    return checkResponseStatus(res)
+    return catchReponse(res)
   }
 
   const addNewTicketStudent = async (payload: IAddTicketStudent) => {
