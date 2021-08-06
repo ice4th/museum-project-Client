@@ -1,3 +1,5 @@
+import { AdminCountry } from '../enums/admin.enum'
+
 export interface ILoginPayload {
   email: string
   password: string
@@ -11,6 +13,8 @@ export interface ICreateAdminUser {
   lastname: string
   phone: string
   dob: string
+  teamId: number
+  country: AdminCountry
 }
 
 export interface IAccessToken {
