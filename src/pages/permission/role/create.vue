@@ -41,13 +41,6 @@ const {
   onCreate,
   onClear,
 } = useCreatePermission()
-
-/**
- * Computed
- */
-const sortSelectedItems = computed(() => {
-  return selectedItems.value.sort((a: any, b: any) => a.key - b.key)
-})
 </script>
 
 <template>
@@ -86,7 +79,7 @@ const sortSelectedItems = computed(() => {
         <!-- Create Button -->
         <div class="align-button mt-4 py-4">
           <V-Buttons>
-            <V-Button @click="onClear" :loading="menuLoading"> Clear </V-Button>
+            <V-Button :loading="menuLoading" @click="onClear"> Clear </V-Button>
             <V-Button
               color="primary"
               :disabled="disabledCreateBtn"
@@ -99,7 +92,7 @@ const sortSelectedItems = computed(() => {
         <!-- Selected Items -->
         <div v-if="selectedItems.length > 0">
           <div
-            v-for="(item, key) in sortSelectedItems"
+            v-for="(item, key) in selectedItems.sort((a, b) => a.key - b.key)"
             :key="key"
             class="media-flex"
           >

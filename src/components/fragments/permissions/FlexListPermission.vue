@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineEmit, defineProps, ref, reactive } from 'vue'
+import { defineProps, ref, reactive } from 'vue'
 import type { PropType } from 'vue'
 
 /**
@@ -15,7 +15,7 @@ const props = defineProps({
 /**
  * Define Emit
  */
-const emit = defineEmit(['selected'])
+const emit = defineEmits(['selected'])
 
 /**
  * Variables
@@ -27,6 +27,7 @@ let selectedMainMenus = reactive<any[]>([])
  * Methods
  */
 const onSelected = (value: any, key: number) => {
+  console.log(value)
   const item = props.items[key]
 
   let mainMenuItem = selectedMainMenus.find(
@@ -73,11 +74,10 @@ const onSelected = (value: any, key: number) => {
               </VIconBox>
             </template>
             <template #default>
-              <span
-                ><i class="fas fa-list"></i> {{ menu.subtitles }} subtitles
-                <i class="lnir lnir-bookmark"></i>
-                {{ menu.actions }} actions</span
-              >
+              <span>
+                <i class="fas fa-list"></i> {{ menu.subtitles }} subtitles
+                <i class="lnir lnir-bookmark"></i> {{ menu.actions }} actions
+              </span>
             </template>
             <template #action>
               <V-Button

@@ -30,7 +30,7 @@ const emit = defineEmit(['close'])
             </li>
             <li>
               <RouterLink
-                :to="{ name: 'permission-role-create-role' }"
+                :to="{ name: 'permission-role-create' }"
                 class="is-submenu"
               >
                 <i class="lnil lnil-books"></i>

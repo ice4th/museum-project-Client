@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { defineEmit, defineProps, reactive } from 'vue'
+import { defineProps, reactive } from 'vue'
 
 type AccordionItem = {
   title: string
@@ -25,7 +25,7 @@ const props = defineProps({
 /**
  * Define Emit
  */
-const emit = defineEmit(['selected'])
+const emit = defineEmits(['selected'])
 
 /**
  * Variables
@@ -118,15 +118,15 @@ const onSelected = (key: number, val: any) => {
               >
                 <template #icon>
                   <VIconBox
-                    :color="action.selected ? 'info' : undefined"
+                    :key="action.selected"
+                    :color="action.selected ? 'info' : ''"
                     size="small"
                     rounded
                   >
                     <i
-                      :class="
-                        action.selected
-                          ? 'lnir lnir-lock-alt-1'
-                          : 'lnir lnir-lock-alt-2'
+                      class="iconify"
+                      :data-icon="
+                        action.selected ? 'feather:unlock' : 'feather:lock'
                       "
                     ></i>
                   </VIconBox>
