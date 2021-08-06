@@ -9,7 +9,7 @@ import {
 } from '/@src/types/interfaces/ticket.interface'
 import useNotyf from '../useNotyf'
 import useStudentApi from '../api/useStudentApi'
-import useOptionApi from '../api/useOptionApi'
+import { TicketType } from '/@src/types/enums/ticket.enum'
 
 interface UseStudentPackageItemState {
   isLoading: Boolean
@@ -20,6 +20,7 @@ interface UseStudentPackageItemState {
     expirePackages: IStudentPackageItems[]
   }
   currentPackageItem?: IStudentPackageItems
+  currentTicketType?: TicketType
 }
 
 export default function useStudentPackageItem() {
@@ -32,10 +33,10 @@ export default function useStudentPackageItem() {
     },
     todayIso: '',
     currentPackageItem: undefined,
+    currentTicketType: undefined,
   })
   const route = useRoute()
   const notyf = useNotyf()
-  const { getStudents } = useOptionApi()
 
   const {
     getStudentPackageItems,
@@ -71,6 +72,8 @@ export default function useStudentPackageItem() {
     const studentId = route.params.id as string
     const { status, message } = await addNewTicketStudent({
       ...payload,
+      packageItemId:
+        state.currentPackageItem?.packageItemId || payload.packageItemId,
       studentId: +studentId,
     })
     if (status === 201) {
@@ -99,7 +102,12 @@ export default function useStudentPackageItem() {
   const changeExpireDateTicketStudent = async (
     payload: IExpireTicketStudent
   ) => {
-    const { status, message } = await changeExpireDateTicket(payload)
+    const { status, message } = await changeExpireDateTicket({
+      ...payload,
+      type: state.currentTicketType,
+      packageItemId:
+        state.currentPackageItem?.packageItemId || payload.packageItemId,
+    })
     if (status === 200) {
       notyf.success('Change expire date is completed!')
       return status
@@ -109,8 +117,14 @@ export default function useStudentPackageItem() {
   }
 
   const removeTicket = async (payload: IDeleteTicketPayload) => {
-    const { status, message } = await deleteTicketByPackageItem(payload)
-    if (status === 201) {
+    if (!state.currentTicketType) return
+    const { status, message } = await deleteTicketByPackageItem({
+      ...payload,
+      packageItemId:
+        state.currentPackageItem?.packageItemId || payload.packageItemId,
+      type: state.currentTicketType,
+    })
+    if (status === 200) {
       notyf.success(
         `Remove ticket type ${payload.type} (amount: ${payload.amount}) is completed!`
       )

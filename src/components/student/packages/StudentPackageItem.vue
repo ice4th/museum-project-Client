@@ -14,10 +14,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  studentId: {
-    type: Number,
-    require: true,
-  },
 })
 const emit = defineEmits([
   'activate-package',
@@ -105,6 +101,12 @@ const emit = defineEmits([
                     packageItem,
                     ticketType: ticket.type,
                     date: ticket.expireDate,
+                  })
+                "
+                @remove-ticket="
+                  emit('remove-ticket', {
+                    packageItem,
+                    ticketType: ticket.type,
                   })
                 "
               />
