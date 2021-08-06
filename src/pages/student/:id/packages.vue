@@ -212,7 +212,7 @@ const checkAction = async (
   else if (currentModal.value === 'change-expire' && typeof value === 'object')
     return await changeExpireDateTicketStudent(value)
   else if (currentModal.value === 'change-package' && typeof value === 'number')
-    return await changeToNewPackage(data)
+    return await changeToNewPackage(value)
   else if (currentModal.value === 'send-package' && typeof value === 'number')
     return await sendPackage(value)
   else if (currentModal.value === 'remove-package' && typeof value === 'string')

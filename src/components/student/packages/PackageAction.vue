@@ -31,7 +31,7 @@ const emit = defineEmits([
         v-show="canActivate"
         role="menuitem"
         class="dropdown-item is-media"
-        @click="emit('active-package')"
+        @click="emit('activate-package')"
       >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-rocket"></i>
