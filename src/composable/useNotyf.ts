@@ -4,8 +4,8 @@ import { themeColors } from '/@src/utils/themeColors'
 const notyf = new Notyf({
   duration: 3000,
   position: {
-    x: 'right',
-    y: 'bottom',
+    x: 'center',
+    y: 'top',
   },
   types: [
     {

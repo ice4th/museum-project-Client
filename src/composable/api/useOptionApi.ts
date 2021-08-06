@@ -1,3 +1,4 @@
+import { reactive, toRefs } from 'vue'
 import { checkResponseStatus } from '.'
 import useApi from '../useApi'
 import {
@@ -8,10 +9,16 @@ import {
   CurriculumOption,
   FeatureGroupOption,
   FindMyCoachOption,
+  StudentOption,
 } from '/@src/types/interfaces/option.interface'
-
+interface UseOptionApiState {
+  studentOptions: StudentOption[]
+}
 export default function useOptionApi() {
   const api = useApi()
+  const state = reactive<UseOptionApiState>({
+    studentOptions: [],
+  })
 
   const getProducts = async (): Promise<ProductOption[]> => {
     const res = await api.get<ProductOption[]>('/Options/Products')
@@ -51,7 +58,14 @@ export default function useOptionApi() {
     )
     return checkResponseStatus(res) || []
   }
+
+  const getStudents = async (): Promise<StudentOption[]> => {
+    const res = await api.get<StudentOption[]>('/Options/Students')
+    state.studentOptions = checkResponseStatus(res) || []
+    return checkResponseStatus(res) || []
+  }
   return {
+    ...toRefs(state),
     getProducts,
     getPackages,
     getPartners,
@@ -59,5 +73,6 @@ export default function useOptionApi() {
     getCurriculums,
     getFeatureGroups,
     getFmcPackages,
+    getStudents,
   }
 }

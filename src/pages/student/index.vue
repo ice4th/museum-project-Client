@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import moment from 'moment'
 import { onMounted, watch } from 'vue'
 import useStudentList from '/@src/composable/student/use-student-list'
 import {
@@ -37,7 +36,6 @@ const headers = [
 
 <template>
   <div class="page-content-inner">
-    <p>Student Page</p>
     <Datatable
       :is-loading="isLoading"
       search-placeholder="search by id, name, phone, email"
