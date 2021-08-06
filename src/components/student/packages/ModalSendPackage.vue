@@ -1,9 +1,8 @@
 <script setup lang="ts">
 // ModalSendPackage Component
-import { onBeforeMount, ref } from 'vue'
+import { ref } from 'vue'
 import type { PropType } from 'vue'
 import type { StudentOption } from '/@src/types/interfaces/option.interface'
-import useOptionApi from '/@src/composable/api/useOptionApi'
 
 const props = defineProps({
   openModal: {
@@ -14,13 +13,12 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  studentOptions: {
+    type: Array as PropType<StudentOption[]>,
+    default: () => [],
+  },
 })
-const { getStudents } = useOptionApi()
-const studentList = ref<StudentOption[]>([])
 const student = ref(undefined)
-onBeforeMount(async () => {
-  studentList.value = await getStudents()
-})
 const emit = defineEmits(['toggle-close', 'on-change'])
 </script>
 
@@ -38,7 +36,7 @@ const emit = defineEmits(['toggle-close', 'on-change'])
           <Multiselect
             v-model="student"
             placeholder="Select student for send package"
-            :options="studentList"
+            :options="studentOptions"
             :searchable="true"
             track-by="id"
             value-prop="id"

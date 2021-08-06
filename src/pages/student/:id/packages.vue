@@ -45,6 +45,7 @@ const {
   sendPackage,
   changeToNewPackage,
   removePackage,
+  studentOptions,
 } = useStudentPackageItemState()
 const customDate = ref(toFormat(undefined, 'YYYY-MM-DD'))
 type modalComponent =
@@ -165,7 +166,7 @@ const modalProps = computed(() => {
     case 'change-package':
       return defaultProps
     case 'send-package':
-      return defaultProps
+      return { ...defaultProps, studentOptions: studentOptions.value }
     case 'remove-package':
       return { ...defaultProps, packageItem: currentPackageItem?.value }
     /**
@@ -211,7 +212,7 @@ const checkAction = async (
   else if (currentModal.value === 'change-expire' && typeof value === 'object')
     return await changeExpireDateTicketStudent(value)
   else if (currentModal.value === 'change-package' && typeof value === 'number')
-    return await changeToNewPackage(data)
+    return await changeToNewPackage(value)
   else if (currentModal.value === 'send-package' && typeof value === 'number')
     return await sendPackage(value)
   else if (currentModal.value === 'remove-package' && typeof value === 'string')
@@ -251,9 +252,6 @@ const onActivatePackage = async (packageItemId: number) => {
   await activatePackageItem(packageItemId)
   await fetchStudentPackages()
 }
-onMounted(() => {
-  fetchStudentPackages()
-})
 </script>
 <template>
   <div v-if="!isLoading">
