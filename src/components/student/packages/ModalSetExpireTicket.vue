@@ -100,12 +100,7 @@ const emit = defineEmits(['toggle-close', 'on-change'])
       <V-Button
         color="primary"
         raised
-        @click="
-          emit('on-change', {
-            ...expirePackageInput,
-            packageItemId: packageItem?.packageItemId || 0,
-          })
-        "
+        @click="emit('on-change', expirePackageInput)"
         >Save Expire Date</V-Button
       >
     </template>

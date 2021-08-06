@@ -6,6 +6,7 @@ import { TicketType } from '/@src/types/enums/ticket.enum'
 import type { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 import type {
   IAddTicketStudent,
+  IDeleteTicketPayload,
   IExpireTicketStudent,
   IStartTicketStudent,
 } from '/@src/types/interfaces/ticket.interface'
@@ -27,11 +28,15 @@ const ModalRemovePackage = defineAsyncComponent(
 const ModalSetStartTicket = defineAsyncComponent(
   () => import('/@src/components/student/packages/ModalSetStartTicket.vue')
 )
+const ModalRemoveTicket = defineAsyncComponent(
+  () => import('/@src/components/student/packages/ModalRemoveTicket.vue')
+)
 const {
   packageItems,
   fetchStudentPackages,
   isLoading,
   currentPackageItem,
+  currentTicketType,
   activatePackageItem,
   addTicketStudent,
   changeStartDateTicketStudent,
@@ -52,7 +57,6 @@ type modalComponent =
   | 'change-expire-ticket'
   | 'remove-ticket'
 const currentModal = ref<modalComponent | undefined>(undefined)
-const currentTicketType = ref<TicketType | undefined>(undefined)
 const toggleModal = (
   packageItem?: IStudentPackageItems,
   from?: modalComponent
@@ -67,6 +71,7 @@ const toggleModal = (
       currentPackageItem?.value?.tickets[0].expireDate
     )
   }
+  if (!packageItem) currentTicketType.value = undefined
 }
 const toggleModalTicket = (
   event: {
@@ -103,13 +108,13 @@ const isOpenModalComponent = computed(() => {
     case 'change-expire-ticket':
       return ModalSetExpireTicket
     case 'remove-ticket':
-      return ModalSetExpireTicket
+      return ModalRemoveTicket
 
     default:
       return ModalRemovePackage
   }
 })
-
+// Dynamic modal title
 const modalTitle = computed(() => {
   const packageItemTitle = `(Item ID: ${currentPackageItem?.value?.packageItemId}) ${currentPackageItem?.value?.packageName}`
   switch (currentModal.value) {
@@ -139,7 +144,7 @@ const modalTitle = computed(() => {
       return `Package: ${packageItemTitle}`
   }
 })
-
+// Dynamic modal props
 const modalProps = computed(() => {
   const defaultProps = {
     openModal: !!currentPackageItem.value,
@@ -183,7 +188,7 @@ const modalProps = computed(() => {
     case 'remove-ticket':
       return {
         ...defaultProps,
-        expireDate: customDate.value,
+        ticketType: currentTicketType.value,
         packageItem: currentPackageItem?.value,
       }
 
@@ -191,6 +196,7 @@ const modalProps = computed(() => {
       return defaultProps
   }
 })
+// Dynamic action after submit
 const checkAction = async (
   value:
     | string
@@ -198,6 +204,7 @@ const checkAction = async (
     | IAddTicketStudent
     | IExpireTicketStudent
     | IStartTicketStudent
+    | IDeleteTicketPayload
 ) => {
   if (currentModal.value === 'add-ticket' && typeof value === 'object')
     return await addTicketStudent(value)
@@ -219,8 +226,11 @@ const checkAction = async (
     typeof value === 'object'
   )
     return await changeExpireDateTicketStudent(value)
-  else if (currentModal.value === 'remove-ticket') return `Remove ticket`
+  else if (currentModal.value === 'remove-ticket')
+    return await removeTicket(value)
 }
+
+// Submit modal
 const onSubmit = async (
   value:
     | string
@@ -228,6 +238,7 @@ const onSubmit = async (
     | IAddTicketStudent
     | IExpireTicketStudent
     | IStartTicketStudent
+    | IDeleteTicketPayload
 ) => {
   const res = await checkAction(value)
   if (res) {
@@ -235,7 +246,7 @@ const onSubmit = async (
     await fetchStudentPackages()
   }
 }
-
+// Activate package
 const onActivatePackage = async (packageItemId: number) => {
   await activatePackageItem(packageItemId)
   await fetchStudentPackages()
@@ -281,6 +292,7 @@ onMounted(() => {
           @change-expire-ticket="
             toggleModalTicket($event, 'change-expire-ticket')
           "
+          @remove-ticket="toggleModalTicket($event, 'remove-ticket')"
         />
       </template>
     </CollapseContent>
@@ -303,6 +315,7 @@ onMounted(() => {
           @change-expire-ticket="
             toggleModalTicket($event, 'change-expire-ticket')
           "
+          @remove-ticket="toggleModalTicket($event, 'remove-ticket')"
         />
       </template>
     </CollapseContent>
@@ -325,6 +338,7 @@ onMounted(() => {
           @change-expire-ticket="
             toggleModalTicket($event, 'change-expire-ticket')
           "
+          @remove-ticket="toggleModalTicket($event, 'remove-ticket')"
         />
       </template>
     </CollapseContent>

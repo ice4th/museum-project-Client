@@ -75,7 +75,7 @@ const isDataOfArray = computed(
 )
 const router = useRouter()
 const route = useRoute()
-const changePerPage = () => {
+const changePerPage = (value) => {
   const query = {
     ...route.query,
     perPage: props.perPage,
@@ -132,7 +132,7 @@ watch(
         <V-Field>
           <V-Control>
             <div class="select is-rounded">
-              <select v-model="perPage" @change="changePerPage">
+              <select v-model="perPage" @update:model-value="changePerPage">
                 <option :value="10">10 results per page</option>
                 <option :value="25">25 results per page</option>
                 <option :value="50">50 results per page</option>

@@ -176,12 +176,7 @@ const customDateChange = (value: boolean) => {
       <V-Button
         color="primary"
         raised
-        @click="
-          emit('on-change', {
-            ...addTicketInput,
-            packageItemId: packageItem?.packageItemId || 0,
-          })
-        "
+        @click="emit('on-change', addTicketInput)"
         >Add</V-Button
       >
     </template>

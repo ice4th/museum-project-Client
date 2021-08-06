@@ -1,23 +1,42 @@
 <script setup lang="ts">
-// ModalRemovePackage Component
-import { onBeforeMount, ref } from 'vue'
+// ModalRemoveTicket Component
+
+import { ref, watch } from 'vue'
+import type {
+  IAddTicketStudent,
+  IDeleteTicketPayload,
+} from '/@src/types/interfaces/ticket.interface'
 import type { PropType } from 'vue'
+import type { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
+import { TicketType } from '/@src/types/enums/ticket.enum'
+import { displayTicketText } from '/@src/helpers/ticket.helper'
 
 const props = defineProps({
   openModal: {
     type: Boolean,
     default: false,
   },
-  title: {
-    type: String,
-    default: '',
-  },
   packageItem: {
     type: Object as PropType<IStudentPackageItems>,
     default: undefined,
   },
+  ticketType: {
+    type: String as PropType<TicketType>,
+    default: undefined,
+  },
+  title: {
+    type: String,
+    default: '',
+  },
 })
-const comment = ref('')
+const dataInput = ref<IDeleteTicketPayload>({
+  packageItemId: props.packageItem?.packageId || 0,
+  type: props.ticketType,
+  amount: 1,
+  comment: '',
+})
+
+const ticketTypeName = ref(displayTicketText(props.ticketType))
 const emit = defineEmits(['toggle-close', 'on-change'])
 </script>
 
@@ -25,18 +44,31 @@ const emit = defineEmits(['toggle-close', 'on-change'])
   <V-Modal
     :open="openModal"
     :title="title"
-    size="small"
+    size="medium"
     actions="right"
     @close="emit('toggle-close')"
   >
     <template #content>
-      <h3>confirm remove {{ packageItem?.packageName }}</h3>
+      <h3 v-show="ticketTypeName">Ticket Type: {{ ticketTypeName }}</h3>
       <form class="modal-form">
+        <V-Field>
+          <label>Amount</label>
+          <V-Control icon="feather:hash">
+            <input
+              v-model="dataInput.amount"
+              type="number"
+              class="input"
+              placeholder="ระบุเป็นจำนวนเต็มเท่านั้น"
+              min="1"
+              required
+            />
+          </V-Control>
+        </V-Field>
         <V-Field>
           <label>Comment</label>
           <V-Control>
-            <textarea
-              v-model="comment"
+            <input
+              v-model="dataInput.comment"
               type="textarea"
               class="textarea is-primary-focus"
               rows="2"
@@ -48,14 +80,9 @@ const emit = defineEmits(['toggle-close', 'on-change'])
       </form>
     </template>
     <template #action>
-      <V-Button color="primary" raised @click="emit('on-change', comment)"
-        >Submit</V-Button
+      <V-Button color="primary" raised @click="emit('on-change', dataInput)"
+        >Remove</V-Button
       >
     </template>
   </V-Modal>
 </template>
-<style lang="scss" scoped>
-.v-modal .modal-content .modal-card .modal-card-body .modal-form {
-  height: 350px;
-}
-</style>

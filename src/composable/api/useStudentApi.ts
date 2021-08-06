@@ -92,10 +92,10 @@ export default function useStudentApi() {
     )
   }
 
-  const deleteTicketByPackageItem = async (payload: IDeleteTicketPayload) => {
-    return await api.post<any, ApiResponse>(
-      `Tickets/${payload.packageItemId}/Delete`,
-      payload
+  const deleteTicketByPackageItem = async (data: IDeleteTicketPayload) => {
+    return await api.delete<any, ApiResponse>(
+      `Tickets/${data.packageItemId}/Delete`,
+      { data }
     )
   }
 
