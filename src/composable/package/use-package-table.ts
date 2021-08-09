@@ -3,7 +3,7 @@
  */
 
 import { onMounted, reactive, toRefs } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import usePackageApi from '../api/usePackageApi'
 import { IPaginationResponse } from '/@src/types/interfaces/common.interface'
 import { IPackageTableInfo } from '/@src/types/interfaces/package.interface'
@@ -24,6 +24,7 @@ export default function usePackageTable() {
   /**
    * Router
    */
+  const router = useRouter()
   const route = useRoute()
 
   /**
@@ -73,8 +74,11 @@ export default function usePackageTable() {
       state.currentPage = res.currentPage
     }
   }
-  const onEdit = () => {
-    route.path
+  const onEditPackage = async (id: number) => {
+    await router.push({
+      name: 'product-package-:id-update',
+      params: { id },
+    })
   }
 
   /**
@@ -84,5 +88,10 @@ export default function usePackageTable() {
     fetchAllPackages()
   })
 
-  return { ...toRefs(state), packageTableHeaders, fetchAllPackages }
+  return {
+    ...toRefs(state),
+    packageTableHeaders,
+    fetchAllPackages,
+    onEditPackage,
+  }
 }

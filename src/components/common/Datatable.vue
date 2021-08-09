@@ -167,8 +167,8 @@ watch(
               </span>
             </th>
             <th v-if="isAction" scope="col" class="is-end">
-              <span class="dark-inverted is-flex is-justify-content-center">
-                Action
+              <span class="dark-inverted is-flex is-justify-content-flex-end">
+                Actions
               </span>
             </th>
           </tr>
