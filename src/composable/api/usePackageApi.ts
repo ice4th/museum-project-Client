@@ -16,8 +16,8 @@ export default function usePackageApi() {
   const { catchReponse } = apiHandleError()
 
   const getPackageById = async (id: number): Promise<IPackageDetail> => {
-    const res = await api.get<IPackageDetail>(`/Packages/${id}`)
-    return checkResponseStatus(res) || undefined
+    const res = await api.get<IPackageDetail, ApiResponse>(`/Packages/${id}`)
+    return catchReponse(res) || undefined
   }
 
   const getPackagesWithPagination = async (
