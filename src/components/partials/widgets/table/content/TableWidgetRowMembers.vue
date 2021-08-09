@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { defineProps } from 'vue'
-
-defineProps({
+const props = defineProps({
   rows: {
     type: Array,
     required: true,
@@ -18,14 +16,14 @@ defineProps({
 </script>
 
 <template>
-  <tr v-for="row in rows" :key="row.id">
+  <tr v-for="row in props.rows" :key="row.id">
     <td class="is-media">
       <V-Avatar
         :picture="row.picture"
         :initials="row.initials"
         size="medium"
         :color="row.color"
-        :squared="squared"
+        :squared="props.squared"
       />
     </td>
     <td>
@@ -81,7 +79,7 @@ defineProps({
       <div class="buttons">
         <button
           class="button is-dark-outlined"
-          :class="[circled && 'is-circle']"
+          :class="[props.circled && 'is-circle']"
         >
           <span class="icon is-small">
             <i
@@ -93,7 +91,7 @@ defineProps({
         </button>
         <button
           class="button is-dark-outlined"
-          :class="[circled && 'is-circle']"
+          :class="[props.circled && 'is-circle']"
         >
           <span class="icon is-small">
             <i aria-hidden="true" class="iconify" data-icon="feather:eye"></i>
@@ -101,7 +99,7 @@ defineProps({
         </button>
         <button
           class="button is-dark-outlined"
-          :class="[circled && 'is-circle']"
+          :class="[props.circled && 'is-circle']"
         >
           <span class="icon is-small">
             <i

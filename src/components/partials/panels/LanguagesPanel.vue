@@ -33,7 +33,6 @@ const { locale, t } = useI18n()
                 type="radio"
                 name="language_selection"
                 value="en"
-                checked
               />
               <div class="language-option-inner">
                 <img
@@ -57,10 +56,10 @@ const { locale, t } = useI18n()
                 v-model="locale"
                 type="radio"
                 name="language_selection"
-                value="fr"
+                value="th"
               />
               <div class="language-option-inner">
-                <img src="/images/icons/flags/france.svg" alt="" />
+                <img src="/images/icons/flags/thailand.svg" alt="" />
                 <div class="indicator">
                   <i
                     aria-hidden="true"
@@ -78,73 +77,10 @@ const { locale, t } = useI18n()
                 v-model="locale"
                 type="radio"
                 name="language_selection"
-                value="es"
+                value="vn"
               />
               <div class="language-option-inner">
-                <img src="/images/icons/flags/spain.svg" alt="" />
-                <div class="indicator">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  ></i>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="language-box">
-            <div class="language-option">
-              <input
-                v-model="locale"
-                type="radio"
-                name="language_selection"
-                value="de"
-              />
-              <div class="language-option-inner">
-                <img src="/images/icons/flags/germany.svg" alt="" />
-                <div class="indicator">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  ></i>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="language-box">
-            <div class="language-option">
-              <input
-                v-model="locale"
-                type="radio"
-                name="language_selection"
-                value="es-MX"
-              />
-              <div class="language-option-inner">
-                <img src="/images/icons/flags/mexico.svg" alt="" />
-                <div class="indicator">
-                  <i
-                    aria-hidden="true"
-                    class="iconify"
-                    data-icon="feather:check"
-                  ></i>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="language-box">
-            <div class="language-option">
-              <input
-                v-model="locale"
-                type="radio"
-                name="language_selection"
-                value="zh-CN"
-              />
-              <div class="language-option-inner">
-                <img src="/images/icons/flags/china.svg" alt="" />
+                <img src="/images/icons/flags/vietnam.svg" alt="" />
                 <div class="indicator">
                   <i
                     aria-hidden="true"

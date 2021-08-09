@@ -1,0 +1,247 @@
+kind: pipeline
+type: kubernetes
+name: default
+
+concurrency:
+  limit: 1
+
+anchors:
+  - &drone-helm-environment
+    KUBE_API_SERVER: https://5DC8E271AFA9D164E7896000AC48BA53.gr7.ap-southeast-1.eks.amazonaws.com
+    KUBE_SERVICE_ACCOUNT: tiller-token-qmhvr
+    KUBE_TOKEN:
+      from_secret: kubernetes_token
+    KUBE_CERTIFICATE:
+      from_secret: kubernetes_certificate
+  - &install-dependencies
+    image: node:14.17.0
+    commands:
+      - yarn
+  # - &run-test
+  #   image: node:14.17.0
+  #   commands:
+  #     - yarn run jest
+
+clone:
+  disable: true
+
+steps:
+  - name: clone
+    image: drone/git
+    when:
+      event:
+        - push
+        - pull_request
+      branch:
+        - master
+        - staging
+        - dev
+
+  - name: install-dependencies
+    <<: *install-dependencies
+    when:
+      event:
+        - push
+      branch:
+        - master
+        - staging
+        - dev
+
+  - name: install-dependencies-pr
+    <<: *install-dependencies
+    when:
+      event:
+        - pull_request
+      branch:
+        exclude:
+          - master
+
+  # - name: run-test
+  #   <<: *run-test
+  #   when:
+  #     event:
+  #       - push
+  #     branch:
+  #       - master
+  #       - staging
+  #       - dev
+
+  # - name: run-test-pr
+  #   <<: *run-test
+  #   when:
+  #     event:
+  #       - pull_request
+  #     branch:
+  #       exclude:
+  #         - master
+
+  - name: build-app-master
+    image: node:14.17.0
+    environment:
+      VERSION: '${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}'
+      VITE_APP_ADMIN_BASE_URL: 'https://admin-api.globish.co.th'
+      BRANCH: '${DRONE_BRANCH}'
+      DOMAIN: 'globish.co.th'
+    commands:
+      - yarn run build
+    when:
+      event:
+        - push
+      branch:
+        - master
+
+  - name: build-app-staging
+    image: node:14.17.0
+    environment:
+      VERSION: '${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}'
+      VITE_APP_ADMIN_BASE_URL: 'https://admin-api.globish.site'
+      BRANCH: '${DRONE_BRANCH}'
+      DOMAIN: 'globish.site'
+    commands:
+      - yarn run build
+    when:
+      event:
+        - push
+      branch:
+        - staging
+
+  - name: build-app-dev
+    image: node:14.17.0
+    environment:
+      VERSION: '${DRONE_BRANCH}-${DRONE_BUILD_NUMBER}'
+      VITE_APP_ADMIN_BASE_URL: 'https://admin-api.globish.dev'
+      BRANCH: '${DRONE_BRANCH}'
+      DOMAIN: 'globish.dev'
+    commands:
+      - yarn run build
+    when:
+      event:
+        - push
+      branch:
+        - dev
+
+  - name: build-docker-image
+    image: plugins/ecr
+    settings:
+      access_key:
+        from_secret: aws_access_key_id
+      secret_key:
+        from_secret: aws_secret_access_key
+      repo: globish-admin-frontend
+      registry: 248783859424.dkr.ecr.ap-southeast-1.amazonaws.com
+      region: ap-southeast-1
+      force_tag: true
+      tags:
+        - latest
+        - '${DRONE_BRANCH}-${DRONE_COMMIT_SHA}'
+      dockerfile: Dockerfile.prod
+    when:
+      event:
+        - push
+      branch:
+        - master
+        - staging
+        - dev
+
+  - name: deploy-helm-master
+    image: pelotech/drone-helm3
+    environment:
+      <<: *drone-helm-environment
+    settings:
+      skip_tls_verify: false
+      mode: upgrade
+      chart: ./k8s/helm
+      release: globish-admin-frontend-master
+      namespace: globish-application
+      debug: false
+      timeout: 180
+      values: "\
+        image.tag=${DRONE_BRANCH}-${DRONE_COMMIT_SHA},\
+        ingress.hosts[0].host=whitehouse-app.globish.co.th,\
+        ingress.hosts[0].paths[0]=/,\
+        ingress.tls[0].secretName=globish-admin-frontend-master-globish-co-th-tls,\
+        ingress.tls[0].hosts[0]=whitehouse-app.globish.co.th"
+    when:
+      event:
+        - push
+      branch:
+        - master
+
+  - name: deploy-helm-staging
+    image: pelotech/drone-helm3
+    environment:
+      <<: *drone-helm-environment
+    settings:
+      skip_tls_verify: false
+      mode: upgrade
+      chart: ./k8s/helm
+      release: globish-admin-frontend-staging
+      namespace: globish-application
+      debug: false
+      timeout: 180
+      values: "\
+        image.tag=${DRONE_BRANCH}-${DRONE_COMMIT_SHA},\
+        replicaCount=1,\
+        strategy.rollingUpdate.maxUnavailable=0,\
+        ingress.hosts[0].host=whitehouse-app.globish.site,\
+        ingress.hosts[0].paths[0]=/,\
+        ingress.tls[0].secretName=globish-admin-frontend-staging-globish-site-tls,\
+        ingress.tls[0].hosts[0]=whitehouse-app.globish.site"
+    when:
+      event:
+        - push
+      branch:
+        - staging
+
+  - name: deploy-helm-dev
+    image: pelotech/drone-helm3
+    environment:
+      <<: *drone-helm-environment
+    settings:
+      skip_tls_verify: false
+      mode: upgrade
+      chart: ./k8s/helm
+      release: globish-admin-frontend-dev
+      namespace: globish-application
+      debug: false
+      timeout: 180
+      values: "\
+        image.tag=${DRONE_BRANCH}-${DRONE_COMMIT_SHA},\
+        replicaCount=1,\
+        strategy.rollingUpdate.maxUnavailable=0,\
+        ingress.hosts[0].host=whitehouse-app.globish.dev,\
+        ingress.hosts[0].paths[0]=/,\
+        ingress.tls[0].secretName=globish-admin-frontend-dev-globish-dev-tls,\
+        ingress.tls[0].hosts[0]=whitehouse-app.globish.dev"
+    when:
+      event:
+        - push
+      branch:
+        - dev
+
+  - name: notify-slack
+    image: plugins/slack
+    settings:
+      webhook: https://hooks.slack.com/services/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
+      channel: devops
+      username: Drone
+      icon_url: https://pbs.twimg.com/profile_images/1106628286107381761/R_wMcCqN_400x400.png
+      template: >
+        {{#success build.status}}
+          {{repo.name}} ({{build.branch}}) <{{ build.link }}|{{ repo.owner }}/{{ repo.name }}#{{truncate build.commit 8}}> build #{{build.number}} succeeded on {{uppercasefirst build.event}}. Good job {{ build.author }}. 👍🏻
+        {{else}}
+          {{repo.name}} ({{build.branch}}) <{{ build.link }}|{{ repo.owner }}/{{ repo.name }}#{{truncate build.commit 8}}> build #{{build.number}} failed on {{uppercasefirst build.event}}. Fix me please {{ build.author }}. 😢
+        {{/success}}
+    when:
+      status:
+        - failure
+        - success
+      branch:
+        - master
+        - staging
+        - dev
+# Per repository secret
+# drone encrypt globish/globish-admin-frontend <SECRET>
+
+# Per organisation secret
+## drone orgsecret add Globish [name] [data]

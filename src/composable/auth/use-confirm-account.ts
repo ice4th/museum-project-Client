@@ -1,11 +1,11 @@
 /**
  * useConfirmAccount Composition API
  */
-import { onMounted, reactive, ref, toRefs } from 'vue'
-import AuthService from '/@src/api/auth.service'
+import { onMounted, ref } from 'vue'
 import { Notyf } from 'notyf'
-import { useRoute, useRouter } from 'vue-router'
-import useAdminProfile from '../common/use-admin-profile'
+import { useRoute } from 'vue-router'
+import useAuthApi from '../api/useAuthApi'
+import { errMessage } from '/@src/helpers/filter.helper'
 export default function useConfirmAccount() {
   const notyf = new Notyf({
     duration: 2000,
@@ -14,27 +14,22 @@ export default function useConfirmAccount() {
       y: 'top',
     },
   })
-  const router = useRouter()
   const route = useRoute()
   const isLoading = ref(false)
   const messageError = ref('')
-  const { fetchProfile, adminProfile } = useAdminProfile()
-
+  const { activeAccount } = useAuthApi()
   const activateAccount = async () => {
     isLoading.value = true
     const token = route.query.token as string
-    const { status, message } = await AuthService.activeAccount(token)
+    const { status, message } = await activeAccount(token)
     isLoading.value = false
-    if (status === 201) {
-      await fetchProfile()
-      return
-    }
-    messageError.value = message
+    if (status === 201) return
+    messageError.value = errMessage(message)
   }
 
   onMounted(() => {
     activateAccount()
   })
 
-  return { activateAccount, isLoading, messageError, adminProfile }
+  return { activateAccount, isLoading, messageError }
 }

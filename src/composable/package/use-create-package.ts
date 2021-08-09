@@ -2,16 +2,18 @@
  * useCreatePackage Composition API
  */
 
-import { onMounted, reactive, ref, toRefs, watch } from 'vue'
-import PackageService from '/@src/api/package.service'
+import { onMounted, reactive, ref, toRefs } from 'vue'
 import {
   ICreateAddonPackage,
-  IPackageInfo,
   IUpdateAddonPackage,
 } from '/@src/types/interfaces/package.interface'
-import { GenerateTicket } from '/@src/types/enums/package.enum'
 import { Notyf } from 'notyf'
 import { themeColors } from '/@src/utils/themeColors'
+import { useRouter } from 'vue-router'
+import useOptionApi from '../api/useOptionApi'
+import { PackageOption } from '/@src/types/interfaces/option.interface'
+import usePackageApi from '../api/usePackageApi'
+import { errMessage } from '/@src/helpers/filter.helper'
 
 /**
  * add type for render with type
@@ -22,8 +24,8 @@ export interface IAddonPackageWithType extends ICreateAddonPackage {
 export interface IUseCreatePackageState {
   mainPackageId: number
   isLoadingPackages: boolean
-  packages: IPackageInfo[]
-  dependOnPackageList: IPackageInfo[]
+  packages: PackageOption[]
+  dependOnPackageList: PackageOption[]
   mainSelectedPackage?: IUpdateAddonPackage
   addonPackages: IUpdateAddonPackage[]
   currentAddonPackage?: IAddonPackageWithType
@@ -77,6 +79,9 @@ export default function useCreatePackage() {
     addonPackages: [],
     currentAddonPackage: undefined,
   })
+  const router = useRouter()
+  const { getPackages } = useOptionApi()
+  const { createPackageGroup: createPackageGroupApi } = usePackageApi()
 
   const displayPackageNameById = (id: number) => {
     return state.packages.find((pk) => pk.id === id)?.packageName || ''
@@ -88,11 +93,9 @@ export default function useCreatePackage() {
 
   const fetchAllPackage = async () => {
     state.isLoadingPackages = true
-    const { status, data } = await PackageService.getAllPackages()
+    const data = await getPackages()
     state.isLoadingPackages = false
-    if (status === 200 && data) {
-      state.packages = data
-    }
+    state.packages = data
   }
 
   const toggleShowMainPackageSection = () => {
@@ -172,7 +175,7 @@ export default function useCreatePackage() {
   }
 
   const createPackageGroup = async () => {
-    const { status, message } = await PackageService.createPackageGroup({
+    const { status, message } = await createPackageGroupApi({
       mainPackageId: state.mainPackageId,
       addonPackages: state.addonPackages,
     })
@@ -181,12 +184,15 @@ export default function useCreatePackage() {
         type: 'success',
         message: 'Created Success!',
       })
-      // TODO: route to view package
+      router.push({
+        name: 'product-package-group-:packageid',
+        params: { packageid: `${state.mainPackageId}` },
+      })
       return
     }
     notyfWarning.open({
       type: 'error',
-      message,
+      message: errMessage(message),
     })
   }
 

@@ -1,18 +1,21 @@
+<route lang="yaml">
+meta:
+  requiresAuth: true
+</route>
+
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { sidebarTheme } from '/@src/state/sidebarLayoutState'
 
 const route = useRoute()
 </script>
 
 <template>
-  <SidebarLayout :theme="sidebarTheme" close-on-change default-sidebar="none">
+  <AppLayout>
     <!-- Content Wrapper -->
-    <div class="page-content-inner">
-      <div class="">
-        <h1 class="title">Whitehouse Globish Academia</h1>
-      </div>
-    </div>
-  </SidebarLayout>
+    <RouterView v-slot="{ Component }">
+      <transition name="fade-fast" mode="out-in">
+        <component :is="Component" :key="route.fullPath" />
+      </transition>
+    </RouterView>
+  </AppLayout>
 </template>
