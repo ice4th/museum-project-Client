@@ -16,6 +16,7 @@ const {
   paginationData,
   currentPage,
   perPage,
+  onEditPackage,
   fetchAllPackages,
 } = usePackageTable()
 </script>
@@ -41,19 +42,46 @@ const {
         </div>
       </template>
       <template #action="{ value }">
-        <div class="dark-inverted is-flex is-justify-content-flex-end">
-          <V-Button
-            rounded
-            outlined
-            color="primary"
-            class="action-btn"
-            :to="{
-              name: 'product-package-:id-update',
-              params: { id: value.id },
-            }"
-          >
-            Edit
-          </V-Button>
+        <div class="is-flex is-justify-content-flex-end">
+          <V-Dropdown title="More" spaced right>
+            <template #content>
+              <a role="menuitem" href="#" class="dropdown-item is-media">
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-eye"></i>
+                </div>
+                <div class="meta">
+                  <span>View</span>
+                  <span>View package details</span>
+                </div>
+              </a>
+
+              <a
+                role="menuitem"
+                class="dropdown-item is-media"
+                @click="onEditPackage(value.id)"
+              >
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-pencil"></i>
+                </div>
+                <div class="meta">
+                  <span>Edit</span>
+                  <span>Edit package details</span>
+                </div>
+              </a>
+
+              <hr class="dropdown-divider" />
+
+              <a role="menuitem" href="#" class="dropdown-item is-media">
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>
+                </div>
+                <div class="meta">
+                  <span>Remove</span>
+                  <span>Remove from list</span>
+                </div>
+              </a>
+            </template>
+          </V-Dropdown>
         </div>
       </template>
     </Datatable>
