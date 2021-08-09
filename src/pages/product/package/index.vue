@@ -42,20 +42,6 @@ const {
         </div>
       </template>
       <template #action="{ value }">
-        <!-- <div class="dark-inverted is-flex is-justify-content-flex-end">
-          <V-Button
-            rounded
-            outlined
-            color="primary"
-            class="action-btn"
-            :to="{
-              name: 'product-package-:id-update',
-              params: { id: value.id },
-            }"
-          >
-            Edit
-          </V-Button>
-        </div> -->
         <div class="is-flex is-justify-content-flex-end">
           <V-Dropdown title="More" spaced right>
             <template #content>
