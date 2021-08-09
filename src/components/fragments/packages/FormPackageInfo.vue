@@ -809,7 +809,6 @@ const privateSlots = [
 
   h3 {
     font-weight: 600;
-    color: $dark-text;
   }
 
   &:first-child {
