@@ -2,6 +2,7 @@
 import type { PropType } from 'vue'
 import { ref, watchPostEffect, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import useUserSession from '../composable/useUserSession'
 
 import { activePanel } from '/@src/state/activePanelState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
@@ -22,7 +23,7 @@ const props = defineProps({
   },
   defaultSidebar: {
     type: String,
-    default: 'product',
+    default: 'index',
   },
   closeOnChange: {
     type: Boolean,
@@ -36,12 +37,17 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  hideHamburger: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const route = useRoute()
 const isMobileSidebarOpen = ref(false)
 const isDesktopSidebarOpen = ref(props.openOnMounted)
 const activeMobileSubsidebar = ref(props.defaultSidebar)
+const { navbarList } = useUserSession()
 
 function switchSidebar(id: string) {
   if (id === activeMobileSubsidebar.value) {
@@ -106,25 +112,16 @@ watch(
       @toggle="isMobileSidebarOpen = !isMobileSidebarOpen"
     >
       <template #links>
-        <!-- Students -->
-        <li>
+        <li
+          v-for="navItem in navbarList"
+          :key="`mobile-sidebar-${navItem.key}`"
+        >
           <RouterLink
-            :to="{ name: 'student' }"
-            :class="[activeMobileSubsidebar === 'student' && 'is-active']"
-            @click="activeMobileSubsidebar = 'dashboard'"
+            :to="{ name: navItem.key }"
+            :class="[activeMobileSubsidebar === navItem.key && 'is-active']"
+            @click="activeMobileSubsidebar = navItem.key"
           >
-            <i aria-hidden="true" class="iconify" data-icon="feather:users"></i>
-          </RouterLink>
-        </li>
-
-        <!-- Products & Packages -->
-        <li>
-          <RouterLink
-            :to="{ name: 'product' }"
-            :class="[activeMobileSubsidebar === 'product' && 'is-active']"
-            @click="activeMobileSubsidebar = 'product'"
-          >
-            <i aria-hidden="true" class="iconify" data-icon="feather:box"></i>
+            <i aria-hidden="true" class="iconify" :data-icon="navItem.icon"></i>
           </RouterLink>
         </li>
       </template>
@@ -163,63 +160,18 @@ watch(
 
     <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
       <template #links>
-        <!-- Admin -->
-        <li>
+        <li v-for="navItem in navbarList" :key="`sidebar-${navItem.key}`">
           <a
-            :class="[activeMobileSubsidebar === 'admin' && 'is-active']"
-            data-content="Admin"
-            @click="switchSidebar('admin')"
+            :class="[activeMobileSubsidebar === navItem.key && 'is-active']"
+            :data-content="navItem.label"
+            @click="switchSidebar(navItem.key)"
           >
             <i
               aria-hidden="true"
               class="iconify sidebar-svg"
-              data-icon="feather:users"
+              :data-icon="navItem.icon"
             ></i>
           </a>
-        </li>
-        <!-- Students -->
-        <li>
-          <a
-            :class="[activeMobileSubsidebar === 'student' && 'is-active']"
-            data-content="Students"
-            @click="switchSidebar('student')"
-          >
-            <i
-              aria-hidden="true"
-              class="iconify sidebar-svg"
-              data-icon="feather:users"
-            ></i>
-          </a>
-        </li>
-        <!-- Products & Packages -->
-        <li>
-          <a
-            :class="[activeMobileSubsidebar === 'product' && 'is-active']"
-            data-content="Products & Packages"
-            @click="switchSidebar('product')"
-          >
-            <i
-              aria-hidden="true"
-              class="iconify sidebar-svg"
-              data-icon="feather:box"
-            ></i>
-          </a>
-        </li>
-
-        <!-- Code Management tab -->
-        <li>
-          <RouterLink
-            :to="{ name: 'code' }"
-            :class="[activeMobileSubsidebar === 'code' && 'is-active']"
-            data-content="Code Management"
-            @click="switchSidebar('code')"
-          >
-            <i
-              aria-hidden="true"
-              class="iconify sidebar-svg"
-              data-icon="feather:gift"
-            ></i>
-          </RouterLink>
         </li>
       </template>
 
@@ -272,6 +224,7 @@ watch(
           <div class="page-title has-text-centered">
             <!-- Sidebar Trigger -->
             <div
+              v-show="!hideHamburger"
               class="vuero-hamburger nav-trigger push-resize"
               @click="isDesktopSidebarOpen = !isDesktopSidebarOpen"
             >
