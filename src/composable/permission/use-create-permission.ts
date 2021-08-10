@@ -112,7 +112,10 @@ export default function useCreatePermission() {
       }
       await onClear()
     } else {
-      console.error('Not found team id')
+      notyfMessage.open({
+        message: 'Not found team id',
+        type: 'error',
+      })
     }
   }
   const onClear = async () => {
