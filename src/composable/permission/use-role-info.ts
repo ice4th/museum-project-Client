@@ -65,7 +65,7 @@ export default function useRoleInfo() {
   const setDefaultPagination = () => {
     state.rolePagination.currentPage = parseInt(`${route.query?.page || 1}`)
     state.rolePagination.perPage = parseInt(`${route.query?.perPage || 10}`)
-    state.search = `${route.query?.search}` || ''
+    state.search = `${route.query?.search || ''}`
   }
 
   /**
