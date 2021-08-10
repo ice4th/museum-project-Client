@@ -1,14 +1,31 @@
+import { Notyf } from 'notyf'
 import { computed, onMounted, reactive, toRaw, toRefs } from 'vue'
-import PermissionService from '../../api/permission.service'
+import { errMessage } from '../../helpers/filter.helper'
 import { IMenu } from '../../types/interfaces/permission.interface'
+import usePermissionApi from '../api/usePermissionApi'
+import useUserSession from '../useUserSession'
 
-const PERMISSION_ICON = [
-  { id: 1, type: 'iconify', icon: 'feather:users' },
-  { id: 4, type: 'iconify', icon: 'feather:box' },
-  { id: 8, type: 'iconify', icon: 'feather:unlock' },
-]
+/**
+ * global notify
+ */
+const notyfMessage = new Notyf({
+  duration: 2000,
+  position: {
+    x: 'center',
+    y: 'top',
+  },
+})
 
 export default function useCreatePermission() {
+  /**
+   * Use Composable Api
+   */
+  const { createRole, getMenus } = usePermissionApi()
+  const userSession = useUserSession()
+
+  /**
+   * State
+   */
   const state = reactive({
     menuItems: [] as IMenu[],
     selectedItems: [] as any[],
@@ -35,7 +52,7 @@ export default function useCreatePermission() {
   const fetchMenus = async () => {
     state.menuLoading = true
 
-    const { data } = await PermissionService.getMenus()
+    const { data } = await getMenus()
     state.menuItems = data.map((mainMenu) => {
       let totalActions = 0
 
@@ -58,9 +75,7 @@ export default function useCreatePermission() {
         show: false,
         subtitles: subMenus.length,
         actions: totalActions,
-        icon:
-          PERMISSION_ICON.find((icon) => icon.id === mainMenu.id)?.icon ||
-          'feather:bookmark',
+        icon: 'feather:file-plus',
         subMenus,
       }
     })
@@ -68,7 +83,7 @@ export default function useCreatePermission() {
     state.menuLoading = false
   }
   const onCreate = async () => {
-    const permissions = state.selectedItems
+    const permissionIds = state.selectedItems
       .map((item: any) =>
         item.subMenus.map((sub: any) =>
           sub.actions.map((action: any) => action.id)
@@ -76,17 +91,29 @@ export default function useCreatePermission() {
       )
       .flat(2)
 
-    const { status } = await PermissionService.createRole({
-      teamId: 100,
-      permissions,
-      name: state.roleName,
-      description: state.roleDescription,
-    })
+    if (userSession.user?.teamId) {
+      const { status, message } = await createRole({
+        description: state.roleDescription,
+        name: state.roleName,
+        permissionIds,
+        teamId: 1111,
+      })
 
-    if (status !== 201) {
-      // notify error
+      if (status === 201) {
+        notyfMessage.open({
+          type: 'success',
+          message: 'Package was created!',
+        })
+      } else {
+        notyfMessage.open({
+          message: errMessage(message),
+          type: 'error',
+        })
+      }
+      await onClear()
+    } else {
+      console.error('Not found team id')
     }
-    // await onClear()
   }
   const onClear = async () => {
     state.selectedItems = []

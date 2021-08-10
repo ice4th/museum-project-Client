@@ -11,6 +11,8 @@ export interface IAdminInfo {
   phone: string
   dob: string
   lastLogin: string
+  roleId: number
+  teamId: number
 }
 
 export interface IAdminDetail {
