@@ -94,9 +94,9 @@ export default function useCreatePermission() {
     if (userSession.user?.teamId) {
       const { status, message } = await createRole({
         description: state.roleDescription,
+        teamId: userSession.user.teamId,
         name: state.roleName,
         permissionIds,
-        teamId: 1111,
       })
 
       if (status === 201) {
@@ -112,7 +112,10 @@ export default function useCreatePermission() {
       }
       await onClear()
     } else {
-      console.error('Not found team id')
+      notyfMessage.open({
+        message: 'Not found team id',
+        type: 'error',
+      })
     }
   }
   const onClear = async () => {
