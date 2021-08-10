@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineEmit } from 'vue'
 
-const emit = defineEmit(['close'])
+const emit = defineEmits(['close'])
 </script>
 
 <template>

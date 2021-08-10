@@ -102,7 +102,7 @@ export default function useCreatePermission() {
       if (status === 201) {
         notyfMessage.open({
           type: 'success',
-          message: 'Package was created!',
+          message: 'Role was created!',
         })
       } else {
         notyfMessage.open({
