@@ -11,6 +11,7 @@ export interface IPaginationResponse<T> {
 export interface IPaginationParams {
   currentPage: number
   perPage: number
+  search?: string
 }
 
 export interface INameLang {

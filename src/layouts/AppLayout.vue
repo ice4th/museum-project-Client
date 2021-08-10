@@ -127,6 +127,21 @@ watch(
             <i aria-hidden="true" class="iconify" data-icon="feather:box"></i>
           </RouterLink>
         </li>
+
+        <!-- Roles & Permissions -->
+        <li>
+          <RouterLink
+            :to="{ name: 'permission-role' }"
+            :class="[activeMobileSubsidebar === 'permission' && 'is-active']"
+            @click="activeMobileSubsidebar = 'permission'"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify"
+              data-icon="feather:unlock"
+            ></i>
+          </RouterLink>
+        </li>
       </template>
 
       <template #bottom-links>
@@ -158,6 +173,11 @@ watch(
       />
       <ProductMobileSubsidebar
         v-else-if="isMobileSidebarOpen && activeMobileSubsidebar === 'product'"
+      />
+      <PermissionMobileSubsidebar
+        v-else-if="
+          isMobileSidebarOpen && activeMobileSubsidebar === 'permission'
+        "
       />
     </transition>
 
@@ -191,6 +211,7 @@ watch(
             ></i>
           </a>
         </li>
+
         <!-- Products & Packages -->
         <li>
           <a
@@ -202,6 +223,21 @@ watch(
               aria-hidden="true"
               class="iconify sidebar-svg"
               data-icon="feather:box"
+            ></i>
+          </a>
+        </li>
+
+        <!-- Roles & Permission -->
+        <li>
+          <a
+            :class="[activeMobileSubsidebar === 'permission' && 'is-active']"
+            data-content="Roles & Permissions"
+            @click="switchSidebar('permission')"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:unlock"
             ></i>
           </a>
         </li>
@@ -257,6 +293,12 @@ watch(
       />
       <ProductSubsidebar
         v-else-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'product'"
+        @close="isDesktopSidebarOpen = false"
+      />
+      <PermissionSubsidebar
+        v-else-if="
+          isDesktopSidebarOpen && activeMobileSubsidebar === 'permission'
+        "
         @close="isDesktopSidebarOpen = false"
       />
     </transition>
