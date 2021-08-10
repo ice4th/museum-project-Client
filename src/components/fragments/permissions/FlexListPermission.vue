@@ -27,7 +27,6 @@ let selectedMainMenus = reactive<any[]>([])
  * Methods
  */
 const onSelected = (value: any, key: number) => {
-  console.log(value)
   const item = props.items[key]
 
   let mainMenuItem = selectedMainMenus.find(
