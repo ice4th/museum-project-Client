@@ -19,6 +19,7 @@ import { useHead } from '@vueuse/head'
  */
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+import useRoleInfo from '/@src/composable/permission/use-role-info'
 
 pageTitle.value = 'Role'
 
@@ -26,108 +27,71 @@ useHead({
   title: 'Whitehouse Role',
 })
 
-const data = [
-  {
-    id: 0,
-    name: 'Product Manager',
-    description:
-      'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum, facere?',
-    picture: '/demo/avatars/8.jpg',
-    badge: '/images/icons/flags/united-states-of-america.svg',
-    location: 'Las Vegas, NV',
-    industry: 'Software',
-    status: 'Active',
-    contacts: [
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      // and more contacts ...
-    ],
-  },
-  // and more data ...
-]
+const { rolePagination, roleTableHeaders, isLoading, search } = useRoleInfo()
 </script>
 
 <template>
   <div class="page-content-inner">
-    <div class="flex-table-wrapper mt-4">
-      <!--Custom table toolbar-->
-      <div class="flex-table-toolbar">
-        <div class="left">
-          <V-Field>
-            <V-Control icon="feather:search">
-              <input
-                type="text"
-                class="input is-rounded"
-                placeholder="Filter..."
-              />
-            </V-Control>
-          </V-Field>
-        </div>
-
-        <div class="right">
-          <V-Button to="role/create-role" color="primary" icon="fas fa-plus">
+    <Datatable
+      :is-loading="isLoading"
+      :headers="roleTableHeaders"
+      :data="rolePagination.data"
+      :current-page="rolePagination.currentPage"
+      :per-page="rolePagination.perPage"
+      :total="rolePagination.total"
+      :search="search"
+      is-action
+    >
+      <template #custom-right>
+        <div class="is-flex is-justify-content-flex-end pt-4">
+          <V-Button color="primary" icon="fas fa-plus" to="role/create">
             Add Role
           </V-Button>
         </div>
-      </div>
+      </template>
+      <template #action="{ value }">
+        <div class="is-flex is-justify-content-flex-end">
+          <V-Dropdown title="More" spaced right>
+            <template #content>
+              <a role="menuitem" href="#" class="dropdown-item is-media">
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-eye"></i>
+                </div>
+                <div class="meta">
+                  <span>View</span>
+                  <span>View package details</span>
+                </div>
+              </a>
 
-      <!--V-FlexTable-->
-      <V-FlexTable>
-        <template #header>
-          <div class="flex-table-header">
-            <span>Role</span>
-            <span>Description</span>
-            <span>Team</span>
-            <span>Members</span>
-            <span class="cell-end">Actions</span>
-          </div>
-        </template>
-        <template #body>
-          <FlexTableRole :rows="data" />
-        </template>
-      </V-FlexTable>
+              <a
+                role="menuitem"
+                class="dropdown-item is-media"
+                @click="onEditPackage(value.id)"
+              >
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-pencil"></i>
+                </div>
+                <div class="meta">
+                  <span>Edit</span>
+                  <span>Edit package details</span>
+                </div>
+              </a>
 
-      <!--Table Pagination-->
-      <V-FlexPagination
-        :item-per-page="10"
-        :total-items="873"
-        :current-page="42"
-        :max-links-displayed="5"
-      />
-    </div>
+              <hr class="dropdown-divider" />
+
+              <a role="menuitem" href="#" class="dropdown-item is-media">
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>
+                </div>
+                <div class="meta">
+                  <span>Remove</span>
+                  <span>Remove from list</span>
+                </div>
+              </a>
+            </template>
+          </V-Dropdown>
+        </div>
+      </template>
+    </Datatable>
   </div>
 </template>

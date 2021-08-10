@@ -75,7 +75,7 @@ const isDataOfArray = computed(
 )
 const router = useRouter()
 const route = useRoute()
-const changePerPage = () => {
+const changePerPage = (value) => {
   const query = {
     ...route.query,
     perPage: props.perPage,
@@ -114,8 +114,8 @@ watch(
   <div class="flex-table-wrapper mt-4">
     <!--Custom table toolbar-->
     <div class="flex-table-toolbar">
-      <div v-show="canSearchable" class="left">
-        <V-Field>
+      <div class="left">
+        <V-Field v-show="canSearchable">
           <V-Control icon="feather:search">
             <input
               v-model="search"
@@ -126,13 +126,14 @@ watch(
             />
           </V-Control>
         </V-Field>
+        <slot name="custom-left" />
       </div>
 
       <div class="right">
         <V-Field>
           <V-Control>
             <div class="select is-rounded">
-              <select v-model="perPage" @change="changePerPage">
+              <select v-model="perPage" @update:model-value="changePerPage">
                 <option :value="10">10 results per page</option>
                 <option :value="25">25 results per page</option>
                 <option :value="50">50 results per page</option>
@@ -141,6 +142,7 @@ watch(
             </div>
           </V-Control>
         </V-Field>
+        <slot name="custom-right" />
       </div>
     </div>
 
@@ -167,8 +169,8 @@ watch(
               </span>
             </th>
             <th v-if="isAction" scope="col" class="is-end">
-              <span class="dark-inverted is-flex is-justify-content-center">
-                Action
+              <span class="dark-inverted is-flex is-justify-content-flex-end">
+                Actions
               </span>
             </th>
           </tr>
