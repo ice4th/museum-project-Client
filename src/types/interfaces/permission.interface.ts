@@ -21,7 +21,7 @@ export interface ICreateRolePayload {
   teamId: number
   name: string
   description: string
-  permissions: number[]
+  permissionIds: number[]
 }
 
 export interface IRoleInfo {
