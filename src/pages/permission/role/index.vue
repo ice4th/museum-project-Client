@@ -27,7 +27,17 @@ useHead({
   title: 'Whitehouse Role',
 })
 
-const { rolePagination, roleTableHeaders, isLoading, search } = useRoleInfo()
+const {
+  // state
+  search,
+  isLoading,
+  rolePagination,
+  deleteActionItem,
+  // variable
+  roleTableHeaders,
+  // methods
+  onDeleteRole,
+} = useRoleInfo()
 </script>
 
 <template>
@@ -79,7 +89,12 @@ const { rolePagination, roleTableHeaders, isLoading, search } = useRoleInfo()
 
               <hr class="dropdown-divider" />
 
-              <a role="menuitem" href="#" class="dropdown-item is-media">
+              <a
+                role="menuitem"
+                href="#"
+                class="dropdown-item is-media"
+                @click="deleteActionItem = value"
+              >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>
                 </div>
@@ -93,5 +108,32 @@ const { rolePagination, roleTableHeaders, isLoading, search } = useRoleInfo()
         </div>
       </template>
     </Datatable>
+
+    <!-- Delete Action -->
+    <V-Modal
+      :open="deleteActionItem !== undefined"
+      title="Confirm Remove"
+      actions="center"
+      @close="deleteActionItem = undefined"
+    >
+      <template #content>
+        <V-PlaceholderSection title="Are you sure ?" />
+        <p class="text-center">
+          Please make sure that you are going to remove the role named
+          <b>"{{ deleteActionItem && deleteActionItem.name }}"</b>.
+        </p>
+      </template>
+      <template #action>
+        <V-Button color="primary" raised @click="onDeleteRole"
+          >Confirm</V-Button
+        >
+      </template>
+    </V-Modal>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.text-center {
+  text-align: center;
+}
+</style>

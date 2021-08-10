@@ -31,3 +31,8 @@ export interface IRoleInfo {
   teamId: number
   teamName: string
 }
+
+export interface IDeleteRole {
+  teamId: number
+  roleId: number
+}

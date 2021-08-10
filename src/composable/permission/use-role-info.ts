@@ -3,18 +3,34 @@ import { IRoleInfo } from '/@src/types/interfaces/permission.interface'
 import usePermissionApi from '/@src/composable/api/usePermissionApi'
 import { IPaginationResponse } from '../../types/interfaces/common.interface'
 import { useRoute } from 'vue-router'
+import useUserSession from '../useUserSession'
+import { Notyf } from 'notyf'
+import { errMessage } from '../../helpers/filter.helper'
+
+/**
+ * global notify
+ */
+const notyfMessage = new Notyf({
+  duration: 2000,
+  position: {
+    x: 'center',
+    y: 'top',
+  },
+})
 
 export interface IUseRoleInfoState {
   rolePagination: IPaginationResponse<IRoleInfo[]>
   isLoading: boolean
   search: string
+  deleteActionItem?: IRoleInfo
 }
 
 export default function useRoleInfo() {
   /**
    * Composable Api
    */
-  const { getRolePagination } = usePermissionApi()
+  const { getRolePagination, deleteRole } = usePermissionApi()
+  const userSession = useUserSession()
 
   /**
    * Router
@@ -36,6 +52,7 @@ export default function useRoleInfo() {
     },
     search: '',
     isLoading: false,
+    deleteActionItem: undefined,
   })
 
   /**
@@ -67,6 +84,32 @@ export default function useRoleInfo() {
     state.rolePagination.perPage = parseInt(`${route.query?.perPage || 10}`)
     state.search = `${route.query?.search || ''}`
   }
+  const onDeleteRole = async () => {
+    if (userSession.user?.teamId && state.deleteActionItem?.id) {
+      const { status, message } = await deleteRole({
+        roleId: state.deleteActionItem.id,
+        teamId: userSession.user.teamId,
+      })
+
+      if (status === 200) {
+        notyfMessage.open({
+          type: 'success',
+          message: 'Role was removed!',
+        })
+      } else {
+        notyfMessage.open({
+          message: errMessage(message),
+          type: 'error',
+        })
+      }
+    } else {
+      notyfMessage.open({
+        message: 'Not found team id',
+        type: 'error',
+      })
+    }
+    state.deleteActionItem = undefined
+  }
 
   /**
    * On Mounted
@@ -78,6 +121,9 @@ export default function useRoleInfo() {
 
   return {
     ...toRefs(state),
+    // variable
     roleTableHeaders,
+    // methods
+    onDeleteRole,
   }
 }

@@ -1,10 +1,11 @@
-import useApi, { apiHandleError, ApiResponse } from '../useApi'
+import useApi, { ApiResponse } from '../useApi'
 import {
   IPaginationParams,
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
 import {
   ICreateRolePayload,
+  IDeleteRole,
   IMenu,
   IRoleInfo,
 } from '/@src/types/interfaces/permission.interface'
@@ -12,7 +13,6 @@ import { AxiosResponse } from 'axios'
 
 export default function usePermissionApi() {
   const api = useApi()
-  const { catchReponse } = apiHandleError()
 
   const getRolePagination = (
     params: IPaginationParams
@@ -29,9 +29,17 @@ export default function usePermissionApi() {
     return api.post<void, ApiResponse>(`/Roles/Teams/${teamId}/Roles`, payload)
   }
 
+  const deleteRole = (data: IDeleteRole) => {
+    const { teamId, roleId } = data
+    return api.delete<void, ApiResponse>(
+      `/Roles/Teams/${teamId}/Roles/${roleId}`
+    )
+  }
+
   return {
     getRolePagination,
     createRole,
     getMenus,
+    deleteRole,
   }
 }
