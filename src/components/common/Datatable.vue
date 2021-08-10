@@ -142,6 +142,7 @@ watch(
             </div>
           </V-Control>
         </V-Field>
+        <slot name="custom-right" />
       </div>
     </div>
 
