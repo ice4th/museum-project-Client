@@ -1,5 +1,5 @@
 import useApi, { apiHandleError, ApiResponse } from '../useApi'
-import { AdminStatus } from '/@src/types/enums/admin.enum'
+import { AdminCountry, AdminStatus } from '/@src/types/enums/admin.enum'
 import { IAdminDetail } from '/@src/types/interfaces/admin.interface'
 import {
   IPaginationParams,
@@ -27,5 +27,15 @@ export default function useAdminApi() {
     return api.put<any, ApiResponse>(`/Admins/${id}/Deactivate`)
   }
 
-  return { getAllAdmins, deactivateAccount }
+  const changeCountry = (id: number, country: AdminCountry) => {
+    return api.put<any, ApiResponse>(`/Admins/${id}/ChangeCountry`, undefined, {
+      data: { country },
+    })
+  }
+
+  const resendActivateEmail = (id: number) => {
+    return api.put<any, ApiResponse>(`/Admins/${id}/ResendActivateEmail`)
+  }
+
+  return { getAllAdmins, deactivateAccount, changeCountry, resendActivateEmail }
 }

@@ -26,6 +26,9 @@ interface IHeader {
   label: string
   isEnd?: Boolean
   isRaw?: Boolean
+  isCenter?: Boolean
+  customHeaderClass?: string
+  customRowClass?: string
 }
 const props = defineProps({
   total: {
@@ -155,14 +158,12 @@ watch(
               v-for="(header, index) in headers"
               :key="`h-${index}`"
               scope="col"
-              :class="{
-                'is-end': header.isEnd,
-              }"
             >
               <span
                 :class="[
-                  header.isEnd &&
-                    'dark-inverted is-flex is-justify-content-flex-end',
+                  header.isEnd && 'is-flex is-justify-content-flex-end',
+                  header.isCenter && 'is-flex is-justify-content-center',
+                  header.customHeaderClass,
                 ]"
               >
                 {{ header.label }}
@@ -188,13 +189,21 @@ watch(
           <template v-else>
             <tr v-for="(dataList, index) in data" :key="`tb-${index}`">
               <td v-for="(header, i) in headers" :key="`tb-data-${i}`">
-                <span v-if="!$slots[header.key]">{{
-                  parseData(dataList, header.key)
-                }}</span>
-                <slot
-                  :name="header.key"
-                  :value="parseData(dataList, header.key, header.isRaw)"
-                />
+                <span
+                  :class="[
+                    header.isEnd && 'is-flex is-justify-content-flex-end',
+                    header.isCenter && 'is-flex is-justify-content-center',
+                    header.customRowClass,
+                  ]"
+                >
+                  <span v-if="!$slots[header.key]">{{
+                    parseData(dataList, header.key)
+                  }}</span>
+                  <slot
+                    :name="header.key"
+                    :value="parseData(dataList, header.key, header.isRaw)"
+                  />
+                </span>
               </td>
               <td v-if="isAction">
                 <FlexTableDropdown v-if="!$slots.action" />
