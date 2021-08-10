@@ -94,9 +94,9 @@ export default function useCreatePermission() {
     if (userSession.user?.teamId) {
       const { status, message } = await createRole({
         description: state.roleDescription,
+        teamId: userSession.user.teamId,
         name: state.roleName,
         permissionIds,
-        teamId: 1111,
       })
 
       if (status === 201) {
