@@ -67,7 +67,7 @@ pnpm dev
 yarn dev
 ```
 
-> Access the Vuero frontend in your browser at [http://localhost:3000/](http://localhost:3000/)
+> Access the Vuero frontend in your browser at [http://localhost:8083/](http://localhost:8083/)
 
 ## Vuero and Vue 3
 

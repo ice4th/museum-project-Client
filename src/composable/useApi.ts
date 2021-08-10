@@ -96,7 +96,9 @@ export function apiHandleError() {
     if (res.status === 200 || res.status === 201) {
       return res.data
     }
-    if (res.code) {
+    if (res.code === 401) {
+      router.push({ name: 'auth-login', query: { redirect: route.fullPath } })
+    } else if (res.code) {
       redirectNotFound(res)
     }
     return null
