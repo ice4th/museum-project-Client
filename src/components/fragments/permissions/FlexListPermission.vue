@@ -49,6 +49,8 @@ const onSelected = (value: any, key: number) => {
   if (mainMenuItem.subMenus.length > 0) {
     selectedMainMenus.push(mainMenuItem)
   }
+  // toggle validate message error
+  showMessage.value = selectedMainMenus.length === 0
   // emit selected items
   emit('selected', selectedMainMenus)
 }
@@ -58,7 +60,7 @@ const onSelected = (value: any, key: number) => {
   <div class="box-menu-list">
     <!-- Message -->
     <div v-show="showMessage" class="box-menu">
-      <V-Message color="danger" closable @close="showMessage = false">
+      <V-Message color="danger">
         Select permission for your role below at least 1 action.
       </V-Message>
     </div>

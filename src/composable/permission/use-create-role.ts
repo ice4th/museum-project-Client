@@ -1,9 +1,11 @@
 import { Notyf } from 'notyf'
 import { computed, onMounted, reactive, toRaw, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
 import { errMessage } from '../../helpers/filter.helper'
+import { TeamOption } from '../../types/interfaces/option.interface'
 import { IMenu } from '../../types/interfaces/permission.interface'
+import useOptionApi from '../api/useOptionApi'
 import usePermissionApi from '../api/usePermissionApi'
-import useUserSession from '../useUserSession'
 
 export interface IUseCreateRole {
   menuItems: IMenu[]
@@ -11,7 +13,7 @@ export interface IUseCreateRole {
   roleName: string
   roleDescription: string
   teamId?: number
-  teamOptions: any[] // create interface later
+  teamOptions: TeamOption[]
   menuLoading: boolean
   loadingOption: boolean
 }
@@ -32,7 +34,12 @@ export default function useCreateRole() {
    * Use Composable Api
    */
   const { createRole, getMenus } = usePermissionApi()
-  const userSession = useUserSession()
+  const { getTeams } = useOptionApi()
+
+  /**
+   * Use Router
+   */
+  const router = useRouter()
 
   /**
    * State
@@ -96,6 +103,11 @@ export default function useCreateRole() {
 
     state.menuLoading = false
   }
+  const fetchOption = async () => {
+    state.loadingOption = true
+    state.teamOptions = await getTeams()
+    state.loadingOption = false
+  }
   const onCreate = async () => {
     const permissionIds = state.selectedItems
       .map((item: any) =>
@@ -105,10 +117,10 @@ export default function useCreateRole() {
       )
       .flat(2)
 
-    if (userSession.user?.teamId) {
+    if (state?.teamId) {
       const { status, message } = await createRole({
         description: state.roleDescription,
-        teamId: userSession.user.teamId,
+        teamId: state.teamId,
         name: state.roleName,
         permissionIds,
       })
@@ -124,24 +136,29 @@ export default function useCreateRole() {
           type: 'error',
         })
       }
-      await onClear()
-    } else {
-      notyfMessage.open({
-        message: 'Not found team id',
-        type: 'error',
-      })
     }
+
+    await router.push({
+      name: 'permission-role',
+      query: {
+        search: state.roleName,
+      },
+    })
   }
   const onClear = async () => {
     state.selectedItems = []
+    state.roleDescription = ''
+    state.roleName = ''
+    state.teamId = undefined
     await fetchMenus()
   }
 
   /**
    * On Mounted
    */
-  onMounted(async () => {
-    await fetchMenus()
+  onMounted(() => {
+    fetchOption()
+    fetchMenus()
   })
 
   return {
@@ -149,6 +166,7 @@ export default function useCreateRole() {
     // Computed
     disabledCreateBtn,
     // Methods
+    fetchOption,
     onCreate,
     onClear,
   }

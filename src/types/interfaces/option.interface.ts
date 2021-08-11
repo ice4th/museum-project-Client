@@ -43,3 +43,8 @@ export interface FindMyCoachOption {
   packageName: string
   ticket: number
 }
+
+export interface TeamOption {
+  id: number
+  name: string
+}

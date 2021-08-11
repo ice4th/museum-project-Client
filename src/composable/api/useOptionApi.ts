@@ -8,6 +8,7 @@ import {
   CurriculumOption,
   FeatureGroupOption,
   FindMyCoachOption,
+  TeamOption,
 } from '/@src/types/interfaces/option.interface'
 
 export default function useOptionApi() {
@@ -51,6 +52,12 @@ export default function useOptionApi() {
     )
     return checkResponseStatus(res) || []
   }
+
+  const getTeams = async (): Promise<TeamOption[]> => {
+    const res = await api.get<TeamOption[]>('/Options/Teams')
+    return checkResponseStatus(res) || []
+  }
+
   return {
     getProducts,
     getPackages,
@@ -59,5 +66,6 @@ export default function useOptionApi() {
     getCurriculums,
     getFeatureGroups,
     getFmcPackages,
+    getTeams,
   }
 }

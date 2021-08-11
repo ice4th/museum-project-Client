@@ -4,10 +4,11 @@ import {
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
 import {
-  ICreateRolePayload,
+  ISaveRolePayload,
   IDeleteRole,
   IMenu,
   IRoleInfo,
+  IEditRolePayload,
 } from '/@src/types/interfaces/permission.interface'
 import { AxiosResponse } from 'axios'
 
@@ -24,22 +25,24 @@ export default function usePermissionApi() {
     return api.get<IMenu[]>('Menus')
   }
 
-  const createRole = (data: ICreateRolePayload) => {
-    const { teamId, ...payload } = data
-    return api.post<void, ApiResponse>(`/Roles/Teams/${teamId}/Roles`, payload)
+  const createRole = (data: ISaveRolePayload) => {
+    return api.post<void, ApiResponse>('/Roles', data)
   }
 
-  const deleteRole = (data: IDeleteRole) => {
-    const { teamId, roleId } = data
-    return api.delete<void, ApiResponse>(
-      `/Roles/Teams/${teamId}/Roles/${roleId}`
-    )
+  const updateRole = (data: IEditRolePayload) => {
+    const { id, ...payload } = data
+    return api.put<void, ApiResponse>(`/Roles/${id}`, payload)
+  }
+
+  const deleteRole = (id: number) => {
+    return api.delete<void, ApiResponse>(`/Roles/${id}`)
   }
 
   return {
     getRolePagination,
     createRole,
     getMenus,
+    updateRole,
     deleteRole,
   }
 }

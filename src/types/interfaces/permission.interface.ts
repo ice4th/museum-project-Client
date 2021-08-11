@@ -17,11 +17,15 @@ export interface IPermission {
   actionName: string
 }
 
-export interface ICreateRolePayload {
+export interface ISaveRolePayload {
   teamId: number
   name: string
   description: string
   permissionIds: number[]
+}
+
+export interface IEditRolePayload extends ISaveRolePayload {
+  id: number
 }
 
 export interface IRoleInfo {
