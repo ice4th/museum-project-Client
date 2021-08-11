@@ -154,9 +154,9 @@ watch(
     <!-- Mobile subsidebar links -->
     <transition name="slide-x">
       <MobileSubSidebar
-        v-if="isMobileSidebarOpen"
+        v-if="isMobileSidebarOpen && activeMobileSubsidebar"
         :main-menu-key="activeMobileSubsidebar"
-        :main-label="currentNav.label"
+        :main-label="currentNav?.label"
         @close="isMobileSidebarOpen = false"
       />
       <!-- <StudentMobileSubsidebar
@@ -211,7 +211,7 @@ watch(
       <SubSidebar
         v-if="isDesktopSidebarOpen"
         :main-menu-key="activeMobileSubsidebar"
-        :main-label="currentNav.label"
+        :main-label="currentNav?.label"
         @close="isDesktopSidebarOpen = false"
       />
       <!-- <AdminSubsidebar
