@@ -5,6 +5,17 @@ import { IMenu } from '../../types/interfaces/permission.interface'
 import usePermissionApi from '../api/usePermissionApi'
 import useUserSession from '../useUserSession'
 
+export interface IUseCreateRole {
+  menuItems: IMenu[]
+  selectedItems: any[] // create interface later
+  roleName: string
+  roleDescription: string
+  teamId?: number
+  teamOptions: any[] // create interface later
+  menuLoading: boolean
+  loadingOption: boolean
+}
+
 /**
  * global notify
  */
@@ -16,7 +27,7 @@ const notyfMessage = new Notyf({
   },
 })
 
-export default function useCreatePermission() {
+export default function useCreateRole() {
   /**
    * Use Composable Api
    */
@@ -26,13 +37,16 @@ export default function useCreatePermission() {
   /**
    * State
    */
-  const state = reactive({
+  const state = reactive<IUseCreateRole>({
     menuItems: [] as IMenu[],
     selectedItems: [] as any[],
     roleName: '',
     roleDescription: '',
+    teamId: undefined,
+    teamOptions: [],
     // Loading
     menuLoading: false,
+    loadingOption: false,
   })
 
   /**

@@ -2,7 +2,7 @@ import { onMounted, reactive, toRefs } from 'vue'
 import { IRoleInfo } from '/@src/types/interfaces/permission.interface'
 import usePermissionApi from '/@src/composable/api/usePermissionApi'
 import { IPaginationResponse } from '../../types/interfaces/common.interface'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import useUserSession from '../useUserSession'
 import { Notyf } from 'notyf'
 import { errMessage } from '../../helpers/filter.helper'
@@ -35,6 +35,7 @@ export default function useRoleInfo() {
   /**
    * Router
    */
+  const router = useRouter()
   const route = useRoute()
 
   /**
@@ -84,6 +85,18 @@ export default function useRoleInfo() {
     state.rolePagination.perPage = parseInt(`${route.query?.perPage || 10}`)
     state.search = `${route.query?.search || ''}`
   }
+  const onViewDetails = async (id: number) => {
+    await router.push({
+      name: 'permission-role-:id-details',
+      params: { id },
+    })
+  }
+  const onUpdateRole = async (id: number) => {
+    await router.push({
+      name: 'permission-role-:id-update',
+      params: { id },
+    })
+  }
   const onDeleteRole = async () => {
     if (userSession.user?.teamId && state.deleteActionItem?.id) {
       const { status, message } = await deleteRole({
@@ -124,6 +137,8 @@ export default function useRoleInfo() {
     // variable
     roleTableHeaders,
     // methods
+    onViewDetails,
+    onUpdateRole,
     onDeleteRole,
   }
 }

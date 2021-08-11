@@ -19,7 +19,7 @@ import { computed, ref } from 'vue'
  * @see /src/components/navigation/desktop/sidebar/subsidebars/GenericSidebar.vue
  */
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
-import useCreatePermission from '/@src/composable/permission/use-create-permission'
+import useCreateRole from '../../../composable/permission/use-create-role'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 pageTitle.value = 'Create Role'
@@ -35,12 +35,15 @@ const {
   roleName,
   roleDescription,
   menuLoading,
+  loadingOption,
+  teamOptions,
+  teamId,
   // computed
   disabledCreateBtn,
   // methods
   onCreate,
   onClear,
-} = useCreatePermission()
+} = useCreateRole()
 </script>
 
 <template>
@@ -63,6 +66,9 @@ const {
                 placeholder="Role name"
               />
             </V-Control>
+            <p v-show="roleName.trim().length < 4" class="help text-danger">
+              Role name required atleast 4 characters.
+            </p>
           </V-Field>
           <V-Field>
             <label>Role description</label>
@@ -73,6 +79,39 @@ const {
                 rows="3"
                 placeholder="A description for this role..."
               ></textarea>
+            </V-Control>
+            <p
+              v-show="roleDescription.trim().length < 12"
+              class="help text-danger"
+            >
+              Role description required atleast 12 characters.
+            </p>
+          </V-Field>
+          <V-Field class="is-autocomplete-select">
+            <label>Team</label>
+            <V-Control icon="feather:search" :loading="loadingOption">
+              <Multiselect
+                v-model="teamId"
+                placeholder="Select team"
+                :options="teamOptions"
+                :searchable="true"
+                track-by="name"
+                value-prop="id"
+              >
+                <template #singlelabel="{ value }">
+                  <div class="multiselect-single-label">
+                    ({{ value.id }}) {{ value.name }}
+                  </div>
+                </template>
+                <template #option="{ option }">
+                  <span class="select-option-text">
+                    ({{ option.id }}) {{ option.name }}
+                  </span>
+                </template>
+              </Multiselect>
+              <p v-show="!teamId" class="help text-danger">
+                Choose team for this role.
+              </p>
             </V-Control>
           </V-Field>
         </div>

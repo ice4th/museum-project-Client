@@ -58,7 +58,7 @@ const onSelected = (value: any, key: number) => {
   <div class="box-menu-list">
     <!-- Message -->
     <div v-show="showMessage" class="box-menu">
-      <V-Message closable @close="showMessage = false">
+      <V-Message color="danger" closable @close="showMessage = false">
         Select permission for your role below at least 1 action.
       </V-Message>
     </div>
