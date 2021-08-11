@@ -10,22 +10,7 @@ import useConfirmAccount from '/@src/composable/auth/use-confirm-account'
 const notyf = useNotyf()
 const router = useRouter()
 
-// const isLoading = ref(false)
-
-const { adminProfile, messageError, isLoading } = useConfirmAccount()
-
-const confirm = async () => {
-  isLoading.value = true
-  notyf.success('Your account is confirmed Erik !')
-
-  await sleep()
-  router.push({
-    name: 'sidebar-dashboards',
-  })
-
-  await sleep()
-  isLoading.value = false
-}
+const { myProfile, messageError, isLoading } = useConfirmAccount()
 </script>
 
 <template>
@@ -80,9 +65,8 @@ const confirm = async () => {
                   </template>
                   <template v-else>
                     <h3 class="dark-inverted">Your account is active</h3>
-                    <h4 v-if="adminProfile.name" class="dark-inverted">
-                      Hey {{ adminProfile.name }}, Welcome to Whitehouse
-                      Globish.
+                    <h4 v-if="myProfile?.name" class="dark-inverted">
+                      Hey {{ myProfile.name }}, Welcome to Whitehouse Globish.
                     </h4>
                   </template>
                   <div class="buttons">
