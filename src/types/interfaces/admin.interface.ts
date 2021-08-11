@@ -1,14 +1,12 @@
 import { AdminCountry, AdminStatus } from '../enums/admin.enum'
-import { ISubmenuActionName } from './permission.interface'
 export interface IAdminAccessInfo {
   id: number
   name: string
-  subMenus?: ISubmenuActionName[]
 }
 export interface IAdminInfo {
   id: number
-  roleId: number
-  teamId: number
+  roleName: string
+  teamName: string
   name: string
   email: string
   firstname: string
@@ -16,11 +14,12 @@ export interface IAdminInfo {
   status: AdminStatus
   avatar: string
   phone: string
-  dob: Date
-  lastLogin: Date
+  dob: string
+  lastLogin: string
   country: AdminCountry
   manageCountry: AdminCountry[]
   menus: IAdminAccessInfo[]
+  permissions: string[]
 }
 
 export interface IAdminDetail {
@@ -30,6 +29,8 @@ export interface IAdminDetail {
   avatar: string
   phone: string
   email: string
+  teamName: string
+  roleName: string
   country: AdminCountry
   status: AdminStatus
 }

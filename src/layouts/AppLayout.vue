@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
-import { ref, watchPostEffect, watch } from 'vue'
+import { computed, ref, watchPostEffect, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import useUserSession from '../composable/useUserSession'
+import { NavbarKey } from '../helpers/permission'
 
 import { activePanel } from '/@src/state/activePanelState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
@@ -22,7 +23,7 @@ const props = defineProps({
     default: 'labels',
   },
   defaultSidebar: {
-    type: String,
+    type: String as PropType<NavbarKey>,
     default: 'index',
   },
   closeOnChange: {
@@ -44,17 +45,20 @@ const props = defineProps({
 })
 
 const route = useRoute()
+const { navbarList } = useUserSession()
 const isMobileSidebarOpen = ref(false)
 const isDesktopSidebarOpen = ref(props.openOnMounted)
 const activeMobileSubsidebar = ref(props.defaultSidebar)
-const { navbarList } = useUserSession()
+const currentNav = computed(() =>
+  navbarList.find((nb) => nb.key === activeMobileSubsidebar.value)
+)
 
-function switchSidebar(id: string) {
-  if (id === activeMobileSubsidebar.value) {
+const switchSidebar = (key: NavbarKey) => {
+  if (key === activeMobileSubsidebar.value) {
     isDesktopSidebarOpen.value = !isDesktopSidebarOpen.value
   } else {
     isDesktopSidebarOpen.value = true
-    activeMobileSubsidebar.value = id
+    activeMobileSubsidebar.value = key
   }
 }
 
@@ -116,13 +120,12 @@ watch(
           v-for="navItem in navbarList"
           :key="`mobile-sidebar-${navItem.key}`"
         >
-          <RouterLink
-            :to="{ name: navItem.key }"
+          <a
             :class="[activeMobileSubsidebar === navItem.key && 'is-active']"
             @click="activeMobileSubsidebar = navItem.key"
           >
             <i aria-hidden="true" class="iconify" :data-icon="navItem.icon"></i>
-          </RouterLink>
+          </a>
         </li>
       </template>
 
@@ -150,12 +153,18 @@ watch(
 
     <!-- Mobile subsidebar links -->
     <transition name="slide-x">
-      <StudentMobileSubsidebar
+      <MobileSubSidebar
+        v-if="isMobileSidebarOpen"
+        :main-menu-key="activeMobileSubsidebar"
+        :main-label="currentNav.label"
+        @close="isMobileSidebarOpen = false"
+      />
+      <!-- <StudentMobileSubsidebar
         v-if="isMobileSidebarOpen && activeMobileSubsidebar === 'student'"
       />
       <ProductMobileSubsidebar
         v-else-if="isMobileSidebarOpen && activeMobileSubsidebar === 'product'"
-      />
+      /> -->
     </transition>
 
     <Sidebar :theme="props.theme" :is-open="isDesktopSidebarOpen">
@@ -199,7 +208,13 @@ watch(
     </Sidebar>
 
     <transition name="slide-x">
-      <AdminSubsidebar
+      <SubSidebar
+        v-if="isDesktopSidebarOpen"
+        :main-menu-key="activeMobileSubsidebar"
+        :main-label="currentNav.label"
+        @close="isDesktopSidebarOpen = false"
+      />
+      <!-- <AdminSubsidebar
         v-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'admin'"
         @close="isDesktopSidebarOpen = false"
       />
@@ -210,7 +225,7 @@ watch(
       <ProductSubsidebar
         v-else-if="isDesktopSidebarOpen && activeMobileSubsidebar === 'product'"
         @close="isDesktopSidebarOpen = false"
-      />
+      /> -->
     </transition>
 
     <LanguagesPanel />

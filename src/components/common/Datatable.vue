@@ -2,9 +2,10 @@
 import { ref, computed, watch } from 'vue'
 import type { PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
 /**
  * @info header example
- * const headers = [
+ * const headers: IDatatableHeader = [
     { key: 'firstname', label: 'First name' },
     { key: 'lastname', label: 'Last name' },
     { key: 'position', label: 'Position', isEnd: true }
@@ -13,7 +14,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 /**
  * @info data example
- * const data = [
+ * const data: IDatatableHeader = [
     { firstname: 'Tina', lastname: 'Bergmann', position: 'Head of Sales' },
     { firstname: 'John', lastname: 'Wistmus', position: 'Senior Executive' },
     { firstname: 'Sam', lastname: 'Watson', position: 'Software Engineer' },
@@ -21,15 +22,6 @@ import { useRoute, useRouter } from 'vue-router'
     { firstname: 'Anders', lastname: 'Jensen', position: 'Accountant' },
   ]
  */
-interface IHeader {
-  key: string
-  label: string
-  isEnd?: Boolean
-  isRaw?: Boolean
-  isCenter?: Boolean
-  customHeaderClass?: string
-  customRowClass?: string
-}
 const props = defineProps({
   total: {
     type: Number,
@@ -56,7 +48,7 @@ const props = defineProps({
     default: 'Filter...',
   },
   headers: {
-    type: Object as PropType<IHeader[]>,
+    type: Object as PropType<IDatatableHeader[]>,
     required: true,
   },
   data: {
