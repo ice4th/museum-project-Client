@@ -69,9 +69,9 @@ export const studentSubsidebarList: SubsideBarItemDetail[] = [
 ]
 
 export const codeSubsidebarList: SubsideBarItemDetail[] = [
-  {
-    routeName: 'admin-users',
-    label: 'Admin List',
-    icon: '<i class="fas fa-user-edit"></i>',
-  },
+  // {
+  //   routeName: 'admin-users',
+  //   label: 'Admin List',
+  //   icon: '<i class="fas fa-user-edit"></i>',
+  // },
 ]
