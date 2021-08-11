@@ -1,14 +1,23 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-
+import useProductTable from '/@src/composable/product/use-product-table'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-
+import { addCommas } from '/@src/helpers/filter.helper'
 pageTitle.value = 'Product Information'
 
 useHead({
   title: 'Whitehouse Product',
 })
+const {
+  products,
+  isloading,
+  productTableHeaders,
+  currentPage,
+  perPage,
+  total,
+} = useProductTable()
+console.log(products.value, isloading.value)
 
 const options = {
   searchable: true,
@@ -81,4 +90,80 @@ const options = {
       </tbody>
     </V-SimpleDatatables>
   </div>
+
+  <Datatable
+    :headers="productTableHeaders"
+    :data="products"
+    :current-page="currentPage"
+    :per-page="perPage"
+    :total="total"
+    :is-loading="isLoading"
+  >
+    <template #purchasable="{ value }">
+      <v-Tag
+        :color="+value ? 'success' : 'danger'"
+        :label="+value ? 'Sale' : 'Not for sale'"
+        :outlined="!+value"
+        class="chip"
+        rounded
+      />
+    </template>
+    <template #price="{ value }">
+      {{ addCommas(value) }}
+    </template>
+
+    <template #action="{ value }">
+      <div class="dark-inverted is-flex is-justify-content-flex-end">
+        <V-Dropdown speced right>
+          <template #button="{ toggle }">
+            <V-Button
+              icon="feather:more-vertical"
+              class="is-trigger"
+              @click="toggle"
+            >
+              Action
+            </V-Button>
+          </template>
+          <template #content>
+            <a
+              role="menuitem"
+              href="#"
+              class="dropdown-item is-media"
+              @click="showProduct(value)"
+            >
+              <div class="icon">
+                <i aria-hidden="true" class="lnil lnil-eye"></i>
+              </div>
+              <div class="meta">
+                <span>View</span>
+                <span>View product details</span>
+              </div>
+            </a>
+            <a
+              role="menuitem"
+              href="#"
+              class="dropdown-item is-media"
+              @click="editProduct(value.id)"
+            >
+              <div class="icon">
+                <i aria-hidden="true" class="lnil lnil-pencil"></i>
+              </div>
+              <div class="meta">
+                <span>Edit</span>
+                <span>Edit product details</span>
+              </div>
+            </a>
+          </template>
+        </V-Dropdown>
+      </div>
+    </template>
+  </Datatable>
 </template>
+
+<style lang="scss" scoped>
+.chip {
+  width: 80%;
+  max-width: 80px;
+  text-align: center;
+}
+</style>
