@@ -1,4 +1,5 @@
 import useApi, { ApiResponse } from '../useApi'
+import { checkResponseStatus } from '.'
 import {
   IPaginationParams,
   IPaginationResponse,
@@ -21,6 +22,11 @@ export default function usePermissionApi() {
     return api.get<IPaginationResponse<IRoleInfo[]>>('/Roles', { params })
   }
 
+  const getRoleById = async (id: number): Promise<IRoleInfo> => {
+    const res = await api.get<IRoleInfo>(`/Roles/${id}`)
+    return checkResponseStatus(res)
+  }
+
   const getMenus = async (): Promise<AxiosResponse<IMenu[]>> => {
     return api.get<IMenu[]>('Menus')
   }
@@ -40,6 +46,7 @@ export default function usePermissionApi() {
 
   return {
     getRolePagination,
+    getRoleById,
     createRole,
     getMenus,
     updateRole,

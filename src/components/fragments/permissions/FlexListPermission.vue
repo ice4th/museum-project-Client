@@ -12,11 +12,11 @@ const props = defineProps({
   },
   showMessage: {
     type: Boolean,
-    default: false,
+    required: true,
   },
   colorMessage: {
     type: String,
-    default: 'danger',
+    required: true,
   },
 })
 </script>

@@ -1,11 +1,10 @@
 import { Notyf } from 'notyf'
-import { computed, onMounted, reactive, toRaw, toRefs } from 'vue'
+import { computed, onMounted, reactive, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import { errMessage } from '../../helpers/filter.helper'
 import { TeamOption } from '../../types/interfaces/option.interface'
 import {
   IMenu,
-  IPermission,
   ISelectedMenuItem,
 } from '../../types/interfaces/permission.interface'
 import useOptionApi from '../api/useOptionApi'
@@ -117,7 +116,7 @@ export default function useCreateRole() {
   /**
    * Methods
    */
-  const fetchMenus = async () => {
+  const setMenuItems = async () => {
     state.menuLoading = true
 
     const { data } = await getMenus()
@@ -185,10 +184,11 @@ export default function useCreateRole() {
       }
     }
 
+    const team = state.teamOptions.find(({ id }) => id === state.teamId)
     await router.push({
       name: 'permission-role',
       query: {
-        search: state.roleName,
+        search: team?.name || '',
       },
     })
   }
@@ -196,15 +196,15 @@ export default function useCreateRole() {
     state.roleDescription = ''
     state.roleName = ''
     state.teamId = undefined
-    await fetchMenus()
+    await setMenuItems()
   }
 
   /**
    * On Mounted
    */
   onMounted(() => {
+    setMenuItems()
     fetchOption()
-    fetchMenus()
   })
 
   return {

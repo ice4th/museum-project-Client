@@ -48,10 +48,6 @@ const {
   onCreate,
   onClear,
 } = useCreateRole()
-
-/**
- * Methods
- */
 </script>
 
 <template>
