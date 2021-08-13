@@ -96,7 +96,7 @@ export default function useFormPackageInfo() {
       parseInt(`${state.formPackageInfo.beforeDiscount}`) < 0 ||
       isNil(state.formPackageInfo.installmentMonth) ||
       !state.formPackageInfo.type ||
-      !state.formPackageInfo.duration ||
+      parseInt(`${state.formPackageInfo.duration}`) < 0 ||
       !state.formPackageInfo.ticketOneOnOne ||
       !state.formPackageInfo.privateSlot
     )
@@ -148,7 +148,7 @@ export default function useFormPackageInfo() {
         installmentMonth: `${res.installmentMonth}`,
         engder: res.engder || undefined,
         type: res.type,
-        duration: res.duration,
+        duration: parseInt(`${res.duration}`) || 0,
         ticketOneOnOne: res.ticket || 0,
         ticketFreetalk: res.freeTalkTicket || 0,
         ticketGroup: res.groupClassTicket || 0,
@@ -206,8 +206,9 @@ export default function useFormPackageInfo() {
    */
   onMounted(() => {
     fetchOptions()
-    // fetch package by id if update page
-    if (route.name === 'product-package-:id-update' && route.params.id) {
+    // fetch package by id if update page or details page
+    const page = ['product-package-:id-update', 'product-package-:id-details']
+    if (page.includes(String(route.name)) && route.params.id) {
       fetchPackage()
     }
   })

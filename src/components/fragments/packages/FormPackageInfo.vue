@@ -39,11 +39,15 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  createPackageForm: {
+  formPackageInfo: {
     type: Object as PropType<IFormPackageInfo>,
     default: undefined,
   },
   loadingOptions: {
+    type: Boolean,
+    default: false,
+  },
+  readonly: {
     type: Boolean,
     default: false,
   },
@@ -91,12 +95,13 @@ const privateSlots = [
           <label>Package Name</label>
           <V-Control icon="lnil lnil-package">
             <input
-              v-model="createPackageForm.packageName"
+              v-model="formPackageInfo.packageName"
               type="text"
               class="input"
               placeholder="Package name"
+              :disabled="readonly"
             />
-            <p v-show="!createPackageForm.packageName" class="help text-danger">
+            <p v-show="!formPackageInfo.packageName" class="help text-danger">
               Package name is required.
             </p>
           </V-Control>
@@ -108,10 +113,11 @@ const privateSlots = [
           <label>Internal Package Name</label>
           <V-Control icon="lnil lnil-file-name">
             <input
-              v-model="createPackageForm.packageNameInternal"
+              v-model="formPackageInfo.packageNameInternal"
               type="text"
               class="input"
               placeholder="Internal Package Name"
+              :disabled="readonly"
             />
           </V-Control>
         </V-Field>
@@ -122,12 +128,13 @@ const privateSlots = [
           <label>Product</label>
           <V-Control icon="feather:search" :loading="loadingOptions">
             <Multiselect
-              v-model="createPackageForm.productId"
+              v-model="formPackageInfo.productId"
               placeholder="Select product"
               :options="products"
               :searchable="true"
               track-by="name"
               value-prop="id"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -140,7 +147,7 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
-            <p v-show="!createPackageForm.productId" class="help text-danger">
+            <p v-show="!formPackageInfo.productId" class="help text-danger">
               Choose product for this package.
             </p>
           </V-Control>
@@ -152,9 +159,10 @@ const privateSlots = [
           <label>&nbsp;</label>
           <V-Control>
             <V-SwitchBlock
-              v-model="createPackageForm.purchasable"
+              v-model="formPackageInfo.purchasable"
               label="Purchasable"
               color="primary"
+              :disabled="readonly"
             />
           </V-Control>
         </V-Field>
@@ -172,20 +180,22 @@ const privateSlots = [
           <V-Tag v-tooltip="'แสดงหน้าเว็บ'" color="solid" label="General" />
           <V-Control>
             <V-Radio
-              v-model="createPackageForm.status"
+              v-model="formPackageInfo.status"
               value="0"
               label="None"
               name="status_radio"
               color="primary"
               square
+              :disabled="readonly"
             />
             <V-Radio
-              v-model="createPackageForm.status"
+              v-model="formPackageInfo.status"
               value="1"
               label="General"
               name="status_radio"
               color="primary"
               square
+              :disabled="readonly"
             />
           </V-Control>
         </V-Field>
@@ -196,10 +206,11 @@ const privateSlots = [
           <label>Detail</label>
           <V-Control>
             <textarea
-              v-model="createPackageForm.detail"
+              v-model="formPackageInfo.detail"
               class="textarea"
               rows="2"
               placeholder="Add detail..."
+              :disabled="readonly"
             ></textarea>
           </V-Control>
         </V-Field>
@@ -210,10 +221,11 @@ const privateSlots = [
           <label>Comment</label>
           <V-Control>
             <textarea
-              v-model="createPackageForm.comment"
+              v-model="formPackageInfo.comment"
               class="textarea"
               rows="2"
               placeholder="Add comment..."
+              :disabled="readonly"
             ></textarea>
           </V-Control>
         </V-Field>
@@ -228,7 +240,7 @@ const privateSlots = [
       <!-- Price -->
       <div class="column is-6">
         <V-Field>
-          <label>Price {{ addCommas(props.createPackageForm.price) }}</label>
+          <label>Price {{ addCommas(props.formPackageInfo.price) }}</label>
           <V-Control>
             <V-Field addons>
               <V-Control>
@@ -236,19 +248,19 @@ const privateSlots = [
               </V-Control>
               <V-Control expanded>
                 <input
-                  v-model="props.createPackageForm.price"
+                  v-model="props.formPackageInfo.price"
                   type="number"
                   class="input"
                   placeholder="Amount..."
+                  :disabled="readonly"
                   @change="
-                    props.createPackageForm.price =
-                      +props.createPackageForm.price
+                    props.formPackageInfo.price = +props.formPackageInfo.price
                   "
                 />
               </V-Control>
             </V-Field>
             <p
-              v-show="parseInt(`${createPackageForm.price}`) < 0"
+              v-show="parseInt(`${formPackageInfo.price}`) < 0"
               class="help text-danger"
             >
               Price is must be positive number or zero.
@@ -261,7 +273,7 @@ const privateSlots = [
         <V-Field>
           <label
             >Before Discount
-            {{ addCommas(props.createPackageForm.beforeDiscount) }}</label
+            {{ addCommas(props.formPackageInfo.beforeDiscount) }}</label
           >
           <V-Control>
             <V-Field addons>
@@ -270,19 +282,20 @@ const privateSlots = [
               </V-Control>
               <V-Control expanded>
                 <input
-                  v-model="props.createPackageForm.beforeDiscount"
+                  v-model="props.formPackageInfo.beforeDiscount"
                   type="number"
                   class="input"
                   placeholder="Amount..."
+                  :disabled="readonly"
                   @change="
-                    props.createPackageForm.beforeDiscount =
-                      +props.createPackageForm.beforeDiscount
+                    props.formPackageInfo.beforeDiscount =
+                      +props.formPackageInfo.beforeDiscount
                   "
                 />
               </V-Control>
             </V-Field>
             <p
-              v-show="parseInt(`${createPackageForm.beforeDiscount}`) < 0"
+              v-show="parseInt(`${formPackageInfo.beforeDiscount}`) < 0"
               class="help text-danger"
             >
               BeforeDiscount must be positive number or zero.
@@ -296,11 +309,12 @@ const privateSlots = [
           <label>Installment</label>
           <V-Control>
             <Multiselect
-              v-model="createPackageForm.installmentMonth"
+              v-model="formPackageInfo.installmentMonth"
               placeholder="Select installment"
               :options="installmentItems"
               track-by="key"
               value-prop="value"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -314,7 +328,7 @@ const privateSlots = [
               </template>
             </Multiselect>
             <p
-              v-show="isNil(createPackageForm.installmentMonth)"
+              v-show="isNil(formPackageInfo.installmentMonth)"
               class="help text-danger"
             >
               Choose installment for this package.
@@ -325,26 +339,27 @@ const privateSlots = [
       <!-- Duration -->
       <div class="column is-6">
         <V-Field>
-          <label>Duration</label>
+          <label>Duration 555</label>
           <V-Control>
             <V-Field addons>
               <V-Control expanded>
                 <input
-                  v-model="createPackageForm.duration"
+                  v-model="formPackageInfo.duration"
                   type="number"
                   class="input"
                   placeholder="duration..."
-                  @change="
-                    props.createPackageForm.duration =
-                      +props.createPackageForm.duration
-                  "
+                  :disabled="readonly"
+                  @change="formPackageInfo.duration = +formPackageInfo.duration"
                 />
               </V-Control>
               <V-Control>
                 <a class="button is-static">month</a>
               </V-Control>
             </V-Field>
-            <p v-show="!createPackageForm.duration" class="help text-danger">
+            <p
+              v-show="isNil(formPackageInfo.duration)"
+              class="help text-danger"
+            >
               Duration is required.
             </p>
           </V-Control>
@@ -356,20 +371,18 @@ const privateSlots = [
           <label>1 on 1 Ticket</label>
           <V-Control icon="lnil lnil-ticket">
             <input
-              v-model="createPackageForm.ticketOneOnOne"
+              v-model="formPackageInfo.ticketOneOnOne"
               type="number"
               class="input"
               placeholder="1 on 1 ticket..."
+              :disabled="readonly"
               @change="
-                props.createPackageForm.ticketOneOnOne =
-                  +props.createPackageForm.ticketOneOnOne
+                props.formPackageInfo.ticketOneOnOne =
+                  +props.formPackageInfo.ticketOneOnOne
               "
             />
           </V-Control>
-          <p
-            v-show="!createPackageForm.ticketOneOnOne"
-            class="help text-danger"
-          >
+          <p v-show="!formPackageInfo.ticketOneOnOne" class="help text-danger">
             1 on 1 ticket is required.
           </p>
         </V-Field>
@@ -380,13 +393,14 @@ const privateSlots = [
           <label>Freetalk Ticket</label>
           <V-Control icon="lnil lnil-ticket">
             <input
-              v-model="createPackageForm.ticketFreetalk"
+              v-model="formPackageInfo.ticketFreetalk"
               type="number"
               class="input"
               placeholder="freetalk ticket..."
+              :disabled="readonly"
               @change="
-                props.createPackageForm.ticketFreetalk =
-                  +props.createPackageForm.ticketFreetalk
+                props.formPackageInfo.ticketFreetalk =
+                  +props.formPackageInfo.ticketFreetalk
               "
             />
           </V-Control>
@@ -398,13 +412,14 @@ const privateSlots = [
           <label>Group class Ticket</label>
           <V-Control icon="lnil lnil-ticket">
             <input
-              v-model="createPackageForm.ticketGroup"
+              v-model="formPackageInfo.ticketGroup"
               type="number"
               class="input"
               placeholder="group class ticket..."
+              :disabled="readonly"
               @change="
-                props.createPackageForm.ticketGroup =
-                  +props.createPackageForm.ticketGroup
+                props.formPackageInfo.ticketGroup =
+                  +props.formPackageInfo.ticketGroup
               "
             />
           </V-Control>
@@ -416,13 +431,14 @@ const privateSlots = [
           <label>Master class Ticket</label>
           <V-Control icon="lnil lnil-ticket">
             <input
-              v-model="createPackageForm.ticketMaster"
+              v-model="formPackageInfo.ticketMaster"
               type="number"
               class="input"
               placeholder="master class ticket..."
+              :disabled="readonly"
               @change="
-                props.createPackageForm.ticketMaster =
-                  +props.createPackageForm.ticketMaster
+                props.formPackageInfo.ticketMaster =
+                  +props.formPackageInfo.ticketMaster
               "
             />
           </V-Control>
@@ -441,11 +457,12 @@ const privateSlots = [
           <label>Private class time</label>
           <V-Control>
             <Multiselect
-              v-model="createPackageForm.privateSlot"
+              v-model="formPackageInfo.privateSlot"
               placeholder="Select private class time"
               :options="privateSlots"
               track-by="key"
               value-prop="value"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -458,7 +475,7 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
-            <p v-show="!createPackageForm.privateSlot" class="help text-danger">
+            <p v-show="!formPackageInfo.privateSlot" class="help text-danger">
               Choose private class time for this package.
             </p>
           </V-Control>
@@ -472,14 +489,15 @@ const privateSlots = [
             <V-Radio
               v-for="(type, idx) in packageTypeItems"
               :key="idx"
-              v-model="createPackageForm.type"
+              v-model="formPackageInfo.type"
               :value="type.value"
               :label="type.key"
               :name="type.key"
               color="primary"
               square
+              :disabled="readonly"
             />
-            <p v-show="!createPackageForm.type" class="help text-danger">
+            <p v-show="!formPackageInfo.type" class="help text-danger">
               Choose private class time for this package.
             </p>
           </V-Control>
@@ -491,11 +509,12 @@ const privateSlots = [
           <label>Globish Level</label>
           <V-Control>
             <Multiselect
-              v-model="createPackageForm.globishLevel"
+              v-model="formPackageInfo.globishLevel"
               placeholder="Select globish level"
               :options="globishLevelItems"
               track-by="key"
               value-prop="value"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -508,10 +527,7 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
-            <p
-              v-show="!createPackageForm.globishLevel"
-              class="help text-danger"
-            >
+            <p v-show="!formPackageInfo.globishLevel" class="help text-danger">
               Choose globish level for this package.
             </p>
           </V-Control>
@@ -523,11 +539,12 @@ const privateSlots = [
           <label>CEFR Level</label>
           <V-Control>
             <Multiselect
-              v-model="createPackageForm.cefrLevel"
+              v-model="formPackageInfo.cefrLevel"
               placeholder="Select CEFR level"
               :options="cefrLevelItems"
               track-by="key"
               value-prop="value"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -540,7 +557,7 @@ const privateSlots = [
                 </span>
               </template>
             </Multiselect>
-            <p v-show="!createPackageForm.cefrLevel" class="help text-danger">
+            <p v-show="!formPackageInfo.cefrLevel" class="help text-danger">
               Choose CEFR level for this package.
             </p>
           </V-Control>
@@ -566,10 +583,11 @@ const privateSlots = [
               </label>
             </div> -->
             <input
-              v-model="createPackageForm.photo"
+              v-model="formPackageInfo.photo"
               type="text"
               class="input"
               placeholder="Photo URL..."
+              :disabled="readonly"
             />
           </V-Control>
         </V-Field>
@@ -601,10 +619,11 @@ const privateSlots = [
               </label>
             </div> -->
             <input
-              v-model="createPackageForm.curriculumSheet"
+              v-model="formPackageInfo.curriculumSheet"
               type="text"
               class="input"
               placeholder="Curriculum URL..."
+              :disabled="readonly"
             />
           </V-Control>
         </V-Field>
@@ -615,11 +634,12 @@ const privateSlots = [
           <label>Curriculum (New)</label>
           <V-Control>
             <Multiselect
-              v-model="createPackageForm.curriculumId"
+              v-model="formPackageInfo.curriculumId"
               placeholder="Select curriculum"
               :options="curriculums"
               track-by="name"
               value-prop="id"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -641,11 +661,12 @@ const privateSlots = [
           <label>Engder</label>
           <V-Control>
             <Multiselect
-              v-model="createPackageForm.engder"
+              v-model="formPackageInfo.engder"
               placeholder="Select package engder"
               :options="packageEngderItems"
               track-by="key"
               value-prop="value"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -667,11 +688,12 @@ const privateSlots = [
           <label>Globish Plus</label>
           <V-Control>
             <Multiselect
-              v-model="createPackageForm.featureGroupId"
+              v-model="formPackageInfo.featureGroupId"
               placeholder="Select feature group"
               :options="featureGroups"
               track-by="name"
               value-prop="id"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -693,11 +715,12 @@ const privateSlots = [
           <label>Find My Coach</label>
           <V-Control :has-error="false">
             <Multiselect
-              v-model="createPackageForm.findMycoachId"
+              v-model="formPackageInfo.findMycoachId"
               placeholder="Select find my coach"
               :options="fmcPackages"
               track-by="packageName"
               value-prop="id"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -719,11 +742,12 @@ const privateSlots = [
           <label>Course (Mook)</label>
           <V-Control>
             <Multiselect
-              v-model="createPackageForm.moocCourseId"
+              v-model="formPackageInfo.moocCourseId"
               placeholder="Select mooc course"
               :options="moocCourses"
               track-by="title"
               value-prop="id"
+              :disabled="readonly"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
