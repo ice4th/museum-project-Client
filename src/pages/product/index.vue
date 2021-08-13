@@ -16,6 +16,9 @@ const {
   currentPage,
   perPage,
   total,
+  search,
+  purchasable,
+  selectPurchasable,
 } = useProductTable()
 </script>
 
@@ -29,7 +32,21 @@ const {
       :per-page="perPage"
       :total="total"
       :is-loading="isLoading"
+      :search="search"
     >
+      <template #custom-left>
+        <V-Field>
+          <V-Control>
+            <div class="select is-rounded">
+              <select v-model="purchasable" @change="selectPurchasable">
+                <option :value="undefined">all</option>
+                <option value="1">purchasable</option>
+                <option value="0">unpurchasable</option>
+              </select>
+            </div>
+          </V-Control>
+        </V-Field>
+      </template>
       <template #purchasable="{ value }">
         <v-Tag
           :color="+value ? 'success' : 'danger'"
