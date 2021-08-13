@@ -3,19 +3,23 @@ import { computed, onMounted, reactive, toRaw, toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import { errMessage } from '../../helpers/filter.helper'
 import { TeamOption } from '../../types/interfaces/option.interface'
-import { IMenu } from '../../types/interfaces/permission.interface'
+import {
+  IMenu,
+  IPermission,
+  ISelectedMenuItem,
+} from '../../types/interfaces/permission.interface'
 import useOptionApi from '../api/useOptionApi'
 import usePermissionApi from '../api/usePermissionApi'
 
-export interface IUseCreateRole {
+export interface IUseCreateRoleState {
   menuItems: IMenu[]
-  selectedItems: any[] // create interface later
   roleName: string
   roleDescription: string
   teamId?: number
   teamOptions: TeamOption[]
   menuLoading: boolean
   loadingOption: boolean
+  showMessage: boolean
 }
 
 /**
@@ -44,9 +48,8 @@ export default function useCreateRole() {
   /**
    * State
    */
-  const state = reactive<IUseCreateRole>({
-    menuItems: [] as IMenu[],
-    selectedItems: [] as any[],
+  const state = reactive<IUseCreateRoleState>({
+    menuItems: [],
     roleName: '',
     roleDescription: '',
     teamId: undefined,
@@ -54,6 +57,8 @@ export default function useCreateRole() {
     // Loading
     menuLoading: false,
     loadingOption: false,
+    // verify message
+    showMessage: true,
   })
 
   /**
@@ -63,8 +68,50 @@ export default function useCreateRole() {
     return (
       state.roleDescription.trim().length < 12 ||
       state.roleName.trim().length < 4 ||
-      state.selectedItems.length === 0
+      selectedItems.value.length === 0
     )
+  })
+  const selectedItems = computed(() => {
+    return state.menuItems.reduce((prev, next: IMenu) => {
+      let totalActions = 0
+      const subMenus = next.subMenus.filter(({ actions }) => {
+        const selected = (actions || []).filter((action) => action.selected)
+        if (selected?.length > 0) {
+          totalActions += selected.length
+          return true
+        }
+        return false
+      })
+      if (subMenus?.length > 0) {
+        prev.push({
+          name: next.name,
+          icon: 'feather:file-plus',
+          actions: totalActions,
+          subtitles: subMenus?.length,
+          subMenus: subMenus.map(({ name, actions }) => {
+            return {
+              name,
+              actions: (actions || [])
+                .filter(({ selected }) => selected)
+                .map((permission) => ({
+                  id: permission.id,
+                  name: permission.actionName,
+                })),
+            }
+          }),
+        })
+      }
+      return prev
+    }, [] as ISelectedMenuItem[])
+  })
+  const verifyMessage = computed(() => {
+    if (selectedItems.value.length === 0) {
+      state.showMessage = true
+    }
+    return state.showMessage
+  })
+  const colorMessage = computed(() => {
+    return selectedItems.value.length === 0 ? 'danger' : 'success'
   })
 
   /**
@@ -109,7 +156,7 @@ export default function useCreateRole() {
     state.loadingOption = false
   }
   const onCreate = async () => {
-    const permissionIds = state.selectedItems
+    const permissionIds = selectedItems.value
       .map((item: any) =>
         item.subMenus.map((sub: any) =>
           sub.actions.map((action: any) => action.id)
@@ -146,7 +193,6 @@ export default function useCreateRole() {
     })
   }
   const onClear = async () => {
-    state.selectedItems = []
     state.roleDescription = ''
     state.roleName = ''
     state.teamId = undefined
@@ -165,6 +211,9 @@ export default function useCreateRole() {
     ...toRefs(state),
     // Computed
     disabledCreateBtn,
+    selectedItems,
+    verifyMessage,
+    colorMessage,
     // Methods
     fetchOption,
     onCreate,

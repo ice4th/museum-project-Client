@@ -21,6 +21,7 @@ import { computed, ref } from 'vue'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import useCreateRole from '../../../composable/permission/use-create-role'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+import type { ISelectedMenuItem } from '/@src/types/interfaces/permission.interface'
 
 pageTitle.value = 'Create Role'
 
@@ -31,7 +32,6 @@ useHead({
 const {
   // state
   menuItems,
-  selectedItems,
   roleName,
   roleDescription,
   menuLoading,
@@ -39,11 +39,19 @@ const {
   teamOptions,
   teamId,
   // computed
+  showMessage,
+  colorMessage,
+  verifyMessage,
+  selectedItems,
   disabledCreateBtn,
   // methods
   onCreate,
   onClear,
 } = useCreateRole()
+
+/**
+ * Methods
+ */
 </script>
 
 <template>
@@ -131,7 +139,7 @@ const {
         <!-- Selected Items -->
         <div v-if="selectedItems.length > 0">
           <div
-            v-for="(item, key) in selectedItems.sort((a, b) => a.key - b.key)"
+            v-for="(item, key) in selectedItems"
             :key="key"
             class="media-flex"
           >
@@ -139,7 +147,7 @@ const {
               <i class="iconify" :data-icon="item.icon"></i>
             </V-IconBox>
             <div class="flex-meta">
-              <span>{{ item.mainMenu }}</span>
+              <span>{{ item.name }}</span>
               <span
                 ><i class="fas fa-list"></i> {{ item.subtitles }} subtitles
                 <i class="lnir lnir-bookmark"></i>
@@ -150,7 +158,7 @@ const {
                 :key="idx"
                 class="pt-2"
               >
-                <h3 class="pb-1">{{ subItem.subMenu }}</h3>
+                <h3 class="pb-1">{{ subItem.name }}</h3>
                 <V-Tags class="mb-1">
                   <V-Tag
                     v-for="(action, i) in subItem.actions"
@@ -165,7 +173,11 @@ const {
       </V-Card>
     </div>
 
-    <FlexListPermission :items="menuItems" @selected="selectedItems = $event" />
+    <FlexListPermission
+      :items="menuItems"
+      :show-message="verifyMessage"
+      :color-message="colorMessage"
+    />
   </div>
 </template>
 
