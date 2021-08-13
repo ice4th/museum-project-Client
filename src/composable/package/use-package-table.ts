@@ -14,6 +14,7 @@ interface UsePackageTableState {
   paginationData?: IPaginationResponse<IPackageTableInfo[]>
   currentPage: number
   perPage: number
+  search: string
 }
 export default function usePackageTable() {
   /**
@@ -36,6 +37,7 @@ export default function usePackageTable() {
     paginationData: undefined,
     currentPage: 1,
     perPage: 10,
+    search: '',
   })
 
   /**
@@ -55,18 +57,12 @@ export default function usePackageTable() {
    * Methods
    */
   const fetchAllPackages = async () => {
-    const page = route.query.page as string
-    const perPage = route.query.perPage as string
     state.isLoading = true
-    if (page) {
-      state.currentPage = +page
-    }
-    if (perPage) {
-      state.perPage = +perPage
-    }
+
     const res = await getPackagesWithPagination({
       currentPage: state.currentPage,
       perPage: state.perPage,
+      search: state.search,
     })
     state.isLoading = false
     if (res) {
@@ -74,17 +70,29 @@ export default function usePackageTable() {
       state.currentPage = res.currentPage
     }
   }
+  const onViewPackage = async (id: number) => {
+    await router.push({
+      name: 'product-package-:id-details',
+      params: { id },
+    })
+  }
   const onEditPackage = async (id: number) => {
     await router.push({
       name: 'product-package-:id-update',
       params: { id },
     })
   }
+  const setDefaultPagination = () => {
+    state.currentPage = parseInt(`${route.query?.page || 1}`)
+    state.perPage = parseInt(`${route.query?.perPage || 10}`)
+    state.search = `${route.query?.search || ''}`
+  }
 
   /**
    * On Mounted
    */
   onMounted(() => {
+    setDefaultPagination()
     fetchAllPackages()
   })
 
@@ -92,6 +100,7 @@ export default function usePackageTable() {
     ...toRefs(state),
     packageTableHeaders,
     fetchAllPackages,
+    onViewPackage,
     onEditPackage,
   }
 }

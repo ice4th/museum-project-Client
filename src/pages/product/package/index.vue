@@ -16,6 +16,8 @@ const {
   paginationData,
   currentPage,
   perPage,
+  search,
+  onViewPackage,
   onEditPackage,
   fetchAllPackages,
 } = usePackageTable()
@@ -30,8 +32,16 @@ const {
       :current-page="currentPage"
       :total="paginationData?.total"
       :per-page="perPage"
+      :search="search"
       is-action
     >
+      <template #custom-right>
+        <div class="is-flex is-justify-content-flex-end pt-4">
+          <V-Button color="primary" icon="fas fa-plus" to="create-package">
+            Add Package
+          </V-Button>
+        </div>
+      </template>
       <template #purchasable="{ value }">
         <div class="flex-table-cell">
           <span
@@ -45,7 +55,11 @@ const {
         <div class="is-flex is-justify-content-flex-end">
           <V-Dropdown title="More" spaced right>
             <template #content>
-              <a role="menuitem" href="#" class="dropdown-item is-media">
+              <a
+                role="menuitem"
+                class="dropdown-item is-media"
+                @click="onViewPackage(value.id)"
+              >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-eye"></i>
                 </div>

@@ -6,10 +6,10 @@ import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 import useFormPackageInfo from '/@src/composable/package/use-form-package-info'
 
-pageTitle.value = 'Update Package'
+pageTitle.value = 'Package Details'
 
 useHead({
-  title: 'Whitehouse Update Package',
+  title: 'Whitehouse Package Details',
 })
 
 const {
@@ -21,12 +21,9 @@ const {
   curriculums,
   products,
   loadingOptions,
-  loadingPackage,
   notFoundPackage,
   // computed
   disabledDone,
-  // methods
-  editPackage,
 } = useFormPackageInfo()
 
 /**
@@ -71,25 +68,17 @@ const isStuck = computed(() => {
       <div class="form-outer">
         <div :class="[isStuck && 'is-stuck']" class="form-header stuck-header">
           <div class="form-header-inner">
-            <div class="left"><h3>Update Package</h3></div>
+            <div class="left"><h3>Package Details</h3></div>
             <div class="right">
               <div class="buttons">
                 <V-Button
                   :to="{ name: 'product-package' }"
                   icon="lnir lnir-arrow-left rem-100"
+                  class="custom-btn"
                   dark-outlined
                   light
                 >
                   Back
-                </V-Button>
-                <V-Button
-                  icon="lnir lnir-checkmark rem-100"
-                  color="primary"
-                  raised
-                  :disabled="disabledDone"
-                  @click="editPackage"
-                >
-                  Done
                 </V-Button>
               </div>
             </div>
@@ -104,6 +93,7 @@ const isStuck = computed(() => {
             :curriculums="curriculums"
             :products="products"
             :loading-options="loadingOptions"
+            readonly
           />
         </div>
       </div>
@@ -123,5 +113,14 @@ const isStuck = computed(() => {
 
 .is-stuck {
   top: 0 !important;
+}
+
+@media only screen and (max-width: 767px) {
+  .buttons {
+    justify-content: center !important;
+    .custom-btn {
+      width: 90% !important;
+    }
+  }
 }
 </style>
