@@ -13,19 +13,22 @@ import {
   TeamOption,
 } from '/@src/types/interfaces/option.interface'
 interface UseOptionApiState {
+  productOptions: ProductOption[]
   studentOptions: StudentOption[]
   teamOptions: TeamOption[]
 }
 export default function useOptionApi() {
   const api = useApi()
   const state = reactive<UseOptionApiState>({
+    productOptions: [],
     studentOptions: [],
     teamOptions: [],
   })
 
   const getProducts = async (): Promise<ProductOption[]> => {
     const res = await api.get<ProductOption[]>('/Options/Products')
-    return checkResponseStatus(res) || []
+    state.productOptions = checkResponseStatus(res) || []
+    return state.productOptions
   }
 
   const getPackages = async (): Promise<PackageOption[]> => {
@@ -65,13 +68,13 @@ export default function useOptionApi() {
   const getStudents = async (): Promise<StudentOption[]> => {
     const res = await api.get<StudentOption[]>('/Options/Students')
     state.studentOptions = checkResponseStatus(res) || []
-    return checkResponseStatus(res) || []
+    return state.studentOptions
   }
 
   const getTeams = async (): Promise<TeamOption[]> => {
     const res = await api.get<StudentOption[]>('/Options/Teams')
     state.teamOptions = checkResponseStatus(res) || []
-    return checkResponseStatus(res) || []
+    return state.teamOptions
   }
   return {
     ...toRefs(state),
