@@ -23,15 +23,9 @@ const props = defineProps({
 })
 
 /**
- * Define Emit
- */
-const emit = defineEmits(['selected'])
-
-/**
  * Variables
  */
 const internalOpenItems = reactive(props.openItems)
-let selectedSubMenus = reactive<any[]>([])
 
 /**
  * Methods
@@ -55,37 +49,6 @@ const toggle = (key: number) => {
     internalOpenItems.push(key)
   }
 }
-const onSelected = (key: number, val: any) => {
-  const item = props.items[key]
-  // find exist sub menu
-  let subMenuItem = selectedSubMenus.find(
-    ({ subMenu }) => subMenu === item.name
-  )
-  if (!subMenuItem) {
-    subMenuItem = {
-      subMenu: item.name,
-      actions: [],
-      key,
-    }
-  }
-  // add or remove tag in sub menu
-  if (subMenuItem.actions.some((x: any) => x.id === val.id)) {
-    subMenuItem.actions = subMenuItem.actions.filter(
-      (action: any) => action.id !== val.id
-    )
-  } else {
-    subMenuItem.actions.push(val)
-  }
-  // update sub menu in selected items
-  selectedSubMenus = selectedSubMenus.filter(
-    ({ subMenu }) => subMenu !== subMenuItem.subMenu
-  )
-  if (subMenuItem.actions.length > 0) {
-    selectedSubMenus.push(subMenuItem)
-  }
-  // emit selected items
-  emit('selected', selectedSubMenus)
-}
 </script>
 
 <template>
@@ -106,9 +69,7 @@ const onSelected = (key: number, val: any) => {
             v-for="action in item.actions"
             :key="action.id"
             class="action-wrapper"
-            @click="
-              onSelected(key, action), (action.selected = !action.selected)
-            "
+            @click="action.selected = !action.selected"
           >
             <V-Card :class="action.selected ? 'selected' : undefined">
               <V-Block

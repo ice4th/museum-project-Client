@@ -2,8 +2,7 @@ import { onMounted, reactive, toRefs } from 'vue'
 import { IRoleInfo } from '/@src/types/interfaces/permission.interface'
 import usePermissionApi from '/@src/composable/api/usePermissionApi'
 import { IPaginationResponse } from '../../types/interfaces/common.interface'
-import { useRoute } from 'vue-router'
-import useUserSession from '../useUserSession'
+import { useRoute, useRouter } from 'vue-router'
 import { Notyf } from 'notyf'
 import { errMessage } from '../../helpers/filter.helper'
 
@@ -30,11 +29,11 @@ export default function useRoleInfo() {
    * Composable Api
    */
   const { getRolePagination, deleteRole } = usePermissionApi()
-  const userSession = useUserSession()
 
   /**
    * Router
    */
+  const router = useRouter()
   const route = useRoute()
 
   /**
@@ -84,14 +83,27 @@ export default function useRoleInfo() {
     state.rolePagination.perPage = parseInt(`${route.query?.perPage || 10}`)
     state.search = `${route.query?.search || ''}`
   }
+  const onViewDetails = async (id: number) => {
+    await router.push({
+      name: 'permission-role-:id-details',
+      params: { id },
+    })
+  }
+  const onUpdateRole = async (id: number) => {
+    await router.push({
+      name: 'permission-role-:id-update',
+      params: { id },
+    })
+  }
   const onDeleteRole = async () => {
-    if (userSession.user?.teamId && state.deleteActionItem?.id) {
-      const { status, message } = await deleteRole({
-        roleId: state.deleteActionItem.id,
-        teamId: userSession.user.teamId,
-      })
+    if (state.deleteActionItem?.id) {
+      const { status, message } = await deleteRole(state.deleteActionItem.id)
 
       if (status === 200) {
+        // refresh data table
+        setDefaultPagination()
+        await fetchRoleItems()
+        // show notify success
         notyfMessage.open({
           type: 'success',
           message: 'Role was removed!',
@@ -102,11 +114,6 @@ export default function useRoleInfo() {
           type: 'error',
         })
       }
-    } else {
-      notyfMessage.open({
-        message: 'Not found team id',
-        type: 'error',
-      })
     }
     state.deleteActionItem = undefined
   }
@@ -124,6 +131,8 @@ export default function useRoleInfo() {
     // variable
     roleTableHeaders,
     // methods
+    onViewDetails,
+    onUpdateRole,
     onDeleteRole,
   }
 }

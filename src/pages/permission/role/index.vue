@@ -21,7 +21,7 @@ import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import useRoleInfo from '/@src/composable/permission/use-role-info'
 
-pageTitle.value = 'Role'
+pageTitle.value = 'Role Information'
 
 useHead({
   title: 'Whitehouse Role',
@@ -36,6 +36,8 @@ const {
   // variable
   roleTableHeaders,
   // methods
+  onViewDetails,
+  onUpdateRole,
   onDeleteRole,
 } = useRoleInfo()
 </script>
@@ -63,7 +65,11 @@ const {
         <div class="is-flex is-justify-content-flex-end">
           <V-Dropdown title="More" spaced right>
             <template #content>
-              <a role="menuitem" href="#" class="dropdown-item is-media">
+              <a
+                role="menuitem"
+                class="dropdown-item is-media"
+                @click="onViewDetails(value.id)"
+              >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-eye"></i>
                 </div>
@@ -76,7 +82,7 @@ const {
               <a
                 role="menuitem"
                 class="dropdown-item is-media"
-                @click="onEditPackage(value.id)"
+                @click="onUpdateRole(value.id)"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-pencil"></i>

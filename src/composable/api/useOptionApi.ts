@@ -73,6 +73,7 @@ export default function useOptionApi() {
     state.teamOptions = checkResponseStatus(res) || []
     return checkResponseStatus(res) || []
   }
+
   return {
     ...toRefs(state),
     getProducts,
