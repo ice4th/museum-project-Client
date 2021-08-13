@@ -10,56 +10,35 @@ const props = defineProps({
     type: Array as PropType<any[]>,
     required: true,
   },
+  showMessage: {
+    type: Boolean,
+    required: true,
+  },
+  colorMessage: {
+    type: String,
+    required: true,
+  },
 })
-
-/**
- * Define Emit
- */
-const emit = defineEmits(['selected'])
-
-/**
- * Variables
- */
-const showMessage = ref(true)
-let selectedMainMenus = reactive<any[]>([])
-
-/**
- * Methods
- */
-const onSelected = (value: any, key: number) => {
-  const item = props.items[key]
-
-  let mainMenuItem = selectedMainMenus.find(
-    ({ mainMenu }) => mainMenu === item.name
-  )
-
-  const val = value.sort((a: any, b: any) => a.key - b.key)
-  mainMenuItem = {
-    key,
-    mainMenu: mainMenuItem?.mainMenu || item.name,
-    icon: mainMenuItem?.icon || item.icon,
-    subtitles: val.length,
-    actions: val.map((v: any) => v.actions).flat().length,
-    subMenus: val,
-  }
-  // update main menu in selected items
-  selectedMainMenus = selectedMainMenus.filter(
-    ({ mainMenu }) => mainMenu !== mainMenuItem.mainMenu
-  )
-  if (mainMenuItem.subMenus.length > 0) {
-    selectedMainMenus.push(mainMenuItem)
-  }
-  // emit selected items
-  emit('selected', selectedMainMenus)
-}
 </script>
 
 <template>
   <div class="box-menu-list">
     <!-- Message -->
     <div v-show="showMessage" class="box-menu">
-      <V-Message closable @close="showMessage = false">
-        Select permission for your role below at least 1 action.
+      <V-Message
+        :key="colorMessage"
+        :color="colorMessage"
+        :closable="colorMessage === 'success'"
+        @close="showMessage = false"
+      >
+        {{
+          colorMessage === 'danger'
+            ? 'Select permission for your role below at least 1 action.'
+            : 'Verified'
+        }}
+        <span v-if="colorMessage === 'success'"
+          ><i class="fas fa-check-circle"></i
+        ></span>
       </V-Message>
     </div>
     <!-- Flex List -->
@@ -91,10 +70,7 @@ const onSelected = (value: any, key: number) => {
         </V-Card>
       </div>
       <div v-show="menu.show" class="box-accordion">
-        <AccordionSubmenu
-          :items="menu.subMenus"
-          @selected="onSelected($event, key)"
-        />
+        <AccordionSubmenu :items="menu.subMenus" />
       </div>
     </div>
   </div>

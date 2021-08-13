@@ -2,23 +2,38 @@ import { onMounted, reactive, toRefs } from 'vue'
 import { IRoleInfo } from '/@src/types/interfaces/permission.interface'
 import usePermissionApi from '/@src/composable/api/usePermissionApi'
 import { IPaginationResponse } from '../../types/interfaces/common.interface'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { Notyf } from 'notyf'
+import { errMessage } from '../../helpers/filter.helper'
+
+/**
+ * global notify
+ */
+const notyfMessage = new Notyf({
+  duration: 2000,
+  position: {
+    x: 'center',
+    y: 'top',
+  },
+})
 
 export interface IUseRoleInfoState {
   rolePagination: IPaginationResponse<IRoleInfo[]>
   isLoading: boolean
   search: string
+  deleteActionItem?: IRoleInfo
 }
 
 export default function useRoleInfo() {
   /**
    * Composable Api
    */
-  const { getRolePagination } = usePermissionApi()
+  const { getRolePagination, deleteRole } = usePermissionApi()
 
   /**
    * Router
    */
+  const router = useRouter()
   const route = useRoute()
 
   /**
@@ -36,6 +51,7 @@ export default function useRoleInfo() {
     },
     search: '',
     isLoading: false,
+    deleteActionItem: undefined,
   })
 
   /**
@@ -67,6 +83,40 @@ export default function useRoleInfo() {
     state.rolePagination.perPage = parseInt(`${route.query?.perPage || 10}`)
     state.search = `${route.query?.search || ''}`
   }
+  const onViewDetails = async (id: number) => {
+    await router.push({
+      name: 'permission-role-:id-details',
+      params: { id },
+    })
+  }
+  const onUpdateRole = async (id: number) => {
+    await router.push({
+      name: 'permission-role-:id-update',
+      params: { id },
+    })
+  }
+  const onDeleteRole = async () => {
+    if (state.deleteActionItem?.id) {
+      const { status, message } = await deleteRole(state.deleteActionItem.id)
+
+      if (status === 200) {
+        // refresh data table
+        setDefaultPagination()
+        await fetchRoleItems()
+        // show notify success
+        notyfMessage.open({
+          type: 'success',
+          message: 'Role was removed!',
+        })
+      } else {
+        notyfMessage.open({
+          message: errMessage(message),
+          type: 'error',
+        })
+      }
+    }
+    state.deleteActionItem = undefined
+  }
 
   /**
    * On Mounted
@@ -78,6 +128,11 @@ export default function useRoleInfo() {
 
   return {
     ...toRefs(state),
+    // variable
     roleTableHeaders,
+    // methods
+    onViewDetails,
+    onUpdateRole,
+    onDeleteRole,
   }
 }
