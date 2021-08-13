@@ -1,6 +1,7 @@
 import { identity } from '@vueuse/core'
 import { onMounted, reactive, toRefs } from 'vue'
 import { ProductType, Purchasable } from '/@src/types/enums/product.enum'
+import useProductApi from '../api/useProductApi'
 import {
   IProduct,
   IProductDetail,
@@ -13,6 +14,7 @@ interface UseProductTableState {
   currentPage: number
   perPage: number
   total: number
+  totalPage: number
 }
 export default function useProductTable() {
   const state = reactive<UseProductTableState>({
@@ -21,13 +23,28 @@ export default function useProductTable() {
     currentPage: 1,
     perPage: 10,
     total: 1,
+    totalPage: 1,
   })
+  const { getAllProduct } = useProductApi()
+
+  const fetchAllProduct = async () => {
+    state.isloading = true
+    const res = await getAllProduct({
+      currentPage: state.currentPage,
+      perPage: state.perPage,
+    })
+    state.isloading = false
+    state.products = res.data
+    state.total = res.total
+    state.totalPage = res.totalPage
+    console.log(res)
+  }
 
   const getProductDetails = () => {
-    state.products = producList.data.data as IProductDetail[]
+    // state.products = getProduct.getAllProduct() as IProductDetail[]
   }
   onMounted(() => {
-    getProductDetails()
+    fetchAllProduct()
   })
 
   const productTableHeaders = [
