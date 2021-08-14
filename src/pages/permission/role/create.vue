@@ -12,7 +12,6 @@
  */
 
 import { useHead } from '@vueuse/head'
-import { computed, ref } from 'vue'
 
 /**
  * activeSidebar is an exported ref() that we can use everywhere

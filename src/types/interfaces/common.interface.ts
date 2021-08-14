@@ -22,3 +22,8 @@ export interface INameLang {
 export interface ISuccessMessage {
   message: string
 }
+
+export interface IInitialAvatar {
+  initials: string
+  color: string
+}

@@ -13,6 +13,7 @@ export interface IAdminInfo {
   lastLogin: string
   roleId: number
   teamId: number
+  manageCountry: string[]
 }
 
 export interface IAdminDetail {
