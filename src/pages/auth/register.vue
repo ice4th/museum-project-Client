@@ -296,7 +296,9 @@ const handleRegister = async () => {
         />
       </template>
       <template #action>
-        <V-Button color="primary" to="login" raised>Ok</V-Button>
+        <V-Button color="primary" :to="{ name: 'auth-login' }" raised
+          >Ok</V-Button
+        >
       </template>
       <template #cancel> <div></div> </template>
     </V-Modal>

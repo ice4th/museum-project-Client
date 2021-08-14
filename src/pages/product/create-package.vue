@@ -112,7 +112,7 @@ const swapOrderIndex = () => {
                 </div>
                 <div class="form-body">
                   <FormPackageInfo
-                    :create-package-form="formPackageInfo"
+                    :form-package-info="formPackageInfo"
                     :feature-groups="featureGroups"
                     :mooc-courses="moocCourses"
                     :fmc-packages="fmcPackages"

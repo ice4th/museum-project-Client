@@ -12,7 +12,8 @@ interface UseStudentListState {
   perPage: number
   total: number
   search: string
-  status?: 'activate' | 'deactivate'
+  status: 'activate' | 'deactivate'
+  isActive: Boolean
   isLoading: Boolean
 }
 
@@ -24,12 +25,18 @@ export default function useAdminList() {
     perPage: 10,
     total: 0,
     search: '',
-    status: undefined,
+    status: 'activate',
+    isActive: true,
     isLoading: true,
   })
   const route = useRoute()
   const notyf = useNotyf()
-  const { getAllAdmins, deactivateAccount: deactivate } = useAdminApi()
+  const {
+    getAllAdmins,
+    deactivateAccount: deactivate,
+    changeCountry,
+    resendActivateEmail,
+  } = useAdminApi()
   const fetchAllAdmins = async () => {
     state.isLoading = true
     // state.data =
@@ -47,8 +54,15 @@ export default function useAdminList() {
     }
   }
 
-  const activateAccount = () => {
+  const activateAccount = async (admin: IAdminDetail) => {
     // activateAccount
+    const res = await resendActivateEmail(admin.id)
+    if (isSuccess(res))
+      notyf.success(
+        `Send verify email to ${admin.fullname} (${admin.name}) Success!`
+      )
+    else notyf.error(errMessage(res.message) || 'Fail, Please try again')
+    fetchAllAdmins()
   }
   const deactivateAccount = async (admin: IAdminDetail) => {
     // deactivateAccount
@@ -58,6 +72,18 @@ export default function useAdminList() {
     else notyf.error(errMessage(res.message) || 'Fail, Please try again')
     fetchAllAdmins()
   }
+
+  const changeCountryById = async (admin: IAdminDetail) => {
+    // change country
+    const res = await changeCountry(admin.id, admin.country)
+    if (isSuccess(res))
+      notyf.success(
+        `Change country of ${admin.fullname} (${admin.name}) Success!`
+      )
+    else notyf.error(errMessage(res.message) || 'Fail, Please try again')
+    fetchAllAdmins()
+  }
+
   onMounted(() => {
     const page = route.query.page as string
     const search = route.query.search as string
@@ -66,8 +92,16 @@ export default function useAdminList() {
     if (page) state.currentPage = +page
     if (perPage) state.perPage = +perPage
     if (search) state.search = search
-    if (status) state.status = status
+    if (status) {
+      state.status = status
+      state.isActive = status === 'activate'
+    }
     fetchAllAdmins()
   })
-  return { ...toRefs(state), activateAccount, deactivateAccount }
+  return {
+    ...toRefs(state),
+    activateAccount,
+    deactivateAccount,
+    changeCountryById,
+  }
 }

@@ -1,7 +1,12 @@
 import { AdminCountry, AdminStatus } from '../enums/admin.enum'
-
+export interface IAdminAccessInfo {
+  id: number
+  name: string
+}
 export interface IAdminInfo {
   id: number
+  roleName: string
+  teamName: string
   name: string
   email: string
   firstname: string
@@ -13,7 +18,10 @@ export interface IAdminInfo {
   lastLogin: string
   roleId: number
   teamId: number
-  manageCountry: string[]
+  country: AdminCountry
+  manageCountry: AdminCountry[]
+  menus: IAdminAccessInfo[]
+  permissions: string[]
 }
 
 export interface IAdminDetail {
@@ -23,6 +31,8 @@ export interface IAdminDetail {
   avatar: string
   phone: string
   email: string
+  teamName: string
+  roleName: string
   country: AdminCountry
   status: AdminStatus
 }

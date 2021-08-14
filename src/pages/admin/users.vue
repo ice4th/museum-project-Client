@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
 import moment from 'moment'
-import { onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import useAdminList from '/@src/composable/admin/use-admin-list'
 import {
   displayStudentFullname,
@@ -10,11 +10,13 @@ import {
 import { useRoute, useRouter } from 'vue-router'
 import { toFormat } from '/@src/helpers/date.helper'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+import type { IAdminDetail } from '/@src/types/interfaces/admin.interface'
+import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
 
 const router = useRouter()
 const route = useRoute()
 pageTitle.value = 'Admin list'
-
+const selectedUser = ref<IAdminDetail | undefined>(undefined)
 const {
   data,
   totalPage,
@@ -26,27 +28,30 @@ const {
   status,
   activateAccount,
   deactivateAccount,
+  changeCountryById,
+  isActive,
 } = useAdminList()
-
 useHead({
   title: 'Whitehouse: Admin list',
 })
-const headers = [
+const headers: IDatatableHeader = [
   { key: 'id', label: 'ID' },
   { key: 'avatar', label: 'Avatar', isRaw: true },
   { key: 'name', label: 'Name' },
   { key: 'fullname', label: 'Fullname' },
   { key: 'email', label: 'Email' },
   { key: 'phone', label: 'Phone' },
-  { key: 'country', label: 'Country' },
+  { key: 'teamName', label: 'Team' },
+  { key: 'roleName', label: 'Role' },
+  { key: 'country', label: 'Country', isCenter: true },
   { key: 'status', label: 'Status' },
-  { key: 'action', label: 'Action', isRaw: true },
+  { key: 'action', label: 'Action', isEnd: true, isRaw: true },
 ]
 
 const onStatusChange = () => {
   const query = {
     ...route.query,
-    status: status.value,
+    status: isActive.value ? 'activate' : 'deactivate',
   }
 
   router.push({
@@ -55,11 +60,42 @@ const onStatusChange = () => {
     query,
   })
 }
+const confirmChangeCountry = async () => {
+  await changeCountryById(selectedUser.value)
+  selectedUser.value = undefined
+}
 </script>
 
 <template>
   <div class="page-content-inner">
-    <p>Student Page</p>
+    <V-Modal
+      title="Success!"
+      :open="!!selectedUser"
+      size="small"
+      actions="center"
+      @close="selectedUser = undefined"
+    >
+      <template #content>
+        <form v-if="selectedUser" class="modal-form">
+          <V-Field>
+            <label>Country</label>
+            <V-Control>
+              <div class="select">
+                <select v-model="selectedUser.country">
+                  <option value="th">TH</option>
+                  <option value="vn">VN</option>
+                </select>
+              </div>
+            </V-Control>
+          </V-Field>
+        </form>
+      </template>
+      <template #action>
+        <V-Button color="primary" raised @click="confirmChangeCountry"
+          >Confirm</V-Button
+        >
+      </template>
+    </V-Modal>
     <Datatable
       :is-loading="isLoading"
       search-placeholder="search by id, name, phone, email"
@@ -75,13 +111,12 @@ const onStatusChange = () => {
         <div>
           <V-Field>
             <V-Control>
-              <div class="select is-rounded">
-                <select v-model="status" @change="onStatusChange">
-                  <option :value="undefined">All</option>
-                  <option value="activate">Activate</option>
-                  <option value="deactivate">Deactivate</option>
-                </select>
-              </div>
+              <V-SwitchBlock
+                v-model="isActive"
+                :label="isActive ? 'Activate' : 'Deactivate'"
+                color="primary"
+                @change="onStatusChange"
+              />
             </V-Control>
           </V-Field>
         </div>
@@ -107,19 +142,37 @@ const onStatusChange = () => {
       </template>
       <template #action="{ value }">
         <div class="dark-inverted is-flex is-justify-content-flex-end">
-          <V-Dropdown
-            icon="feather:more-vertical"
-            class="is-pushed-mobile"
-            spaced
-            right
-          >
+          <V-Dropdown spaced right>
+            <template #button="{ toggle }">
+              <V-Button
+                icon="feather:more-vertical"
+                class="is-trigger"
+                @click="toggle"
+              >
+                Actions
+              </V-Button>
+            </template>
             <template #content>
+              <a
+                role="menuitem"
+                href="#"
+                class="dropdown-item is-media"
+                @click="selectedUser = { ...value }"
+              >
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-flag"></i>
+                </div>
+                <div class="meta">
+                  <span>Change Country</span>
+                  <span>Change admin country (TH or VN)</span>
+                </div>
+              </a>
               <a
                 v-show="!value.status"
                 role="menuitem"
                 href="#"
                 class="dropdown-item is-media"
-                @click="activateAccount"
+                @click="activateAccount(value)"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-calendar"></i>
