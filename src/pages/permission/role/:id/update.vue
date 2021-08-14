@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import useUpdateRole from '../../../../composable/permission/use-update-role'
 
@@ -9,14 +7,15 @@ pageTitle.value = 'Update Role'
 const {
   // state
   roleData,
-  loadingRole,
   menuItems,
   roleName,
   roleDescription,
-  menuLoading,
-  loadingOption,
   teamOptions,
   teamId,
+  // loading
+  loadingRole,
+  menuLoading,
+  loadingOption,
   // computed
   showMessage,
   colorMessage,
@@ -31,7 +30,7 @@ const {
 
 <template>
   <div class="box-container">
-    <div v-if="!roleData && !loadingRole">
+    <div v-if="!roleData && !loadingRole && !menuLoading">
       <div class="error-container">
         <div class="error-wrapper">
           <div class="error-inner has-text-centered">
@@ -58,11 +57,11 @@ const {
         </div>
       </div>
     </div>
-    <div v-if="roleData && !loadingRole" class="box-permission">
+    <div v-if="roleData && !loadingRole && !menuLoading" class="box-permission">
       <V-Card>
         <!-- Header -->
         <div class="py-4">
-          <h3 class="text-header">Create Role</h3>
+          <h3 class="text-header">Update Role</h3>
         </div>
         <!-- Input Field -->
         <div>

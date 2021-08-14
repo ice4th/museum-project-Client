@@ -1,7 +1,8 @@
-import { Notyf } from 'notyf'
 import { computed, onMounted, reactive, toRefs } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { errMessage } from '../../helpers/filter.helper'
+import { useRoute } from 'vue-router'
+import { initAvatar } from '../../helpers/avatar.helper'
+import { toFormat } from '../../helpers/date.helper'
+import { TeamOption } from '../../types/interfaces/option.interface'
 import {
   IMenu,
   IRoleInfo,
@@ -9,65 +10,44 @@ import {
 } from '../../types/interfaces/permission.interface'
 import useOptionApi from '../api/useOptionApi'
 import usePermissionApi from '../api/usePermissionApi'
-import { IUseCreateRoleState } from './use-create-role'
 
-export interface IUseUpdateRoleState extends IUseCreateRoleState {
+export interface IUseRoleDetailsState {
   roleData: IRoleInfo | null
+  menuItems: IMenu[]
+  teamOptions: TeamOption[]
   loadingRole: boolean
+  menuLoading: boolean
+  loadingOption: boolean
 }
 
-/**
- * global notify
- */
-const notyfMessage = new Notyf({
-  duration: 2000,
-  position: {
-    x: 'center',
-    y: 'top',
-  },
-})
-
-export default function useUpdateRole() {
+export default function useRoleDetails() {
   /**
    * Use Composable Api
    */
-  const { getRoleById, getMenus, updateRole } = usePermissionApi()
+  const { getRoleById, getMenus, getRoleUsers } = usePermissionApi()
   const { getTeams } = useOptionApi()
 
   /**
    * Use Router
    */
-  const router = useRouter()
   const route = useRoute()
 
   /**
    * State
    */
-  const state = reactive<IUseUpdateRoleState>({
+  const state = reactive<IUseRoleDetailsState>({
     roleData: null,
     menuItems: [],
-    roleName: '',
-    roleDescription: '',
-    teamId: undefined,
     teamOptions: [],
     // Loading
     loadingRole: false,
     menuLoading: false,
     loadingOption: false,
-    // verify message
-    showMessage: false,
   })
 
   /**
    * Computed
    */
-  const disabledCreateBtn = computed(() => {
-    return (
-      state.roleDescription.trim().length < 12 ||
-      state.roleName.trim().length < 4 ||
-      selectedItems.value.length === 0
-    )
-  })
   const selectedItems = computed(() => {
     return state.menuItems.reduce((prev, next: IMenu) => {
       let totalActions = 0
@@ -101,14 +81,23 @@ export default function useUpdateRole() {
       return prev
     }, [] as ISelectedMenuItem[])
   })
-  const verifyMessage = computed(() => {
-    if (selectedItems.value.length === 0) {
-      state.showMessage = true
-    }
-    return state.showMessage
-  })
-  const colorMessage = computed(() => {
-    return selectedItems.value.length === 0 ? 'danger' : 'success'
+  const userData = computed(() => {
+    return state.roleData?.users?.map((item) => {
+      const { firstname, lastname, lastLogin } = item
+      const { initials, color } = initAvatar(firstname, lastname)
+      return {
+        lastLogin: toFormat(lastLogin, 'MMM D, YYYY HH:mm'),
+        manageCountry: item.manageCountry,
+        avatar: item.avatar,
+        status: item.status,
+        email: item.email,
+        name: item.name,
+        firstname,
+        lastname,
+        initials,
+        color,
+      }
+    })
   })
 
   /**
@@ -153,7 +142,6 @@ export default function useUpdateRole() {
     }
 
     state.menuLoading = false
-    state.showMessage = false
   }
   const fetchOption = async () => {
     state.loadingOption = true
@@ -162,60 +150,20 @@ export default function useUpdateRole() {
   }
   const fetchRole = async (id: number) => {
     state.loadingRole = true
-    const res = await getRoleById(id)
+    const [roleUsers, rolePermissions] = await Promise.all([
+      getRoleUsers(id),
+      getRoleById(id),
+    ])
 
-    state.roleData = res
+    state.roleData = rolePermissions
     if (state.roleData) {
-      state.roleName = res.name || ''
-      state.roleDescription = res.description || ''
-      state.teamId = res.teamId || undefined
+      state.roleData.name = rolePermissions.name || ''
+      state.roleData.description = rolePermissions.description || ''
+      state.roleData.teamId = rolePermissions.teamId
+      // set role users
+      state.roleData.users = roleUsers.users
     }
     state.loadingRole = false
-  }
-  const onUpdate = async () => {
-    const permissionIds = selectedItems.value
-      .map((item: any) =>
-        item.subMenus.map((sub: any) =>
-          sub.actions.map((action: any) => action.id)
-        )
-      )
-      .flat(2)
-
-    if (state?.teamId && state.roleData?.id) {
-      const { status, message } = await updateRole({
-        description: state.roleDescription,
-        id: state.roleData.id,
-        teamId: state.teamId,
-        name: state.roleName,
-        permissionIds,
-      })
-
-      if (status === 200) {
-        notyfMessage.open({
-          type: 'success',
-          message: 'Role was updated!',
-        })
-      } else {
-        notyfMessage.open({
-          message: errMessage(message),
-          type: 'error',
-        })
-      }
-    }
-
-    const team = state.teamOptions.find(({ id }) => id === state.teamId)
-    await router.push({
-      name: 'permission-role',
-      query: {
-        search: team?.name || '',
-      },
-    })
-  }
-  const onReset = async () => {
-    state.roleDescription = state.roleData?.description || ''
-    state.roleName = state.roleData?.name || ''
-    state.teamId = state.roleData?.teamId
-    await setMenuItems()
   }
 
   /**
@@ -230,13 +178,7 @@ export default function useUpdateRole() {
   return {
     ...toRefs(state),
     // Computed
-    disabledCreateBtn,
     selectedItems,
-    verifyMessage,
-    colorMessage,
-    // Methods
-    fetchOption,
-    onUpdate,
-    onReset,
+    userData,
   }
 }

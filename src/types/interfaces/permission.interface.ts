@@ -1,3 +1,5 @@
+import { IAdminInfo } from './admin.interface'
+
 export interface IMenu {
   id: number
   name: string
@@ -41,6 +43,7 @@ export interface IRoleInfo {
   teamId: number
   teamName: string
   permissions?: IPermission[]
+  users?: IAdminInfo[]
 }
 
 export interface IDeleteRole {
