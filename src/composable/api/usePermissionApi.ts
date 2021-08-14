@@ -26,6 +26,11 @@ export default function usePermissionApi() {
     return checkResponseStatus(res)
   }
 
+  const getRoleUsers = async (id: number): Promise<IRoleInfo> => {
+    const res = await api.get<IRoleInfo>(`/Roles/${id}/Users`)
+    return checkResponseStatus(res)
+  }
+
   const getMenus = async (): Promise<AxiosResponse<IMenu[]>> => {
     return api.get<IMenu[]>('Menus')
   }
@@ -46,6 +51,7 @@ export default function usePermissionApi() {
   return {
     getRolePagination,
     getRoleById,
+    getRoleUsers,
     createRole,
     getMenus,
     updateRole,
