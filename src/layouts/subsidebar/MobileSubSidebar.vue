@@ -39,7 +39,8 @@ const subsidebarList = computed(() =>
             v-if="!navItem.isDivider"
             :to="{ name: navItem.routeName }"
           >
-            <i aria-hidden="true" class="lnil lnil-home pr-2"></i>
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <span v-if="navItem.icon" v-html="navItem.icon"></span>
             <span>{{ navItem.label }}</span>
           </RouterLink>
         </li>

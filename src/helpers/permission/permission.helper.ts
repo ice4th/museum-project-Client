@@ -2,6 +2,7 @@ import {
   adminSubsidebarList,
   codeSubsidebarList,
   productSubsidebarList,
+  permissionSubsidebarList,
   studentSubsidebarList,
 } from '.'
 import { IAdminAccessInfo } from '../../types/interfaces/admin.interface'
@@ -24,6 +25,8 @@ export const listOfSubSideMenu = (key: NavbarKey): SubsideBarItemDetail[] => {
       return productSubsidebarList
     case NavbarKey.CODE:
       return codeSubsidebarList
+    case NavbarKey.PERMISSION:
+      return permissionSubsidebarList
 
     default:
       return []
