@@ -168,7 +168,7 @@ export default function useUpdateRole() {
     if (state.roleData) {
       state.roleName = res.name || ''
       state.roleDescription = res.description || ''
-      state.teamId = res.teamId || undefined
+      state.teamId = res.team?.id
     }
     state.loadingRole = false
   }
@@ -214,7 +214,7 @@ export default function useUpdateRole() {
   const onReset = async () => {
     state.roleDescription = state.roleData?.description || ''
     state.roleName = state.roleData?.name || ''
-    state.teamId = state.roleData?.teamId
+    state.teamId = state.roleData?.team?.id
     await setMenuItems()
   }
 
