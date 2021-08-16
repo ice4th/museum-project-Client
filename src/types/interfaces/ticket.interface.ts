@@ -34,3 +34,10 @@ export interface IStartTicketStudent {
   comment: string
   packageItemId: number
 }
+
+export interface IDeleteTicketPayload {
+  packageItemId: number
+  amount: number
+  type: TicketType
+  comment: string
+}

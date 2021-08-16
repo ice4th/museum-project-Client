@@ -8,6 +8,13 @@ import axios, {
 
 import Cookies from 'js-cookie'
 import { ADMIN_ACCESS_TOKEN } from './api'
+import {
+  RouteLocationNormalizedLoaded,
+  Router,
+  useRoute,
+  useRouter,
+} from 'vue-router'
+import { errMessage } from '../helpers/filter.helper'
 
 export const apiSymbol: InjectionKey<AxiosInstance> = Symbol()
 export const apiBaseUrl =
@@ -72,6 +79,28 @@ export default function useApi() {
   if (!api) {
     throw new Error('Api not properly injected in app')
   }
-  console.log('useApi')
   return api
+}
+
+export function apiHandleError() {
+  const router = useRouter()
+  const route = useRoute()
+  const redirectNotFound = (res: ApiResponse) => {
+    router.replace({
+      name: 'not-found',
+      params: { id: res.code || 404, content: errMessage(res.message) },
+      query: { from: route.fullPath },
+    })
+  }
+  const checkResponseStatus = (res: ApiResponse) => {
+    if (res.status === 200 || res.status === 201) {
+      return res.data
+    }
+    if (res.code) {
+      redirectNotFound(res)
+    }
+    return null
+  }
+
+  return { checkResponseStatus, redirectNotFound }
 }

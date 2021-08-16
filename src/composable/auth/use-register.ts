@@ -42,7 +42,6 @@ export default function useRegister() {
 
   const { registerAdmin } = useAuthApi()
   const register = async () => {
-    console.log('register')
     const { name, email, password, firstname, lastname, phone, dob } = state
     const payload = {
       name,

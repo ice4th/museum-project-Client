@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 import useStudentInfo from '/@src/composable/student/use-student-info'
-const { studentInfo, updateStudentProfile, validation } = useStudentInfo()
+const { updateStudentProfile, validation } = useStudentInfo()
+const studentInfo = inject('studentInfo')
 </script>
 
 <template>

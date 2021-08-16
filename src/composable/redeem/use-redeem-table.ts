@@ -113,6 +113,9 @@ export default function useRedeemTable() {
     if (page) {
       state.currentPage = +page
     }
+    if (route.query.perPage) {
+      state.perPage = +route.query.perPage
+    }
     const today = moment().format('YYYY-MM-DD')
     const todayIso = moment(today).toISOString()
     state.createNewRedeem.ticketStartDate = todayIso
