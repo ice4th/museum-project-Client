@@ -2,6 +2,10 @@ import { reactive, toRefs } from 'vue'
 import { checkResponseStatus } from '.'
 import useApi from '../useApi'
 import {
+  IPaginationParams,
+  IPaginationResponse,
+} from '/@src/types/interfaces/common.interface'
+import {
   ProductOption,
   PackageOption,
   PartnerOption,
@@ -59,10 +63,22 @@ export default function useOptionApi() {
     return checkResponseStatus(res) || []
   }
 
-  const getStudents = async (): Promise<StudentOption[]> => {
-    const res = await api.get<StudentOption[]>('/Options/Students')
-    state.studentOptions = checkResponseStatus(res) || []
-    return checkResponseStatus(res) || []
+  const getStudents = async (
+    search?: string,
+    params?: IPaginationParams
+  ): Promise<StudentOption[]> => {
+    const res = await api.get<IPaginationResponse<StudentOption[]>>(
+      '/Options/Students',
+      {
+        params: {
+          currentPage: params?.currentPage || 1,
+          perPage: params?.perPage || 10,
+          search,
+        },
+      }
+    )
+    state.studentOptions = checkResponseStatus(res) ? res.data.data : []
+    return checkResponseStatus(res)
   }
   return {
     ...toRefs(state),
