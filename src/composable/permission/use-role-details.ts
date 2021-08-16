@@ -159,7 +159,7 @@ export default function useRoleDetails() {
     if (state.roleData) {
       state.roleData.name = rolePermissions.name || ''
       state.roleData.description = rolePermissions.description || ''
-      state.roleData.teamId = rolePermissions.teamId
+      state.roleData.teamId = rolePermissions.team?.id
       // set role users
       state.roleData.users = roleUsers.users
     }

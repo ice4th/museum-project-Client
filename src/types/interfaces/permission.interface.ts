@@ -36,14 +36,22 @@ export interface IEditRolePayload extends ISaveRolePayload {
   id: number
 }
 
+export interface ITeamInfo {
+  id: number
+  name: string
+  description: string
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface IRoleInfo {
   id: number
   name: string
   description: string
-  teamId: number
-  teamName: string
   permissions?: IPermission[]
   users?: IAdminInfo[]
+  team?: ITeamInfo
+  teamId?: number
 }
 
 export interface IDeleteRole {
