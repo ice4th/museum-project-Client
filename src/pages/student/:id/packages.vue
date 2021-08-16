@@ -45,7 +45,6 @@ const {
   sendPackage,
   changeToNewPackage,
   removePackage,
-  studentOptions,
 } = useStudentPackageItemState()
 const customDate = ref(toFormat(undefined, 'YYYY-MM-DD'))
 type modalComponent =
@@ -166,7 +165,7 @@ const modalProps = computed(() => {
     case 'change-package':
       return defaultProps
     case 'send-package':
-      return { ...defaultProps, studentOptions: studentOptions.value }
+      return { ...defaultProps }
     case 'remove-package':
       return { ...defaultProps, packageItem: currentPackageItem?.value }
     /**
