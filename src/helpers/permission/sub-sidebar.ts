@@ -101,23 +101,3 @@ export const permissionSubsidebarList: SubsideBarItemDetail[] = [
   },
   { isDivider: true },
 ]
-
-export const permissionSubsidebarList: SubsideBarItemDetail[] = [
-  {
-    routeName: 'permission-role',
-    label: 'Roles Information',
-    icon: '<i class="lnil lnil-books mr-2"></i>',
-  },
-  {
-    routeName: 'permission-role-create',
-    label: 'Create Role',
-    icon: '<i class="lnil lnil-books mr-2"></i>',
-  },
-  { isDivider: true },
-  {
-    routeName: 'permission-team',
-    label: 'Team Information',
-    icon: '<i class="lnil lnil-books mr-2"></i>',
-  },
-  { isDivider: true },
-]
