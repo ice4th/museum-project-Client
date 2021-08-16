@@ -9,12 +9,11 @@ import {
 } from '/@src/types/interfaces/auth.interface'
 import { provide } from 'vue'
 import { apiSymbol } from '/@src/composable/useApi'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 export default function useAuthApi() {
   const api = useApi()
   const router = useRouter()
-  const route = useRoute()
 
   const getToken = () => {
     return Cookies.get(ADMIN_ACCESS_TOKEN)
@@ -27,7 +26,7 @@ export default function useAuthApi() {
   const logout = () => {
     Cookies.remove(ADMIN_ACCESS_TOKEN)
     localStorage.removeItem(ADMIN_PROFILE)
-    router.push({ name: 'auth-login', query: { redirect: route.fullPath } })
+    router.go(0)
   }
 
   const getMyAdminInfo = async (): Promise<IAdminInfo | null> => {
@@ -35,12 +34,13 @@ export default function useAuthApi() {
     const res = await api.get<IAdminInfo>(`Auth/Me`)
     if (res.data) {
       localStorage.setItem(ADMIN_PROFILE, JSON.stringify(res.data))
+      router.go(0)
     }
     return checkResponseStatus(res)
   }
 
   const registerAdmin = async (payload: ICreateAdminUser) => {
-    return await api.post<any, ApiResponse>(`/Auth/Register`, payload)
+    return api.post<any, ApiResponse>(`/Auth/Register`, payload)
   }
 
   const loginAdmin = async (payload: ILoginPayload) => {

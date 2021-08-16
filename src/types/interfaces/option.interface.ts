@@ -51,3 +51,8 @@ export interface StudentOption {
   nicknameTh: string
   nicknameEn: string
 }
+
+export interface TeamOption {
+  id: number
+  name: string
+}

@@ -10,7 +10,7 @@ import {
 
 export default function useRedeemApi() {
   const api = useApi()
-  const { checkResponseStatus } = apiHandleError()
+  const { catchReponse } = apiHandleError()
 
   const getAllRedeems = async (
     params: IPaginationParams
@@ -19,12 +19,12 @@ export default function useRedeemApi() {
       IPaginationResponse<IRedeemDetail[]>,
       ApiResponse
     >(`/Redeems`, { params })
-    return checkResponseStatus(res)
+    return catchReponse(res)
   }
 
   const getRedeemById = async (id: number): Promise<IRedeemDetail[]> => {
     const res = await api.get<IRedeemDetail[], ApiResponse>(`/Redeems/${id}`)
-    return checkResponseStatus(res)
+    return catchReponse(res)
   }
 
   const createRedeem = async (payload: ICreateRedeem) => {

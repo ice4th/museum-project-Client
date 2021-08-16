@@ -15,6 +15,7 @@ import {
   useRouter,
 } from 'vue-router'
 import { errMessage } from '../helpers/filter.helper'
+import useAuthApi from './api/useAuthApi'
 
 export const apiSymbol: InjectionKey<AxiosInstance> = Symbol()
 export const apiBaseUrl =
@@ -85,6 +86,7 @@ export default function useApi() {
 export function apiHandleError() {
   const router = useRouter()
   const route = useRoute()
+  const { logout } = useAuthApi()
   const redirectNotFound = (res: ApiResponse) => {
     router.replace({
       name: 'not-found',
@@ -92,15 +94,17 @@ export function apiHandleError() {
       query: { from: route.fullPath },
     })
   }
-  const checkResponseStatus = (res: ApiResponse) => {
+  const catchReponse = (res: ApiResponse) => {
     if (res.status === 200 || res.status === 201) {
       return res.data
     }
-    if (res.code) {
+    if (res.code === 401) {
+      logout()
+    } else if (res.code) {
       redirectNotFound(res)
     }
     return null
   }
 
-  return { checkResponseStatus, redirectNotFound }
+  return { catchReponse, redirectNotFound }
 }

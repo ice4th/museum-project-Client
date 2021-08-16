@@ -12,7 +12,7 @@ import {
 
 export default function usePackageApi() {
   const api = useApi()
-  const { checkResponseStatus } = apiHandleError()
+  const { catchReponse } = apiHandleError()
 
   const getPackagesWithPagination = async (
     params: IPaginationParams
@@ -21,14 +21,14 @@ export default function usePackageApi() {
       IPaginationResponse<IPackageTableInfo[]>,
       ApiResponse
     >(`/Packages`, { params })
-    return checkResponseStatus(res) || []
+    return catchReponse(res) || []
   }
 
   const getAllPackagesGroup = async (): Promise<IPackageGroupInfo[]> => {
     const res = await api.get<IPackageGroupInfo[], ApiResponse>(
       `/PackageGroups`
     )
-    return checkResponseStatus(res) || []
+    return catchReponse(res) || []
   }
 
   const getAddonPackageByMainPackageId = async (
@@ -37,7 +37,7 @@ export default function usePackageApi() {
     const res = await api.get<IPackageGroupInfo[], ApiResponse>(
       `/PackageGroups/Packages/${packageId}`
     )
-    return checkResponseStatus(res) || []
+    return catchReponse(res) || []
   }
 
   const createPackage = async (payload: ICratePackageForm) => {
