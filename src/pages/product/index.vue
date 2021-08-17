@@ -112,7 +112,8 @@ const {
 <style lang="scss" scoped>
 .chip {
   width: 80%;
-  max-width: 80px;
+  min-width: 100px;
+  max-width: 100px;
   text-align: center;
 }
 </style>
