@@ -1,6 +1,8 @@
 import { reactive, toRefs } from 'vue'
 import { checkResponseStatus } from '.'
 import useApi from '../useApi'
+import { ProductType } from '/@src/types/enums/product.enum'
+import { QuizType } from '/@src/types/enums/quiz.enum'
 import {
   ProductOption,
   PackageOption,
@@ -11,24 +13,35 @@ import {
   FindMyCoachOption,
   StudentOption,
   TeamOption,
+  QuizOption,
 } from '/@src/types/interfaces/option.interface'
 interface UseOptionApiState {
   productOptions: ProductOption[]
+  productTypeOptions: ProductType[]
   studentOptions: StudentOption[]
   teamOptions: TeamOption[]
+  quizOptions: QuizOption[]
 }
 export default function useOptionApi() {
   const api = useApi()
   const state = reactive<UseOptionApiState>({
     productOptions: [],
+    productTypeOptions: [],
     studentOptions: [],
     teamOptions: [],
+    quizOptions: [],
   })
 
   const getProducts = async (): Promise<ProductOption[]> => {
     const res = await api.get<ProductOption[]>('/Options/Products')
     state.productOptions = checkResponseStatus(res) || []
     return state.productOptions
+  }
+
+  const getProductType = async (): Promise<ProductType[]> => {
+    const res = await api.get<ProductType[]>('/Options/Products/Types')
+    state.productTypeOptions = checkResponseStatus(res) || []
+    return state.productTypeOptions
   }
 
   const getPackages = async (): Promise<PackageOption[]> => {
@@ -76,9 +89,19 @@ export default function useOptionApi() {
     state.teamOptions = checkResponseStatus(res) || []
     return state.teamOptions
   }
+
+  const getQuizzes = async (type: QuizType): Promise<QuizOption[]> => {
+    const res = await api.get<QuizOption[]>('/Options/Quizzes', {
+      params: { type },
+    })
+    state.quizOptions = checkResponseStatus(res) || []
+    console.log(type, state.quizOptions)
+    return state.quizOptions
+  }
   return {
     ...toRefs(state),
     getProducts,
+    getProductType,
     getPackages,
     getPartners,
     getMoocCourses,
@@ -87,5 +110,6 @@ export default function useOptionApi() {
     getFmcPackages,
     getStudents,
     getTeams,
+    getQuizzes,
   }
 }

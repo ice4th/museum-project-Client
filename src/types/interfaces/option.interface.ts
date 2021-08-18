@@ -1,3 +1,5 @@
+import { QuizType } from '../enums/quiz.enum'
+
 export interface ProductOption {
   id: number
   name: string
@@ -55,4 +57,11 @@ export interface StudentOption {
 export interface TeamOption {
   id: number
   name: string
+}
+
+export interface QuizOption {
+  id: number
+  name: string
+  slug?: string
+  type: QuizType
 }

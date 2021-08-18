@@ -5,12 +5,14 @@ import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useWindowScroll } from '@vueuse/core'
+import useManageProduct from '/@src/composable/product/use-manage-product'
 
 pageTitle.value = 'Create Product'
 
 useHead({
   title: 'Whitehouse Product',
 })
+const { validate, submitCreateProduct } = useManageProduct()
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
   return y.value > 50
@@ -19,34 +21,7 @@ const isStuck = computed(() => {
 
 <template>
   <div class="page-content-inner">
-    <ProductForm />
-    <!-- <div>Create Product</div> -->
-    <!-- <div class="form-layout">
-      <div class="form-outer">
-        <div :class="[isStuck && 'is-stuck']" class="form-header stuck-header">
-          <div class="form-header-inner">
-            <div class="left">
-              <h3>View/Edit Package Group</h3>
-            </div>
-            <div class="right">
-              <div class="buttons">
-                <V-Button
-                  icon="lnir lnir-arrow-left rem-100"
-                  light
-                  dark-outlined
-                >
-                  Cancel
-                </V-Button>
-                <V-Button color="primary" raised> Create </V-Button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="form-body">
-          <ProductForm />
-        </div>
-      </div>
-    </div> -->
+    <ProductForm :validate="validate" @create="submitCreateProduct" />
   </div>
 </template>
 <style lang="scss">

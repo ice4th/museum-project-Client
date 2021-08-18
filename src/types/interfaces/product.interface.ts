@@ -1,3 +1,4 @@
+import { GlobishLevel } from '../enums/package.enum'
 import { ProductCEFR, ProductType, Purchasable } from '../enums/product.enum'
 
 export interface IProduct {
@@ -20,18 +21,18 @@ export interface IProduct {
 
 export interface ICreateProduct {
   name: string
-  excerpt?: string
+  excerpt: string
   body?: string
-  purchasable: Purchasable
-  type: ProductType
-  cefr: ProductCEFR
+  purchasable?: Purchasable
+  type?: ProductType
+  cefr?: ProductCEFR
   slug: string
-  productOrder?: number
   order?: number
-  price: number
+  price?: number
   beforeDiscount?: number
   duration?: number
   image?: string
+  globishLevel?: GlobishLevel
 
   /**
    * SEO Section
