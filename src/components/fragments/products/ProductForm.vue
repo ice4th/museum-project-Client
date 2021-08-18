@@ -11,6 +11,7 @@ import {
 } from '/@src/types/enums/product.enum'
 import { QuizType } from '/@src/types/enums/quiz.enum'
 import { GlobishLevel, PackageCefrLevel } from '/@src/types/enums/package.enum'
+import type { IFile } from '../../common/FileManager.vue'
 const {
   getProducts,
   productOptions,
@@ -41,6 +42,10 @@ const cefrLevelOption = Object.values(PackageCefrLevel).map((value) => {
 const preTestOption = ref([])
 const midTestOption = ref([])
 const postTestOption = ref([])
+const showFilePopup = ref(false)
+const selectImage = (ev: IFile) => {
+  productInfo.value.image = ev.src
+}
 onBeforeMount(async () => {
   const [preTestList, midTestList, postTestList] = await Promise.all([
     getQuizzes(QuizType.PRETEST),
@@ -56,6 +61,11 @@ onBeforeMount(async () => {
 </script>
 
 <template>
+  <ModalFileManager
+    :open="showFilePopup"
+    @select="selectImage"
+    @close="showFilePopup = false"
+  />
   <!-- <div class="column is-12 content">
         <ckeditor :editor="ClassicEditor"> </ckeditor>
       </div> -->
@@ -298,9 +308,14 @@ onBeforeMount(async () => {
         <p class="subtitle">Product Information</p>
         <div class="columns is-multiline">
           <div class="column is-12">
-            <V-Button color="primary" icon="feather:upload"
-              >Choose image</V-Button
-            >
+            <div class="image-poster">
+              <div class="btn-file" :class="[!productInfo.image && 'show']">
+                <V-Button icon="feather:upload" @click="showFilePopup = true"
+                  >Choose image</V-Button
+                >
+              </div>
+              <img v-if="productInfo.image" :src="productInfo.image" alt="" />
+            </div>
             <!-- <V-Field>
               <label>Product Image</label>
               <V-Control icon="lnil lnil-file-name">
@@ -519,6 +534,8 @@ onBeforeMount(async () => {
 </template>
 
 <style lang="scss">
+@import '../../../scss/abstracts/_variables.scss';
+@import '../../../scss/abstracts/_mixins.scss';
 .is-dark .box {
   background: #323236;
   border-color: #404046;
@@ -526,5 +543,33 @@ onBeforeMount(async () => {
 .ck-rounded-corners .ck.ck-editor__main > .ck-editor__editable,
 .ck.ck-editor__main > .ck-editor__editable.ck-rounded-corners {
   min-height: 460px;
+}
+.image-poster {
+  position: relative;
+  margin: 1rem auto 2rem;
+  max-width: 400px;
+  cursor: pointer;
+  .btn-file {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+  }
+  > img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+    border-radius: $radius-large;
+  }
+  &:hover .btn-file,
+  .btn-file.show {
+    opacity: 1;
+    visibility: visible;
+  }
 }
 </style>
