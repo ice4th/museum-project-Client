@@ -11,6 +11,7 @@ export interface IPaginationResponse<T> {
 export interface IPaginationParams {
   currentPage: number
   perPage: number
+  search?: string
 }
 
 export interface INameLang {
@@ -20,4 +21,9 @@ export interface INameLang {
 
 export interface ISuccessMessage {
   message: string
+}
+
+export interface IInitialAvatar {
+  initials: string
+  color: string
 }
