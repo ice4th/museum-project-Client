@@ -12,54 +12,54 @@ const emit = defineEmits(['close'])
     </div>
     <div class="inner" data-simplebar>
       <ul>
-        <li v-has-nested-router-link class="has-children">
-          <div class="collapse-wrap">
-            <a class="parent-link"
-              >Product <i class="iconify" data-icon="feather:chevron-right"
-            /></a>
-          </div>
-          <ul>
-            <li>
-              <RouterLink :to="{ name: 'product' }" class="is-submenu">
-                <i class="lnil lnil-books"></i>
-                <span>Product Detail</span>
-              </RouterLink>
-            </li>
-          </ul>
+        <li>
+          <RouterLink :to="{ name: 'product' }" class="is-submenu">
+            <i class="lnil lnil-books"></i>
+            <span>Product Detail</span>
+          </RouterLink>
         </li>
-        <li v-has-nested-router-link class="has-children">
-          <div class="collapse-wrap">
-            <a class="parent-link"
-              >Package <i class="iconify" data-icon="feather:chevron-right"
-            /></a>
-          </div>
-          <ul>
-            <li>
-              <RouterLink :to="{ name: 'product-package' }" class="is-submenu">
-                <i class="lnil lnil-books"></i>
-                <span>Package Detail</span>
-              </RouterLink>
-            </li>
-            <li>
-              <RouterLink
-                :to="{ name: 'product-package-group' }"
-                class="is-submenu"
-              >
-                <i class="lnil lnil-books"></i>
-                <span>Package Group Detail</span>
-              </RouterLink>
-            </li>
-            <li>
-              <RouterLink
-                :to="{ name: 'product-create-package' }"
-                class="is-submenu"
-              >
-                <i class="lnil lnil-books"></i>
-                <span>Create Package</span>
-              </RouterLink>
-            </li>
-          </ul>
+        <li>
+          <RouterLink :to="{ name: 'product' }" class="is-submenu">
+            <i class="lnil lnil-books"></i>
+            <span>Create Product</span>
+          </RouterLink>
         </li>
+        <li class="divider"></li>
+        <li>
+          <RouterLink :to="{ name: 'product-package' }" class="is-submenu">
+            <i class="lnil lnil-books"></i>
+            <span>Package Detail</span>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink
+            :to="{ name: 'product-create-package' }"
+            class="is-submenu"
+          >
+            <i class="lnil lnil-books"></i>
+            <span>Create Package</span>
+          </RouterLink>
+        </li>
+        <li class="divider"></li>
+        <li>
+          <RouterLink
+            :to="{ name: 'product-package-group' }"
+            class="is-submenu"
+          >
+            <i class="lnil lnil-books"></i>
+            <span>Package Group Detail</span>
+          </RouterLink>
+        </li>
+        <li>
+          <RouterLink
+            :to="{ name: 'product-create-package' }"
+            class="is-submenu"
+          >
+            <i class="lnil lnil-books"></i>
+            <span>Create Package Group</span>
+          </RouterLink>
+        </li>
+        <li class="divider"></li>
       </ul>
     </div>
   </div>
