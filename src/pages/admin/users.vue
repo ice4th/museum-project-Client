@@ -11,6 +11,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { toFormat } from '/@src/helpers/date.helper'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import type { IAdminDetail } from '/@src/types/interfaces/admin.interface'
+import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
 
 const router = useRouter()
 const route = useRoute()
@@ -33,13 +34,15 @@ const {
 useHead({
   title: 'Whitehouse: Admin list',
 })
-const headers = [
+const headers: IDatatableHeader = [
   { key: 'id', label: 'ID' },
   { key: 'avatar', label: 'Avatar', isRaw: true },
   { key: 'name', label: 'Name' },
   { key: 'fullname', label: 'Fullname' },
   { key: 'email', label: 'Email' },
   { key: 'phone', label: 'Phone' },
+  { key: 'teamName', label: 'Team' },
+  { key: 'roleName', label: 'Role' },
   { key: 'country', label: 'Country', isCenter: true },
   { key: 'status', label: 'Status' },
   { key: 'action', label: 'Action', isEnd: true, isRaw: true },
