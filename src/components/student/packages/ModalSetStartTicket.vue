@@ -1,34 +1,46 @@
 <script setup lang="ts">
 // ModalSetStartTicket Component
-
-import { defineEmit, defineProps } from 'vue'
 import type { IStartTicketStudent } from '/@src/types/interfaces/ticket.interface'
+import { ref } from 'vue'
 import type { PropType } from 'vue'
+import type { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
+import { toFormat } from '/@src/helpers/date.helper'
+import { TicketType } from '/@src/types/enums/ticket.enum'
+import { displayTicketText } from '/@src/helpers/ticket.helper'
 
 const props = defineProps({
   openModal: {
     type: Boolean,
     default: false,
   },
-  input: {
-    type: Object as PropType<IStartTicketStudent>,
-    default: () => {},
+  startDate: {
+    type: [Date, String],
+    default: undefined,
   },
-  customDate: {
-    type: Boolean,
-    default: false,
+  packageItem: {
+    type: Object as PropType<IStudentPackageItems>,
+    default: undefined,
   },
   title: {
     type: String,
     default: '',
   },
   ticketType: {
-    type: String,
+    type: String as PropType<TicketType>,
     default: undefined,
   },
 })
 
-const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
+const customDate = ref(false)
+const startTicketInput = ref<IStartTicketStudent>({
+  packageItemId: props.packageItem?.packageItemId || 0,
+  comment: '',
+  startDate: props.startDate,
+  type: props.ticketType,
+})
+
+const ticketTypeName = ref(displayTicketText(props.ticketType))
+const emit = defineEmits(['toggle-close', 'on-change'])
 </script>
 
 <template>
@@ -44,15 +56,15 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
       <form class="modal-form">
         <V-Control>
           <V-SwitchBlock
-            :model-value="customDate"
+            v-model="customDate"
             label="Need to reset start date like inactive ticket (NULL)"
             color="primary"
-            @update:modelValue="emit('update:customDate', $event)"
+            @update:model-value="startTicketInput.startDate = null"
           />
         </V-Control>
         <v-date-picker
           v-show="!customDate"
-          v-model="input.startDate"
+          v-model="startTicketInput.startDate"
           color="orange"
           :model-config="{
             type: 'string',
@@ -73,8 +85,8 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
                   type="text"
                   placeholder="Start Date"
                   :value="inputValue"
-                  v-on="inputEvents"
                   required
+                  v-on="inputEvents"
                 />
               </V-Control>
             </V-Field>
@@ -84,7 +96,7 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
           <label>Comment</label>
           <V-Control>
             <textarea
-              v-model="input.comment"
+              v-model="startTicketInput.comment"
               type="textarea"
               class="textarea is-primary-focus"
               rows="2"
@@ -96,7 +108,10 @@ const emit = defineEmit(['toggle-close', 'on-change', 'update:customDate'])
       </form>
     </template>
     <template #action>
-      <V-Button color="primary" raised @click="emit('on-change')"
+      <V-Button
+        color="primary"
+        raised
+        @click="emit('on-change', startTicketInput)"
         >Save Start Date</V-Button
       >
     </template>

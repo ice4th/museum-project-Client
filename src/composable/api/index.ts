@@ -9,3 +9,7 @@ export const checkResponseStatus = (res: AxiosResponse) => {
   }
   return null
 }
+
+export const isSuccess = (res: AxiosResponse) => {
+  return res.status === 200 || res.status === 201
+}

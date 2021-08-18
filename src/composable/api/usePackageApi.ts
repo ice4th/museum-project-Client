@@ -1,5 +1,5 @@
 import { checkResponseStatus } from '.'
-import useApi, { ApiResponse } from '../useApi'
+import useApi, { apiHandleError, ApiResponse } from '../useApi'
 import {
   IPaginationParams,
   IPaginationResponse,
@@ -14,6 +14,7 @@ import {
 
 export default function usePackageApi() {
   const api = useApi()
+  const { catchReponse } = apiHandleError()
 
   const getPackageById = async (id: number): Promise<IPackageDetail> => {
     const res = await api.get<IPackageDetail>(`/Packages/${id}`)
@@ -23,25 +24,27 @@ export default function usePackageApi() {
   const getPackagesWithPagination = async (
     params: IPaginationParams
   ): Promise<IPaginationResponse<IPackageTableInfo[]>> => {
-    const res = await api.get<IPaginationResponse<IPackageTableInfo[]>>(
-      `/Packages`,
-      { params }
-    )
-    return checkResponseStatus(res) || []
+    const res = await api.get<
+      IPaginationResponse<IPackageTableInfo[]>,
+      ApiResponse
+    >(`/Packages`, { params })
+    return catchReponse(res) || []
   }
 
   const getAllPackagesGroup = async (): Promise<IPackageGroupInfo[]> => {
-    const res = await api.get<IPackageGroupInfo[]>(`/PackageGroups`)
-    return checkResponseStatus(res) || []
+    const res = await api.get<IPackageGroupInfo[], ApiResponse>(
+      `/PackageGroups`
+    )
+    return catchReponse(res) || []
   }
 
   const getAddonPackageByMainPackageId = async (
     packageId: number
   ): Promise<IPackageGroupInfo[]> => {
-    const res = await api.get<IPackageGroupInfo[]>(
+    const res = await api.get<IPackageGroupInfo[], ApiResponse>(
       `/PackageGroups/Packages/${packageId}`
     )
-    return checkResponseStatus(res) || []
+    return catchReponse(res) || []
   }
 
   const createPackage = async (payload: IFormPackageInfo) => {

@@ -1,8 +1,7 @@
-import { InjectionKey, ref, computed, inject, reactive, toRef } from 'vue'
+import { InjectionKey, ref, computed, inject, reactive } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { IAdminInfo } from '../types/interfaces/admin.interface'
-import Cookies from 'js-cookie'
-import { ADMIN_ACCESS_TOKEN, ADMIN_PROFILE } from './api'
+import { ADMIN_PROFILE } from './api'
 
 export const userSessionSymbol: InjectionKey<UserSessionData> = Symbol()
 export interface UserSessionData {

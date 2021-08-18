@@ -169,12 +169,15 @@ export default function useFormPackageInfo() {
   }
   const savePackage = async () => {
     // save form package info
-    const { status, message } = await createPackage(state.formPackageInfo)
+    const { status, message, data } = await createPackage(state.formPackageInfo)
     if (status === 201) {
-      await fetchPackage()
       notyfMessage.open({
         type: 'success',
         message: 'Package was created!',
+      })
+      router.push({
+        name: 'product-package',
+        params: { id: `${data.id}` },
       })
     } else {
       notyfMessage.open({
