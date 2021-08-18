@@ -1,5 +1,5 @@
 import {
-  ICratePackageForm,
+  IFormPackageInfo,
   ICreatePackageGroup,
   IPackageGroupInfo,
   IPackageInfo,
@@ -27,7 +27,7 @@ export default class PackageService {
   }
 
   public static async createPackage(
-    payload: ICratePackageForm
+    payload: IFormPackageInfo
   ): Promise<ApiServiceResponse<void>> {
     return await ApiService.post('Packages', {
       ...payload,
