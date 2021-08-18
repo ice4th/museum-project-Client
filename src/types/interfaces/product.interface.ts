@@ -1,4 +1,4 @@
-import { ProductType } from '../enums/product.enum'
+import { ProductCEFR, ProductType, Purchasable } from '../enums/product.enum'
 
 export interface IProduct {
   id: number
@@ -16,4 +16,42 @@ export interface IProduct {
   image: string
   body: string
   cefr: string
+}
+
+export interface ICreateProduct {
+  name: string
+  excerpt?: string
+  body?: string
+  purchasable: Purchasable
+  type: ProductType
+  cefr: ProductCEFR
+  slug: string
+  productOrder?: number
+  order?: number
+  price: number
+  beforeDiscount?: number
+  duration?: number
+  image?: string
+
+  /**
+   * SEO Section
+   */
+  metaTitle?: string
+  metaKeyword?: string
+  metaDescription?: string
+  seoFooter?: string
+
+  /**
+   * Product Recommend
+   */
+  recommend1?: number
+  recommend2?: number
+  recommend3?: number
+
+  /**
+   * Assessment
+   */
+  preTestId?: number
+  midTestId?: number
+  postTestId?: number
 }
