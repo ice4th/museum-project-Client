@@ -150,6 +150,20 @@ const confirmChangeCountry = async () => {
               </V-Button>
             </template>
             <template #content>
+              <RouterLink
+                v-show="value.status"
+                role="menuitem"
+                :to="{ name: 'admin-:userid', params: { userid: value.id } }"
+                class="dropdown-item is-media"
+              >
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-eye"></i>
+                </div>
+                <div class="meta">
+                  <span>view</span>
+                  <span>View Profile</span>
+                </div>
+              </RouterLink>
               <a
                 role="menuitem"
                 href="#"
