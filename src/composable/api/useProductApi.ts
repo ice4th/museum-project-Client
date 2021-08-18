@@ -1,5 +1,8 @@
 import useApi, { apiHandleError, ApiResponse } from '../useApi'
-import { IProductDetail } from '/@src/types/interfaces/product.interface'
+import {
+  ICreateProduct,
+  IProductDetail,
+} from '/@src/types/interfaces/product.interface'
 
 import {
   IPaginationParams,
@@ -26,5 +29,9 @@ export default function useProductApi() {
     return catchReponse(res)
   }
 
-  return { getAllProduct }
+  const createProduct = (payload: ICreateProduct) => {
+    return api.post<any, ApiResponse>(`Products`, payload)
+  }
+
+  return { getAllProduct, createProduct }
 }
