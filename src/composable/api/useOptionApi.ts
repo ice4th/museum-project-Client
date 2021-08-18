@@ -4,6 +4,10 @@ import useApi from '../useApi'
 import { ProductType } from '/@src/types/enums/product.enum'
 import { QuizType } from '/@src/types/enums/quiz.enum'
 import {
+  IPaginationParams,
+  IPaginationResponse,
+} from '/@src/types/interfaces/common.interface'
+import {
   ProductOption,
   PackageOption,
   PartnerOption,
@@ -78,10 +82,22 @@ export default function useOptionApi() {
     return checkResponseStatus(res) || []
   }
 
-  const getStudents = async (): Promise<StudentOption[]> => {
-    const res = await api.get<StudentOption[]>('/Options/Students')
-    state.studentOptions = checkResponseStatus(res) || []
-    return state.studentOptions
+  const getStudents = async (
+    search?: string,
+    params?: IPaginationParams
+  ): Promise<StudentOption[]> => {
+    const res = await api.get<IPaginationResponse<StudentOption[]>>(
+      '/Options/Students',
+      {
+        params: {
+          currentPage: params?.currentPage || 1,
+          perPage: params?.perPage || 10,
+          search,
+        },
+      }
+    )
+    state.studentOptions = checkResponseStatus(res) ? res.data.data : []
+    return checkResponseStatus(res)
   }
 
   const getTeams = async (): Promise<TeamOption[]> => {

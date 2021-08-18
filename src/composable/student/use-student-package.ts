@@ -9,9 +9,7 @@ import {
 } from '/@src/types/interfaces/ticket.interface'
 import useNotyf from '../useNotyf'
 import useStudentApi from '../api/useStudentApi'
-import useOptionApi from '/@src/composable/api/useOptionApi'
 import { TicketType } from '/@src/types/enums/ticket.enum'
-import { StudentOption } from '/@src/types/interfaces/option.interface'
 
 interface UseStudentPackageItemState {
   isLoading: Boolean
@@ -51,7 +49,6 @@ export default function useStudentPackageItem() {
     changePackage,
     deletePackageByPackageItem,
   } = useStudentApi()
-  const { getStudents, studentOptions } = useOptionApi()
 
   const notyfError = (message: any) => {
     if (typeof message === 'object') {
@@ -189,7 +186,7 @@ export default function useStudentPackageItem() {
     }
   }
   onMounted(() => {
-    Promise.all([getStudents(), fetchStudentPackages()])
+    Promise.all([fetchStudentPackages()])
   })
   return {
     ...toRefs(state),
@@ -202,7 +199,5 @@ export default function useStudentPackageItem() {
     sendPackage,
     changeToNewPackage,
     removePackage,
-    // from useOptionApi
-    studentOptions,
   }
 }

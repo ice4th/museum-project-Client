@@ -6,6 +6,7 @@ export enum NavbarKey {
   STUDENT = 'student',
   PRODUCT = 'product',
   CODE = 'code',
+  PERMISSION = 'permission',
 }
 export interface NavbarItemDetail {
   key: string

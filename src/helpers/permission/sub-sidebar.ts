@@ -25,11 +25,13 @@ export const productSubsidebarList: SubsideBarItemDetail[] = [
     routeName: 'product',
     label: 'Product Detail',
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
+    action: 'VIEW_LIST_OF_PRODUCT',
   },
   {
     routeName: 'product',
     label: 'Create Product',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
+    action: 'CREATE_PRODUCT',
   },
   { isDivider: true },
   {
@@ -69,9 +71,33 @@ export const studentSubsidebarList: SubsideBarItemDetail[] = [
 ]
 
 export const codeSubsidebarList: SubsideBarItemDetail[] = [
-  // {
-  //   routeName: 'admin-users',
-  //   label: 'Admin List',
-  //   icon: '<i class="fas fa-user-edit"></i>',
-  // },
+  {
+    routeName: 'code',
+    label: 'Redeem Management',
+    icon: '<i class="iconify mr-2" data-icon="feather:gift"></i>',
+    action: 'VIEW_LIST_OF_REDEEM',
+  },
+]
+
+export const permissionSubsidebarList: SubsideBarItemDetail[] = [
+  {
+    routeName: 'permission-role',
+    label: 'Roles Information',
+    icon: '<i class="lnil lnil-books mr-2"></i>',
+    action: 'VIEW_LIST_OF_ROLE',
+  },
+  {
+    routeName: 'permission-role-create',
+    label: 'Create Role',
+    icon: '<i class="lnil lnil-books mr-2"></i>',
+    action: 'CREATE_ROLE',
+  },
+  { isDivider: true },
+  {
+    routeName: 'permission-team',
+    label: 'Team Information',
+    icon: '<i class="lnil lnil-books mr-2"></i>',
+    action: 'VIEW_LIST_OF_TEAM',
+  },
+  { isDivider: true },
 ]
