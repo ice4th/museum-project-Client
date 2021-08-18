@@ -44,6 +44,14 @@ export interface FindMyCoachOption {
   ticket: number
 }
 
+export interface StudentOption {
+  id: number
+  fullnameTh: string
+  fullnameEn: string
+  nicknameTh: string
+  nicknameEn: string
+}
+
 export interface TeamOption {
   id: number
   name: string

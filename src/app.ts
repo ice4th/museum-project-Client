@@ -17,7 +17,6 @@ import {
   userSessionSymbol,
 } from '/@src/composable/useUserSession'
 import { initApi, apiSymbol } from '/@src/composable/useApi'
-import useNotyf from '/@src/composable/useNotyf'
 
 type VueroAppOptions = {
   enhanceApp?: (app: App) => Promise<void>
@@ -114,10 +113,6 @@ export async function createApp({ enhanceApp }: VueroAppOptions) {
     if (to.meta.requiresAuth && !session.isLoggedIn) {
       // this route requires auth, check if logged in
       // if not, redirect to login page.
-      const notif = useNotyf()
-      notif.error(
-        'Sorry, you should loggin to access this section (anything will work)'
-      )
 
       return {
         // Will follow the redirection set in /@src/pages/auth/index.vue
@@ -125,6 +120,8 @@ export async function createApp({ enhanceApp }: VueroAppOptions) {
         // save the location we were at to come back later
         query: { redirect: to.fullPath },
       }
+    } else if (session.isLoggedIn && to.name === 'auth-login') {
+      return to.query.redirect ? { path: to.query.redirect } : { name: 'index' }
     }
   })
 

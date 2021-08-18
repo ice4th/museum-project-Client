@@ -1,11 +1,11 @@
 <script setup lang="ts">
 // ModalAddTicket Component
 
-import { defineEmit, ref, watch } from 'vue'
-import { defineProps } from 'vue'
+import { ref, watch } from 'vue'
 import type { IAddTicketStudent } from '/@src/types/interfaces/ticket.interface'
 import type { PropType } from 'vue'
 import ticketType from '/@src/data/ticket-type.json'
+import type { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 const ticketTypeOptions = ticketType
 
 const props = defineProps({
@@ -13,21 +13,29 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  input: {
-    type: Object as PropType<IAddTicketStudent>,
-    default: () => {},
-  },
-  customDate: {
-    type: Boolean,
-    default: false,
+  packageItem: {
+    type: Object as PropType<IStudentPackageItems>,
+    default: undefined,
   },
   title: {
     type: String,
     default: '',
   },
 })
-
-const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
+const customDate = ref(false)
+const addTicketInput = ref<IAddTicketStudent>({
+  packageItemId: props.packageItem?.packageId || 0,
+  type: 'package',
+  amount: 1,
+  comment: '',
+})
+const emit = defineEmits(['toggle-close', 'on-change'])
+const customDateChange = (value: boolean) => {
+  if (!value) {
+    addTicketInput.value.startDate = undefined
+    addTicketInput.value.expireDate = undefined
+  }
+}
 </script>
 
 <template>
@@ -44,7 +52,7 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
           <label>Ticket Type</label>
           <V-Control icon="feather:book">
             <Multiselect
-              v-model="input.type"
+              v-model="addTicketInput.type"
               :searchable="true"
               :options="ticketTypeOptions"
               placeholder="Ticket Type"
@@ -68,7 +76,7 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
           <label>Amount</label>
           <V-Control icon="feather:hash">
             <input
-              v-model="input.amount"
+              v-model="addTicketInput.amount"
               type="number"
               class="input"
               placeholder="ระบุเป็นจำนวนเต็มเท่านั้น"
@@ -81,7 +89,7 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
           <label>Comment</label>
           <V-Control>
             <input
-              v-model="input.comment"
+              v-model="addTicketInput.comment"
               type="textarea"
               class="textarea is-primary-focus"
               rows="2"
@@ -92,17 +100,17 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
         </V-Field>
         <V-Control>
           <V-SwitchBlock
-            :model-value="customDate"
+            v-model="customDate"
             label="Need to custom start date and expire date"
             color="primary"
-            @update:modelValue="emit('update:customDate', $event)"
+            @update:model-value="customDateChange"
           />
         </V-Control>
         <div class="columns is-multiline">
           <div class="column is-6">
             <v-date-picker
               v-show="customDate"
-              v-model="input.startDate"
+              v-model="addTicketInput.startDate"
               color="orange"
               :model-config="{
                 type: 'string',
@@ -133,7 +141,7 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
           <div class="column is-6">
             <v-date-picker
               v-show="customDate"
-              v-model="input.expireDate"
+              v-model="addTicketInput.expireDate"
               color="orange"
               :model-config="{
                 type: 'string',
@@ -165,7 +173,12 @@ const emit = defineEmit(['toggle-close', 'on-add', 'update:customDate'])
       </form>
     </template>
     <template #action>
-      <V-Button color="primary" raised @click="emit('on-add')">Add</V-Button>
+      <V-Button
+        color="primary"
+        raised
+        @click="emit('on-change', addTicketInput)"
+        >Add</V-Button
+      >
     </template>
   </V-Modal>
 </template>

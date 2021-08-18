@@ -1,4 +1,4 @@
-import { AdminStatus } from '../enums/admin.enum'
+import { AdminCountry, AdminStatus } from '../enums/admin.enum'
 
 export interface IAdminInfo {
   id: number
@@ -14,4 +14,15 @@ export interface IAdminInfo {
   roleId: number
   teamId: number
   manageCountry: string[]
+}
+
+export interface IAdminDetail {
+  id: number
+  name: string
+  fullname: string
+  avatar: string
+  phone: string
+  email: string
+  country: AdminCountry
+  status: AdminStatus
 }

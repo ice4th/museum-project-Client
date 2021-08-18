@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
-import { computed, defineEmit, onBeforeMount, ref, watch } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 import useNotyf from '/@src/composable/useNotyf'
 import type {
@@ -24,7 +24,7 @@ const props = defineProps({
     default: () => {},
   },
 })
-const emit = defineEmit({
+const emit = defineEmits({
   'on-update': Object,
 })
 

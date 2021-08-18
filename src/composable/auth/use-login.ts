@@ -1,9 +1,9 @@
 /**
- * useRegister Composition API
+ * useLogin Composition API
  */
 import { reactive, ref, toRefs } from 'vue'
 import { Notyf } from 'notyf'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import useAuthApi from '../api/useAuthApi'
 import { errMessage } from '/@src/helpers/filter.helper'
 
@@ -20,6 +20,7 @@ export default function useLogin() {
     },
   })
   const router = useRouter()
+  const route = useRoute()
   const isLoading = ref(false)
   const state = reactive<UseLoginState>({
     email: '',
@@ -35,7 +36,10 @@ export default function useLogin() {
     })
     isLoading.value = false
     if (status === 201) {
-      router.push({ name: 'index' })
+      const routePath = route.query.redirect
+        ? { path: route.query.redirect }
+        : { name: 'index' }
+      router.push(routePath)
       return
     }
     notyf.error(errMessage(message) || 'Fail! Please try again')
