@@ -28,7 +28,7 @@ export const productSubsidebarList: SubsideBarItemDetail[] = [
     action: 'VIEW_LIST_OF_PRODUCT',
   },
   {
-    routeName: 'product',
+    routeName: 'product-create-product',
     label: 'Create Product',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PRODUCT',

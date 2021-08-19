@@ -9,6 +9,7 @@ import {
 import { useRoute, useRouter } from 'vue-router'
 import { toFormat } from '/@src/helpers/date.helper'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
 
 const route = useRoute()
 pageTitle.value = 'Student Information'
@@ -19,7 +20,7 @@ const { data, totalPage, total, currentPage, perPage, isLoading, search } =
 useHead({
   title: 'Whitehouse: Student',
 })
-const headers = [
+const headers: IDatatableHeader = [
   { key: 'studentId', label: 'ID' },
   { key: 'fullname', label: 'Fullname', isRaw: true },
   { key: 'nickname', label: 'Nickname' },
@@ -27,10 +28,7 @@ const headers = [
   { key: 'level', label: 'level', isRaw: true },
   { key: 'email', label: 'Email' },
   { key: 'phone', label: 'Phone' },
-  { key: 'lastLogin', label: 'lastLogin' },
-  { key: 'lastUsedPackage', label: 'lastUsedPackage' },
-  { key: 'ticket.used', label: 'Used' },
-  { key: 'ticket.available', label: 'Available' },
+  { key: 'action', label: 'Action', isRaw: true, isEnd: true },
 ]
 </script>
 
@@ -47,24 +45,6 @@ const headers = [
       :total="total"
       :total-page="totalPage"
     >
-      <template #thead>
-        <tr>
-          <th scope="col" rowspan="2" class="has-text-centered">ID</th>
-          <th scope="col" rowspan="2">Fullname</th>
-          <th scope="col" rowspan="2">Nickname</th>
-          <th scope="col" rowspan="2">Partner</th>
-          <th scope="col" rowspan="2">Level</th>
-          <th scope="col" rowspan="2">E-mail</th>
-          <th scope="col" rowspan="2">Phone</th>
-          <th scope="col" rowspan="2">Last Login</th>
-          <th scope="col" rowspan="2">Last Package</th>
-          <th scope="col" colspan="2" class="has-text-centered">Ticket</th>
-        </tr>
-        <tr>
-          <th class="has-text-centered">Used</th>
-          <th class="has-text-centered">Remain</th>
-        </tr>
-      </template>
       <template #fullname="{ value }">
         <div class="student-name-col">
           <V-Avatar
@@ -84,7 +64,7 @@ const headers = [
         {{ value?.th || value?.en || '-' }}
       </template>
       <template #partner="{ value }">
-        {{ value?.pop()?.partnerName || '-' }}
+        {{ value?.length ? value[value.length - 1].partnerName : '-' }}
       </template>
       <template #level="{ value }">
         {{ value.lastUsedPackage?.globishLevel || '-' }}
@@ -95,16 +75,54 @@ const headers = [
       <template #phone="{ value }">
         {{ value || '-' }}
       </template>
-      <template #lastLogin="{ value }">
-        {{ value ? toFormat(value, 'DD/MM/YYYY, HH:mm') : '-' }}
-      </template>
-      <template #lastUsedPackage="{ value }">
-        {{ value?.packageName || '-' }}
-      </template>
-      <template #action>
-        <div class="dark-inverted is-flex is-justify-content-flex-end">
-          <FlexTableDropdown />
-        </div>
+      <template #action="{ value }">
+        <V-Dropdown spaced right>
+          <template #button="{ toggle }">
+            <V-Button
+              icon="feather:more-vertical"
+              class="is-trigger"
+              @click="toggle"
+            >
+              Actions
+            </V-Button>
+          </template>
+          <template #content>
+            <RouterLink
+              role="menuitem"
+              class="dropdown-item is-media"
+              :to="{
+                name: 'student-:id',
+                params: { id: `${value.studentId}` },
+              }"
+            >
+              <div class="icon">
+                <i aria-hidden="true" class="lnil lnil-flag"></i>
+              </div>
+              <div class="meta">
+                <span>View Profile</span>
+                <span>view student profile</span>
+              </div>
+            </RouterLink>
+            <RouterLink
+              role="menuitem"
+              class="dropdown-item is-media"
+              :to="{
+                name: 'student-:id',
+                params: { id: `${value.studentId}` },
+              }"
+            >
+              <div class="icon">
+                <i aria-hidden="true" class="lnil lnil-flag"></i>
+              </div>
+              <div class="meta">
+                <span>Edit Profile</span>
+                <span>edit student profile</span>
+              </div>
+            </RouterLink>
+
+            <!-- <hr class="dropdown-divider" /> -->
+          </template>
+        </V-Dropdown>
       </template>
     </Datatable>
   </div>
