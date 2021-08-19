@@ -1,22 +1,44 @@
+import { GlobishLevel, PackageCefrLevel } from '../enums/package.enum'
 import { ProductCEFR, ProductType, Purchasable } from '../enums/product.enum'
-import { GlobishLevel } from '../enums/package.enum'
 
 export interface IProduct {
   id: number
   name: string
-  slug?: string
-  type?: ProductType
-  level?: string
-  status: string
+  type: ProductType
+  slug: string
+
+  body?: string
+  bodyDraft?: string
+
+  detail: string
+  price: number
+  beforeDiscount: number
+  duration: number
+  order: number
   productOrder: number
-  globishLevel?: string
+  excerpt: string
+  cefr: PackageCefrLevel
+  globishLevel?: GlobishLevel
+  image?: string
+  level?: string
+
+  metaDescription?: string
+  metaKeyword?: string
+  metaTitle?: string
+  seoFooter?: string
+
   preTestId?: number
   midTestId?: number
   postTestId?: number
-  detail: string
-  image: string
-  body: string
-  cefr: string
+
+  purchasable: Purchasable
+  recommend1?: number
+  recommend2?: number
+  recommend3?: number
+
+  status?: string
+  createdAt: string
+  updatedAt: string
 }
 
 export interface IProductDetail {
@@ -67,4 +89,8 @@ export interface ICreateProduct {
   preTestId?: number
   midTestId?: number
   postTestId?: number
+}
+
+export interface IUpdateProduct extends ICreateProduct {
+  isPublish: boolean
 }

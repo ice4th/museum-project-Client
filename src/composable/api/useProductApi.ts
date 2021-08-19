@@ -2,6 +2,8 @@ import useApi, { apiHandleError, ApiResponse } from '../useApi'
 import {
   ICreateProduct,
   IProductDetail,
+  IProduct,
+  IUpdateProduct,
 } from '/@src/types/interfaces/product.interface'
 
 import {
@@ -29,9 +31,16 @@ export default function useProductApi() {
     return catchReponse(res)
   }
 
+  const getProductById = async (productId: number) => {
+    const res = await api.get<IProduct, ApiResponse>(`Products/${productId}`)
+    return catchReponse(res)
+  }
   const createProduct = (payload: ICreateProduct) => {
     return api.post<any, ApiResponse>(`Products`, payload)
   }
+  const updateProduct = (productId: number, payload: IUpdateProduct) => {
+    return api.put<IProduct, ApiResponse>(`Products/${productId}`, payload)
+  }
 
-  return { getAllProduct, createProduct }
+  return { createProduct, updateProduct, getProductById }
 }
