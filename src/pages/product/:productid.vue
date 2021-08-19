@@ -4,7 +4,8 @@ import { useRoute } from 'vue-router'
 import useManageProduct from '/@src/composable/product/use-manage-product'
 const route = useRoute()
 const productId = route.params.productid as string
-const { fetchProductById, productInfo } = useManageProduct()
+const { fetchProductById, validate, productInfo, submitUpdateProduct } =
+  useManageProduct()
 onMounted(() => {
   if (typeof productId === 'string') fetchProductById(+productId)
 })
@@ -12,8 +13,13 @@ onMounted(() => {
 
 <template>
   <div v-if="productInfo">
-    <div v-for="(value, key) in productInfo" :key="key">
+    <ProductForm
+      :product-detail="productInfo"
+      :validate="validate"
+      @update="submitUpdateProduct"
+    />
+    <!-- <div v-for="(value, key) in productInfo" :key="key">
       <span>{{ key }}: {{ value }}</span>
-    </div>
+    </div> -->
   </div>
 </template>

@@ -80,5 +80,5 @@ export interface ICreateProduct {
 }
 
 export interface IUpdateProduct extends ICreateProduct {
-  isDraft: boolean
+  isPublish: boolean
 }

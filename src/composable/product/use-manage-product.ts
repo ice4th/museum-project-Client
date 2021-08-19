@@ -1,5 +1,6 @@
 import { toRefs } from 'vue'
 import { reactive } from 'vue-demi'
+import { checkResponseStatus } from '../api'
 import useProductApi from '../api/useProductApi'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
@@ -28,31 +29,31 @@ export default function useManageProduct() {
     }
   }
 
-  const submitCreateProduct = async (payload: ICreateProduct) => {
-    const { status, message } = await createProduct(payload)
-    if (status !== 201) {
-      if (typeof message === 'object') state.validate = message
-      else notyf.error(errMessage(message))
+  const submitCreateProduct = async (payload: IUpdateProduct) => {
+    const res = await createProduct(payload)
+    if (checkResponseStatus(res)) {
+      state.validate = {}
+      notyf.success('Success!')
+      // TODO: change route to product list
       return
     }
-    state.validate = {}
-    notyf.success('Success!')
-    // TODO: change route to product list
+    if (typeof res.message === 'object') state.validate = res.message
+    else notyf.error(errMessage(res.message))
   }
 
-  const submitUpdateProduct = async (
-    productId: number,
-    payload: IUpdateProduct
-  ) => {
-    const { status, message } = await updateProduct(productId, payload)
-    if (status !== 201) {
-      if (typeof message === 'object') state.validate = message
-      else notyf.error(errMessage(message))
+  const submitUpdateProduct = async (payload: IUpdateProduct) => {
+    if (!state.productInfo?.id) return
+    const res = await updateProduct(state.productInfo.id, payload)
+    const data = checkResponseStatus(res)
+    if (data) {
+      state.productInfo = data
+      state.validate = {}
+      notyf.success('Success!')
+      // TODO: change route to product list
       return
     }
-    state.validate = {}
-    notyf.success('Success!')
-    // TODO: change route to product list
+    if (typeof res.message === 'object') state.validate = res.message
+    else notyf.error(errMessage(res.message))
   }
 
   return {

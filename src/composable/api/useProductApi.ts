@@ -17,7 +17,7 @@ export default function useProductApi() {
   }
 
   const updateProduct = (productId: number, payload: IUpdateProduct) => {
-    return api.put<any, ApiResponse>(`Products/${productId}`, payload)
+    return api.put<IProduct, ApiResponse>(`Products/${productId}`, payload)
   }
   return { createProduct, updateProduct, getProductById }
 }
