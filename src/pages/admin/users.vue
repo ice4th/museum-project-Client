@@ -12,7 +12,10 @@ import { toFormat } from '/@src/helpers/date.helper'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import type { IAdminDetail } from '/@src/types/interfaces/admin.interface'
 import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
+import useUserSession from '/@src/composable/useUserSession'
 
+const { user } = useUserSession()
+console.log(user)
 const router = useRouter()
 const route = useRoute()
 pageTitle.value = 'Admin list'
@@ -167,7 +170,22 @@ const confirmChangeCountry = async () => {
                   <span>View Profile</span>
                 </div>
               </RouterLink>
-              <a
+              <!-- can edit only super admin -->
+              <RouterLink
+                v-show="user.roleId === 1"
+                role="menuitem"
+                :to="{ name: 'admin-:userid', params: { userid: value.id } }"
+                class="dropdown-item is-media"
+              >
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-eye"></i>
+                </div>
+                <div class="meta">
+                  <span>Edit</span>
+                  <span>Edit Profile</span>
+                </div>
+              </RouterLink>
+              <!-- <a
                 role="menuitem"
                 href="#"
                 class="dropdown-item is-media"
@@ -180,7 +198,7 @@ const confirmChangeCountry = async () => {
                   <span>Change Country</span>
                   <span>Change admin country (TH or VN)</span>
                 </div>
-              </a>
+              </a> -->
               <a
                 v-show="!value.status"
                 role="menuitem"

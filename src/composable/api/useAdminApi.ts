@@ -1,6 +1,9 @@
 import useApi, { apiHandleError, ApiResponse } from '../useApi'
 import { AdminCountry, AdminStatus } from '/@src/types/enums/admin.enum'
-import { IAdminDetail } from '/@src/types/interfaces/admin.interface'
+import {
+  IAdminDetail,
+  IAdminInfo,
+} from '/@src/types/interfaces/admin.interface'
 import {
   IPaginationParams,
   IPaginationResponse,
@@ -17,10 +20,14 @@ export default function useAdminApi() {
     params: GetAllAdminParams
   ): Promise<IPaginationResponse<IAdminDetail[]>> => {
     const res = await api.get<IPaginationResponse<IAdminDetail[]>, ApiResponse>(
-      `/Admins`,
+      `/Admins/List`,
       { params }
     )
     return catchReponse(res)
+  }
+
+  const getAdminById = async (id: number): Promise<IAdminInfo> => {
+    return api.get<any, IAdminInfo>(`/Admin/Info/${id}`)
   }
 
   const deactivateAccount = (id: number) => {
@@ -37,5 +44,11 @@ export default function useAdminApi() {
     return api.put<any, ApiResponse>(`/Admins/${id}/ResendActivateEmail`)
   }
 
-  return { getAllAdmins, deactivateAccount, changeCountry, resendActivateEmail }
+  return {
+    getAllAdmins,
+    getAdminById,
+    deactivateAccount,
+    changeCountry,
+    resendActivateEmail,
+  }
 }

@@ -4,9 +4,6 @@ import { useWindowScroll } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import useViewAdmin from '/@src/composable/admin/use-view-admin'
 
-const options = ref([])
-const country = ref('th')
-
 const userInfo = ref({
   firstname: 'aaa',
   lastname: 'ccc',
