@@ -1,9 +1,13 @@
 <script setup lang="ts">
 // ProductForm Component
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
+import type { PropType } from 'vue'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import useOptionApi from '/@src/composable/api/useOptionApi'
-import type { ICreateProduct } from '/@src/types/interfaces/product.interface'
+import type {
+  IProduct,
+  IUpdateProduct,
+} from '/@src/types/interfaces/product.interface'
 import {
   ProductCEFR,
   ProductType,
@@ -24,13 +28,18 @@ const props = defineProps({
     type: Object,
     default: undefined,
   },
+  productDetail: {
+    type: Object as PropType<IProduct>,
+    default: undefined,
+  },
 })
 
-const emit = defineEmits(['create'])
-const productInfo = ref<ICreateProduct>({
+const emit = defineEmits(['create', 'update'])
+const productInfo = ref<IUpdateProduct>({
   name: '',
   excerpt: '',
   slug: '',
+  isPublish: false,
 })
 const globishLevelOption = Object.entries(GlobishLevel).map(([key, value]) => {
   return { label: key.replace(/_/g, ' '), value }
@@ -43,6 +52,7 @@ const preTestOption = ref([])
 const midTestOption = ref([])
 const postTestOption = ref([])
 const showFilePopup = ref(false)
+const isPurchase = ref(false)
 const selectImage = (ev: IFile) => {
   productInfo.value.image = ev.src
 }
@@ -58,6 +68,44 @@ onBeforeMount(async () => {
   midTestOption.value = midTestList
   postTestOption.value = postTestList
 })
+const onChangePurchasable = () => {
+  productInfo.value.purchasable = isPurchase.value ? '1' : '0'
+}
+onMounted(() => {
+  if (!!props.productDetail) {
+    productInfo.value.isPublish = !props.productDetail.bodyDraft
+    productInfo.value.name = props.productDetail.name
+    productInfo.value.beforeDiscount = props.productDetail.beforeDiscount
+    productInfo.value.duration = props.productDetail.duration
+    productInfo.value.excerpt = props.productDetail.excerpt
+    productInfo.value.image = props.productDetail.image || undefined
+    productInfo.value.globishLevel = props.productDetail.globishLevel
+    productInfo.value.body = productInfo.value.isPublish
+      ? props.productDetail.bodyDraft
+      : props.productDetail.body
+    productInfo.value.purchasable = props.productDetail.purchasable
+    isPurchase.value = props.productDetail.purchasable === Purchasable.YES
+    productInfo.value.type = props.productDetail.type
+    productInfo.value.cefr = props.productDetail.cefr
+    productInfo.value.slug = props.productDetail.slug
+    productInfo.value.order = props.productDetail.order
+    productInfo.value.price = props.productDetail.price
+
+    productInfo.value.metaTitle = props.productDetail.metaTitle || undefined
+    productInfo.value.metaDescription =
+      props.productDetail.metaDescription || undefined
+    productInfo.value.metaKeyword = props.productDetail.metaKeyword || undefined
+    productInfo.value.seoFooter = props.productDetail.seoFooter || undefined
+
+    productInfo.value.recommend1 = props.productDetail.recommend1 || undefined
+    productInfo.value.recommend2 = props.productDetail.recommend2 || undefined
+    productInfo.value.recommend3 = props.productDetail.recommend3 || undefined
+
+    productInfo.value.preTestId = props.productDetail.preTestId || undefined
+    productInfo.value.midTestId = props.productDetail.midTestId || undefined
+    productInfo.value.postTestId = props.productDetail.postTestId || undefined
+  }
+})
 </script>
 
 <template>
@@ -66,22 +114,58 @@ onBeforeMount(async () => {
     @select="selectImage"
     @close="showFilePopup = false"
   />
-  <!-- <div class="column is-12 content">
-        <ckeditor :editor="ClassicEditor"> </ckeditor>
-      </div> -->
-  <div class="mb-4">
-    <V-Button
-      icon="feather:edit-2"
-      color="primary"
-      @click="emit('create', productInfo)"
-      >Submit</V-Button
-    >
-  </div>
   <V-Message v-show="Object.values(validate).length" color="danger">
     <span v-for="(value, key) in validate" :key="key" class="is-flex">
       <span>{{ key }}: {{ value }}</span>
     </span>
   </V-Message>
+  <div class="tile is-ancestor">
+    <div class="tile is-12 is-vertical is-parent">
+      <div class="tile is-child box">
+        <div class="columns is-multiline is-justify-content-flex-end">
+          <div class="column is-2">
+            <V-Field>
+              <V-Control>
+                <V-SwitchBlock
+                  v-model="isPurchase"
+                  :label="isPurchase ? 'Purchase' : 'Unpurchase'"
+                  color="primary"
+                  @update:model-value="onChangePurchasable"
+                />
+              </V-Control>
+            </V-Field>
+          </div>
+          <div v-show="productDetail" class="column is-2">
+            <V-Field>
+              <V-Control>
+                <V-SwitchBlock
+                  v-model="productInfo.isPublish"
+                  :label="productInfo.isPublish ? 'Publish' : 'Draft'"
+                  color="primary"
+                />
+              </V-Control>
+            </V-Field>
+          </div>
+          <div class="column is-2 ml-auto">
+            <V-Button
+              v-show="!productDetail"
+              icon="feather:edit-2"
+              color="primary"
+              @click="emit('create', productInfo)"
+              >Submit</V-Button
+            >
+            <V-Button
+              v-show="productDetail"
+              icon="feather:edit-2"
+              color="primary"
+              @click="emit('update', productInfo)"
+              >Update</V-Button
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="tile is-ancestor">
     <div class="tile is-4 is-vertical is-parent">
       <!-- Assessment Section -->
@@ -175,7 +259,7 @@ onBeforeMount(async () => {
               <V-Control>
                 <Multiselect
                   v-model="productInfo.recommend1"
-                  placeholder="Select type of product"
+                  placeholder="Select type of recommend 1"
                   :options="productOptions"
                   :searchable="true"
                   track-by="name"
@@ -199,7 +283,7 @@ onBeforeMount(async () => {
               <V-Control>
                 <Multiselect
                   v-model="productInfo.recommend2"
-                  placeholder="Select type of product"
+                  placeholder="Select type of recommend 2"
                   :options="productOptions"
                   :searchable="true"
                   track-by="name"
@@ -223,7 +307,7 @@ onBeforeMount(async () => {
               <V-Control>
                 <Multiselect
                   v-model="productInfo.recommend3"
-                  placeholder="Select type of product"
+                  placeholder="Select type of recommend 3"
                   :options="productOptions"
                   :searchable="true"
                   track-by="name"
@@ -372,7 +456,7 @@ onBeforeMount(async () => {
               <V-Control :has-error="!!validate?.type">
                 <Multiselect
                   v-model="productInfo.type"
-                  placeholder="Select type of product"
+                  placeholder="Select product type"
                   :options="productTypeOptions"
                   :searchable="true"
                 >
@@ -389,7 +473,7 @@ onBeforeMount(async () => {
               <V-Control :has-error="!!validate?.globishLevel">
                 <Multiselect
                   v-model="productInfo.globishLevel"
-                  placeholder="Select type of product"
+                  placeholder="Choose a glevel"
                   :options="globishLevelOption"
                   :searchable="true"
                 >
@@ -406,7 +490,7 @@ onBeforeMount(async () => {
               <V-Control :has-error="!!validate?.cefr">
                 <Multiselect
                   v-model="productInfo.cefr"
-                  placeholder="Select type of product"
+                  placeholder="Choose level of cefr"
                   :options="cefrLevelOption"
                   :searchable="true"
                 >
