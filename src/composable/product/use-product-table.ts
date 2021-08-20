@@ -6,7 +6,6 @@ import {
   IProduct,
   IProductDetail,
 } from '/@src/types/interfaces/product.interface'
-import producList from '/@src/data/mock-product-list.json'
 import { useRoute, useRouter } from 'vue-router'
 
 interface UseProductTableState {

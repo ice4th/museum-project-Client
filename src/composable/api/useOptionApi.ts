@@ -111,7 +111,6 @@ export default function useOptionApi() {
       params: { type },
     })
     state.quizOptions = checkResponseStatus(res) || []
-    console.log(type, state.quizOptions)
     return state.quizOptions
   }
 

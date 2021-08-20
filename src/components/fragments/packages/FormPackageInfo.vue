@@ -339,7 +339,7 @@ const privateSlots = [
       <!-- Duration -->
       <div class="column is-6">
         <V-Field>
-          <label>Duration 555</label>
+          <label>Duration</label>
           <V-Control>
             <V-Field addons>
               <V-Control expanded>
