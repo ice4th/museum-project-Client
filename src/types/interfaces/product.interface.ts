@@ -82,3 +82,15 @@ export interface ICreateProduct {
 export interface IUpdateProduct extends ICreateProduct {
   isPublish: boolean
 }
+
+export interface IProductDetail {
+  id: number
+  name: string
+  slug: string
+  type: ProductType
+  purchasable?: Purchasable
+  price?: number
+  duration?: number
+  order?: number
+  image?: string
+}
