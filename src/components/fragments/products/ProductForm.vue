@@ -16,6 +16,7 @@ import {
 import { QuizType } from '/@src/types/enums/quiz.enum'
 import { GlobishLevel, PackageCefrLevel } from '/@src/types/enums/package.enum'
 import type { IFile } from '../../common/FileManager.vue'
+import { addCommas } from '/@src/helpers/filter.helper'
 const {
   getProducts,
   productOptions,
@@ -36,10 +37,34 @@ const props = defineProps({
 
 const emit = defineEmits(['create', 'update'])
 const productInfo = ref<IUpdateProduct>({
-  name: '',
-  excerpt: '',
-  slug: '',
-  isPublish: false,
+  name: props.productDetail?.name || '',
+  excerpt: props.productDetail?.excerpt || '',
+  body: props.productDetail?.bodyDraft || props.productDetail?.body,
+  purchasable: props.productDetail?.purchasable,
+  type: props.productDetail?.type,
+  cefr: props.productDetail?.cefr,
+  slug: props.productDetail?.slug || '',
+  order: props.productDetail?.order,
+  price: props.productDetail?.price,
+  beforeDiscount: props.productDetail?.beforeDiscount,
+  duration: props.productDetail?.duration,
+  image: props.productDetail?.image || undefined,
+  globishLevel: props.productDetail?.globishLevel,
+
+  metaTitle: props.productDetail?.metaTitle || undefined,
+  metaKeyword: props.productDetail?.metaKeyword || undefined,
+  metaDescription: props.productDetail?.metaDescription || undefined,
+  seoFooter: props.productDetail?.seoFooter || undefined,
+
+  recommend1: props.productDetail?.recommend1 || undefined,
+  recommend2: props.productDetail?.recommend2 || undefined,
+  recommend3: props.productDetail?.recommend3 || undefined,
+
+  preTestId: props.productDetail?.preTestId || undefined,
+  midTestId: props.productDetail?.midTestId || undefined,
+  postTestId: props.productDetail?.postTestId || undefined,
+
+  isPublish: !props.productDetail?.bodyDraft,
 })
 const globishLevelOption = Object.entries(GlobishLevel).map(([key, value]) => {
   return { label: key.replace(/_/g, ' '), value }
@@ -52,7 +77,7 @@ const preTestOption = ref([])
 const midTestOption = ref([])
 const postTestOption = ref([])
 const showFilePopup = ref(false)
-const isPurchase = ref(false)
+const isPurchase = ref(props.productDetail?.purchasable === Purchasable.YES)
 const selectImage = (ev: IFile) => {
   productInfo.value.image = ev.src
 }
@@ -71,41 +96,6 @@ onBeforeMount(async () => {
 const onChangePurchasable = () => {
   productInfo.value.purchasable = isPurchase.value ? '1' : '0'
 }
-onMounted(() => {
-  if (!!props.productDetail) {
-    productInfo.value.isPublish = !props.productDetail.bodyDraft
-    productInfo.value.name = props.productDetail.name
-    productInfo.value.beforeDiscount = props.productDetail.beforeDiscount
-    productInfo.value.duration = props.productDetail.duration
-    productInfo.value.excerpt = props.productDetail.excerpt
-    productInfo.value.image = props.productDetail.image || undefined
-    productInfo.value.globishLevel = props.productDetail.globishLevel
-    productInfo.value.body = productInfo.value.isPublish
-      ? props.productDetail.bodyDraft
-      : props.productDetail.body
-    productInfo.value.purchasable = props.productDetail.purchasable
-    isPurchase.value = props.productDetail.purchasable === Purchasable.YES
-    productInfo.value.type = props.productDetail.type
-    productInfo.value.cefr = props.productDetail.cefr
-    productInfo.value.slug = props.productDetail.slug
-    productInfo.value.order = props.productDetail.order
-    productInfo.value.price = props.productDetail.price
-
-    productInfo.value.metaTitle = props.productDetail.metaTitle || undefined
-    productInfo.value.metaDescription =
-      props.productDetail.metaDescription || undefined
-    productInfo.value.metaKeyword = props.productDetail.metaKeyword || undefined
-    productInfo.value.seoFooter = props.productDetail.seoFooter || undefined
-
-    productInfo.value.recommend1 = props.productDetail.recommend1 || undefined
-    productInfo.value.recommend2 = props.productDetail.recommend2 || undefined
-    productInfo.value.recommend3 = props.productDetail.recommend3 || undefined
-
-    productInfo.value.preTestId = props.productDetail.preTestId || undefined
-    productInfo.value.midTestId = props.productDetail.midTestId || undefined
-    productInfo.value.postTestId = props.productDetail.postTestId || undefined
-  }
-})
 </script>
 
 <template>
@@ -400,17 +390,6 @@ onMounted(() => {
               </div>
               <img v-if="productInfo.image" :src="productInfo.image" alt="" />
             </div>
-            <!-- <V-Field>
-              <label>Product Image</label>
-              <V-Control icon="lnil lnil-file-name">
-                <input
-                  v-model="productInfo.image"
-                  type="text"
-                  class="input"
-                  placeholder="Internal Package Name"
-                />
-              </V-Control>
-            </V-Field> -->
           </div>
           <div class="column is-6">
             <V-Field>
@@ -435,7 +414,7 @@ onMounted(() => {
             <V-Field>
               <label>Excerpt คําขยายความ Product</label>
               <V-Control
-                icon="lnil lnil-file-name"
+                icon="lnil lnil-zoom-in"
                 :has-error="!!validate?.excerpt"
               >
                 <input
@@ -450,7 +429,7 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Product Type</label>
               <V-Control :has-error="!!validate?.type">
@@ -467,7 +446,7 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Product Level</label>
               <V-Control :has-error="!!validate?.globishLevel">
@@ -484,7 +463,7 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Product CEFR</label>
               <V-Control :has-error="!!validate?.cefr">
@@ -501,13 +480,10 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>URL Slug</label>
-              <V-Control
-                icon="lnil lnil-file-name"
-                :has-error="!!validate?.slug"
-              >
+              <V-Control icon="lnil lnil-tag" :has-error="!!validate?.slug">
                 <input
                   v-model="productInfo.slug"
                   type="text"
@@ -520,13 +496,10 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Order</label>
-              <V-Control
-                icon="lnil lnil-file-name"
-                :has-error="!!validate?.order"
-              >
+              <V-Control icon="lnil lnil-list" :has-error="!!validate?.order">
                 <input
                   v-model="productInfo.order"
                   type="text"
@@ -540,53 +513,76 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
-              <label>Average Price</label>
-              <V-Control
-                icon="lnil lnil-file-name"
-                :has-error="!!validate?.price"
-              >
-                <input
-                  v-model="productInfo.price"
-                  type="text"
-                  class="input"
-                  placeholder="Price"
-                  @change="productInfo.price = +productInfo.price"
-                />
+              <label>Average Price {{ addCommas(productInfo.price) }}</label>
+              <V-Control :has-error="!!validate?.price">
+                <V-Field addons>
+                  <V-Control>
+                    <span class="select">
+                      <select>
+                        <option value="thb">฿</option>
+                        <option value="vnd">₫</option>
+                      </select>
+                    </span>
+                  </V-Control>
+                  <V-Control expanded>
+                    <input
+                      v-model="productInfo.price"
+                      type="number"
+                      class="input"
+                      placeholder="Price"
+                      @change="productInfo.price = +productInfo.price"
+                    />
+                  </V-Control>
+                </V-Field>
+
                 <p v-if="validate.price" class="help text-danger">
                   {{ validate.price }}
                 </p>
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
-              <label>Before Discount Price</label>
-              <V-Control
-                icon="lnil lnil-file-name"
-                :has-error="!!validate?.beforeDiscount"
+              <label
+                >Before Discount Price
+                {{ addCommas(productInfo.beforeDiscount) }}</label
               >
-                <input
-                  v-model="productInfo.beforeDiscount"
-                  type="text"
-                  class="input"
-                  placeholder="Discount Price"
-                  @change="
-                    productInfo.beforeDiscount = +productInfo.beforeDiscount
-                  "
-                />
+              <V-Control :has-error="!!validate?.beforeDiscount">
+                <V-Field addons>
+                  <V-Control>
+                    <span class="select">
+                      <select>
+                        <option value="thb">฿</option>
+                        <option value="vnd">₫</option>
+                      </select>
+                    </span>
+                  </V-Control>
+                  <V-Control expanded>
+                    <input
+                      v-model="productInfo.beforeDiscount"
+                      type="number"
+                      class="input"
+                      placeholder="Price"
+                      @change="
+                        productInfo.beforeDiscount = +productInfo.beforeDiscount
+                      "
+                    />
+                  </V-Control>
+                </V-Field>
+
                 <p v-if="validate.beforeDiscount" class="help text-danger">
                   {{ validate.beforeDiscount }}
                 </p>
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Average Duration</label>
               <V-Control
-                icon="lnil lnil-file-name"
+                icon="lnil lnil-timer"
                 :has-error="!!validate?.duration"
               >
                 <input
