@@ -1,4 +1,4 @@
-import { ProductType } from '../enums/product.enum'
+import { ProductType, Purchasable } from '../enums/product.enum'
 
 export interface IProduct {
   id: number
@@ -16,4 +16,16 @@ export interface IProduct {
   image: string
   body: string
   cefr: string
+}
+
+export interface IProductDetail {
+  id: number
+  name: string
+  slug: string
+  type: ProductType
+  purchasable?: Purchasable
+  price?: number
+  duration?: number
+  order?: number
+  image?: string
 }

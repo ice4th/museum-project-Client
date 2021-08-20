@@ -10,3 +10,8 @@ export enum ProductType {
   FREETALK = 'freetalk',
   GB = 'globish_plus',
 }
+
+export enum Purchasable {
+  YES = '1',
+  NO = '0',
+}
