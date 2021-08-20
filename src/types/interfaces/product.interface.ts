@@ -8,7 +8,6 @@ export interface IProduct {
   slug: string
 
   body?: string
-  bodyDraft?: string
 
   detail: string
   price: number
@@ -41,19 +40,7 @@ export interface IProduct {
   updatedAt: string
 }
 
-export interface IProductDetail {
-  id: number
-  name: string
-  slug: string
-  type: ProductType
-  purchasable?: Purchasable
-  price?: number
-  duration?: number
-  order?: number
-  image?: string
-}
-
-export interface ICreateProduct {
+export interface IUpdateProduct {
   name: string
   excerpt: string
   body?: string
@@ -90,7 +77,14 @@ export interface ICreateProduct {
   midTestId?: number
   postTestId?: number
 }
-
-export interface IUpdateProduct extends ICreateProduct {
-  isPublish: boolean
+export interface IProductDetail {
+  id: number
+  name: string
+  slug: string
+  type: ProductType
+  purchasable?: Purchasable
+  price?: number
+  duration?: number
+  order?: number
+  image?: string
 }

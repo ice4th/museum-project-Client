@@ -16,6 +16,7 @@ import {
 import { QuizType } from '/@src/types/enums/quiz.enum'
 import { GlobishLevel, PackageCefrLevel } from '/@src/types/enums/package.enum'
 import type { IFile } from '../../common/FileManager.vue'
+import { addCommas } from '/@src/helpers/filter.helper'
 const {
   getProducts,
   productOptions,
@@ -32,14 +33,40 @@ const props = defineProps({
     type: Object as PropType<IProduct>,
     default: undefined,
   },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['create', 'update'])
 const productInfo = ref<IUpdateProduct>({
-  name: '',
-  excerpt: '',
-  slug: '',
-  isPublish: false,
+  name: props.productDetail?.name || '',
+  excerpt: props.productDetail?.excerpt || '',
+  body: props.productDetail?.body,
+  purchasable: props.productDetail?.purchasable || Purchasable.NO,
+  type: props.productDetail?.type,
+  cefr: props.productDetail?.cefr,
+  slug: props.productDetail?.slug || '',
+  order: props.productDetail?.order,
+  price: props.productDetail?.price,
+  beforeDiscount: props.productDetail?.beforeDiscount,
+  duration: props.productDetail?.duration,
+  image: props.productDetail?.image || undefined,
+  globishLevel: props.productDetail?.globishLevel,
+
+  metaTitle: props.productDetail?.metaTitle || undefined,
+  metaKeyword: props.productDetail?.metaKeyword || undefined,
+  metaDescription: props.productDetail?.metaDescription || undefined,
+  seoFooter: props.productDetail?.seoFooter || undefined,
+
+  recommend1: props.productDetail?.recommend1 || undefined,
+  recommend2: props.productDetail?.recommend2 || undefined,
+  recommend3: props.productDetail?.recommend3 || undefined,
+
+  preTestId: props.productDetail?.preTestId || undefined,
+  midTestId: props.productDetail?.midTestId || undefined,
+  postTestId: props.productDetail?.postTestId || undefined,
 })
 const globishLevelOption = Object.entries(GlobishLevel).map(([key, value]) => {
   return { label: key.replace(/_/g, ' '), value }
@@ -52,7 +79,7 @@ const preTestOption = ref([])
 const midTestOption = ref([])
 const postTestOption = ref([])
 const showFilePopup = ref(false)
-const isPurchase = ref(false)
+const isPurchase = ref(props.productDetail?.purchasable === Purchasable.YES)
 const selectImage = (ev: IFile) => {
   productInfo.value.image = ev.src
 }
@@ -71,41 +98,6 @@ onBeforeMount(async () => {
 const onChangePurchasable = () => {
   productInfo.value.purchasable = isPurchase.value ? '1' : '0'
 }
-onMounted(() => {
-  if (!!props.productDetail) {
-    productInfo.value.isPublish = !props.productDetail.bodyDraft
-    productInfo.value.name = props.productDetail.name
-    productInfo.value.beforeDiscount = props.productDetail.beforeDiscount
-    productInfo.value.duration = props.productDetail.duration
-    productInfo.value.excerpt = props.productDetail.excerpt
-    productInfo.value.image = props.productDetail.image || undefined
-    productInfo.value.globishLevel = props.productDetail.globishLevel
-    productInfo.value.body = productInfo.value.isPublish
-      ? props.productDetail.bodyDraft
-      : props.productDetail.body
-    productInfo.value.purchasable = props.productDetail.purchasable
-    isPurchase.value = props.productDetail.purchasable === Purchasable.YES
-    productInfo.value.type = props.productDetail.type
-    productInfo.value.cefr = props.productDetail.cefr
-    productInfo.value.slug = props.productDetail.slug
-    productInfo.value.order = props.productDetail.order
-    productInfo.value.price = props.productDetail.price
-
-    productInfo.value.metaTitle = props.productDetail.metaTitle || undefined
-    productInfo.value.metaDescription =
-      props.productDetail.metaDescription || undefined
-    productInfo.value.metaKeyword = props.productDetail.metaKeyword || undefined
-    productInfo.value.seoFooter = props.productDetail.seoFooter || undefined
-
-    productInfo.value.recommend1 = props.productDetail.recommend1 || undefined
-    productInfo.value.recommend2 = props.productDetail.recommend2 || undefined
-    productInfo.value.recommend3 = props.productDetail.recommend3 || undefined
-
-    productInfo.value.preTestId = props.productDetail.preTestId || undefined
-    productInfo.value.midTestId = props.productDetail.midTestId || undefined
-    productInfo.value.postTestId = props.productDetail.postTestId || undefined
-  }
-})
 </script>
 
 <template>
@@ -123,30 +115,25 @@ onMounted(() => {
     <div class="tile is-12 is-vertical is-parent">
       <div class="tile is-child box">
         <div class="columns is-multiline is-justify-content-flex-end">
-          <div class="column is-2">
+          <div class="column is-4">
             <V-Field>
+              <label>show on website?</label>
               <V-Control>
                 <V-SwitchBlock
                   v-model="isPurchase"
-                  :label="isPurchase ? 'Purchase' : 'Unpurchase'"
+                  :label="
+                    isPurchase
+                      ? 'Purchase (show on website)'
+                      : 'Unpurchase (not show on website)'
+                  "
+                  :readonly="readonly"
                   color="primary"
                   @update:model-value="onChangePurchasable"
                 />
               </V-Control>
             </V-Field>
           </div>
-          <div v-show="productDetail" class="column is-2">
-            <V-Field>
-              <V-Control>
-                <V-SwitchBlock
-                  v-model="productInfo.isPublish"
-                  :label="productInfo.isPublish ? 'Publish' : 'Draft'"
-                  color="primary"
-                />
-              </V-Control>
-            </V-Field>
-          </div>
-          <div class="column is-2 ml-auto">
+          <div class="column is-6 ml-auto">
             <V-Button
               v-show="!productDetail"
               icon="feather:edit-2"
@@ -155,7 +142,7 @@ onMounted(() => {
               >Submit</V-Button
             >
             <V-Button
-              v-show="productDetail"
+              v-show="productDetail && !readonly"
               icon="feather:edit-2"
               color="primary"
               @click="emit('update', productInfo)"
@@ -183,6 +170,7 @@ onMounted(() => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -207,6 +195,7 @@ onMounted(() => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -231,6 +220,7 @@ onMounted(() => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -264,6 +254,7 @@ onMounted(() => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -288,6 +279,7 @@ onMounted(() => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -312,6 +304,7 @@ onMounted(() => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -342,6 +335,7 @@ onMounted(() => {
                   v-model="productInfo.metaTitle"
                   type="text"
                   class="input"
+                  :readonly="readonly"
                 />
               </V-Control>
             </V-Field>
@@ -354,6 +348,7 @@ onMounted(() => {
                   v-model="productInfo.metaKeyword"
                   type="text"
                   class="input"
+                  :readonly="readonly"
                 />
               </V-Control>
             </V-Field>
@@ -366,6 +361,7 @@ onMounted(() => {
                   v-model="productInfo.metaDescription"
                   type="text"
                   class="input"
+                  :readonly="readonly"
                 />
               </V-Control>
             </V-Field>
@@ -378,6 +374,7 @@ onMounted(() => {
                   v-model="productInfo.seoFooter"
                   type="text"
                   class="input"
+                  :readonly="readonly"
                 />
               </V-Control>
             </V-Field>
@@ -392,25 +389,18 @@ onMounted(() => {
         <p class="subtitle">Product Information</p>
         <div class="columns is-multiline">
           <div class="column is-12">
-            <div class="image-poster">
-              <div class="btn-file" :class="[!productInfo.image && 'show']">
+            <div class="image-poster" :class="{ readonly }">
+              <div
+                v-show="!readonly"
+                class="btn-file"
+                :class="[!productInfo.image && 'show']"
+              >
                 <V-Button icon="feather:upload" @click="showFilePopup = true"
                   >Choose image</V-Button
                 >
               </div>
               <img v-if="productInfo.image" :src="productInfo.image" alt="" />
             </div>
-            <!-- <V-Field>
-              <label>Product Image</label>
-              <V-Control icon="lnil lnil-file-name">
-                <input
-                  v-model="productInfo.image"
-                  type="text"
-                  class="input"
-                  placeholder="Internal Package Name"
-                />
-              </V-Control>
-            </V-Field> -->
           </div>
           <div class="column is-6">
             <V-Field>
@@ -424,6 +414,7 @@ onMounted(() => {
                   type="text"
                   class="input"
                   placeholder="Product Name"
+                  :readonly="readonly"
                 />
               </V-Control>
               <p v-if="validate.name" class="help text-danger">
@@ -435,7 +426,7 @@ onMounted(() => {
             <V-Field>
               <label>Excerpt คําขยายความ Product</label>
               <V-Control
-                icon="lnil lnil-file-name"
+                icon="lnil lnil-zoom-in"
                 :has-error="!!validate?.excerpt"
               >
                 <input
@@ -443,6 +434,7 @@ onMounted(() => {
                   type="text"
                   class="input"
                   placeholder="Product Excerpt"
+                  :readonly="readonly"
                 />
                 <p v-if="validate.excerpt" class="help text-danger">
                   {{ validate.excerpt }}
@@ -450,7 +442,7 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Product Type</label>
               <V-Control :has-error="!!validate?.type">
@@ -459,6 +451,7 @@ onMounted(() => {
                   placeholder="Select product type"
                   :options="productTypeOptions"
                   :searchable="true"
+                  :disabled="readonly"
                 >
                 </Multiselect>
                 <p v-if="validate.type" class="help text-danger">
@@ -467,7 +460,7 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Product Level</label>
               <V-Control :has-error="!!validate?.globishLevel">
@@ -476,6 +469,7 @@ onMounted(() => {
                   placeholder="Choose a glevel"
                   :options="globishLevelOption"
                   :searchable="true"
+                  :disabled="readonly"
                 >
                 </Multiselect>
                 <p v-if="validate.globishLevel" class="help text-danger">
@@ -484,7 +478,7 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Product CEFR</label>
               <V-Control :has-error="!!validate?.cefr">
@@ -493,6 +487,7 @@ onMounted(() => {
                   placeholder="Choose level of cefr"
                   :options="cefrLevelOption"
                   :searchable="true"
+                  :disabled="readonly"
                 >
                 </Multiselect>
                 <p v-if="validate.cefr" class="help text-danger">
@@ -501,18 +496,16 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>URL Slug</label>
-              <V-Control
-                icon="lnil lnil-file-name"
-                :has-error="!!validate?.slug"
-              >
+              <V-Control icon="lnil lnil-tag" :has-error="!!validate?.slug">
                 <input
                   v-model="productInfo.slug"
                   type="text"
                   class="input"
                   placeholder="Slug"
+                  :readonly="readonly"
                 />
                 <p v-if="validate.slug" class="help text-danger">
                   {{ validate.slug }}
@@ -520,18 +513,16 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Order</label>
-              <V-Control
-                icon="lnil lnil-file-name"
-                :has-error="!!validate?.order"
-              >
+              <V-Control icon="lnil lnil-list" :has-error="!!validate?.order">
                 <input
                   v-model="productInfo.order"
-                  type="text"
+                  type="number"
                   class="input"
                   placeholder="Order"
+                  :readonly="readonly"
                   @change="productInfo.order = +productInfo.order"
                 />
                 <p v-if="validate.order" class="help text-danger">
@@ -540,53 +531,11 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-3">
-            <V-Field>
-              <label>Average Price</label>
-              <V-Control
-                icon="lnil lnil-file-name"
-                :has-error="!!validate?.price"
-              >
-                <input
-                  v-model="productInfo.price"
-                  type="text"
-                  class="input"
-                  placeholder="Price"
-                  @change="productInfo.price = +productInfo.price"
-                />
-                <p v-if="validate.price" class="help text-danger">
-                  {{ validate.price }}
-                </p>
-              </V-Control>
-            </V-Field>
-          </div>
-          <div class="column is-3">
-            <V-Field>
-              <label>Before Discount Price</label>
-              <V-Control
-                icon="lnil lnil-file-name"
-                :has-error="!!validate?.beforeDiscount"
-              >
-                <input
-                  v-model="productInfo.beforeDiscount"
-                  type="text"
-                  class="input"
-                  placeholder="Discount Price"
-                  @change="
-                    productInfo.beforeDiscount = +productInfo.beforeDiscount
-                  "
-                />
-                <p v-if="validate.beforeDiscount" class="help text-danger">
-                  {{ validate.beforeDiscount }}
-                </p>
-              </V-Control>
-            </V-Field>
-          </div>
-          <div class="column is-3">
+          <div class="column is-4">
             <V-Field>
               <label>Average Duration</label>
               <V-Control
-                icon="lnil lnil-file-name"
+                icon="lnil lnil-timer"
                 :has-error="!!validate?.duration"
               >
                 <input
@@ -594,6 +543,7 @@ onMounted(() => {
                   type="text"
                   class="input"
                   placeholder="Duration"
+                  :readonly="readonly"
                   @change="productInfo.duration = +productInfo.duration"
                 />
                 <p v-if="validate.duration" class="help text-danger">
@@ -602,14 +552,90 @@ onMounted(() => {
               </V-Control>
             </V-Field>
           </div>
+          <div class="column is-4">
+            <V-Field>
+              <label>Average Price {{ addCommas(productInfo.price) }}</label>
+              <V-Control :has-error="!!validate?.price">
+                <V-Field addons>
+                  <V-Control>
+                    <span class="select">
+                      <select :disabled="readonly">
+                        <option value="thb">฿</option>
+                        <option value="vnd">₫</option>
+                      </select>
+                    </span>
+                  </V-Control>
+                  <V-Control expanded>
+                    <input
+                      v-model="productInfo.price"
+                      type="number"
+                      class="input"
+                      placeholder="Price"
+                      :readonly="readonly"
+                      @change="productInfo.price = +productInfo.price"
+                    />
+                  </V-Control>
+                </V-Field>
+
+                <p v-if="validate.price" class="help text-danger">
+                  {{ validate.price }}
+                </p>
+              </V-Control>
+            </V-Field>
+          </div>
+          <div class="column is-4">
+            <V-Field>
+              <label
+                >Before Discount Price
+                {{ addCommas(productInfo.beforeDiscount) }}</label
+              >
+              <V-Control :has-error="!!validate?.beforeDiscount">
+                <V-Field addons>
+                  <V-Control>
+                    <span class="select">
+                      <select :disabled="readonly">
+                        <option value="thb">฿</option>
+                        <option value="vnd">₫</option>
+                      </select>
+                    </span>
+                  </V-Control>
+                  <V-Control expanded>
+                    <input
+                      v-model="productInfo.beforeDiscount"
+                      type="number"
+                      class="input"
+                      placeholder="Price"
+                      @change="
+                        productInfo.beforeDiscount = +productInfo.beforeDiscount
+                      "
+                    />
+                  </V-Control>
+                </V-Field>
+
+                <p v-if="validate.beforeDiscount" class="help text-danger">
+                  {{ validate.beforeDiscount }}
+                </p>
+              </V-Control>
+            </V-Field>
+          </div>
 
           <div class="column is-12">
-            <ckeditor
-              id="editor"
-              v-model="productInfo.body"
-              :editor="ClassicEditor"
-            >
-            </ckeditor>
+            <V-Field>
+              <label>Website Content</label>
+              <template v-if="readonly">
+                <V-Card radius="regular" elevated>
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <div class="p-4" v-html="productInfo.body"></div>
+                </V-Card>
+              </template>
+              <ckeditor
+                v-else
+                id="editor"
+                v-model="productInfo.body"
+                :editor="ClassicEditor"
+              >
+              </ckeditor>
+            </V-Field>
           </div>
         </div>
       </div>
@@ -632,7 +658,10 @@ onMounted(() => {
   position: relative;
   margin: 1rem auto 2rem;
   max-width: 400px;
-  cursor: pointer;
+
+  &:not(.readonly) {
+    cursor: pointer;
+  }
   .btn-file {
     position: absolute;
     display: flex;

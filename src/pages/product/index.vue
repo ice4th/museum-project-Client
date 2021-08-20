@@ -73,11 +73,13 @@ const {
               </V-Button>
             </template>
             <template #content>
-              <a
+              <RouterLink
                 role="menuitem"
-                href="#"
                 class="dropdown-item is-media"
-                @clicl="showProductList(value)"
+                :to="{
+                  name: 'product-:productid-view',
+                  params: { productid: `${value.id}` },
+                }"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-eye"></i>
@@ -86,12 +88,14 @@ const {
                   <span>View</span>
                   <span>View product details</span>
                 </div>
-              </a>
-              <a
+              </RouterLink>
+              <RouterLink
                 role="menuitem"
-                href="#"
                 class="dropdown-item is-media"
-                @click="editProduct(value.id)"
+                :to="{
+                  name: 'product-:productid-edit',
+                  params: { productid: `${value.id}` },
+                }"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-pencil"></i>
@@ -100,7 +104,7 @@ const {
                   <span>Edit</span>
                   <span>Edit product details</span>
                 </div>
-              </a>
+              </RouterLink>
             </template>
           </V-Dropdown>
         </div>
@@ -112,7 +116,8 @@ const {
 <style lang="scss" scoped>
 .chip {
   width: 80%;
-  max-width: 80px;
+  min-width: 100px;
+  max-width: 100px;
   text-align: center;
 }
 </style>

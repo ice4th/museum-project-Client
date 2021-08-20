@@ -1,11 +1,11 @@
 import { toRefs } from 'vue'
 import { reactive } from 'vue-demi'
+import { useRouter } from 'vue-router'
 import { checkResponseStatus } from '../api'
 import useProductApi from '../api/useProductApi'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
 import {
-  ICreateProduct,
   IProduct,
   IUpdateProduct,
 } from '/@src/types/interfaces/product.interface'
@@ -19,6 +19,7 @@ export default function useManageProduct() {
     validate: {},
     productInfo: undefined,
   })
+  const router = useRouter()
   const notyf = useNotyf()
   const { getProductById, createProduct, updateProduct } = useProductApi()
 
@@ -34,7 +35,7 @@ export default function useManageProduct() {
     if (checkResponseStatus(res)) {
       state.validate = {}
       notyf.success('Success!')
-      // TODO: change route to product list
+      router.push({ name: 'product' })
       return
     }
     if (typeof res.message === 'object') state.validate = res.message
@@ -49,7 +50,7 @@ export default function useManageProduct() {
       state.productInfo = data
       state.validate = {}
       notyf.success('Success!')
-      // TODO: change route to product list
+      router.push({ name: 'product' })
       return
     }
     if (typeof res.message === 'object') state.validate = res.message

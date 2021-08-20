@@ -16,8 +16,6 @@ export interface IAdminInfo {
   phone: string
   dob: string
   lastLogin: string
-  roleId: number
-  teamId: number
   country: AdminCountry
   manageCountry: AdminCountry[]
   menus: IAdminAccessInfo[]

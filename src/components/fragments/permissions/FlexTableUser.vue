@@ -17,7 +17,9 @@ const props = defineProps({
         size="medium"
       />
       <div>
-        <span class="item-name">{{ row.firstname }} {{ row.lastname }}</span>
+        <span class="item-name dark-inverted"
+          >{{ row.firstname }} {{ row.lastname }}</span
+        >
         <span class="item-meta">
           <span>{{ row.email }}</span>
         </span>
