@@ -24,8 +24,8 @@ const headers: IDatatableHeader = [
   { key: 'studentId', label: 'ID' },
   { key: 'fullname', label: 'Fullname', isRaw: true },
   { key: 'nickname', label: 'Nickname' },
-  { key: 'partner', label: 'Partner' },
-  { key: 'level', label: 'level', isRaw: true },
+  { key: 'partners', label: 'Partner' },
+  { key: 'globishLevel', label: 'level', isRaw: true },
   { key: 'email', label: 'Email' },
   { key: 'phone', label: 'Phone' },
   { key: 'action', label: 'Action', isRaw: true, isEnd: true },
@@ -63,10 +63,10 @@ const headers: IDatatableHeader = [
       <template #nickname="{ value }">
         {{ value?.th || value?.en || '-' }}
       </template>
-      <template #partner="{ value }">
-        {{ value?.length ? value[value.length - 1].partnerName : '-' }}
+      <template #partners="{ value }">
+        {{ value?.length ? value.join() : '-' }}
       </template>
-      <template #level="{ value }">
+      <template #globishLevel="{ value }">
         {{ value.lastUsedPackage?.globishLevel || '-' }}
       </template>
       <template #email="{ value }">

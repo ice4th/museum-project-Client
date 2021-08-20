@@ -65,7 +65,7 @@ export interface IStudentTicketResult {
 }
 
 export interface IStudentList extends IStudentInfo {
-  partner?: IPartner[]
+  partners?: IPartner[]
 }
 
 export interface IUpdateStudentProfile {
