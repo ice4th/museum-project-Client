@@ -3,7 +3,7 @@ export interface IAdminAccessInfo {
   id: number
   name: string
 }
-export interface IAdminInfo {
+export interface IUserInfo {
   id: number
   roleName: string
   teamName: string
@@ -33,4 +33,33 @@ export interface IAdminDetail {
   roleName: string
   country: AdminCountry
   status: AdminStatus
+}
+
+export interface IAdminInfo {
+  id: number
+  name: string
+  fullname: string
+  firstname: string
+  lastname: string
+  avatar: string
+  dob: string
+  phone: string
+  email: string
+  country: string
+  manageCountry: string
+  teamId: number
+  teamName: string
+  roleId: number
+  roleName: string
+}
+
+export interface IFormAdminInfo {
+  name: string
+  firstname: string
+  lastname: string
+  avartar: string
+  dob: string
+  phone: string
+  country: string
+  manageCountry: string[]
 }

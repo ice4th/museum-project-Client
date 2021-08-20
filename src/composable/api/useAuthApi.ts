@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 import { ADMIN_ACCESS_TOKEN, ADMIN_PROFILE, checkResponseStatus } from '.'
 import useApi, { ApiResponse } from '../useApi'
-import { IAdminInfo } from '/@src/types/interfaces/admin.interface'
+import { IUserInfo } from '/@src/types/interfaces/admin.interface'
 import {
   ICreateAdminUser,
   ILoginPayload,
@@ -29,9 +29,9 @@ export default function useAuthApi() {
     router.go(0)
   }
 
-  const getMyAdminInfo = async (): Promise<IAdminInfo | null> => {
+  const getMyAdminInfo = async (): Promise<IUserInfo | null> => {
     provide(apiSymbol, api)
-    const res = await api.get<IAdminInfo>(`Auth/Me`)
+    const res = await api.get<IUserInfo>(`Auth/Me`)
     if (res.data) {
       localStorage.setItem(ADMIN_PROFILE, JSON.stringify(res.data))
       router.go(0)

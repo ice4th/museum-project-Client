@@ -8,7 +8,7 @@ import {
 } from '../types/interfaces/auth.interface'
 import ApiService, { ApiServiceResponse } from './api.service'
 import Cookies from 'js-cookie'
-import { IAdminInfo } from '../types/interfaces/admin.interface'
+import { IUserInfo } from '../types/interfaces/admin.interface'
 
 const ADMIN_ACCESS_TOKEN = 'wh_access_token'
 export default class AuthService {
@@ -56,11 +56,9 @@ export default class AuthService {
     return res
   }
 
-  public static async getMyAdminInfo(): Promise<
-    ApiServiceResponse<IAdminInfo>
-  > {
+  public static async getMyAdminInfo(): Promise<ApiServiceResponse<IUserInfo>> {
     // TODO: Get My Admin Profile API
-    const res = await ApiService.get<IAdminInfo>(`Auth/Me`)
+    const res = await ApiService.get<IUserInfo>(`Auth/Me`)
     return res
   }
 }

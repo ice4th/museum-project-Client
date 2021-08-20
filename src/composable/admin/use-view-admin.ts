@@ -1,27 +1,41 @@
 import { onMounted, reactive, toRefs } from 'vue'
-import { IAdminInfo } from '/@src/types/interfaces/admin.interface'
+import {
+  IAdminInfo,
+  IFormAdminInfo,
+} from '/@src/types/interfaces/admin.interface'
 import useAdminApi from '../api/useAdminApi'
+import { useRoute } from 'vue-router'
 // import { useRoute, useRouter } from 'vue-router'
 // import usePackageApi from '../api/usePackageApi'
 interface UseViewAdminState {
-  data: IAdminInfo[]
-  userid: number
+  adminInfo?: IAdminInfo
+  formData?: IFormAdminInfo
 }
 export default function useViewAdmin() {
   const state = reactive<UseViewAdminState>({
-    data: [],
-    userid: 3,
+    adminInfo: undefined,
+    formData: undefined,
   })
 
   const { getAdminById } = useAdminApi()
-
-  const getAdminInfo = async (admin: IAdminInfo) => {
-    const res = await getAdminById(admin.id)
-    console.log('res=' + res)
+  const route = useRoute()
+  const getAdminInfo = async () => {
+    const res = await getAdminById(+route.params.userid)
+    console.log(res)
+    // console.log('res=' + res)
+    state.adminInfo = res
   }
+
+  const saveInfo = () => {
+    // const formData = state.adminInfo
+    // console.log("formData"+formData)
+    // putAdminInfo(state.formAdminInfo.id,formdata)
+    // console.log(state.adminInfo)
+  }
+
   onMounted(() => {
-    getAdminInfo
+    getAdminInfo()
   })
 
-  return { ...toRefs(state) }
+  return { ...toRefs(state), saveInfo }
 }
