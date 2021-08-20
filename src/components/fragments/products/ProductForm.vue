@@ -33,14 +33,18 @@ const props = defineProps({
     type: Object as PropType<IProduct>,
     default: undefined,
   },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['create', 'update'])
 const productInfo = ref<IUpdateProduct>({
   name: props.productDetail?.name || '',
   excerpt: props.productDetail?.excerpt || '',
-  body: props.productDetail?.bodyDraft || props.productDetail?.body,
-  purchasable: props.productDetail?.purchasable,
+  body: props.productDetail?.body,
+  purchasable: props.productDetail?.purchasable || Purchasable.NO,
   type: props.productDetail?.type,
   cefr: props.productDetail?.cefr,
   slug: props.productDetail?.slug || '',
@@ -63,8 +67,6 @@ const productInfo = ref<IUpdateProduct>({
   preTestId: props.productDetail?.preTestId || undefined,
   midTestId: props.productDetail?.midTestId || undefined,
   postTestId: props.productDetail?.postTestId || undefined,
-
-  isPublish: !props.productDetail?.bodyDraft,
 })
 const globishLevelOption = Object.entries(GlobishLevel).map(([key, value]) => {
   return { label: key.replace(/_/g, ' '), value }
@@ -113,30 +115,25 @@ const onChangePurchasable = () => {
     <div class="tile is-12 is-vertical is-parent">
       <div class="tile is-child box">
         <div class="columns is-multiline is-justify-content-flex-end">
-          <div class="column is-2">
+          <div class="column is-4">
             <V-Field>
+              <label>show on website?</label>
               <V-Control>
                 <V-SwitchBlock
                   v-model="isPurchase"
-                  :label="isPurchase ? 'Purchase' : 'Unpurchase'"
+                  :label="
+                    isPurchase
+                      ? 'Purchase (show on website)'
+                      : 'Unpurchase (not show on website)'
+                  "
+                  :readonly="readonly"
                   color="primary"
                   @update:model-value="onChangePurchasable"
                 />
               </V-Control>
             </V-Field>
           </div>
-          <div v-show="productDetail" class="column is-2">
-            <V-Field>
-              <V-Control>
-                <V-SwitchBlock
-                  v-model="productInfo.isPublish"
-                  :label="productInfo.isPublish ? 'Publish' : 'Draft'"
-                  color="primary"
-                />
-              </V-Control>
-            </V-Field>
-          </div>
-          <div class="column is-2 ml-auto">
+          <div class="column is-6 ml-auto">
             <V-Button
               v-show="!productDetail"
               icon="feather:edit-2"
@@ -145,7 +142,7 @@ const onChangePurchasable = () => {
               >Submit</V-Button
             >
             <V-Button
-              v-show="productDetail"
+              v-show="productDetail && !readonly"
               icon="feather:edit-2"
               color="primary"
               @click="emit('update', productInfo)"
@@ -173,6 +170,7 @@ const onChangePurchasable = () => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -197,6 +195,7 @@ const onChangePurchasable = () => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -221,6 +220,7 @@ const onChangePurchasable = () => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -254,6 +254,7 @@ const onChangePurchasable = () => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -278,6 +279,7 @@ const onChangePurchasable = () => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -302,6 +304,7 @@ const onChangePurchasable = () => {
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
+                  :disabled="readonly"
                 >
                   <template #singlelabel="{ value }">
                     <div class="multiselect-single-label">
@@ -332,6 +335,7 @@ const onChangePurchasable = () => {
                   v-model="productInfo.metaTitle"
                   type="text"
                   class="input"
+                  :readonly="readonly"
                 />
               </V-Control>
             </V-Field>
@@ -344,6 +348,7 @@ const onChangePurchasable = () => {
                   v-model="productInfo.metaKeyword"
                   type="text"
                   class="input"
+                  :readonly="readonly"
                 />
               </V-Control>
             </V-Field>
@@ -356,6 +361,7 @@ const onChangePurchasable = () => {
                   v-model="productInfo.metaDescription"
                   type="text"
                   class="input"
+                  :readonly="readonly"
                 />
               </V-Control>
             </V-Field>
@@ -368,6 +374,7 @@ const onChangePurchasable = () => {
                   v-model="productInfo.seoFooter"
                   type="text"
                   class="input"
+                  :readonly="readonly"
                 />
               </V-Control>
             </V-Field>
@@ -382,8 +389,12 @@ const onChangePurchasable = () => {
         <p class="subtitle">Product Information</p>
         <div class="columns is-multiline">
           <div class="column is-12">
-            <div class="image-poster">
-              <div class="btn-file" :class="[!productInfo.image && 'show']">
+            <div class="image-poster" :class="{ readonly }">
+              <div
+                v-show="!readonly"
+                class="btn-file"
+                :class="[!productInfo.image && 'show']"
+              >
                 <V-Button icon="feather:upload" @click="showFilePopup = true"
                   >Choose image</V-Button
                 >
@@ -403,6 +414,7 @@ const onChangePurchasable = () => {
                   type="text"
                   class="input"
                   placeholder="Product Name"
+                  :readonly="readonly"
                 />
               </V-Control>
               <p v-if="validate.name" class="help text-danger">
@@ -422,6 +434,7 @@ const onChangePurchasable = () => {
                   type="text"
                   class="input"
                   placeholder="Product Excerpt"
+                  :readonly="readonly"
                 />
                 <p v-if="validate.excerpt" class="help text-danger">
                   {{ validate.excerpt }}
@@ -438,6 +451,7 @@ const onChangePurchasable = () => {
                   placeholder="Select product type"
                   :options="productTypeOptions"
                   :searchable="true"
+                  :disabled="readonly"
                 >
                 </Multiselect>
                 <p v-if="validate.type" class="help text-danger">
@@ -455,6 +469,7 @@ const onChangePurchasable = () => {
                   placeholder="Choose a glevel"
                   :options="globishLevelOption"
                   :searchable="true"
+                  :disabled="readonly"
                 >
                 </Multiselect>
                 <p v-if="validate.globishLevel" class="help text-danger">
@@ -472,6 +487,7 @@ const onChangePurchasable = () => {
                   placeholder="Choose level of cefr"
                   :options="cefrLevelOption"
                   :searchable="true"
+                  :disabled="readonly"
                 >
                 </Multiselect>
                 <p v-if="validate.cefr" class="help text-danger">
@@ -489,6 +505,7 @@ const onChangePurchasable = () => {
                   type="text"
                   class="input"
                   placeholder="Slug"
+                  :readonly="readonly"
                 />
                 <p v-if="validate.slug" class="help text-danger">
                   {{ validate.slug }}
@@ -502,13 +519,35 @@ const onChangePurchasable = () => {
               <V-Control icon="lnil lnil-list" :has-error="!!validate?.order">
                 <input
                   v-model="productInfo.order"
-                  type="text"
+                  type="number"
                   class="input"
                   placeholder="Order"
+                  :readonly="readonly"
                   @change="productInfo.order = +productInfo.order"
                 />
                 <p v-if="validate.order" class="help text-danger">
                   {{ validate.order }}
+                </p>
+              </V-Control>
+            </V-Field>
+          </div>
+          <div class="column is-4">
+            <V-Field>
+              <label>Average Duration</label>
+              <V-Control
+                icon="lnil lnil-timer"
+                :has-error="!!validate?.duration"
+              >
+                <input
+                  v-model="productInfo.duration"
+                  type="text"
+                  class="input"
+                  placeholder="Duration"
+                  :readonly="readonly"
+                  @change="productInfo.duration = +productInfo.duration"
+                />
+                <p v-if="validate.duration" class="help text-danger">
+                  {{ validate.duration }}
                 </p>
               </V-Control>
             </V-Field>
@@ -520,7 +559,7 @@ const onChangePurchasable = () => {
                 <V-Field addons>
                   <V-Control>
                     <span class="select">
-                      <select>
+                      <select :disabled="readonly">
                         <option value="thb">฿</option>
                         <option value="vnd">₫</option>
                       </select>
@@ -532,6 +571,7 @@ const onChangePurchasable = () => {
                       type="number"
                       class="input"
                       placeholder="Price"
+                      :readonly="readonly"
                       @change="productInfo.price = +productInfo.price"
                     />
                   </V-Control>
@@ -553,7 +593,7 @@ const onChangePurchasable = () => {
                 <V-Field addons>
                   <V-Control>
                     <span class="select">
-                      <select>
+                      <select :disabled="readonly">
                         <option value="thb">฿</option>
                         <option value="vnd">₫</option>
                       </select>
@@ -578,34 +618,24 @@ const onChangePurchasable = () => {
               </V-Control>
             </V-Field>
           </div>
-          <div class="column is-4">
-            <V-Field>
-              <label>Average Duration</label>
-              <V-Control
-                icon="lnil lnil-timer"
-                :has-error="!!validate?.duration"
-              >
-                <input
-                  v-model="productInfo.duration"
-                  type="text"
-                  class="input"
-                  placeholder="Duration"
-                  @change="productInfo.duration = +productInfo.duration"
-                />
-                <p v-if="validate.duration" class="help text-danger">
-                  {{ validate.duration }}
-                </p>
-              </V-Control>
-            </V-Field>
-          </div>
 
           <div class="column is-12">
-            <ckeditor
-              id="editor"
-              v-model="productInfo.body"
-              :editor="ClassicEditor"
-            >
-            </ckeditor>
+            <V-Field>
+              <label>Website Content</label>
+              <template v-if="readonly">
+                <V-Card radius="regular" elevated>
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <div class="p-4" v-html="productInfo.body"></div>
+                </V-Card>
+              </template>
+              <ckeditor
+                v-else
+                id="editor"
+                v-model="productInfo.body"
+                :editor="ClassicEditor"
+              >
+              </ckeditor>
+            </V-Field>
           </div>
         </div>
       </div>
@@ -628,7 +658,10 @@ const onChangePurchasable = () => {
   position: relative;
   margin: 1rem auto 2rem;
   max-width: 400px;
-  cursor: pointer;
+
+  &:not(.readonly) {
+    cursor: pointer;
+  }
   .btn-file {
     position: absolute;
     display: flex;

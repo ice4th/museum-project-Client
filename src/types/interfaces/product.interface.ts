@@ -8,7 +8,6 @@ export interface IProduct {
   slug: string
 
   body?: string
-  bodyDraft?: string
 
   detail: string
   price: number
@@ -41,7 +40,7 @@ export interface IProduct {
   updatedAt: string
 }
 
-export interface ICreateProduct {
+export interface IUpdateProduct {
   name: string
   excerpt: string
   body?: string
@@ -77,10 +76,6 @@ export interface ICreateProduct {
   preTestId?: number
   midTestId?: number
   postTestId?: number
-}
-
-export interface IUpdateProduct extends ICreateProduct {
-  isPublish: boolean
 }
 
 export interface IProductDetail {
