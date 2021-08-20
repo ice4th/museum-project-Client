@@ -10,6 +10,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { toFormat } from '/@src/helpers/date.helper'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
+import type { IPartner } from '/@src/types/interfaces/partner.interface'
 
 const route = useRoute()
 pageTitle.value = 'Student Information'
@@ -20,6 +21,9 @@ const { data, totalPage, total, currentPage, perPage, isLoading, search } =
 useHead({
   title: 'Whitehouse: Student',
 })
+const displayPartner = (partners: IPartner[]) => {
+  return partners.map((p) => p.partnerName).join(', ')
+}
 const headers: IDatatableHeader = [
   { key: 'studentId', label: 'ID' },
   { key: 'fullname', label: 'Fullname', isRaw: true },
@@ -64,7 +68,7 @@ const headers: IDatatableHeader = [
         {{ value?.th || value?.en || '-' }}
       </template>
       <template #partners="{ value }">
-        {{ value?.length ? value.join() : '-' }}
+        {{ value?.length ? displayPartner(value) : '-' }}
       </template>
       <template #globishLevel="{ value }">
         {{ value.lastUsedPackage?.globishLevel || '-' }}
