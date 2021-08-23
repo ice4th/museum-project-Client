@@ -57,7 +57,7 @@ export interface IFormAdminInfo {
   name: string
   firstname: string
   lastname: string
-  avartar: string
+  avatar: string
   dob: string
   phone: string
   country: string

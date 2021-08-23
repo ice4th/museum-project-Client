@@ -1,33 +1,32 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import { useWindowScroll } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import useViewAdmin from '/@src/composable/admin/use-view-admin'
-const { adminInfo } = useViewAdmin()
-
-const { y } = useWindowScroll()
-const isStuck = computed(() => {
-  return y.value > 30
-})
+const { adminInfo, loading } = useViewAdmin()
 </script>
 
 <template>
   <div class="page-content-inner">
     <div class="form-layout">
-      <V-Loader size="small" lighter grey translucent :active="isLoadingUser">
-        <div class="form-outer">
-          <div
-            :class="[isStuck && 'is-stuck']"
-            class="form-header stuck-header"
-          >
-            <div class="form-header-inner">
-              <div class="left"><h3>View Admin</h3></div>
-            </div>
-          </div>
-          <div v-if="adminInfo" class="form-body">
-            <AdminForm :info="adminInfo" readonly />
-          </div>
-        </div>
+      <V-Loader size="small" lighter grey translucent :active="loading">
+        <AdminForm
+          v-if="adminInfo"
+          header="View Profile"
+          :info="adminInfo"
+          readonly
+        >
+          <template #buttons>
+            <V-Button
+              icon="feather:edit-2"
+              :to="{
+                name: 'admin-:userid-edit',
+                params: { userid: `${adminInfo.id}` },
+              }"
+              color="primary"
+              >Edit</V-Button
+            >
+          </template>
+        </AdminForm>
       </V-Loader>
     </div>
   </div>

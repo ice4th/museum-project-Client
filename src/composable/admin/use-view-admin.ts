@@ -5,32 +5,43 @@ import {
 } from '/@src/types/interfaces/admin.interface'
 import useAdminApi from '../api/useAdminApi'
 import { useRoute } from 'vue-router'
-// import { useRoute, useRouter } from 'vue-router'
-// import usePackageApi from '../api/usePackageApi'
+import useNotyf from '../useNotyf'
+import { errMessage } from '/@src/helpers/filter.helper'
 interface UseViewAdminState {
+  loading: boolean
   adminInfo?: IAdminInfo
   formData?: IFormAdminInfo
+  validate: Object
 }
 export default function useViewAdmin() {
   const state = reactive<UseViewAdminState>({
+    loading: false,
     adminInfo: undefined,
     formData: undefined,
+    validate: {},
   })
-
-  const { getAdminById } = useAdminApi()
+  const notyf = useNotyf()
+  const { getAdminById, putAdminInfo } = useAdminApi()
   const route = useRoute()
+  const adminId = route.params.userid as string
   const getAdminInfo = async () => {
-    const res = await getAdminById(+route.params.userid)
-    console.log(res)
-    // console.log('res=' + res)
+    state.loading = true
+    const res = await getAdminById(+adminId)
+    state.loading = false
     state.adminInfo = res
   }
 
-  const saveInfo = () => {
-    // const formData = state.adminInfo
-    // console.log("formData"+formData)
-    // putAdminInfo(state.formAdminInfo.id,formdata)
-    // console.log(state.adminInfo)
+  const saveInfo = async (profile: IFormAdminInfo) => {
+    const { status, message } = await putAdminInfo(+adminId, profile)
+    if (status === 200) {
+      notyf.success('Success!')
+    } else {
+      if (typeof message === 'object') {
+        state.validate = message
+      } else {
+        notyf.error(errMessage(message))
+      }
+    }
   }
 
   onMounted(() => {

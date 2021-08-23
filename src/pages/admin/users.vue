@@ -157,7 +157,6 @@ const confirmChangeCountry = async () => {
             </template>
             <template #content>
               <RouterLink
-                v-show="value.status"
                 role="menuitem"
                 :to="{
                   name: 'admin-:userid-view',
@@ -184,7 +183,7 @@ const confirmChangeCountry = async () => {
                 class="dropdown-item is-media"
               >
                 <div class="icon">
-                  <i aria-hidden="true" class="lnil lnil-eye"></i>
+                  <i aria-hidden="true" class="lnil lnil-pencil"></i>
                 </div>
                 <div class="meta">
                   <span>Edit</span>
@@ -205,6 +204,8 @@ const confirmChangeCountry = async () => {
                   <span>Change admin country (TH or VN)</span>
                 </div>
               </a> -->
+
+              <hr class="dropdown-divider" />
               <a
                 v-show="!value.status"
                 role="menuitem"
@@ -220,8 +221,6 @@ const confirmChangeCountry = async () => {
                   <span>Resend email for activate</span>
                 </div>
               </a>
-
-              <!-- <hr class="dropdown-divider" /> -->
 
               <a
                 v-show="value.status"

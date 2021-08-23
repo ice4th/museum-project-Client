@@ -21,20 +21,19 @@ export default function useAdminApi() {
     params: GetAllAdminParams
   ): Promise<IPaginationResponse<IAdminDetail[]>> => {
     const res = await api.get<IPaginationResponse<IAdminDetail[]>, ApiResponse>(
-      `/Admins/List`,
+      `/Admins`,
       { params }
     )
     return catchReponse(res)
   }
 
   const getAdminById = async (id: number): Promise<IAdminInfo> => {
-    const res = await api.get<IAdminInfo, ApiResponse>(`/Admins/Info/${id}`)
+    const res = await api.get<any, ApiResponse>(`/Admins/${id}`)
     return catchReponse(res)
   }
 
-  const putAdminInfo = async (id: number, payload: IFormAdminInfo) => {
-    const res = await api.put<any, ApiResponse>(`/admins/info/${id}`, payload)
-    return catchReponse(res)
+  const putAdminInfo = (id: number, payload: IFormAdminInfo) => {
+    return api.put<IAdminInfo, ApiResponse>(`/Admins/${id}`, payload)
   }
 
   const deactivateAccount = (id: number) => {
