@@ -239,6 +239,7 @@ const handleRegister = async () => {
                 :masks="{
                   input: 'YYYY-MM-DD',
                 }"
+                :popover="{ visibility: 'click' }"
                 trim-weeks
               >
                 <template #default="{ inputValue, inputEvents }">

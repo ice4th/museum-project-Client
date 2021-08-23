@@ -1,4 +1,4 @@
-import { IAdminInfo } from './admin.interface'
+import { IUserInfo } from './admin.interface'
 
 export interface IMenu {
   id: number
@@ -49,7 +49,7 @@ export interface IRoleInfo {
   name: string
   description: string
   permissions?: IPermission[]
-  users?: IAdminInfo[]
+  users?: IUserInfo[]
   team?: ITeamInfo
   teamId?: number
 }
