@@ -13,17 +13,12 @@ const notif = useNotyf()
 // const isLoading = ref(false)
 
 const {
-  name,
-  firstname,
-  lastname,
-  email,
-  phone,
-  password,
   confirmPassword,
-  dob,
+  newUser,
   register,
   validation,
   isLoading,
+  teamOptions,
 } = useRegister()
 
 useHead({
@@ -31,7 +26,6 @@ useHead({
 })
 const showSuccessPopup = ref(false)
 const handleRegister = async () => {
-  console.log('handleRegister')
   const res = await register()
   if (res) showSuccessPopup.value = true
 }
@@ -83,7 +77,7 @@ const handleRegister = async () => {
               <V-Field>
                 <V-Control icon="feather:user">
                   <input
-                    v-model="name"
+                    v-model="newUser.name"
                     class="input"
                     type="text"
                     placeholder="Name"
@@ -101,7 +95,7 @@ const handleRegister = async () => {
                   <V-Field>
                     <V-Control icon="feather:user">
                       <input
-                        v-model="firstname"
+                        v-model="newUser.firstname"
                         class="input"
                         type="text"
                         placeholder="Firstname"
@@ -118,7 +112,7 @@ const handleRegister = async () => {
                   <V-Field>
                     <V-Control icon="feather:user">
                       <input
-                        v-model="lastname"
+                        v-model="newUser.lastname"
                         class="input"
                         type="text"
                         placeholder="Lastname"
@@ -135,7 +129,7 @@ const handleRegister = async () => {
               <V-Field>
                 <V-Control icon="feather:mail">
                   <input
-                    v-model="email"
+                    v-model="newUser.email"
                     class="input"
                     type="text"
                     placeholder="Email Address"
@@ -150,7 +144,7 @@ const handleRegister = async () => {
               <V-Field>
                 <V-Control icon="feather:phone">
                   <input
-                    v-model="phone"
+                    v-model="newUser.phone"
                     class="input"
                     type="text"
                     placeholder="Phone"
@@ -162,10 +156,51 @@ const handleRegister = async () => {
                 </h6>
               </V-Field>
               <!-- Input -->
+              <V-Field class="is-autocomplete-select">
+                <V-Control icon="feather:users">
+                  <Multiselect
+                    v-model="newUser.teamId"
+                    placeholder="Select your team"
+                    :options="teamOptions"
+                    :searchable="true"
+                    track-by="name"
+                    value-prop="id"
+                  >
+                    <template #singlelabel="{ value }">
+                      <div class="multiselect-single-label">
+                        {{ value.name }}
+                      </div>
+                    </template>
+                    <template #option="{ option }">
+                      <span class="select-option-text">
+                        {{ option.name }}
+                      </span>
+                    </template>
+                  </Multiselect>
+                </V-Control>
+                <h6 v-show="validation.teamId" class="msg-error">
+                  {{ validation.teamId }}
+                </h6>
+              </V-Field>
+              <!-- Input -->
+              <V-Field class="is-autocomplete-select">
+                <V-Control icon="feather:flag">
+                  <Multiselect
+                    v-model="newUser.country"
+                    placeholder="Select your country"
+                    :options="['th', 'vn']"
+                  >
+                  </Multiselect>
+                </V-Control>
+                <h6 v-show="validation.country" class="msg-error">
+                  {{ validation.country }}
+                </h6>
+              </V-Field>
+              <!-- Input -->
               <V-Field>
                 <V-Control icon="feather:lock">
                   <input
-                    v-model="password"
+                    v-model="newUser.password"
                     class="input"
                     type="password"
                     placeholder="Password"
@@ -186,13 +221,16 @@ const handleRegister = async () => {
                     placeholder="Confirm Password"
                   />
                 </V-Control>
-                <h6 v-show="confirmPassword !== password" class="msg-error">
+                <h6
+                  v-show="confirmPassword !== newUser.password"
+                  class="msg-error"
+                >
                   confirm password not match with password
                 </h6>
               </V-Field>
 
               <v-date-picker
-                v-model="dob"
+                v-model="newUser.dob"
                 color="orange"
                 :model-config="{
                   type: 'string',
@@ -258,7 +296,9 @@ const handleRegister = async () => {
         />
       </template>
       <template #action>
-        <V-Button color="primary" to="login" raised>Ok</V-Button>
+        <V-Button color="primary" :to="{ name: 'auth-login' }" raised
+          >Ok</V-Button
+        >
       </template>
       <template #cancel> <div></div> </template>
     </V-Modal>

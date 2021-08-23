@@ -1,3 +1,5 @@
+import { QuizType } from '../enums/quiz.enum'
+
 export interface ProductOption {
   id: number
   name: string
@@ -42,4 +44,24 @@ export interface FindMyCoachOption {
   id: number
   packageName: string
   ticket: number
+}
+
+export interface StudentOption {
+  id: number
+  fullnameTh: string
+  fullnameEn: string
+  nicknameTh: string
+  nicknameEn: string
+}
+
+export interface TeamOption {
+  id: number
+  name: string
+}
+
+export interface QuizOption {
+  id: number
+  name: string
+  slug?: string
+  type: QuizType
 }

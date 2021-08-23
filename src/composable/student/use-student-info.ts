@@ -1,25 +1,28 @@
-import { onMounted, reactive, toRefs } from 'vue'
+import { computed, provide, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
 import useStudentApi from '../api/useStudentApi'
-import StudentService from '/@src/api/student.service'
-import { StudentCountry, StudentLanguage } from '/@src/types/enums/student.enum'
-import {
-  IStudentInfo,
-  StudentInfoResponse,
-} from '/@src/types/interfaces/student.interface'
+import { IStudentInfo } from '/@src/types/interfaces/student.interface'
 import useNotyf from '/@src/composable/useNotyf'
 import { IUpdateStudentProfile } from '/@src/types/interfaces/student.interface'
 import { errMessage } from '/@src/helpers/filter.helper'
 
 interface UseStudentInfoState {
-  studentInfo?: StudentInfoResponse
+  isLoading: Boolean
+  studentInfo?: IStudentInfo
   validation?: object
 }
 export default function useStudentInfo() {
   const state = reactive<UseStudentInfoState>({
+    isLoading: false,
     studentInfo: undefined,
     validation: {},
   })
+
+  // can inject studentInfo use in child component
+  provide(
+    'studentInfo',
+    computed(() => state.studentInfo)
+  )
   const route = useRoute()
   const { getStudentInfoById, updateStudentInfoById } = useStudentApi()
   const notyf = useNotyf()
@@ -27,7 +30,9 @@ export default function useStudentInfo() {
   const fetchStudentInfoById = async () => {
     const id = route.params.id as string
     if (!id) return
+    state.isLoading = true
     const data = await getStudentInfoById(+id)
+    state.isLoading = false
     if (data) {
       state.studentInfo = data
     }
@@ -49,9 +54,5 @@ export default function useStudentInfo() {
     }
   }
 
-  onMounted(() => {
-    fetchStudentInfoById()
-  })
-
-  return { ...toRefs(state), updateStudentProfile }
+  return { ...toRefs(state), fetchStudentInfoById, updateStudentProfile }
 }

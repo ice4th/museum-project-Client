@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // UserProfileDropdown Component
-import { provide } from 'vue'
 import useAuthApi from '/@src/composable/api/useAuthApi'
 import useUserSession from '/@src/composable/useUserSession'
 
