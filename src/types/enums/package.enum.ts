@@ -41,7 +41,6 @@ export enum GlobishLevel {
   LEVEL_10 = '10',
   LEVEL_11 = '11',
   LEVEL_12 = '12',
-  LEVEL_13 = '13',
 }
 
 export enum PackageCefrLevel {

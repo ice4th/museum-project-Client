@@ -1,5 +1,3 @@
-import { IPackageInfo } from './package.interface'
-import { ITicketInfo } from './ticket.interface'
 import { TicketType } from '../enums/ticket.enum'
 
 export interface IStudentPackageItems {

@@ -5,27 +5,7 @@ import {
   StudentPersonalTitle,
 } from '../enums/student.enum'
 import { INameLang } from './common.interface'
-import { IPackageInfo } from './package.interface'
-
-export interface IStudentInfo {
-  id: number
-  email: string
-  avatar: string
-  gender: string
-  firstname: INameLang
-  lastname: INameLang
-  nickname: INameLang
-  dob: string
-  device: string[]
-  country: StudentCountry
-  language: StudentLanguage
-  nationality: string
-  industry: string
-  occupation: string
-  phone: string
-  school: string
-  timezone: string
-}
+import { IPartner } from './partner.interface'
 
 export interface IStudentNote {
   id: number
@@ -57,7 +37,7 @@ export interface IStudentNote {
   updatedAt: string
 }
 
-export interface StudentInfoResponse {
+export interface IStudentInfo {
   personalTitle: StudentPersonalTitle
   studentId: number
   firstname: INameLang
@@ -68,7 +48,6 @@ export interface StudentInfoResponse {
   phone: string
   gender: StudentGender
   dob: string
-  lastLogin: string
   interest: string
   facebook?: string
   avatar?: string
@@ -80,8 +59,13 @@ export interface StudentInfoResponse {
   studentNote: IStudentNote
 }
 
-export interface IStudentList extends StudentInfoResponse {
-  package?: IPackageInfo
+export interface IStudentTicketResult {
+  available: number
+  used: number
+}
+
+export interface IStudentList extends IStudentInfo {
+  partners?: IPartner[]
 }
 
 export interface IUpdateStudentProfile {

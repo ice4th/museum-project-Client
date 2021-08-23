@@ -1,14 +1,14 @@
 import { computed, provide, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
 import useStudentApi from '../api/useStudentApi'
-import { StudentInfoResponse } from '/@src/types/interfaces/student.interface'
+import { IStudentInfo } from '/@src/types/interfaces/student.interface'
 import useNotyf from '/@src/composable/useNotyf'
 import { IUpdateStudentProfile } from '/@src/types/interfaces/student.interface'
 import { errMessage } from '/@src/helpers/filter.helper'
 
 interface UseStudentInfoState {
   isLoading: Boolean
-  studentInfo?: StudentInfoResponse
+  studentInfo?: IStudentInfo
   validation?: object
 }
 export default function useStudentInfo() {

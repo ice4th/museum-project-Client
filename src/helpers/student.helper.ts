@@ -1,9 +1,6 @@
-import {
-  IStudentInfo,
-  StudentInfoResponse,
-} from '../types/interfaces/student.interface'
+import { IStudentInfo } from '../types/interfaces/student.interface'
 
-export const displayStudentFullname = (studentInfo?: StudentInfoResponse) => {
+export const displayStudentFullname = (studentInfo?: IStudentInfo) => {
   return studentInfo
     ? studentInfo.firstname.th
       ? `${studentInfo.firstname.th} ${studentInfo.lastname.th}`
