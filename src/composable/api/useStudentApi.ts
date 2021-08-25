@@ -7,7 +7,7 @@ import { StudentPackageItemResponse } from '/@src/types/interfaces/package-item.
 import {
   IStudentList,
   IUpdateStudentProfile,
-  StudentInfoResponse,
+  IStudentInfo,
 } from '/@src/types/interfaces/student.interface'
 import {
   IAddTicketStudent,
@@ -22,8 +22,8 @@ export default function useStudentApi() {
 
   const getStudentInfoById = async (
     studentId: number
-  ): Promise<StudentInfoResponse | undefined> => {
-    const res = await api.get<StudentInfoResponse, ApiResponse>(
+  ): Promise<IStudentInfo | undefined> => {
+    const res = await api.get<IStudentInfo, ApiResponse>(
       `/Students/Info/${studentId}`
     )
     return catchReponse(res)
@@ -44,7 +44,7 @@ export default function useStudentApi() {
     studentId: number,
     payload: IUpdateStudentProfile
   ) => {
-    const res = await api.put<StudentInfoResponse, ApiResponse>(
+    const res = await api.put<IStudentInfo, ApiResponse>(
       `/Students/Info/${studentId}`,
       payload
     )

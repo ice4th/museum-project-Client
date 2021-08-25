@@ -9,6 +9,8 @@ import {
 import { useRoute, useRouter } from 'vue-router'
 import { toFormat } from '/@src/helpers/date.helper'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
+import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
+import type { IPartner } from '/@src/types/interfaces/partner.interface'
 
 const route = useRoute()
 pageTitle.value = 'Student Information'
@@ -19,18 +21,18 @@ const { data, totalPage, total, currentPage, perPage, isLoading, search } =
 useHead({
   title: 'Whitehouse: Student',
 })
-const headers = [
+const displayPartner = (partners: IPartner[]) => {
+  return partners.map((p) => p.partnerName).join(', ')
+}
+const headers: IDatatableHeader = [
   { key: 'studentId', label: 'ID' },
   { key: 'fullname', label: 'Fullname', isRaw: true },
   { key: 'nickname', label: 'Nickname' },
-  { key: 'partner', label: 'Partner' },
-  { key: 'level', label: 'level', isRaw: true },
+  { key: 'partners', label: 'Partner' },
+  { key: 'globishLevel', label: 'level', isRaw: true },
   { key: 'email', label: 'Email' },
   { key: 'phone', label: 'Phone' },
-  { key: 'lastLogin', label: 'lastLogin' },
-  { key: 'lastUsedPackage', label: 'lastUsedPackage' },
-  { key: 'ticket.used', label: 'Used' },
-  { key: 'ticket.available', label: 'Available' },
+  { key: 'action', label: 'Action', isRaw: true, isEnd: true },
 ]
 </script>
 
@@ -47,24 +49,6 @@ const headers = [
       :total="total"
       :total-page="totalPage"
     >
-      <template #thead>
-        <tr>
-          <th scope="col" rowspan="2" class="has-text-centered">ID</th>
-          <th scope="col" rowspan="2">Fullname</th>
-          <th scope="col" rowspan="2">Nickname</th>
-          <th scope="col" rowspan="2">Partner</th>
-          <th scope="col" rowspan="2">Level</th>
-          <th scope="col" rowspan="2">E-mail</th>
-          <th scope="col" rowspan="2">Phone</th>
-          <th scope="col" rowspan="2">Last Login</th>
-          <th scope="col" rowspan="2">Last Package</th>
-          <th scope="col" colspan="2" class="has-text-centered">Ticket</th>
-        </tr>
-        <tr>
-          <th class="has-text-centered">Used</th>
-          <th class="has-text-centered">Remain</th>
-        </tr>
-      </template>
       <template #fullname="{ value }">
         <div class="student-name-col">
           <V-Avatar
@@ -83,10 +67,10 @@ const headers = [
       <template #nickname="{ value }">
         {{ value?.th || value?.en || '-' }}
       </template>
-      <template #partner="{ value }">
-        {{ value?.pop()?.partnerName || '-' }}
+      <template #partners="{ value }">
+        {{ value?.length ? displayPartner(value) : '-' }}
       </template>
-      <template #level="{ value }">
+      <template #globishLevel="{ value }">
         {{ value.lastUsedPackage?.globishLevel || '-' }}
       </template>
       <template #email="{ value }">
@@ -95,16 +79,54 @@ const headers = [
       <template #phone="{ value }">
         {{ value || '-' }}
       </template>
-      <template #lastLogin="{ value }">
-        {{ value ? toFormat(value, 'DD/MM/YYYY, HH:mm') : '-' }}
-      </template>
-      <template #lastUsedPackage="{ value }">
-        {{ value?.packageName || '-' }}
-      </template>
-      <template #action>
-        <div class="dark-inverted is-flex is-justify-content-flex-end">
-          <FlexTableDropdown />
-        </div>
+      <template #action="{ value }">
+        <V-Dropdown spaced right>
+          <template #button="{ toggle }">
+            <V-Button
+              icon="feather:more-vertical"
+              class="is-trigger"
+              @click="toggle"
+            >
+              Actions
+            </V-Button>
+          </template>
+          <template #content>
+            <RouterLink
+              role="menuitem"
+              class="dropdown-item is-media"
+              :to="{
+                name: 'student-:id',
+                params: { id: `${value.studentId}` },
+              }"
+            >
+              <div class="icon">
+                <i aria-hidden="true" class="lnil lnil-flag"></i>
+              </div>
+              <div class="meta">
+                <span>View Profile</span>
+                <span>view student profile</span>
+              </div>
+            </RouterLink>
+            <RouterLink
+              role="menuitem"
+              class="dropdown-item is-media"
+              :to="{
+                name: 'student-:id',
+                params: { id: `${value.studentId}` },
+              }"
+            >
+              <div class="icon">
+                <i aria-hidden="true" class="lnil lnil-flag"></i>
+              </div>
+              <div class="meta">
+                <span>Edit Profile</span>
+                <span>edit student profile</span>
+              </div>
+            </RouterLink>
+
+            <!-- <hr class="dropdown-divider" /> -->
+          </template>
+        </V-Dropdown>
       </template>
     </Datatable>
   </div>
