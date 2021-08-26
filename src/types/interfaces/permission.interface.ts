@@ -44,6 +44,11 @@ export interface ITeamInfo {
   updatedAt: Date
 }
 
+export interface ITeamCreate {
+  name: string
+  description: string
+}
+
 export interface IRoleInfo {
   id: number
   name: string
