@@ -10,6 +10,7 @@ import {
   IMenu,
   IRoleInfo,
   IEditRolePayload,
+  ITeamCreate,
 } from '/@src/types/interfaces/permission.interface'
 import { AxiosResponse } from 'axios'
 
@@ -49,6 +50,10 @@ export default function usePermissionApi() {
     return api.delete<void, ApiResponse>(`/Roles/${id}`)
   }
 
+  const createTeam = (data: ITeamCreate) => {
+    return api.post<void, ApiResponse>('/Teams', data)
+  }
+
   return {
     getRolePagination,
     getRoleById,
@@ -57,5 +62,6 @@ export default function usePermissionApi() {
     getMenus,
     updateRole,
     deleteRole,
+    createTeam,
   }
 }
