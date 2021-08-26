@@ -7,7 +7,7 @@ const props = defineProps({
     default: () => {},
   },
 })
-const thumbnailIcon = computed(() => {
+const thumbnailPreview = computed(() => {
   return props.file?.type?.match('audio')
     ? '/images/icons/files/music.svg'
     : props.file?.type?.match('video')
@@ -18,9 +18,19 @@ const thumbnailIcon = computed(() => {
     ? '/images/icons/files/doc-2.svg'
     : '/images/icons/files/doc.svg'
 })
+const emit = defineEmits(['on-close'])
 </script>
 
 <template>
+  <V-IconButton
+    class="close-button"
+    color="danger"
+    light
+    raised
+    circle
+    icon="feather:x"
+    @click="emit('on-close')"
+  />
   <div class="column tile-grid tile-grid-v3 is-4">
     <div class="tile-grid-item">
       <div class="tile-grid-item-inner">
@@ -46,7 +56,7 @@ const thumbnailIcon = computed(() => {
           <img
             v-else
             width="100"
-            :src="thumbnailIcon"
+            :src="thumbnailPreview"
             :alt="file.name"
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
@@ -83,6 +93,10 @@ const thumbnailIcon = computed(() => {
 <style lang="scss" scoped>
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
+
+.close-button {
+  position: absolute;
+}
 .tile-grid-v3 {
   .tile-grid-item {
     @include vuero-s-card();
@@ -101,6 +115,11 @@ const thumbnailIcon = computed(() => {
         max-height: 350px;
         width: auto;
         height: auto;
+      }
+      audio {
+        max-width: 300px;
+        min-width: 180px;
+        width: 100%;
       }
       .meta {
         margin: 2rem 0;

@@ -1,14 +1,12 @@
 <script setup lang="ts">
-// FileList Component
-
 import type { PropType } from 'vue'
 import { defineProps, defineAsyncComponent, computed } from 'vue'
 import moment from 'moment'
 const emit = defineEmits([
-  'handleFile',
-  'downloadItem',
-  'copyItem',
-  'changeFolder',
+  'handle-file',
+  'download-item',
+  'copy-item',
+  'change-folder',
 ])
 
 const props = defineProps({
@@ -27,17 +25,16 @@ const props = defineProps({
   <div
     v-for="item in fileList"
     :key="item.id"
-    :class="`column ${selectedFile?.type ? 'is-6' : 'is-4'}`"
-    class="column is-6"
-    @click="item?.type ? emit('handleFile', item) : null"
-    @dblclick="!item?.type ? emit('changeFolder', item) : null"
+    class="column"
+    @click="item?.type ? emit('handle-file', item) : null"
+    @dblclick="!item?.type ? emit('change-folder', item) : null"
   >
     <div class="tile-grid-item" :class="[item === selectedFile && 'is-active']">
       <MediaItem
         :key="`list-${item.id}`"
         :file="item"
-        @download-item="emit('downloadItem', $event)"
-        @copy-item="emit('copyItem', $event)"
+        @download-item="emit('download-item', $event)"
+        @copy-item="emit('copy-item', $event)"
       />
     </div>
   </div>
@@ -46,5 +43,6 @@ const props = defineProps({
 <style lang="scss" scoped>
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
-@import '../../scss/pages/lists/_tile-grid-v2.scss';
+@import '../../scss/pages/media/_tile-grid-media.scss';
+// :class="`column ${selectedFile?.type ? 'is-6' : 'is-4'}`"
 </style>

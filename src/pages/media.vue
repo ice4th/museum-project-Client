@@ -26,6 +26,19 @@ const selectImage = (ev: IFile) => {
 
 <template>
   <AppLayout :theme="sidebarTheme" close-on-change default-sidebar="media">
+    <!-- <ModalFileManager
+      :open="showFilePopup"
+      @select="selectImage"
+      @close="showFilePopup = false"
+    />
+    <V-Button
+      color="primary"
+      icon="feather:upload"
+      @click="showFilePopup = true"
+      >Select File</V-Button
+    >
+    <br />
+    <br /> -->
     <FileManager @select="selected = $event" />
   </AppLayout>
 </template>

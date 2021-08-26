@@ -1,5 +1,6 @@
 import useApi, { ApiResponse } from '../useApi'
 import { checkResponseStatus } from '.'
+import { IFileList } from '/@src/types/interfaces/file-manager.interface'
 import Axios, { AxiosResponse } from 'axios'
 
 export default function useFileManagerApi() {
@@ -7,16 +8,16 @@ export default function useFileManagerApi() {
 
   // const getFileLists = (
   //   params: IPaginationParams
-  // ): Promise<AxiosResponse<IPaginationResponse<IRoleInfo[]>>> => {
-  //   return api.get<IPaginationResponse<IRoleInfo[]>>('/Roles', { params })
+  // ): Promise<IFileList> => {
+  //   return
   // }
 
   const getDownloadItem = (url: string) => {
-    return Axios.get(url, { responseType: 'blob' })
+    return Axios.get<any, ApiResponse>(url, { responseType: 'blob' })
   }
 
   const createNewFolder = (paylaod: { folderName: string }) => {
-    return api.post<any, ApiResponse>('Media/Directory', { paylaod })
+    return api.post<any, ApiResponse>('Media/Directory', paylaod)
   }
   return { getDownloadItem, createNewFolder }
 }

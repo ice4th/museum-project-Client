@@ -88,4 +88,7 @@
       }
     }
   }
+  .tile-grid-toolbar {
+    @include vuero-card--dark();
+  }
 }

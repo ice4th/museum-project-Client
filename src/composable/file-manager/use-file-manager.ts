@@ -9,7 +9,7 @@ interface UseFileManagerState {
   validate: Object
   data?: IFileList
   subDirectories: string[]
-  newFile: IFile[]
+  newFile: Array<IFile | string>
   files: IFile[]
   currentDirectory: string
 }
@@ -26,7 +26,7 @@ export default function useFileManager() {
   const notyf = useNotyf()
   const directoryLists: IFileList = {
     baseUrl: 'https://d1627oxh4wmxfp.cloudfront.net',
-    currentDirectory: 'assessment/',
+    currentDirectory: 'A_TEST/',
     files: [
       {
         name: 'p1q1.mp3',
@@ -123,6 +123,7 @@ export default function useFileManager() {
       'freetalk/',
       'get-started/',
       'submit/',
+      'Mookky/',
     ],
     total: 10,
     nextContinuationToken:
@@ -149,14 +150,17 @@ export default function useFileManager() {
     return newFile
   }
 
-  const addFolder = async (payload: { folderName: string }) => {
-    const res = await createNewFolder(payload)
+  const addFolder = async (folderName: string) => {
+    const res = await createNewFolder({
+      folderName: `${state.currentDirectory}${folderName}`,
+    })
     if (checkResponseStatus(res)) {
       notyf.success('Add folder is completed!')
-      return status
+      state.newFile = [folderName, ...state.newFile]
+    } else {
+      if (typeof res.message === 'object') state.validate = res.message
+      else notyf.error(errMessage(res.message))
     }
-    if (typeof res.message === 'object') state.validate = res.message
-    else notyf.error(errMessage(res.message))
   }
 
   const fileList = computed(() => [
@@ -184,8 +188,8 @@ export default function useFileManager() {
     return home
   })
 
-  onMounted(async () => {
-    await fetchFileList()
+  onMounted(() => {
+    fetchFileList()
   })
   return {
     ...toRefs(state),

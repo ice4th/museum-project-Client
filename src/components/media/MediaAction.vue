@@ -8,7 +8,7 @@ const props = defineProps({
     default: () => {},
   },
 })
-const emit = defineEmits(['downloadItem', 'copyItem'])
+const emit = defineEmits(['download-item', 'copy-item'])
 const info = ref({ name: props.file?.name, url: props.file?.src })
 </script>
 
@@ -18,7 +18,7 @@ const info = ref({ name: props.file?.name, url: props.file?.src })
       <a
         role="menuitem"
         class="dropdown-item is-media"
-        @click="emit('downloadItem', info)"
+        @click="emit('download-item', info)"
       >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-cloud-download-alt"></i>
@@ -31,7 +31,7 @@ const info = ref({ name: props.file?.name, url: props.file?.src })
       <a
         role="menuitem"
         class="dropdown-item is-media"
-        @click="emit('copyItem', info.url)"
+        @click="emit('copy-item', info.url)"
       >
         <div class="icon">
           <i aria-hidden="true" class="lnil lnil-clipboard"></i>

@@ -1,42 +1,57 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import moment from 'moment'
+import { ref, computed, watch } from 'vue'
 import useFileManager from '/@src/composable/file-manager/use-file-manager'
 import useFileAction from '/@src/composable/file-manager/use-file-action'
 import type { IFile } from '/@src/types/interfaces/file-manager.interface'
 
-const { fileList, currentDirectory, uploadFile, fetchFileList, directories } =
-  useFileManager()
+const {
+  fileList,
+  currentDirectory,
+  uploadFile,
+  fetchFileList,
+  directories,
+  addFolder,
+} = useFileManager()
 const { downloadItem, copyUrlClipboard } = useFileAction()
 
 const emit = defineEmits(['select'])
 const selected = ref(undefined)
-const newUploaded = ref([])
 const isLoaderActive = ref(false)
+const isPreview = ref(false)
 const openModalAddFolder = ref(false)
+const newFolderName = ref('')
 const navigateFolder = ref<string>(currentDirectory || '')
 
 const selectFile = (item: IFile) => {
   selected.value = item
-  console.log('item', item)
-  if (item?.type) emit('select', item)
+  if (item?.type) {
+    console.log('select item', item)
+    emit('select', item)
+    isPreview.value = true
+  }
 }
 const onUploadFile = async (event) => {
   isLoaderActive.value = true
   console.log(event.target)
   const newFile = await uploadFile(event.target.files[0])
   console.log(newFile)
-  newUploaded.value = [newFile, ...newUploaded.value]
   setTimeout(() => (isLoaderActive.value = false), 3000)
 }
-const onCreateFolder = () => {
+const onAddFolder = async (folderName) => {
   isLoaderActive.value = true
-  setTimeout(() => (isLoaderActive.value = false), 3000)
+  await addFolder(folderName)
+  toggleModalAddFolder()
+  isLoaderActive.value = false
 }
-
+const toggleModalAddFolder = () => {
+  openModalAddFolder.value = !openModalAddFolder.value
+  newFolderName.value = ''
+}
 const fetchMore = () => {
+  isLoaderActive.value = true
   //Fetch more and append subDirectories and files with nextContinuationToken
   console.log('fetch more')
+  setTimeout(() => (isLoaderActive.value = false), 3000)
 }
 
 const onChangeNavigateFolder = async (selected) => {
@@ -63,7 +78,6 @@ const onChangeFolder = async (folder) => {
   selectFile(undefined)
   isLoaderActive.value = false
 }
-// onMounted(() => console.log(fileList?.currentDirectory))
 </script>
 <template>
   <div class="tile-grid-toolbar">
@@ -71,7 +85,10 @@ const onChangeFolder = async (folder) => {
       :breadcrumb="directories"
       @change-navigate="onChangeNavigateFolder($event)"
     />
-    <div class="buttons p-5">
+    <div class="buttons">
+      <V-Button icon="fas fa-folder" @click="openModalAddFolder = true"
+        >Add Folder</V-Button
+      >
       <V-Control>
         <div class="file is-primary">
           <label class="file-label">
@@ -84,19 +101,7 @@ const onChangeFolder = async (folder) => {
               <span class="file-icon">
                 <i class="fas fa-cloud-upload-alt"></i>
               </span>
-              <span class="file-label">Choose a file</span>
-            </span>
-          </label>
-        </div>
-      </V-Control>
-      <V-Control>
-        <div class="file is-info">
-          <label class="file-label">
-            <span class="file-cta" @click="onCreateFolder">
-              <span class="file-icon">
-                <i class="fas fa-folder"></i>
-              </span>
-              <span class="file-label">Add folder</span>
+              <span class="file-label">Upload File</span>
             </span>
           </label>
         </div>
@@ -105,8 +110,13 @@ const onChangeFolder = async (folder) => {
   </div>
   <V-Loader size="large" :active="isLoaderActive" translucent>
     <div class="columns pr-5 pl-5">
-      <MediaPreview v-if="selected?.type" :key="selected" :file="selected" />
-      <div :class="`column scoll-y ${selected?.type ? 'is-8' : ''}`">
+      <MediaPreview
+        v-if="isPreview"
+        :key="selected"
+        :file="selected"
+        @on-close="isPreview = false"
+      />
+      <div class="column scoll-y">
         <div class="tile-grid">
           <div class="columns is-flex-tablet-p is-half-tablet-p is-multiline">
             <MediaList
@@ -120,13 +130,33 @@ const onChangeFolder = async (folder) => {
           </div>
         </div>
         <div class="flex has-text-centered m-5">
-          <V-Button color="primary" icon="feather:refresh-cw" @click="fetchMore"
+          <V-Button
+            outlined
+            color="primary"
+            icon="feather:refresh-cw"
+            :loading="isLoaderActive"
+            @click="fetchMore"
             >Load More</V-Button
           >
+          <!-- <V-IconButton
+            color="primary"
+            outlined
+            :loading="isLoaderActive"
+            is-dark${isPreview ? 'is-8' : ''}
+            circle
+            icon="feather:refresh-cw"
+            @click="fetchMore"
+          /> -->
         </div>
       </div>
     </div>
   </V-Loader>
+  <ModalAddFolder
+    :open-modal="openModalAddFolder"
+    :folder-name="newFolderName"
+    @on-add="onAddFolder($event)"
+    @toggle-close="toggleModalAddFolder"
+  />
   <V-PlaceholderPage
     :class="[fileList.length ? 'is-hidden' : '']"
     title="No data to show"
@@ -151,10 +181,18 @@ const onChangeFolder = async (folder) => {
 <style lang="scss" scoped>
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
-@import '../../scss/pages/lists/_tile-grid-v2.scss';
-
 .scoll-y {
   overflow-y: scroll;
   height: 800px;
+}
+.tile-grid-toolbar {
+  // background: white;
+  border-radius: 16px;
+  margin: 1rem 1.5rem;
+}
+.is-dark {
+  .tile-grid-toolbar {
+    @include vuero-card--dark();
+  }
 }
 </style>

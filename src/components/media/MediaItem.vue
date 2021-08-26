@@ -9,7 +9,7 @@ const props = defineProps({
     default: undefined,
   },
 })
-const emit = defineEmits(['downloadItem', 'copyItem'])
+const emit = defineEmits(['download-item', 'copy-item'])
 
 const thumbnailIcon = computed(() => {
   return props.file?.type?.match('audio')
@@ -54,8 +54,8 @@ const thumbnailIcon = computed(() => {
       :key="`Media-action-${file.name}`"
       :file="file"
       @click.prevent.stop
-      @download-item="emit('downloadItem', $event)"
-      @copy-item="emit('copyItem', $event)"
+      @download-item="emit('download-item', $event)"
+      @copy-item="emit('copy-item', $event)"
     />
   </div>
 </template>
@@ -63,5 +63,5 @@ const thumbnailIcon = computed(() => {
 <style lang="scss" scoped>
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
-@import '../../scss/pages/lists/_tile-grid-v2.scss';
+@import '../../scss/pages/media/_tile-grid-media.scss';
 </style>
