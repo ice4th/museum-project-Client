@@ -1,0 +1,94 @@
+.tile-grid-item {
+  @include vuero-s-card();
+
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+
+  &:hover,
+  &.is-active {
+    border-color: $primary;
+    box-shadow: $light-box-shadow;
+  }
+
+  .tile-grid-item-inner {
+    display: flex;
+    align-items: center;
+
+    img.image-preview {
+      display: block;
+      width: 50px;
+      height: 50px;
+      min-width: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: $light-box-shadow;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .meta {
+      margin-left: 10px;
+      line-height: 1.4;
+      span {
+        display: block;
+        font-family: $font;
+
+        &:first-child {
+          color: $dark-text;
+          font-family: $font-alt;
+          font-weight: 600;
+          font-size: 1rem;
+          white-space: nowrap;
+          max-width: 160px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
+        &:nth-child(2) {
+          display: flex;
+          align-items: center;
+
+          span {
+            display: inline-block;
+            color: $light-text;
+            font-size: 0.8rem;
+            font-weight: 400;
+          }
+
+          .icon-separator {
+            position: relative;
+            font-size: 4px;
+            color: $light-text;
+            padding: 0 6px;
+          }
+        }
+      }
+    }
+
+    .dropdown {
+      margin-left: auto;
+    }
+  }
+}
+
+.is-dark {
+  .tile-grid {
+    .tile-grid-item {
+      @include vuero-card--dark();
+    }
+  }
+  .tile-grid-v2 {
+    .tile-grid-item {
+      @include vuero-card--dark();
+      &:hover {
+        border-color: $accent !important;
+      }
+    }
+  }
+  .tile-grid-toolbar {
+    @include vuero-card--dark();
+  }
+}

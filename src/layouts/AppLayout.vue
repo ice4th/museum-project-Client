@@ -182,6 +182,19 @@ watch(
             ></i>
           </a>
         </li>
+        <li>
+          <RouterLink
+            id="open-media"
+            :to="{ name: 'media' }"
+            data-content="Media"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:upload-cloud"
+            ></i>
+          </RouterLink>
+        </li>
       </template>
 
       <template #bottom-links>
