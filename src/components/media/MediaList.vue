@@ -4,7 +4,12 @@
 import type { PropType } from 'vue'
 import { defineProps, defineAsyncComponent, computed } from 'vue'
 import moment from 'moment'
-const emit = defineEmits(['handleFile', 'downloadItem', 'copyItem'])
+const emit = defineEmits([
+  'handleFile',
+  'downloadItem',
+  'copyItem',
+  'changeFolder',
+])
 
 const props = defineProps({
   fileList: {
@@ -24,7 +29,8 @@ const props = defineProps({
     :key="item.id"
     :class="`column ${selectedFile?.type ? 'is-6' : 'is-4'}`"
     class="column is-6"
-    @click="emit('handleFile', item)"
+    @click="item?.type ? emit('handleFile', item) : null"
+    @dblclick="!item?.type ? emit('changeFolder', item) : null"
   >
     <div class="tile-grid-item" :class="[item === selectedFile && 'is-active']">
       <MediaItem

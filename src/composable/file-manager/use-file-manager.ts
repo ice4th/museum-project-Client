@@ -1,24 +1,32 @@
-import { onMounted, reactive, toRefs } from 'vue'
+import { computed, onMounted, reactive, toRefs } from 'vue'
 import useNotyf from '../useNotyf'
 import useFileManagerApi from '../api/useFileManagerApi'
-import { IFileList } from '/@src/types/interfaces/file-manager.interface'
+import { IFile, IFileList } from '/@src/types/interfaces/file-manager.interface'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { checkResponseStatus } from '../api'
 
 interface UseFileManagerState {
   validate: Object
-  fileList?: IFileList
+  data?: IFileList
+  subDirectories: string[]
+  newFile: IFile[]
+  files: IFile[]
+  currentDirectory: string
 }
 export default function useFileManager() {
   const state = reactive<UseFileManagerState>({
     validate: {},
-    fileList: undefined,
+    data: undefined,
+    newFile: [],
+    subDirectories: [],
+    files: [],
+    currentDirectory: '',
   })
   const { createNewFolder } = useFileManagerApi()
   const notyf = useNotyf()
-  const directoryLists = {
+  const directoryLists: IFileList = {
     baseUrl: 'https://d1627oxh4wmxfp.cloudfront.net',
-    currentDirectory: 'assessment/submit',
+    currentDirectory: 'assessment/',
     files: [
       {
         name: 'p1q1.mp3',
@@ -121,17 +129,23 @@ export default function useFileManager() {
       '1hzRwQoSeRSqf7Ej/5RTwZap0oDxHPNy4dg6gvtAGJR4549rVSrSSRaFP1zz6v/dJ',
   }
   const fetchFileList = async (value?: IFileList) => {
-    state.fileList = value || directoryLists
+    state.data = value || directoryLists
+    state.subDirectories =
+      value?.subDirectories || directoryLists?.subDirectories
+    state.files = value?.files || directoryLists?.files
+    state.currentDirectory =
+      value?.currentDirectory || directoryLists.currentDirectory
   }
 
   const uploadFile = async (file: File) => {
-    const newFile = {
+    const newFile: IFile = {
       name: file.name,
       src: 'https://d1627oxh4wmxfp.cloudfront.net/assessment/get-started/p1q1.mp3',
-      lastModified: file.lastModified,
-      size: file.size,
+      lastModified: file.lastModified.toString(),
+      size: file.size.toString(),
       type: file.type,
     }
+    state.newFile.push(newFile)
     return newFile
   }
 
@@ -145,8 +159,40 @@ export default function useFileManager() {
     else notyf.error(errMessage(res.message))
   }
 
-  onMounted(() => {
-    fetchFileList()
+  const fileList = computed(() => [
+    ...state.newFile,
+    ...state.subDirectories,
+    ...state.files,
+  ])
+
+  const directories = computed(() => {
+    const home = [
+      {
+        label: 'Home',
+        key: '',
+        prev: '',
+      },
+    ]
+    state.currentDirectory?.match(/[^\/]+\/?|\//g)?.reduce((pre, cur, i) => {
+      home.push({
+        label: `${cur[0].toLocaleUpperCase()}${cur.slice(1)}`.replace('/', ''),
+        key: pre[i].key + cur,
+        prev: pre[i].key,
+      })
+      return home
+    }, home)
+    return home
   })
-  return { ...toRefs(state), fetchFileList, uploadFile, addFolder }
+
+  onMounted(async () => {
+    await fetchFileList()
+  })
+  return {
+    ...toRefs(state),
+    fetchFileList,
+    uploadFile,
+    addFolder,
+    fileList,
+    directories,
+  }
 }

@@ -15,14 +15,18 @@
     display: flex;
     align-items: center;
 
-    > img {
+    img.image-preview {
       display: block;
       width: 50px;
-      height: 10px;
+      height: 50px;
       min-width: 50px;
       object-fit: cover;
-      border-radius: $radius-large;
+      border-radius: 8px;
       box-shadow: $light-box-shadow;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     .meta {

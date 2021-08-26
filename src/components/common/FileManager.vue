@@ -1,42 +1,25 @@
 <script setup lang="ts">
-// import useClipboard from 'vue-clipboard3'
-
 import { ref, computed, watch, onMounted } from 'vue'
 import moment from 'moment'
-import useFileManager from '../../composable/file-manager/use-file-manager'
-import useFileAction from '../../composable/file-manager/use-file-action'
+import useFileManager from '/@src/composable/file-manager/use-file-manager'
+import useFileAction from '/@src/composable/file-manager/use-file-action'
+import type { IFile } from '/@src/types/interfaces/file-manager.interface'
 
-const { fileList, uploadFile, fetchFileList } = useFileManager()
+const { fileList, currentDirectory, uploadFile, fetchFileList, directories } =
+  useFileManager()
 const { downloadItem, copyUrlClipboard } = useFileAction()
-// const { toClipboard } = useClipboard()
-
-// const copy = async () => {
-//   try {
-//     await toClipboard(text.value)
-//     console.log('Copied to clipboard')
-//   } catch (e) {
-//     console.error(e)
-//   }
-// }
-export interface IFile {
-  name: string
-  src: string
-  updated: string
-  size: string
-}
 
 const emit = defineEmits(['select'])
 const selected = ref(undefined)
 const newUploaded = ref([])
 const isLoaderActive = ref(false)
 const openModalAddFolder = ref(false)
-const navigateFolder = ref<string>(fileList?.currentDirectory || '')
-const text = ref('')
+const navigateFolder = ref<string>(currentDirectory || '')
 
-const selectFile = (item: IFileList) => {
+const selectFile = (item: IFile) => {
   selected.value = item
   console.log('item', item)
-  emit('select', item)
+  if (item?.type) emit('select', item)
 }
 const onUploadFile = async (event) => {
   isLoaderActive.value = true
@@ -85,7 +68,7 @@ const onChangeFolder = async (folder) => {
 <template>
   <div class="tile-grid-toolbar">
     <BreadcrumbFileManager
-      :directories="navigateFolder"
+      :breadcrumb="directories"
       @change-navigate="onChangeNavigateFolder($event)"
     />
     <div class="buttons p-5">
@@ -127,31 +110,12 @@ const onChangeFolder = async (folder) => {
         <div class="tile-grid">
           <div class="columns is-flex-tablet-p is-half-tablet-p is-multiline">
             <MediaList
-              :file-list="newUploaded"
+              :file-list="fileList"
               :selected-file="selected"
               @handle-file="selectFile($event)"
               @download-item="downloadItem($event)"
               @copy-item="copyUrlClipboard($event)"
-            />
-            <div
-              v-for="item in fileList?.subDirectories"
-              :key="item"
-              :class="`column ${selected?.type ? 'is-6' : 'is-4'}`"
-              @dblclick="onChangeFolder(item)"
-            >
-              <div
-                class="tile-grid-item"
-                :class="[item === selected && 'is-active']"
-              >
-                <MediaItem :key="`subDirectories-${item}`" :file="item" />
-              </div>
-            </div>
-            <MediaList
-              :file-list="fileList?.files"
-              :selected-file="selected"
-              @handle-file="selectFile($event)"
-              @download-item="downloadItem($event)"
-              @copy-item="copyUrlClipboard($event)"
+              @change-folder="onChangeFolder($event)"
             />
           </div>
         </div>
@@ -164,11 +128,7 @@ const onChangeFolder = async (folder) => {
     </div>
   </V-Loader>
   <V-PlaceholderPage
-    :class="[
-      fileList?.subDirectories?.length || fileList?.files?.length
-        ? 'is-hidden'
-        : '',
-    ]"
+    :class="[fileList.length ? 'is-hidden' : '']"
     title="No data to show"
     subtitle="There is currently no data to show in this list."
     larger

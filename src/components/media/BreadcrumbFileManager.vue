@@ -1,34 +1,14 @@
 <script setup lang="ts">
-// BreadcrumbFileManager Component
-
 import type { PropType } from 'vue'
 import { defineProps, computed, ref } from 'vue'
 
 const props = defineProps({
-  directories: {
-    type: String,
-    default: '',
+  breadcrumb: {
+    type: Object,
+    default: () => {},
   },
 })
 
-const breadcrumb = computed(() => {
-  const home = [
-    {
-      label: 'Home',
-      key: '',
-      prev: '',
-    },
-  ]
-  props.directories?.match(/[^\/]+\/?|\//g)?.reduce((pre, cur, i) => {
-    home.push({
-      label: `${cur[0].toLocaleUpperCase()}${cur.slice(1)}`.replace('/', ''),
-      key: pre[i].key + cur,
-      prev: pre[i].key,
-    })
-    return home
-  }, home)
-  return home
-})
 const emit = defineEmits(['change-navigate'])
 </script>
 
