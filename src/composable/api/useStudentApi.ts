@@ -1,9 +1,13 @@
 import useApi, { apiHandleError, ApiResponse } from '../useApi'
+import useUserSession from '../useUserSession'
 import {
   IPaginationParams,
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
-import { StudentPackageItemResponse } from '/@src/types/interfaces/package-item.interface'
+import {
+  IRedeemPackageStudent,
+  StudentPackageItemResponse,
+} from '/@src/types/interfaces/package-item.interface'
 import {
   IStudentList,
   IUpdateStudentProfile,
@@ -19,6 +23,7 @@ import {
 export default function useStudentApi() {
   const api = useApi()
   const { catchReponse } = apiHandleError()
+  const { user: adminProfile } = useUserSession()
 
   const getStudentInfoById = async (
     studentId: number
@@ -126,6 +131,16 @@ export default function useStudentApi() {
     )
   }
 
+  const redeemPackageByStudentId = async (data: IRedeemPackageStudent) => {
+    const payload = {
+      ...data,
+      urlPath: window.location.href,
+      agent: navigator.userAgent,
+      adminId: adminProfile?.id,
+    }
+    return api.post<any, ApiResponse>(`Redeems/Activate`, payload)
+  }
+
   return {
     getStudentInfoById,
     getAllStudents,
@@ -139,5 +154,6 @@ export default function useStudentApi() {
     sendPackageToAnotherStudent,
     changePackage,
     deletePackageByPackageItem,
+    redeemPackageByStudentId,
   }
 }

@@ -19,3 +19,8 @@ export interface StudentPackageItemResponse {
   activePackages: IStudentPackageItems[]
   expirePackages: IStudentPackageItems[]
 }
+
+export interface IRedeemPackageStudent {
+  code: string
+  studentId: number
+}

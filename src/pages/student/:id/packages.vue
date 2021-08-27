@@ -45,6 +45,7 @@ const {
   sendPackage,
   changeToNewPackage,
   removePackage,
+  redeemPackage,
 } = useStudentPackageItemState()
 const customDate = ref(toFormat(undefined, 'YYYY-MM-DD'))
 type modalComponent =
@@ -251,6 +252,19 @@ const onActivatePackage = async (packageItemId: number) => {
   await activatePackageItem(packageItemId)
   await fetchStudentPackages()
 }
+const code = ref('')
+const isOpenRedeemPopup = ref(false)
+const toggleRedeemPopup = () => {
+  isOpenRedeemPopup.value = false
+  code.value = ''
+}
+
+const submitRedeem = async () => {
+  const res = await redeemPackage(code.value)
+  if (res) {
+    toggleRedeemPopup()
+  }
+}
 </script>
 <template>
   <div v-if="!isLoading">
@@ -268,6 +282,44 @@ const onActivatePackage = async (packageItemId: number) => {
       @on-change="onSubmit"
       @toggle-close="toggleModal"
     ></component>
+    <div class="is-flex is-justify-content-flex-end">
+      <V-Button
+        icon="fas fa-plus"
+        color="primary"
+        class="mb-3"
+        @click="isOpenRedeemPopup = true"
+      >
+        Redeem
+      </V-Button>
+    </div>
+
+    <V-Modal
+      :open="isOpenRedeemPopup"
+      title="Redeem Package"
+      size="small"
+      actions="right"
+      @close="toggleRedeemPopup"
+    >
+      <template #content>
+        <form class="modal-form">
+          <V-Field>
+            <label>Redeem Code</label>
+            <V-Control icon="feather:hash">
+              <input
+                v-model="code"
+                type="text"
+                class="input"
+                placeholder="code"
+                required
+              />
+            </V-Control>
+          </V-Field>
+        </form>
+      </template>
+      <template #action>
+        <V-Button @click="submitRedeem">Submit</V-Button>
+      </template>
+    </V-Modal>
     <CollapseContent
       v-if="packageItems.inactivePackages.length"
       with-chevron
