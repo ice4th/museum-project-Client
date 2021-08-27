@@ -61,7 +61,6 @@ export default function useProductTable() {
     state.products = res.data
     state.total = res.total
     state.totalPage = res.totalPage
-    console.log(route.query)
   }
   const selectPurchasable = () => {
     router.push({ query: { ...route.query, purchasable: state.purchasable } })

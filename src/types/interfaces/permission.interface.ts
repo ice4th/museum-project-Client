@@ -42,7 +42,7 @@ export interface IRoleInfo {
   description: string
   permissions?: IPermission[]
   users?: IAdminInfo[]
-  team?: ITeamInfo
+  team?: ITeamDetail
   teamId?: number
 }
 
@@ -65,12 +65,38 @@ export interface ISelectedMenuItem {
   }[]
 }
 
+export interface ITeamDetail {
+  id: number
+  name: string
+  description: string
+  createdAt: Date
+  updatedAt: Date
+}
 export interface ITeamInfo {
   id: number
   name: string
   description: string
   createdAt: Date
   updatedAt: Date
+  admins: IMemberInfo[]
+}
+
+export interface IMemberInfo {
+  id: number
+  name: string
+  fullname: string
+  firstname: string
+  lastname: string
+  avatar: string
+  dob: Date
+  phone: string
+  email: string
+  country: string
+  manageCountry: string
+  teamId: number
+  teamName: string
+  roleId: number
+  roleName: string
 }
 
 export interface ITeamData {
@@ -79,12 +105,6 @@ export interface ITeamData {
 }
 
 export interface ITeamCreate {
-  name: string
-  description: string
-}
-
-export interface ITeamUpdate {
-  id: number
   name: string
   description: string
 }
