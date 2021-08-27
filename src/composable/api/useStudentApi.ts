@@ -19,7 +19,9 @@ import {
   IExpireTicketStudent,
   IDeleteTicketPayload,
 } from '/@src/types/interfaces/ticket.interface'
-
+interface LoginAsStudentResponse {
+  link: string
+}
 export default function useStudentApi() {
   const api = useApi()
   const { catchReponse } = apiHandleError()
@@ -141,6 +143,13 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>(`Redeems/Activate`, payload)
   }
 
+  const loginByStudentId = async (studentId: number) => {
+    return api.post<
+      LoginAsStudentResponse,
+      ApiResponse<LoginAsStudentResponse>
+    >(`Students/${studentId}/LoginAsStudent`)
+  }
+
   return {
     getStudentInfoById,
     getAllStudents,
@@ -155,5 +164,6 @@ export default function useStudentApi() {
     changePackage,
     deletePackageByPackageItem,
     redeemPackageByStudentId,
+    loginByStudentId,
   }
 }

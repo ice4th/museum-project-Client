@@ -9,12 +9,14 @@ import { errMessage } from '/@src/helpers/filter.helper'
 interface UseStudentInfoState {
   isLoading: Boolean
   studentInfo?: IStudentInfo
+  loadingLogin: boolean
   validation?: object
 }
 export default function useStudentInfo() {
   const state = reactive<UseStudentInfoState>({
     isLoading: false,
     studentInfo: undefined,
+    loadingLogin: false,
     validation: {},
   })
 
@@ -24,7 +26,8 @@ export default function useStudentInfo() {
     computed(() => state.studentInfo)
   )
   const route = useRoute()
-  const { getStudentInfoById, updateStudentInfoById } = useStudentApi()
+  const { getStudentInfoById, updateStudentInfoById, loginByStudentId } =
+    useStudentApi()
   const notyf = useNotyf()
 
   const fetchStudentInfoById = async () => {
@@ -54,5 +57,22 @@ export default function useStudentInfo() {
     }
   }
 
-  return { ...toRefs(state), fetchStudentInfoById, updateStudentProfile }
+  const loginAsStudent = async () => {
+    state.loadingLogin = true
+    const id = route.params.id as string
+    const { status, data, message } = await loginByStudentId(+id)
+    state.loadingLogin = false
+    if (status === 201) {
+      window.open(data.link)
+      return
+    }
+    notyf.error(errMessage(message) || 'Fail! Please try again')
+  }
+
+  return {
+    ...toRefs(state),
+    fetchStudentInfoById,
+    updateStudentProfile,
+    loginAsStudent,
+  }
 }
