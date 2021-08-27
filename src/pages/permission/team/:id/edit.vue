@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import useCreateTeam from '/@src/composable/permission/use-create-team'
-const { teamInfo, createTeam, validate } = useCreateTeam()
+import useUpdateTeam from '/@src/composable/permission/use-update-team'
+const { teamInfo, editTeam, validate } = useUpdateTeam()
 </script>
 
 <template>
@@ -21,8 +21,8 @@ const { teamInfo, createTeam, validate } = useCreateTeam()
                   :to="{ name: 'permission-team' }"
                   >Cancel</V-Button
                 >
-                <V-Button color="primary" raised @click="createTeam"
-                  >Create</V-Button
+                <V-Button color="primary" raised @click="editTeam"
+                  >Done</V-Button
                 >
               </div>
             </div>
@@ -67,7 +67,7 @@ const { teamInfo, createTeam, validate } = useCreateTeam()
 </template>
 
 <style lang="scss">
-@import '../../../scss/abstracts/_variables.scss';
-@import '../../../scss/abstracts/_mixins.scss';
-@import '../../../scss/pages/generic/_forms.scss';
+@import '../../../../scss/abstracts/_variables.scss';
+@import '../../../../scss/abstracts/_mixins.scss';
+@import '../../../../scss/pages/generic/_forms.scss';
 </style>

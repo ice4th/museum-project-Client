@@ -36,19 +36,6 @@ export interface IEditRolePayload extends ISaveRolePayload {
   id: number
 }
 
-export interface ITeamInfo {
-  id: number
-  name: string
-  description: string
-  createdAt: Date
-  updatedAt: Date
-}
-
-export interface ITeamCreate {
-  name: string
-  description: string
-}
-
 export interface IRoleInfo {
   id: number
   name: string
@@ -76,4 +63,28 @@ export interface ISelectedMenuItem {
       name: string
     }[]
   }[]
+}
+
+export interface ITeamInfo {
+  id: number
+  name: string
+  description: string
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface ITeamData {
+  name: string
+  description: string
+}
+
+export interface ITeamCreate {
+  name: string
+  description: string
+}
+
+export interface ITeamUpdate {
+  id: number
+  name: string
+  description: string
 }

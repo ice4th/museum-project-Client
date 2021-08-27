@@ -11,6 +11,8 @@ import {
   IRoleInfo,
   IEditRolePayload,
   ITeamCreate,
+  ITeamData,
+  ITeamUpdate,
 } from '/@src/types/interfaces/permission.interface'
 import { AxiosResponse } from 'axios'
 
@@ -50,8 +52,17 @@ export default function usePermissionApi() {
     return api.delete<void, ApiResponse>(`/Roles/${id}`)
   }
 
+  const getTeamById = async (id: number): Promise<ITeamData> => {
+    const res = await api.get<ITeamData>(`/Teams/${id}`)
+    return checkResponseStatus(res)
+  }
+
   const createTeam = (data: ITeamCreate) => {
     return api.post<void, ApiResponse>('/Teams', data)
+  }
+
+  const updateTeam = (id: number, payload: ITeamData) => {
+    return api.put<ITeamData, ApiResponse>(`/Teams/${id}`, payload)
   }
 
   return {
@@ -62,6 +73,8 @@ export default function usePermissionApi() {
     getMenus,
     updateRole,
     deleteRole,
+    getTeamById,
     createTeam,
+    updateTeam,
   }
 }
