@@ -127,21 +127,6 @@ watch(
             <i aria-hidden="true" class="iconify" :data-icon="navItem.icon"></i>
           </a>
         </li>
-
-        <!-- Roles & Permissions -->
-        <li>
-          <RouterLink
-            :to="{ name: 'permission-role' }"
-            :class="[activeMobileSubsidebar === 'permission' && 'is-active']"
-            @click="activeMobileSubsidebar = 'permission'"
-          >
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:unlock"
-            ></i>
-          </RouterLink>
-        </li>
       </template>
 
       <template #bottom-links>
@@ -196,6 +181,19 @@ watch(
               :data-icon="navItem.icon"
             ></i>
           </a>
+        </li>
+        <li>
+          <RouterLink
+            id="open-media"
+            :to="{ name: 'media' }"
+            data-content="Media"
+          >
+            <i
+              aria-hidden="true"
+              class="iconify sidebar-svg"
+              data-icon="feather:upload-cloud"
+            ></i>
+          </RouterLink>
         </li>
       </template>
 

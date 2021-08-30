@@ -1,155 +1,169 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
+import useFileManager from '/@src/composable/file-manager/use-file-manager'
+import useFileAction from '/@src/composable/file-manager/use-file-action'
+import type { IFile } from '/@src/types/interfaces/file-manager.interface'
+const {
+  fileList,
+  currentDirectory,
+  uploadFileItem,
+  fetchFileList,
+  directories,
+  addFolder,
+  nextToken,
+  onClearNewFile,
+} = useFileManager()
+const { downloadItem, copyUrlClipboard } = useFileAction()
+
 const emit = defineEmits(['select'])
 const selected = ref(undefined)
-export interface IFile {
-  name: string
-  src: string
-  updated: string
-  size: string
-}
-const fileList = [
-  {
-    name: 'Test 001',
-    src: 'https://image.tmdb.org/t/p/original/4O3s0IGZJirPBecqEnP9qsjlTQw.jpg',
-    updated: '2 days ago',
-    size: '4.7 MB',
-  },
-  {
-    name: 'Test 002',
-    src: 'https://image.tmdb.org/t/p/w500/jOuCWdh0BE6XPu2Vpjl08wDAeFz.jpg',
-    updated: '2 days ago',
-    size: '4.7 MB',
-  },
-  {
-    name: 'Test 003',
-    src: 'https://www.globish.co.th/front/img/globish-logo-temp.png',
-    updated: '2 days ago',
-    size: '4.7 MB',
-  },
-  {
-    name: 'Test 004',
-    src: 'https://www.themoviedb.org/t/p/w220_and_h330_face/jTswp6KyDYKtvC52GbHagrZbGvD.jpg',
-    updated: '2 days ago',
-    size: '4.7 MB',
-  },
-]
-
-const selectFile = (item: IFileList) => {
+const isLoaderActive = ref(false)
+const isPreview = ref(false)
+const openModalAddFolder = ref(false)
+const newFolderName = ref('')
+const navigateFolder = ref<string>(currentDirectory || '')
+const selectFile = (item: IFile) => {
   selected.value = item
-  console.log('item', item)
   emit('select', item)
+  isPreview.value = true
+}
+const onUploadFile = async (event) => {
+  isLoaderActive.value = true
+  const newFile = await uploadFileItem(event.target.files[0])
+  console.log(newFile)
+  isLoaderActive.value = false
+}
+const onAddFolder = async (folderName) => {
+  isLoaderActive.value = true
+  await addFolder(`${navigateFolder.value}${folderName}`)
+  toggleModalAddFolder()
+  isLoaderActive.value = false
+}
+const toggleModalAddFolder = () => {
+  openModalAddFolder.value = !openModalAddFolder.value
+  newFolderName.value = ''
+}
+const fetchMore = async () => {
+  isLoaderActive.value = true
+  await fetchFileList({ search: navigateFolder.value, next: true })
+  isLoaderActive.value = false
+}
+
+const onChangeNavigateFolder = async (folder) => {
+  isLoaderActive.value = true
+  navigateFolder.value = folder?.key || ''
+  selectFile(undefined)
+  onClearNewFile()
+  await fetchFileList({ search: navigateFolder.value })
+  isLoaderActive.value = false
 }
 </script>
 <template>
-  <div class="tile-grid tile-grid-v2">
-    <div class="columns is-multiline">
-      <div
-        v-for="item in fileList"
-        :key="item.id"
-        class="column is-6"
-        @click="selectFile(item)"
+  <div class="tile-grid-toolbar">
+    <BreadcrumbFileManager
+      :breadcrumb="directories"
+      @change-navigate="onChangeNavigateFolder($event)"
+    />
+    <div class="buttons">
+      <V-Button icon="fas fa-folder" @click="openModalAddFolder = true"
+        >Add Folder</V-Button
       >
-        <div
-          class="tile-grid-item"
-          :class="[item.name === selected?.name && 'is-active']"
-        >
-          <div class="tile-grid-item-inner">
-            <img
-              :src="item.src"
-              alt=""
-              @error.once="
-                $event.target.src = 'https://via.placeholder.com/150x150'
-              "
+      <V-Control>
+        <div class="file is-primary">
+          <label class="file-label">
+            <input
+              class="file-input"
+              type="file"
+              @change="onUploadFile($event)"
             />
-            <div class="meta">
-              <span class="dark-inverted">{{ item.name }}</span>
-              <span>
-                <span>{{ item.size }}</span>
-                <i aria-hidden="true" class="fas fa-circle icon-separator"></i>
-                <span>Updated {{ item.updated }}</span>
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-cloud-upload-alt"></i>
               </span>
-            </div>
-            <!-- <FileTileDropdown /> -->
+              <span class="file-label">Upload File</span>
+            </span>
+          </label>
+        </div>
+      </V-Control>
+    </div>
+  </div>
+  <V-Loader size="large" :active="isLoaderActive" translucent>
+    <V-PlaceholderPage
+      :class="[fileList.length ? 'is-hidden' : '']"
+      title="No data to show"
+      subtitle="There is currently no data to show in this list."
+      larger
+    >
+      <template #image>
+        <img
+          class="light-image"
+          src="/@src/assets/illustrations/placeholders/search-4.svg"
+          alt=""
+        />
+        <img
+          class="dark-image"
+          src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+          alt=""
+        />
+      </template>
+    </V-PlaceholderPage>
+    <div class="columns pr-5 pl-5">
+      <MediaPreview
+        v-if="isPreview"
+        :key="selected"
+        :file="selected"
+        @on-close="isPreview = false"
+      />
+      <div class="column scoll-y">
+        <div class="tile-grid">
+          <div class="columns is-flex-tablet-p is-half-tablet-p is-multiline">
+            <MediaList
+              :file-list="fileList"
+              :selected-file="selected"
+              @handle-file="selectFile($event)"
+              @download-item="downloadItem($event)"
+              @copy-item="copyUrlClipboard($event)"
+              @change-folder="onChangeNavigateFolder($event)"
+            />
           </div>
+        </div>
+        <div class="flex has-text-centered m-5">
+          <V-Button
+            v-if="nextToken"
+            outlined
+            color="primary"
+            icon="feather:refresh-cw"
+            :loading="isLoaderActive"
+            @click="fetchMore"
+            >Load More</V-Button
+          >
         </div>
       </div>
     </div>
-  </div>
+  </V-Loader>
+  <ModalAddFolder
+    :open-modal="openModalAddFolder"
+    :folder-name="newFolderName"
+    @on-add="onAddFolder($event)"
+    @toggle-close="toggleModalAddFolder"
+  />
 </template>
 
 <style lang="scss" scoped>
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
-
-.tile-grid-v2 {
-  .tile-grid-item {
-    @include vuero-s-card();
-
-    border-radius: 14px;
-    padding: 16px;
-    cursor: pointer;
-
-    &:hover,
-    &.is-active {
-      border-color: $primary;
-      box-shadow: $light-box-shadow;
-    }
-
-    .tile-grid-item-inner {
-      display: flex;
-      align-items: center;
-
-      > img {
-        display: block;
-        width: 64px;
-        height: 64px;
-        min-width: 64px;
-        object-fit: cover;
-        border-radius: $radius-large;
-        box-shadow: $light-box-shadow;
-      }
-
-      .meta {
-        margin-left: 10px;
-        line-height: 1.4;
-
-        span {
-          display: block;
-          font-family: $font;
-
-          &:first-child {
-            color: $dark-text;
-            font-family: $font-alt;
-            font-weight: 600;
-            font-size: 1rem;
-          }
-
-          &:nth-child(2) {
-            display: flex;
-            align-items: center;
-
-            span {
-              display: inline-block;
-              color: $light-text;
-              font-size: 0.8rem;
-              font-weight: 400;
-            }
-
-            .icon-separator {
-              position: relative;
-              font-size: 4px;
-              color: $light-text;
-              padding: 0 6px;
-            }
-          }
-        }
-      }
-
-      .dropdown {
-        margin-left: auto;
-      }
-    }
+.scoll-y {
+  overflow-y: scroll;
+  height: 800px;
+}
+.tile-grid-toolbar {
+  // background: white;
+  border-radius: 16px;
+  margin: 1rem 1.5rem;
+}
+.is-dark {
+  .tile-grid-toolbar {
+    @include vuero-card--dark();
   }
 }
 </style>

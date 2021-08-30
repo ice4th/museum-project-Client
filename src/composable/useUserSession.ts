@@ -1,6 +1,6 @@
 import { InjectionKey, ref, computed, inject, reactive } from 'vue'
 import { useStorage } from '@vueuse/core'
-import { IAdminInfo } from '../types/interfaces/admin.interface'
+import { IUserInfo } from '../types/interfaces/admin.interface'
 import { ADMIN_ACCESS_TOKEN, ADMIN_PROFILE } from './api'
 import {
   listOfMainMenuByPermission,
@@ -10,7 +10,7 @@ import Cookies from 'js-cookie'
 
 export const userSessionSymbol: InjectionKey<UserSessionData> = Symbol()
 export interface UserSessionData {
-  user?: IAdminInfo
+  user?: IUserInfo
   isLoggedIn: boolean
   navbarList: NavbarItemDetail[]
   permissions: string[]
@@ -19,9 +19,9 @@ export interface UserSessionData {
 export function initUserSession(): UserSessionData {
   const token = !!Cookies.get(ADMIN_ACCESS_TOKEN)
   const userJsonString = useStorage(ADMIN_PROFILE, '')
-  const user = ref<IAdminInfo | undefined>(
+  const user = ref<IUserInfo | undefined>(
     userJsonString.value !== '' && token
-      ? (JSON.parse(userJsonString.value) as IAdminInfo)
+      ? (JSON.parse(userJsonString.value) as IUserInfo)
       : undefined
   )
   const isLoggedIn = computed(() => !!user.value)

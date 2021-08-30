@@ -61,6 +61,7 @@ onBeforeUnmount(() => {
       :data-poster="poster"
     >
       <source :src="source" type="video/mp4" />
+      Your browser does not support the video element.
     </video>
   </div>
 </template>
