@@ -117,7 +117,7 @@ const onReset = () => {
     </V-Control>
   </div>
 
-  <V-Loader size="large" :active="isLoaderActive" translucent>
+  <V-Loader size="large" :active="isLoaderActive" grey translucent>
     <V-PlaceholderPage
       :class="[fileList.length ? 'is-hidden' : '']"
       title="No media to show"
