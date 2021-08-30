@@ -1,5 +1,6 @@
 import useApi, { ApiResponse } from '../useApi'
 import {
+  IAddFolder,
   IFileList,
   IGetFileWithPagination,
   IUploadFile,
@@ -28,7 +29,7 @@ export default function useFileManagerApi() {
     return Axios.get<any, ApiResponse>(url, { responseType: 'blob' })
   }
 
-  const createNewFolder = (paylaod: { folderName: string }) => {
+  const createNewFolder = (paylaod: IAddFolder) => {
     return api.post<any, ApiResponse>('Media/Directory', paylaod)
   }
   return {

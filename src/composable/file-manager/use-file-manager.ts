@@ -7,6 +7,7 @@ import {
 } from '/@src/types/interfaces/file-manager.interface'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { checkResponseStatus } from '../api'
+import { IAddFolder } from '../../types/interfaces/file-manager.interface'
 interface UseFileManagerState {
   validate: Object
   newFile: IFile[]
@@ -57,9 +58,7 @@ export default function useFileManager() {
       else notyf.error(errMessage(res.message))
     }
   }
-  /**
-   * Use this when navigate change
-   */
+  //Use this when navigate change
   const onClearNewFile = () => {
     state.newFile = []
   }
@@ -79,9 +78,10 @@ export default function useFileManager() {
     return res.data
   }
 
-  const addFolder = async (folderName: string) => {
+  const addFolder = async (data: IAddFolder) => {
     const res = await createNewFolder({
-      folderName,
+      folderName: data.folderName,
+      path: data.path,
     })
     if (checkResponseStatus(res)) {
       notyf.success('Add folder is completed!')

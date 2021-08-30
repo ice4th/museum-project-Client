@@ -41,7 +41,7 @@ const onUploadFile = async (event) => {
 }
 const onAddFolder = async (folderName: string) => {
   isLoaderActive.value = true
-  await addFolder(`${navigateFolder.value}${folderName}`)
+  await addFolder({ path: navigateFolder.value, folderName })
   toggleModalAddFolder()
   isLoaderActive.value = false
 }
@@ -59,6 +59,7 @@ const onChangeNavigateFolder = async (folder: IDirectoryNavigator) => {
   navigateFolder.value = folder.key
   await fetchFileList({ prefix: navigateFolder.value })
   isLoaderActive.value = false
+  search.value = ''
   onReset()
 }
 const onSearch = async () => {
@@ -72,7 +73,6 @@ const onReset = () => {
   isPreview.value = false
   selectFile(undefined)
   onClearNewFile()
-  search.value = ''
 }
 </script>
 <template>
@@ -120,8 +120,8 @@ const onReset = () => {
   <V-Loader size="large" :active="isLoaderActive" translucent>
     <V-PlaceholderPage
       :class="[fileList.length ? 'is-hidden' : '']"
-      title="No data to show"
-      subtitle="There is currently no data to show in this list."
+      title="No media to show"
+      subtitle="There is currently no media to show in this folder."
       larger
     >
       <template #image>
