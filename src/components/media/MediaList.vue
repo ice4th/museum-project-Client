@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { defineProps, defineAsyncComponent, computed } from 'vue'
+import type { IFile } from '/@src/types/interfaces/file-manager.interface'
 import moment from 'moment'
 const emit = defineEmits([
   'handle-file',
@@ -11,7 +12,7 @@ const emit = defineEmits([
 
 const props = defineProps({
   fileList: {
-    type: Array,
+    type: Array as Array<IFile>,
     default: () => [],
   },
   selectedFile: {

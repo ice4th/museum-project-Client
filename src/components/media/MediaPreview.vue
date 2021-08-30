@@ -2,10 +2,11 @@
 import { ref, computed } from 'vue'
 import moment from 'moment'
 import { thumbnailFileIcon } from '/@src/helpers/file-manager.helper'
+import type { IFile } from '/@src/types/interfaces/file-manager.interface'
 
 const props = defineProps({
   file: {
-    type: Object,
+    type: Object as IFile,
     default: () => {},
   },
 })
@@ -15,9 +16,7 @@ const emit = defineEmits(['on-close'])
 <template>
   <V-IconButton
     class="close-button"
-    color="danger"
-    light
-    raised
+    color="primary"
     circle
     icon="feather:x"
     @click="emit('on-close')"

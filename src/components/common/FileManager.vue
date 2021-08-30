@@ -2,7 +2,10 @@
 import { ref, computed, watch } from 'vue'
 import useFileManager from '/@src/composable/file-manager/use-file-manager'
 import useFileAction from '/@src/composable/file-manager/use-file-action'
-import type { IFile } from '/@src/types/interfaces/file-manager.interface'
+import type {
+  IFile,
+  IDirectoryNavigator,
+} from '/@src/types/interfaces/file-manager.interface'
 
 const {
   fileList,
@@ -22,6 +25,7 @@ const isLoaderActive = ref(false)
 const isPreview = ref(false)
 const openModalAddFolder = ref(false)
 const newFolderName = ref('')
+const search = ref('')
 const navigateFolder = ref<string>(currentDirectory || '')
 const selectFile = (item: IFile) => {
   selected.value = item
@@ -35,7 +39,7 @@ const onUploadFile = async (event) => {
   const newFile = await uploadFileItem(event.target.files[0])
   isLoaderActive.value = false
 }
-const onAddFolder = async (folderName) => {
+const onAddFolder = async (folderName: string) => {
   isLoaderActive.value = true
   await addFolder(`${navigateFolder.value}${folderName}`)
   toggleModalAddFolder()
@@ -47,18 +51,28 @@ const toggleModalAddFolder = () => {
 }
 const fetchMore = async () => {
   isLoaderActive.value = true
-  await fetchFileList({ search: navigateFolder.value, next: true })
+  await fetchFileList({ prefix: navigateFolder.value, next: true })
   isLoaderActive.value = false
 }
-
-const onChangeNavigateFolder = async (folder) => {
+const onChangeNavigateFolder = async (folder: IDirectoryNavigator) => {
   isLoaderActive.value = true
+  navigateFolder.value = folder.key
+  await fetchFileList({ prefix: navigateFolder.value })
+  isLoaderActive.value = false
+  onReset()
+}
+const onSearch = async () => {
+  isLoaderActive.value = true
+  await fetchFileList({ prefix: navigateFolder.value, search: search.value })
+  isLoaderActive.value = false
+  onReset()
+}
+
+const onReset = () => {
   isPreview.value = false
-  navigateFolder.value = folder.key || ''
   selectFile(undefined)
   onClearNewFile()
-  await fetchFileList({ search: navigateFolder.value })
-  isLoaderActive.value = false
+  search.value = ''
 }
 </script>
 <template>
@@ -88,8 +102,21 @@ const onChangeNavigateFolder = async (folder) => {
           </label>
         </div>
       </V-Control>
+      <br />
     </div>
   </div>
+  <div class="is-flex is-justify-content-flex-end mb-5 mr-5">
+    <V-Control icon="feather:search">
+      <input
+        v-model="search"
+        type="text"
+        class="input is-rounded"
+        placeholder="Search folders in this folder (Sensitive case)"
+        @keyup.enter="onSearch"
+      />
+    </V-Control>
+  </div>
+
   <V-Loader size="large" :active="isLoaderActive" translucent>
     <V-PlaceholderPage
       :class="[fileList.length ? 'is-hidden' : '']"
@@ -132,7 +159,7 @@ const onChangeNavigateFolder = async (folder) => {
         </div>
         <div class="flex has-text-centered m-5">
           <V-Button
-            v-if="nextToken"
+            v-show="nextToken"
             outlined
             color="primary"
             icon="feather:refresh-cw"
@@ -162,6 +189,9 @@ const onChangeNavigateFolder = async (folder) => {
 .tile-grid-toolbar {
   border-radius: 16px;
   margin: 1rem 1.5rem;
+}
+.input {
+  width: 25rem;
 }
 .is-dark {
   .tile-grid-toolbar {

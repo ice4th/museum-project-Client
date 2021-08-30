@@ -1,8 +1,7 @@
 import useApi, { ApiResponse } from '../useApi'
-import { checkResponseStatus } from '.'
 import {
   IFileList,
-  IGetFile,
+  IGetFileWithPagination,
   IUploadFile,
 } from '/@src/types/interfaces/file-manager.interface'
 import Axios, { AxiosResponse } from 'axios'
@@ -10,7 +9,7 @@ import FormData from 'form-data'
 export default function useFileManagerApi() {
   const api = useApi()
 
-  const getFileListsWithPagination = (params: IGetFile) => {
+  const getFileListsWithPagination = (params: IGetFileWithPagination) => {
     return api.get<any, ApiResponse<IFileList>>(`Media`, { params })
   }
 
