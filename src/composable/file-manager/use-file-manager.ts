@@ -1,7 +1,7 @@
 import { computed, onMounted, reactive, toRefs } from 'vue'
 import useNotyf from '../useNotyf'
 import useFileManagerApi from '../api/useFileManagerApi'
-import { IFile, IFileList } from '/@src/types/interfaces/file-manager.interface'
+import { IFile } from '/@src/types/interfaces/file-manager.interface'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { checkResponseStatus } from '../api'
 interface UseFileManagerState {
@@ -60,7 +60,7 @@ export default function useFileManager() {
       if (typeof res.message === 'object') state.validate = res.message
       else notyf.error(errMessage(res.message))
     }
-    return res
+    return res.data
   }
 
   const addFolder = async (folderName: string) => {
@@ -79,23 +79,24 @@ export default function useFileManager() {
   const fileList = computed(() => [...state.newFile, ...state.files])
 
   const directories = computed(() => {
-    const home = [
-      {
-        label: 'Home',
-        key: '',
-        prev: '',
+    const directoryArray = state.currentDirectory?.match(/[^\/]+\/?|\//g) || []
+    return directoryArray.reduce(
+      (preDirect, curDirect, i) => {
+        const label = `${curDirect[0].toLocaleUpperCase()}${curDirect.slice(1)}`
+        preDirect.push({
+          label:
+            curDirect.length > 1 ? label.substring(0, label.length - 1) : label,
+          key: preDirect[i].key + curDirect,
+        })
+        return preDirect
       },
-    ]
-    state.currentDirectory?.match(/[^\/]+\/?|\//g)?.reduce((pre, cur, i) => {
-      const label = `${cur[0].toLocaleUpperCase()}${cur.slice(1)}`
-      home.push({
-        label: cur.length > 1 ? label.substring(0, label.length - 1) : label,
-        key: pre[i].key + cur,
-        prev: pre[i].key,
-      })
-      return home
-    }, home)
-    return home
+      [
+        {
+          label: 'Home',
+          key: '',
+        },
+      ]
+    )
   })
   onMounted(async () => {
     await fetchFileList({ search: 'A_TEST/' })

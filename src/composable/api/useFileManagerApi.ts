@@ -11,7 +11,7 @@ export default function useFileManagerApi() {
   const api = useApi()
 
   const getFileListsWithPagination = (params: IGetFile) => {
-    return api.get<any, ApiResponse>(`Media`, { params })
+    return api.get<any, ApiResponse<IFileList>>(`Media`, { params })
   }
 
   const uploadFile = (payload: IUploadFile) => {

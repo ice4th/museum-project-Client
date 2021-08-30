@@ -47,7 +47,7 @@ const emit = defineEmits(['on-close'])
           <img
             v-else
             width="100"
-            :src="thumbnailFileIcon(file.type)"
+            :src="thumbnailFileIcon(file?.type)"
             :alt="file.name"
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'

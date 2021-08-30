@@ -13,7 +13,7 @@ export interface IFileList {
   baseUrl: string
   currentDirectory: string
   files: IFile[]
-  subDirectories: string[]
+  subDirectories: IFile[]
   total: number
   nextContinuationToken: string
 }

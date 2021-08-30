@@ -18,8 +18,6 @@ const emit = defineEmits(['change-navigate'])
       <a class="dark-inverted" @click="emit('change-navigate', item)">{{
         item.label
       }}</a>
-      <!-- <i class="is-flex m-auto dark-inverted fas fa-long-arrow-alt-right"></i> -->
-      <!-- <span>/</span> -->
       <i class="is-flex m-auto dark-inverted fas fa-chevron-right"></i>
     </div>
   </div>
@@ -43,7 +41,6 @@ const emit = defineEmits(['change-navigate'])
     }
   }
 }
-
 .is-dark {
   .breadcrumb {
     @include vuero-card--dark();

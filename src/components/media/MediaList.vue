@@ -15,7 +15,7 @@ const props = defineProps({
     default: () => [],
   },
   selectedFile: {
-    type: Object || String,
+    type: Object,
     default: undefined,
   },
 })
@@ -26,8 +26,8 @@ const props = defineProps({
     v-for="file in fileList"
     :key="file.id"
     class="column"
-    @click="!file.type.match('folder') ? emit('handle-file', file) : null"
-    @dblclick="file.type.match('folder') ? emit('change-folder', file) : null"
+    @click="file.type !== 'folder' ? emit('handle-file', file) : null"
+    @dblclick="file.type == 'folder' ? emit('change-folder', file) : null"
   >
     <div class="tile-grid-item" :class="[file === selectedFile && 'is-active']">
       <MediaItem

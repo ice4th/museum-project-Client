@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import useFileManager from '/@src/composable/file-manager/use-file-manager'
 import useFileAction from '/@src/composable/file-manager/use-file-action'
 import type { IFile } from '/@src/types/interfaces/file-manager.interface'
+
 const {
   fileList,
   currentDirectory,
@@ -24,13 +25,14 @@ const newFolderName = ref('')
 const navigateFolder = ref<string>(currentDirectory || '')
 const selectFile = (item: IFile) => {
   selected.value = item
-  emit('select', item)
-  isPreview.value = true
+  if (selected.value) {
+    emit('select', item)
+    isPreview.value = true
+  }
 }
 const onUploadFile = async (event) => {
   isLoaderActive.value = true
   const newFile = await uploadFileItem(event.target.files[0])
-  console.log(newFile)
   isLoaderActive.value = false
 }
 const onAddFolder = async (folderName) => {
@@ -51,7 +53,8 @@ const fetchMore = async () => {
 
 const onChangeNavigateFolder = async (folder) => {
   isLoaderActive.value = true
-  navigateFolder.value = folder?.key || ''
+  isPreview.value = false
+  navigateFolder.value = folder.key || ''
   selectFile(undefined)
   onClearNewFile()
   await fetchFileList({ search: navigateFolder.value })
@@ -157,7 +160,6 @@ const onChangeNavigateFolder = async (folder) => {
   height: 800px;
 }
 .tile-grid-toolbar {
-  // background: white;
   border-radius: 16px;
   margin: 1rem 1.5rem;
 }
