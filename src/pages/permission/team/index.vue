@@ -1,182 +1,113 @@
 <script setup lang="ts">
-/**
- * This is a Vue Component that will be
- * automatically mapped to a entry on vue-router.
- *
- * You will be able to access this page at http://localhost:8083/sidebar-blank-page-5
- * Page uri will match related path to src/pages folder
- *
- * Read more about routing:
- * @see /vite.config.ts
- * @see /src/router.ts
- */
-
 import { useHead } from '@vueuse/head'
-
-/**
- * activeSidebar is an exported ref() that we can use everywhere
- * @see /src/components/navigation/desktop/sidebar/subsidebars/GenericSidebar.vue
- */
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-
+import useTeamTable from '/@src/composable/permission/use-team-table'
+import { ref } from 'vue'
 pageTitle.value = 'Team'
-
 useHead({
   title: 'Whitehouse Team',
 })
-
-const data = [
-  {
-    id: 0,
-    username: 'Erik K.',
-    position: 'Product Manager',
-    picture: '/demo/avatars/8.jpg',
-    badge: '/images/icons/flags/united-states-of-america.svg',
-    team: 'Software',
-    description: 'Lorem, ipsum dolor elit.',
-    contacts: [
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      // and more contacts ...
-    ],
-  },
-  {
-    id: 0,
-    username: 'Erik K.',
-    position: 'Product Manager',
-    picture: '/demo/avatars/8.jpg',
-    badge: '/images/icons/flags/united-states-of-america.svg',
-    team: 'Software',
-    description:
-      'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Autem, quam.',
-    contacts: [
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      // and more contacts ...
-    ],
-  },
-  {
-    id: 0,
-    username: 'Erik K.',
-    position: 'Product Manager',
-    picture: '/demo/avatars/8.jpg',
-    badge: '/images/icons/flags/united-states-of-america.svg',
-    team: 'Software',
-    description: 'Lorem, ipsum dolor sit Autem, quam.',
-    contacts: [
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      // and more contacts ...
-    ],
-  },
-  {
-    id: 0,
-    username: 'Erik K.',
-    position: 'Product Manager',
-    picture: '/demo/avatars/8.jpg',
-    badge: '/images/icons/flags/united-states-of-america.svg',
-    team: 'Software',
-    description: 'Lorem, ipsum dolor sit amet consectetur',
-    contacts: [
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      {
-        id: 0,
-        picture: '/demo/avatars/25.jpg',
-        initials: 'AC',
-        color: 'info',
-      },
-      // and more contacts ...
-    ],
-  },
-  // and more data ...
-]
+const {
+  teamInfo,
+  currentPage,
+  perPage,
+  search,
+  total,
+  isloading,
+  teamTableHeaders,
+  memberInfo,
+  deleteTeam,
+  confirmRemove,
+  parseAvatarStack,
+} = useTeamTable()
 </script>
 
 <template>
   <div class="page-content-inner">
-    <div class="list-flex-toolbar flex-list-v1">
-      <V-Field>
-        <V-Control icon="lnil lnil-search-alt">
-          <input type="text" class="input" placeholder="Search" />
-        </V-Control>
-      </V-Field>
-      <V-Buttons>
-        <V-Button color="primary" icon="fas fa-plus"> Add Team </V-Button>
-      </V-Buttons>
-    </div>
-
-    <!--V-FlexTable-->
-    <V-FlexTable>
-      <template #header>
-        <div class="flex-table-header">
-          <span class="is-grow">Manager</span>
-          <span>Team</span>
-          <span>Description</span>
-          <span>Members</span>
-          <span class="cell-end">Actions</span>
+    <V-Modal
+      :open="confirmRemove"
+      actions="center"
+      @close="confirmRemove = undefined"
+    >
+      <template #content>
+        <V-PlaceholderSection
+          title="Remove confirm"
+          subtitle="Are you sure to remove this team ?"
+        />
+      </template>
+      <template #action>
+        <V-Button color="primary" raised @click="deleteTeam(confirmRemove)"
+          >Confirm</V-Button
+        >
+      </template>
+    </V-Modal>
+    <Datatable
+      :headers="teamTableHeaders"
+      :data="teamInfo"
+      :current-page="currentPage"
+      :per-page="perPage"
+      :total="total"
+      :is-loading="isloading"
+      :search="search"
+    >
+      <template #member="{ value }">
+        <div>
+          <V-Avatar
+            v-for="admin in value.admins"
+            :key="`admin-${admin.id}`"
+            v-tooltip="admin.name"
+            :picture="admin.avatar"
+          />
         </div>
       </template>
-      <template #body>
-        <FlexTableTeam :rows="data" />
+
+      <template #action="{ value }">
+        <div class="dark-inverted is-flex is-justify-content-flex-end">
+          <V-Dropdown spaced right>
+            <template #button="{ toggle }">
+              <V-Button
+                icon="feather:more-vertical"
+                class="is-trigger"
+                @click="toggle"
+              >
+                Actions
+              </V-Button>
+            </template>
+            <template #content>
+              <RouterLink
+                role="menuitem"
+                class="dropdown-item is-media"
+                :to="{
+                  name: 'permission-team-:id-edit',
+                  params: { id: `${value.id}` },
+                }"
+              >
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-pencil"></i>
+                </div>
+                <div class="meta">
+                  <span>Edit</span>
+                  <span>Edit team details</span>
+                </div>
+              </RouterLink>
+              <a
+                role="menuitem"
+                class="dropdown-item is-media"
+                @click="confirmRemove = value.id"
+              >
+                <div class="icon">
+                  <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>
+                </div>
+                <div class="meta">
+                  <span>Remove</span>
+                  <span>Remove from list</span>
+                </div>
+              </a>
+            </template>
+          </V-Dropdown>
+        </div>
       </template>
-    </V-FlexTable>
-
-    <p></p>
-
-    <!--Table Pagination-->
-    <V-FlexPagination
-      :item-per-page="10"
-      :total-items="63"
-      :current-page="4"
-      :max-links-displayed="5"
-    />
+    </Datatable>
   </div>
 </template>

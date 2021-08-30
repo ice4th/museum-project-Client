@@ -23,14 +23,12 @@ export default function useCreateTeam() {
   const router = useRouter()
   const createTeam = async () => {
     const data = await apiCreateTeam(state.teamInfo)
-    console.log(data.message)
     if (data.status === 201) {
       notyf.success('success!')
       state.validate = {}
-      console.log('you are success')
       router.push({ name: 'permission-team' })
     } else {
-      if (typeof data.message !== 'object') {
+      if (typeof data.message === 'object') {
         state.validate = data.message
       } else {
         notyf.error(errMessage(data.message))
