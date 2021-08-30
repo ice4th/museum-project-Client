@@ -1,9 +1,6 @@
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  IMemberInfo,
-  ITeamInfo,
-} from '/@src/types/interfaces/permission.interface'
+import { ITeamInfo } from '/@src/types/interfaces/permission.interface'
 import usePermissionApi from '../api/usePermissionApi'
 import { errMessage } from '/@src/helpers/filter.helper'
 import useNotyf from '../useNotyf'
@@ -19,7 +16,6 @@ export interface UseTeamTableState {
   search?: string
   validate: Object
   confirmRemove?: number
-  isConfirm: boolean
 }
 
 export default function useTeamTable() {
@@ -33,7 +29,6 @@ export default function useTeamTable() {
     search: undefined,
     validate: {},
     confirmRemove: undefined,
-    isConfirm: false,
   })
 
   const route = useRoute()
@@ -74,16 +69,6 @@ export default function useTeamTable() {
     }
   }
 
-  const parseAvatarStack = (admins: IMemberInfo[]) => {
-    return admins.map((admin) => {
-      console.log(admin)
-      const member = {
-        picture: admin.avatar,
-      }
-      return member
-    })
-  }
-  // router.push({ name: 'permission-team' })
   onMounted(() => {
     fetchAllTeam()
   })
@@ -95,7 +80,6 @@ export default function useTeamTable() {
     { key: 'member', label: 'Member', isRaw: true },
     { key: 'action', label: 'Action', isEnd: true, isRaw: true },
   ]
-  // const avatarTable = [{ key: 'avatar', label: 'Member', isRaw: true }]
 
-  return { ...toRefs(state), teamTableHeaders, deleteTeam, parseAvatarStack }
+  return { ...toRefs(state), teamTableHeaders, deleteTeam }
 }
