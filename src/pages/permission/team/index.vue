@@ -17,6 +17,7 @@ const {
   teamTableHeaders,
   memberInfo,
   deleteTeam,
+  parseAvatarStack,
 } = useTeamTable()
 </script>
 
@@ -31,10 +32,18 @@ const {
       :is-loading="isloading"
       :search="search"
     >
-      <!-- <template #avatar="{ value }">
-        <V-AvatarStack :avatars="value" size="small" />
+      <template #member="{ value }">
+        <div>
+          <V-Avatar
+            v-for="admin in value.admins"
+            :key="`admin-${admin.id}`"
+            v-tooltip="admin.name"
+            :picture="admin.avatar"
+          />
+        </div>
+        <!-- <V-AvatarStack :avatars="parseAvatarStack(value.admins)" size="small" /> -->
       </template>
-       -->
+
       <template #action="{ value }">
         <div class="dark-inverted is-flex is-justify-content-flex-end">
           <V-Dropdown spaced right>

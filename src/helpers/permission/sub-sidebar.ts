@@ -99,5 +99,11 @@ export const permissionSubsidebarList: SubsideBarItemDetail[] = [
     icon: '<i class="lnil lnil-books mr-2"></i>',
     action: 'VIEW_LIST_OF_TEAM',
   },
+  {
+    routeName: 'permission-team-create',
+    label: 'Create Team',
+    icon: '<i class="lnil lnil-books mr-2"></i>',
+    action: 'CREATE_TEAM',
+  },
   { isDivider: true },
 ]

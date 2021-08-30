@@ -7,10 +7,10 @@ import {
 import usePermissionApi from '../api/usePermissionApi'
 import { errMessage } from '/@src/helpers/filter.helper'
 import useNotyf from '../useNotyf'
+import { IDatatableHeader } from '/@src/types/interfaces/component.interface'
 
 export interface UseTeamTableState {
   teamInfo: ITeamInfo[]
-  memberInfo: IMemberInfo[]
   isloading: boolean
   currentPage: number
   perPage: number
@@ -23,7 +23,6 @@ export interface UseTeamTableState {
 export default function useTeamTable() {
   const state = reactive<UseTeamTableState>({
     teamInfo: [],
-    memberInfo: [],
     isloading: false,
     currentPage: 1,
     perPage: 10,
@@ -34,7 +33,6 @@ export default function useTeamTable() {
   })
 
   const route = useRoute()
-  const router = useRouter()
   const notyf = useNotyf()
   const { getAllTeam, deleteTeam: deleteTeamApi } = usePermissionApi()
 
@@ -61,26 +59,41 @@ export default function useTeamTable() {
   }
 
   const deleteTeam = async (id: number) => {
-    const res = await deleteTeamApi(+id)
-    if (res.status === 200) {
-      notyf.success('success!')
-      state.validate = {}
-      router.push({ name: 'permission-team' })
-    } else {
-      notyf.error(errMessage(res.message))
-    }
+    if (window.confirm('Delete confirmation') == true) {
+      const res = await deleteTeamApi(+id)
+
+      if (res.status === 200) {
+        notyf.success('success!')
+        state.validate = {}
+        history.go(0)
+      } else {
+        notyf.error(errMessage(res.message))
+      }
+    } else return
   }
 
+  const parseAvatarStack = (admins: IMemberInfo[]) => {
+    return admins.map((admin) => {
+      console.log(admin)
+      const member = {
+        picture: admin.avatar,
+      }
+      return member
+    })
+  }
+  // router.push({ name: 'permission-team' })
   onMounted(() => {
     fetchAllTeam()
   })
 
-  const teamTableHeaders = [
+  const teamTableHeaders: IDatatableHeader[] = [
     { key: 'id', label: 'ID' },
     { key: 'name', label: 'Team' },
     { key: 'description', label: 'Description' },
+    { key: 'member', label: 'Member', isRaw: true },
     { key: 'action', label: 'Action', isEnd: true, isRaw: true },
   ]
+  // const avatarTable = [{ key: 'avatar', label: 'Member', isRaw: true }]
 
-  return { ...toRefs(state), teamTableHeaders, deleteTeam }
+  return { ...toRefs(state), teamTableHeaders, deleteTeam, parseAvatarStack }
 }

@@ -78,7 +78,7 @@ export interface ITeamInfo {
   description: string
   createdAt: Date
   updatedAt: Date
-  admins: IMemberInfo[]
+  admins: IMemberInfo
 }
 
 export interface IMemberInfo {
