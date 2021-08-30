@@ -3,6 +3,7 @@ import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import useTeamTable from '/@src/composable/permission/use-team-table'
+import { ref } from 'vue'
 pageTitle.value = 'Team'
 useHead({
   title: 'Whitehouse Team',
@@ -17,12 +18,30 @@ const {
   teamTableHeaders,
   memberInfo,
   deleteTeam,
+  confirmRemove,
   parseAvatarStack,
 } = useTeamTable()
 </script>
 
 <template>
   <div class="page-content-inner">
+    <V-Modal
+      :open="confirmRemove"
+      actions="center"
+      @close="confirmRemove = undefined"
+    >
+      <template #content>
+        <V-PlaceholderSection
+          title="Remove confirm"
+          subtitle="Are you sure to remove this team ?"
+        />
+      </template>
+      <template #action>
+        <V-Button color="primary" raised @click="deleteTeam(confirmRemove)"
+          >Confirm</V-Button
+        >
+      </template>
+    </V-Modal>
     <Datatable
       :headers="teamTableHeaders"
       :data="teamInfo"
@@ -41,7 +60,6 @@ const {
             :picture="admin.avatar"
           />
         </div>
-        <!-- <V-AvatarStack :avatars="parseAvatarStack(value.admins)" size="small" /> -->
       </template>
 
       <template #action="{ value }">
@@ -76,7 +94,7 @@ const {
               <a
                 role="menuitem"
                 class="dropdown-item is-media"
-                @click="deleteTeam(value.id)"
+                @click="confirmRemove = value.id"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>

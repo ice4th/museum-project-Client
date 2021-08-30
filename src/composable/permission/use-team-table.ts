@@ -18,6 +18,8 @@ export interface UseTeamTableState {
   totalPage: number
   search?: string
   validate: Object
+  confirmRemove?: number
+  isConfirm: boolean
 }
 
 export default function useTeamTable() {
@@ -30,6 +32,8 @@ export default function useTeamTable() {
     totalPage: 1,
     search: undefined,
     validate: {},
+    confirmRemove: undefined,
+    isConfirm: false,
   })
 
   const route = useRoute()
@@ -59,17 +63,15 @@ export default function useTeamTable() {
   }
 
   const deleteTeam = async (id: number) => {
-    if (window.confirm('Delete confirmation') == true) {
-      const res = await deleteTeamApi(+id)
+    const res = await deleteTeamApi(+id)
 
-      if (res.status === 200) {
-        notyf.success('success!')
-        state.validate = {}
-        history.go(0)
-      } else {
-        notyf.error(errMessage(res.message))
-      }
-    } else return
+    if (res.status === 200) {
+      notyf.success('success!')
+      fetchAllTeam()
+      state.confirmRemove = undefined
+    } else {
+      notyf.error(errMessage(res.message))
+    }
   }
 
   const parseAvatarStack = (admins: IMemberInfo[]) => {
