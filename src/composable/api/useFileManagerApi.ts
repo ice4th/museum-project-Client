@@ -5,7 +5,7 @@ import {
   IGetFileWithPagination,
   IUploadFile,
 } from '/@src/types/interfaces/file-manager.interface'
-import Axios, { AxiosResponse } from 'axios'
+import Axios from 'axios'
 import FormData from 'form-data'
 export default function useFileManagerApi() {
   const api = useApi()
