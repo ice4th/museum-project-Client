@@ -75,6 +75,7 @@ export default function useFileManager() {
   }
 
   const addFolder = async (data: IAddFolder) => {
+    console.log(data)
     const res = await createNewFolder({
       folderName: data.folderName,
       path: data.path,

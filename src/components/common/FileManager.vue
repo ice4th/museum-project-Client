@@ -41,6 +41,7 @@ const onUploadFile = async (event: File) => {
 }
 const onAddFolder = async (folderName: string) => {
   isLoaderActive.value = true
+  console.log(folderName)
   await addFolder({ path: navigateFolder.value, folderName })
   toggleModalAddFolder()
   isLoaderActive.value = false

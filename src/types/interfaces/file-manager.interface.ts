@@ -6,8 +6,8 @@ export interface IGetFileWithPagination {
 }
 
 export interface IUploadFile {
-  filePath?: string
   file: File
+  filePath?: string
 }
 
 export interface IFileList {
