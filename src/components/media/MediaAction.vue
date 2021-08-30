@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { defineProps, ref } from 'vue'
+import type { IFile } from '/@src/types/interfaces/file-manager.interface'
 
 const props = defineProps({
   file: {
-    type: Object,
-    default: () => {},
+    type: Object as IFile,
+    default: undefined,
   },
 })
 const emit = defineEmits(['download-item', 'copy-item'])
@@ -39,16 +40,6 @@ const info = ref({ name: props.file?.name, url: props.file?.src })
         <div class="meta">
           <span>Copy URL</span>
           <span>Copy public url</span>
-        </div>
-      </a>
-      <hr class="dropdown-divider" />
-      <a role="menuitem" href="#" class="dropdown-item is-media">
-        <div class="icon">
-          <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>
-        </div>
-        <div class="meta">
-          <span>Delete</span>
-          <span>Delete this file</span>
         </div>
       </a>
     </template>

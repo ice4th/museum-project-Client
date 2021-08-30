@@ -15,7 +15,7 @@ const {
   directories,
   addFolder,
   nextToken,
-  onClearNewFile,
+  clearNewFile,
 } = useFileManager()
 const { downloadItem, copyUrlClipboard } = useFileAction()
 
@@ -29,7 +29,7 @@ const search = ref('')
 const navigateFolder = ref<string>(currentDirectory || '')
 const selectFile = (item: IFile) => {
   selected.value = item
-  if (selected.value) {
+  if (selected.value && selected.value?.type !== 'folder') {
     emit('select', item)
     isPreview.value = true
   }
@@ -41,7 +41,7 @@ const onUploadFile = async (event) => {
 }
 const onAddFolder = async (folderName: string) => {
   isLoaderActive.value = true
-  await addFolder(`${navigateFolder.value}${folderName}`)
+  await addFolder({ path: navigateFolder.value, folderName })
   toggleModalAddFolder()
   isLoaderActive.value = false
 }
@@ -56,9 +56,9 @@ const fetchMore = async () => {
 }
 const onChangeNavigateFolder = async (folder: IDirectoryNavigator) => {
   isLoaderActive.value = true
-  navigateFolder.value = folder.key
-  await fetchFileList({ prefix: navigateFolder.value })
+  await fetchFileList({ prefix: folder.key })
   isLoaderActive.value = false
+  search.value = '' //Show search in order to know what's the current search
   onReset()
 }
 const onSearch = async () => {
@@ -71,8 +71,7 @@ const onSearch = async () => {
 const onReset = () => {
   isPreview.value = false
   selectFile(undefined)
-  onClearNewFile()
-  search.value = ''
+  clearNewFile()
 }
 </script>
 <template>
@@ -117,11 +116,11 @@ const onReset = () => {
     </V-Control>
   </div>
 
-  <V-Loader size="large" :active="isLoaderActive" translucent>
+  <V-Loader size="large" :active="isLoaderActive" grey translucent>
     <V-PlaceholderPage
       :class="[fileList.length ? 'is-hidden' : '']"
-      title="No data to show"
-      subtitle="There is currently no data to show in this list."
+      title="No media to show"
+      subtitle="There is currently no media to show in this folder."
       larger
     >
       <template #image>

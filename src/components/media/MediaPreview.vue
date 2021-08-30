@@ -7,7 +7,7 @@ import type { IFile } from '/@src/types/interfaces/file-manager.interface'
 const props = defineProps({
   file: {
     type: Object as IFile,
-    default: () => {},
+    default: undefined,
   },
 })
 const emit = defineEmits(['on-close'])
@@ -26,27 +26,27 @@ const emit = defineEmits(['on-close'])
       <div class="tile-grid-item-inner">
         <div class="flex has-text-centered">
           <img
-            v-if="file?.type?.match('image')"
-            :src="file?.src"
-            :alt="file?.name"
+            v-if="file.type.match('image')"
+            :src="file.src"
+            :alt="file.name"
             class="image-preview"
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
             "
           />
           <V-Plyr
-            v-else-if="file?.type?.match('video')"
+            v-else-if="file.type.match('video')"
             ratio="16by9"
             :source="file.src"
           />
-          <audio v-else-if="file?.type?.match('audio')" controls>
+          <audio v-else-if="file.type.match('audio')" controls>
             <source :src="file.src" />
             Your browser does not support the audio element.
           </audio>
           <img
             v-else
             width="100"
-            :src="thumbnailFileIcon(file?.type)"
+            :src="thumbnailFileIcon(file.type)"
             :alt="file.name"
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
@@ -93,7 +93,7 @@ const emit = defineEmits(['on-close'])
 
     padding: 2rem;
     border-radius: 16px;
-    height: 600px;
+    height: 510px;
     max-height: 700px;
     .tile-grid-item-inner {
       display: flex;
@@ -102,7 +102,7 @@ const emit = defineEmits(['on-close'])
       img.image-preview {
         object-fit: cover;
         max-width: 100%;
-        max-height: 350px;
+        max-height: 260px;
         width: auto;
         height: auto;
       }

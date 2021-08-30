@@ -7,6 +7,7 @@ import {
 } from '/@src/types/interfaces/file-manager.interface'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { checkResponseStatus } from '../api'
+import { IAddFolder } from '../../types/interfaces/file-manager.interface'
 interface UseFileManagerState {
   validate: Object
   newFile: IFile[]
@@ -57,12 +58,6 @@ export default function useFileManager() {
       else notyf.error(errMessage(res.message))
     }
   }
-  /**
-   * Use this when navigate change
-   */
-  const onClearNewFile = () => {
-    state.newFile = []
-  }
 
   const uploadFileItem = async (file: File) => {
     const res = await uploadFile({
@@ -79,9 +74,10 @@ export default function useFileManager() {
     return res.data
   }
 
-  const addFolder = async (folderName: string) => {
+  const addFolder = async (data: IAddFolder) => {
     const res = await createNewFolder({
-      folderName,
+      folderName: data.folderName,
+      path: data.path,
     })
     if (checkResponseStatus(res)) {
       notyf.success('Add folder is completed!')
@@ -94,6 +90,9 @@ export default function useFileManager() {
 
   //fileList will show all of files, folders, and the new files that just created or uploaded
   const fileList = computed(() => [...state.newFile, ...state.files])
+
+  //Use this when navigate change
+  const clearNewFile = () => (state.newFile = [])
 
   /**
    * `directories` is depth of navigation or sub-directory. We know it from `currentDirectory` that indicate the current path
@@ -121,8 +120,8 @@ export default function useFileManager() {
       ]
     ) as Array<IDirectoryNavigator>
   })
-  onMounted(async () => {
-    await fetchFileList({ prefix: '' }) // -> search from root with empty string
+  onMounted(() => {
+    fetchFileList({ prefix: '' }) // -> search from root with empty string
   })
   return {
     ...toRefs(state),
@@ -132,6 +131,6 @@ export default function useFileManager() {
     fileList,
     directories,
     uploadFileItem,
-    onClearNewFile,
+    clearNewFile,
   }
 }

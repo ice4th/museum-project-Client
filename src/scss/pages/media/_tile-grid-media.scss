@@ -31,6 +31,13 @@
     .meta {
       margin-left: 10px;
       line-height: 1.4;
+      max-width: 400px;
+      width: auto;
+      min-width: 20px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+
       span {
         display: block;
         font-family: $font;
@@ -40,10 +47,6 @@
           font-family: $font-alt;
           font-weight: 600;
           font-size: 1rem;
-          white-space: nowrap;
-          max-width: 160px;
-          text-overflow: ellipsis;
-          overflow: hidden;
         }
 
         &:nth-child(2) {

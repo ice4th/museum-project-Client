@@ -31,3 +31,8 @@ export interface IDirectoryNavigator {
   key: string
   label: string
 }
+
+export interface IAddFolder {
+  folderName: string
+  path: string
+}
