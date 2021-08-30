@@ -16,7 +16,7 @@ const props = defineProps({
     default: () => [],
   },
   selectedFile: {
-    type: Object,
+    type: Object as PropType<IFile>,
     default: undefined,
   },
 })
