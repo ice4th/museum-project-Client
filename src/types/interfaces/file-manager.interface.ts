@@ -22,9 +22,9 @@ export interface IFileList {
 export interface IFile {
   name: string
   src: string
-  lastModified: string
   size: string
   type: string
+  lastModified: string
 }
 
 export interface IDirectoryNavigator {
@@ -33,6 +33,6 @@ export interface IDirectoryNavigator {
 }
 
 export interface IAddFolder {
-  folderName: string
   path: string
+  folderName: string
 }
