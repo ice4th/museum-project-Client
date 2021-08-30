@@ -15,7 +15,7 @@ const {
   directories,
   addFolder,
   nextToken,
-  onClearNewFile,
+  clearNewFile,
 } = useFileManager()
 const { downloadItem, copyUrlClipboard } = useFileAction()
 
@@ -56,10 +56,9 @@ const fetchMore = async () => {
 }
 const onChangeNavigateFolder = async (folder: IDirectoryNavigator) => {
   isLoaderActive.value = true
-  navigateFolder.value = folder.key
-  await fetchFileList({ prefix: navigateFolder.value })
+  await fetchFileList({ prefix: folder.key })
   isLoaderActive.value = false
-  search.value = ''
+  search.value = '' //Show search in order to know what's the current search
   onReset()
 }
 const onSearch = async () => {
@@ -72,7 +71,7 @@ const onSearch = async () => {
 const onReset = () => {
   isPreview.value = false
   selectFile(undefined)
-  onClearNewFile()
+  clearNewFile()
 }
 </script>
 <template>

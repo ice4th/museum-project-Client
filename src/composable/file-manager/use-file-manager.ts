@@ -58,10 +58,6 @@ export default function useFileManager() {
       else notyf.error(errMessage(res.message))
     }
   }
-  //Use this when navigate change
-  const onClearNewFile = () => {
-    state.newFile = []
-  }
 
   const uploadFileItem = async (file: File) => {
     const res = await uploadFile({
@@ -94,6 +90,9 @@ export default function useFileManager() {
 
   //fileList will show all of files, folders, and the new files that just created or uploaded
   const fileList = computed(() => [...state.newFile, ...state.files])
+
+  //Use this when navigate change
+  const clearNewFile = () => (state.newFile = [])
 
   /**
    * `directories` is depth of navigation or sub-directory. We know it from `currentDirectory` that indicate the current path
@@ -132,6 +131,6 @@ export default function useFileManager() {
     fileList,
     directories,
     uploadFileItem,
-    onClearNewFile,
+    clearNewFile,
   }
 }
