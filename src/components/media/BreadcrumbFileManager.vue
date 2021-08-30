@@ -29,6 +29,7 @@ const emit = defineEmits(['change-navigate'])
 .breadcrumb {
   padding: 0.75rem 0;
   border-radius: 16px;
+
   .breadcrumb-item {
     padding: 10px 0;
     display: flex;
@@ -36,6 +37,7 @@ const emit = defineEmits(['change-navigate'])
       color: black;
       cursor: pointer;
       font-weight: 600;
+      font-size: 12px;
       &:hover {
         color: $primary;
       }

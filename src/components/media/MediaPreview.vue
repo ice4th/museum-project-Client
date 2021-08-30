@@ -46,7 +46,7 @@ const emit = defineEmits(['on-close'])
           <img
             v-else
             width="100"
-            :src="thumbnailFileIcon(file?.type)"
+            :src="thumbnailFileIcon(file.type)"
             :alt="file.name"
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
@@ -54,22 +54,22 @@ const emit = defineEmits(['on-close'])
           />
         </div>
         <div class="meta">
-          <p>
+          <p v-if="file.name">
             Name: <span class="dark-inverted">{{ file.name }}</span>
           </p>
-          <p>
+          <p v-if="file.size">
             Size: <span class="dark-inverted">{{ file.size }}</span>
           </p>
-          <p>
+          <p v-if="file.type">
             Type: <span class="dark-inverted">{{ file.type }}</span>
           </p>
-          <p>
+          <p v-if="file.lastUpdateModified">
             Last modified:
             <span class="dark-inverted">{{
               moment(file.lastUpdateModified).format('DD MMM YYYY HH:mm')
             }}</span>
           </p>
-          <p>
+          <p v-if="file.src">
             Public URL:
             <a :href="file.src" target="_target" class="dark-inverted"
               >Click Here</a
@@ -93,7 +93,7 @@ const emit = defineEmits(['on-close'])
 
     padding: 2rem;
     border-radius: 16px;
-    height: 600px;
+    height: 500px;
     max-height: 700px;
     .tile-grid-item-inner {
       display: flex;
@@ -102,7 +102,7 @@ const emit = defineEmits(['on-close'])
       img.image-preview {
         object-fit: cover;
         max-width: 100%;
-        max-height: 350px;
+        max-height: 300px;
         width: auto;
         height: auto;
       }

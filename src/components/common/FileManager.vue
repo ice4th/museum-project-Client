@@ -29,7 +29,7 @@ const search = ref('')
 const navigateFolder = ref<string>(currentDirectory || '')
 const selectFile = (item: IFile) => {
   selected.value = item
-  if (selected.value) {
+  if (selected.value && selected.value?.type !== 'folder') {
     emit('select', item)
     isPreview.value = true
   }

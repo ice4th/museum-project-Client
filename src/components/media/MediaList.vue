@@ -26,8 +26,8 @@ const props = defineProps({
   <div
     v-for="file in fileList"
     :key="file.id"
-    class="column"
-    @click="file.type !== 'folder' ? emit('handle-file', file) : null"
+    class="column is-4"
+    @click="emit('handle-file', file)"
     @dblclick="file.type == 'folder' ? emit('change-folder', file) : null"
   >
     <div class="tile-grid-item" :class="[file === selectedFile && 'is-active']">
@@ -45,5 +45,4 @@ const props = defineProps({
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
 @import '../../scss/pages/media/_tile-grid-media.scss';
-// :class="`column ${selectedFile?.type ? 'is-6' : 'is-4'}`"
 </style>

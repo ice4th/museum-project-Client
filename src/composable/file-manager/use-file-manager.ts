@@ -121,8 +121,8 @@ export default function useFileManager() {
       ]
     ) as Array<IDirectoryNavigator>
   })
-  onMounted(async () => {
-    await fetchFileList({ prefix: '' }) // -> search from root with empty string
+  onMounted(() => {
+    fetchFileList({ prefix: '' }) // -> search from root with empty string
   })
   return {
     ...toRefs(state),
