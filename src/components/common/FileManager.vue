@@ -20,7 +20,7 @@ const {
 const { downloadItem, copyUrlClipboard } = useFileAction()
 
 const emit = defineEmits(['select'])
-const selected = ref(undefined)
+const selected = ref<IFile | undefined>(undefined)
 const isLoaderActive = ref<boolean>(false)
 const isPreview = ref<boolean>(false)
 const openModalAddFolder = ref<boolean>(false)
@@ -39,10 +39,12 @@ const onUploadFile = async (event: File) => {
   const newFile = await uploadFileItem(event.target.files[0])
   isLoaderActive.value = false
 }
-const onAddFolder = async (folderName: string) => {
+const onAddFolder = async () => {
   isLoaderActive.value = true
-  console.log(folderName)
-  await addFolder({ path: navigateFolder.value, folderName })
+  await addFolder({
+    path: navigateFolder.value,
+    folderName: newFolderName.value,
+  })
   toggleModalAddFolder()
   isLoaderActive.value = false
 }
@@ -178,12 +180,33 @@ const onReset = () => {
       </div>
     </div>
   </V-Loader>
-  <ModalAddFolder
-    :open-modal="openModalAddFolder"
-    :folder-name="newFolderName"
-    @on-add="onAddFolder($event)"
-    @toggle-close="toggleModalAddFolder"
-  />
+  <V-Modal
+    :open="openModalAddFolder"
+    title="Add new folder"
+    size="small"
+    actions="right"
+    @close="toggleModalAddFolder"
+  >
+    <template #content>
+      <form class="modal-form">
+        <V-Field>
+          <label>Folder Name</label>
+          <V-Control icon="feather:folder">
+            <input
+              v-model="newFolderName"
+              type="text"
+              class="input"
+              placeholder="A-Z a-z 0-9 or _- characters"
+              required
+            />
+          </V-Control>
+        </V-Field>
+      </form>
+    </template>
+    <template #action>
+      <V-Button color="primary" raised @click="onAddFolder">Add</V-Button>
+    </template>
+  </V-Modal>
 </template>
 
 <style lang="scss" scoped>
