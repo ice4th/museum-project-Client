@@ -1,11 +1,12 @@
 export interface IGetFile {
-  perPage: number
-  nextContinuationToken?: string
+  max: number
+  prefix?: string
+  continuationToken?: string
 }
 
 export interface IUploadFile {
-  pathName?: string
-  name?: string
+  filePath?: string
+  file: File
 }
 
 export interface IFileList {

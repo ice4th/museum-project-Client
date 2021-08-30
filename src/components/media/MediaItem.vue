@@ -2,7 +2,7 @@
 import type { PropType } from 'vue'
 import { defineProps, computed } from 'vue'
 import moment from 'moment'
-
+import { thumbnailFileIcon } from '/@src/helpers/file-manager.helper'
 const props = defineProps({
   file: {
     type: Object || String,
@@ -10,20 +10,6 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(['download-item', 'copy-item'])
-
-const thumbnailIcon = computed(() => {
-  return props.file?.type?.match('audio')
-    ? '/images/icons/files/music.svg'
-    : props.file?.type?.match('video')
-    ? '/images/icons/files/video.svg'
-    : props.file?.type?.match('pdf')
-    ? '/images/icons/files/pdf.svg'
-    : props.file?.type?.match('doc')
-    ? '/images/icons/files/doc-2.svg'
-    : !props.file?.type
-    ? '/images/icons/files/folder.svg'
-    : '/images/icons/files/doc.svg'
-})
 </script>
 
 <template>
@@ -32,25 +18,23 @@ const thumbnailIcon = computed(() => {
       <img
         :key="file"
         class="image-preview"
-        :src="file.type?.match('image') ? file.src : thumbnailIcon"
+        :src="
+          file.type?.match('image') ? file.src : thumbnailFileIcon(file.type)
+        "
         :alt="file?.name"
         @error.once="$event.target.src = 'https://via.placeholder.com/150x150'"
       />
     </V-IconBox>
-
-    <div v-if="file?.type" class="meta">
+    <div class="meta">
       <span class="dark-inverted">{{ file.name }}</span>
-      <span>
+      <span v-if="!file.type?.match('folder')">
         <span>{{ file.size }}</span>
         <i aria-hidden="true" class="fas fa-circle icon-separator"></i>
-        <span>Updated {{ moment(file.lastModified).fromNow() }}</span>
+        <span>{{ moment(file.lastModified).fromNow() }}</span>
       </span>
     </div>
-    <div v-else class="meta">
-      <span class="dark-inverted">{{ file }}</span>
-    </div>
     <MediaAction
-      v-if="file?.type"
+      v-if="!file.type?.match('folder')"
       :key="`Media-action-${file.name}`"
       :file="file"
       @click.prevent.stop

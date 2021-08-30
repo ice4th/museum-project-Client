@@ -1,22 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import moment from 'moment'
+import { thumbnailFileIcon } from '/@src/helpers/file-manager.helper'
+
 const props = defineProps({
   file: {
     type: Object,
     default: () => {},
   },
-})
-const thumbnailPreview = computed(() => {
-  return props.file?.type?.match('audio')
-    ? '/images/icons/files/music.svg'
-    : props.file?.type?.match('video')
-    ? '/images/icons/files/video.svg'
-    : props.file?.type?.match('pdf')
-    ? '/images/icons/files/pdf.svg'
-    : props.file?.type?.match('doc')
-    ? '/images/icons/files/doc-2.svg'
-    : '/images/icons/files/doc.svg'
 })
 const emit = defineEmits(['on-close'])
 </script>
@@ -36,27 +27,27 @@ const emit = defineEmits(['on-close'])
       <div class="tile-grid-item-inner">
         <div class="flex has-text-centered">
           <img
-            v-if="file.type.match('image')"
-            :src="file.src"
-            :alt="file.name"
+            v-if="file?.type?.match('image')"
+            :src="file?.src"
+            :alt="file?.name"
             class="image-preview"
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'
             "
           />
           <V-Plyr
-            v-else-if="file.type.match('video')"
+            v-else-if="file?.type?.match('video')"
             ratio="16by9"
             :source="file.src"
           />
-          <audio v-else-if="file.type.match('audio')" controls>
+          <audio v-else-if="file?.type?.match('audio')" controls>
             <source :src="file.src" />
             Your browser does not support the audio element.
           </audio>
           <img
             v-else
             width="100"
-            :src="thumbnailPreview"
+            :src="thumbnailFileIcon(file.type)"
             :alt="file.name"
             @error.once="
               $event.target.src = 'https://via.placeholder.com/150x150'

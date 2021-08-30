@@ -23,16 +23,16 @@ const props = defineProps({
 
 <template>
   <div
-    v-for="item in fileList"
-    :key="item.id"
+    v-for="file in fileList"
+    :key="file.id"
     class="column"
-    @click="item?.type ? emit('handle-file', item) : null"
-    @dblclick="!item?.type ? emit('change-folder', item) : null"
+    @click="!file.type.match('folder') ? emit('handle-file', file) : null"
+    @dblclick="file.type.match('folder') ? emit('change-folder', file) : null"
   >
-    <div class="tile-grid-item" :class="[item === selectedFile && 'is-active']">
+    <div class="tile-grid-item" :class="[file === selectedFile && 'is-active']">
       <MediaItem
-        :key="`list-${item.id}`"
-        :file="item"
+        :key="`list-${file.id}`"
+        :file="file"
         @download-item="emit('download-item', $event)"
         @copy-item="emit('copy-item', $event)"
       />

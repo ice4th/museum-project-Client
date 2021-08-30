@@ -3,14 +3,15 @@ import { ref, computed, watch } from 'vue'
 import useFileManager from '/@src/composable/file-manager/use-file-manager'
 import useFileAction from '/@src/composable/file-manager/use-file-action'
 import type { IFile } from '/@src/types/interfaces/file-manager.interface'
-
 const {
   fileList,
   currentDirectory,
-  uploadFile,
+  uploadFileItem,
   fetchFileList,
   directories,
   addFolder,
+  nextToken,
+  onClearNewFile,
 } = useFileManager()
 const { downloadItem, copyUrlClipboard } = useFileAction()
 
@@ -21,25 +22,20 @@ const isPreview = ref(false)
 const openModalAddFolder = ref(false)
 const newFolderName = ref('')
 const navigateFolder = ref<string>(currentDirectory || '')
-
 const selectFile = (item: IFile) => {
   selected.value = item
-  if (item?.type) {
-    console.log('select item', item)
-    emit('select', item)
-    isPreview.value = true
-  }
+  emit('select', item)
+  isPreview.value = true
 }
 const onUploadFile = async (event) => {
   isLoaderActive.value = true
-  console.log(event.target)
-  const newFile = await uploadFile(event.target.files[0])
+  const newFile = await uploadFileItem(event.target.files[0])
   console.log(newFile)
-  setTimeout(() => (isLoaderActive.value = false), 3000)
+  isLoaderActive.value = false
 }
 const onAddFolder = async (folderName) => {
   isLoaderActive.value = true
-  await addFolder(folderName)
+  await addFolder(`${navigateFolder.value}${folderName}`)
   toggleModalAddFolder()
   isLoaderActive.value = false
 }
@@ -47,35 +43,18 @@ const toggleModalAddFolder = () => {
   openModalAddFolder.value = !openModalAddFolder.value
   newFolderName.value = ''
 }
-const fetchMore = () => {
+const fetchMore = async () => {
   isLoaderActive.value = true
-  //Fetch more and append subDirectories and files with nextContinuationToken
-  console.log('fetch more')
-  setTimeout(() => (isLoaderActive.value = false), 3000)
-}
-
-const onChangeNavigateFolder = async (selected) => {
-  isLoaderActive.value = true
-  console.log('onNavigateFolder:', selected)
-  navigateFolder.value = selected?.key || ''
-  selectFile(undefined)
-  await fetchFileList()
+  await fetchFileList({ search: navigateFolder.value, next: true })
   isLoaderActive.value = false
 }
 
-const onChangeFolder = async (folder) => {
+const onChangeNavigateFolder = async (folder) => {
   isLoaderActive.value = true
-  console.log('current navigateFolder:', navigateFolder.value)
-  navigateFolder.value = `${navigateFolder.value}${folder}`
-  console.log('new navigateFolder:', navigateFolder.value)
-  await fetchFileList({
-    baseUrl: 'https://d1627oxh4wmxfp.cloudfront.net',
-    currentDirectory: navigateFolder.value,
-    files: [],
-    subDirectories: ['temps/'],
-    total: 1,
-  })
+  navigateFolder.value = folder?.key || ''
   selectFile(undefined)
+  onClearNewFile()
+  await fetchFileList({ search: navigateFolder.value })
   isLoaderActive.value = false
 }
 </script>
@@ -109,6 +88,25 @@ const onChangeFolder = async (folder) => {
     </div>
   </div>
   <V-Loader size="large" :active="isLoaderActive" translucent>
+    <V-PlaceholderPage
+      :class="[fileList.length ? 'is-hidden' : '']"
+      title="No data to show"
+      subtitle="There is currently no data to show in this list."
+      larger
+    >
+      <template #image>
+        <img
+          class="light-image"
+          src="/@src/assets/illustrations/placeholders/search-4.svg"
+          alt=""
+        />
+        <img
+          class="dark-image"
+          src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
+          alt=""
+        />
+      </template>
+    </V-PlaceholderPage>
     <div class="columns pr-5 pl-5">
       <MediaPreview
         v-if="isPreview"
@@ -125,12 +123,13 @@ const onChangeFolder = async (folder) => {
               @handle-file="selectFile($event)"
               @download-item="downloadItem($event)"
               @copy-item="copyUrlClipboard($event)"
-              @change-folder="onChangeFolder($event)"
+              @change-folder="onChangeNavigateFolder($event)"
             />
           </div>
         </div>
         <div class="flex has-text-centered m-5">
           <V-Button
+            v-if="nextToken"
             outlined
             color="primary"
             icon="feather:refresh-cw"
@@ -138,15 +137,6 @@ const onChangeFolder = async (folder) => {
             @click="fetchMore"
             >Load More</V-Button
           >
-          <!-- <V-IconButton
-            color="primary"
-            outlined
-            :loading="isLoaderActive"
-            is-dark${isPreview ? 'is-8' : ''}
-            circle
-            icon="feather:refresh-cw"
-            @click="fetchMore"
-          /> -->
         </div>
       </div>
     </div>
@@ -157,25 +147,6 @@ const onChangeFolder = async (folder) => {
     @on-add="onAddFolder($event)"
     @toggle-close="toggleModalAddFolder"
   />
-  <V-PlaceholderPage
-    :class="[fileList.length ? 'is-hidden' : '']"
-    title="No data to show"
-    subtitle="There is currently no data to show in this list."
-    larger
-  >
-    <template #image>
-      <img
-        class="light-image"
-        src="/@src/assets/illustrations/placeholders/search-4.svg"
-        alt=""
-      />
-      <img
-        class="dark-image"
-        src="/@src/assets/illustrations/placeholders/search-4-dark.svg"
-        alt=""
-      />
-    </template>
-  </V-PlaceholderPage>
 </template>
 
 <style lang="scss" scoped>
