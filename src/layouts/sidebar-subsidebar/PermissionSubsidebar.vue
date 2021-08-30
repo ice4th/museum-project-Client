@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineEmit } from 'vue'
 
-const emit = defineEmit(['close'])
+const emit = defineEmits(['close'])
 </script>
 
 <template>
@@ -51,6 +51,15 @@ const emit = defineEmit(['close'])
               <RouterLink :to="{ name: 'permission-team' }" class="is-submenu">
                 <i class="lnil lnil-books"></i>
                 <span>Team Information</span>
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink
+                :to="{ name: 'permission-team-create' }"
+                class="is-submenu"
+              >
+                <i class="lnil lnil-books"></i>
+                <span>Create Team</span>
               </RouterLink>
             </li>
           </ul>

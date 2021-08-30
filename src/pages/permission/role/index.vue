@@ -21,13 +21,25 @@ import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import useRoleInfo from '/@src/composable/permission/use-role-info'
 
-pageTitle.value = 'Role'
+pageTitle.value = 'Role Information'
 
 useHead({
   title: 'Whitehouse Role',
 })
 
-const { rolePagination, roleTableHeaders, isLoading, search } = useRoleInfo()
+const {
+  // state
+  search,
+  isLoading,
+  rolePagination,
+  deleteActionItem,
+  // variable
+  roleTableHeaders,
+  // methods
+  onViewDetails,
+  onUpdateRole,
+  onDeleteRole,
+} = useRoleInfo()
 </script>
 
 <template>
@@ -53,7 +65,11 @@ const { rolePagination, roleTableHeaders, isLoading, search } = useRoleInfo()
         <div class="is-flex is-justify-content-flex-end">
           <V-Dropdown title="More" spaced right>
             <template #content>
-              <a role="menuitem" href="#" class="dropdown-item is-media">
+              <a
+                role="menuitem"
+                class="dropdown-item is-media"
+                @click="onViewDetails(value.id)"
+              >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-eye"></i>
                 </div>
@@ -66,7 +82,7 @@ const { rolePagination, roleTableHeaders, isLoading, search } = useRoleInfo()
               <a
                 role="menuitem"
                 class="dropdown-item is-media"
-                @click="onEditPackage(value.id)"
+                @click="onUpdateRole(value.id)"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-pencil"></i>
@@ -79,7 +95,12 @@ const { rolePagination, roleTableHeaders, isLoading, search } = useRoleInfo()
 
               <hr class="dropdown-divider" />
 
-              <a role="menuitem" href="#" class="dropdown-item is-media">
+              <a
+                role="menuitem"
+                href="#"
+                class="dropdown-item is-media"
+                @click="deleteActionItem = value"
+              >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-trash-can-alt"></i>
                 </div>
@@ -93,5 +114,32 @@ const { rolePagination, roleTableHeaders, isLoading, search } = useRoleInfo()
         </div>
       </template>
     </Datatable>
+
+    <!-- Delete Action -->
+    <V-Modal
+      :open="deleteActionItem !== undefined"
+      title="Confirm Remove"
+      actions="center"
+      @close="deleteActionItem = undefined"
+    >
+      <template #content>
+        <V-PlaceholderSection title="Are you sure ?" />
+        <p class="text-center">
+          Please make sure that you are going to remove the role named
+          <b>"{{ deleteActionItem && deleteActionItem.name }}"</b>.
+        </p>
+      </template>
+      <template #action>
+        <V-Button color="primary" raised @click="onDeleteRole"
+          >Confirm</V-Button
+        >
+      </template>
+    </V-Modal>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.text-center {
+  text-align: center;
+}
+</style>

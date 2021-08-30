@@ -1,6 +1,12 @@
 import { reactive, toRefs } from 'vue'
 import { checkResponseStatus } from '.'
 import useApi from '../useApi'
+import { ProductType } from '/@src/types/enums/product.enum'
+import { QuizType } from '/@src/types/enums/quiz.enum'
+import {
+  IPaginationParams,
+  IPaginationResponse,
+} from '/@src/types/interfaces/common.interface'
 import {
   ProductOption,
   PackageOption,
@@ -11,21 +17,35 @@ import {
   FindMyCoachOption,
   StudentOption,
   TeamOption,
+  QuizOption,
 } from '/@src/types/interfaces/option.interface'
 interface UseOptionApiState {
+  productOptions: ProductOption[]
+  productTypeOptions: ProductType[]
   studentOptions: StudentOption[]
   teamOptions: TeamOption[]
+  quizOptions: QuizOption[]
 }
 export default function useOptionApi() {
   const api = useApi()
   const state = reactive<UseOptionApiState>({
+    productOptions: [],
+    productTypeOptions: [],
     studentOptions: [],
     teamOptions: [],
+    quizOptions: [],
   })
 
   const getProducts = async (): Promise<ProductOption[]> => {
     const res = await api.get<ProductOption[]>('/Options/Products')
-    return checkResponseStatus(res) || []
+    state.productOptions = checkResponseStatus(res) || []
+    return state.productOptions
+  }
+
+  const getProductType = async (): Promise<ProductType[]> => {
+    const res = await api.get<ProductType[]>('/Options/Products/Types')
+    state.productTypeOptions = checkResponseStatus(res) || []
+    return state.productTypeOptions
   }
 
   const getPackages = async (): Promise<PackageOption[]> => {
@@ -62,20 +82,41 @@ export default function useOptionApi() {
     return checkResponseStatus(res) || []
   }
 
-  const getStudents = async (): Promise<StudentOption[]> => {
-    const res = await api.get<StudentOption[]>('/Options/Students')
-    state.studentOptions = checkResponseStatus(res) || []
-    return checkResponseStatus(res) || []
+  const getStudents = async (
+    search?: string,
+    params?: IPaginationParams
+  ): Promise<StudentOption[]> => {
+    const res = await api.get<IPaginationResponse<StudentOption[]>>(
+      '/Options/Students',
+      {
+        params: {
+          currentPage: params?.currentPage || 1,
+          perPage: params?.perPage || 10,
+          search,
+        },
+      }
+    )
+    state.studentOptions = checkResponseStatus(res) ? res.data.data : []
+    return checkResponseStatus(res)
   }
 
   const getTeams = async (): Promise<TeamOption[]> => {
     const res = await api.get<StudentOption[]>('/Options/Teams')
     state.teamOptions = checkResponseStatus(res) || []
-    return checkResponseStatus(res) || []
+    return state.teamOptions
+  }
+
+  const getQuizzes = async (type: QuizType): Promise<QuizOption[]> => {
+    const res = await api.get<QuizOption[]>('/Options/Quizzes', {
+      params: { type },
+    })
+    state.quizOptions = checkResponseStatus(res) || []
+    return state.quizOptions
   }
   return {
     ...toRefs(state),
     getProducts,
+    getProductType,
     getPackages,
     getPartners,
     getMoocCourses,
@@ -84,5 +125,6 @@ export default function useOptionApi() {
     getFmcPackages,
     getStudents,
     getTeams,
+    getQuizzes,
   }
 }

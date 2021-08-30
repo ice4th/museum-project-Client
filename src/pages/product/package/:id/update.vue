@@ -71,7 +71,7 @@ const isStuck = computed(() => {
       <div class="form-outer">
         <div :class="[isStuck && 'is-stuck']" class="form-header stuck-header">
           <div class="form-header-inner">
-            <div class="left"><h3>Create Package</h3></div>
+            <div class="left"><h3>Update Package</h3></div>
             <div class="right">
               <div class="buttons">
                 <V-Button
@@ -97,7 +97,7 @@ const isStuck = computed(() => {
         </div>
         <div class="form-body">
           <FormPackageInfo
-            :create-package-form="formPackageInfo"
+            :form-package-info="formPackageInfo"
             :feature-groups="featureGroups"
             :mooc-courses="moocCourses"
             :fmc-packages="fmcPackages"
@@ -119,5 +119,9 @@ const isStuck = computed(() => {
 
 * {
   box-sizing: border-box;
+}
+
+.is-stuck {
+  top: 0 !important;
 }
 </style>

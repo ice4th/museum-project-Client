@@ -30,7 +30,9 @@ const emit = defineEmits(['toggle-close', 'on-change'])
     @close="emit('toggle-close')"
   >
     <template #content>
-      <h3>confirm remove {{ packageItem?.packageName }}</h3>
+      <V-Message color="danger">
+        Confirm Remove <strong>{{ packageItem?.packageName }}</strong>
+      </V-Message>
       <form class="modal-form">
         <V-Field>
           <label>Comment</label>
@@ -60,6 +62,6 @@ const emit = defineEmits(['toggle-close', 'on-change'])
 </template>
 <style lang="scss" scoped>
 .v-modal .modal-content .modal-card .modal-card-body .modal-form {
-  height: 350px;
+  height: 150px;
 }
 </style>
