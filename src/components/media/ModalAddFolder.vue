@@ -29,7 +29,7 @@ const emit = defineEmits(['toggle-close', 'on-add'])
               v-model="folderName"
               type="text"
               class="input"
-              placeholder="ระบุเป็นตัวอักษรหรือตัวเลขหรืออักขระพิเศษ _-"
+              placeholder="A-Z a-z 0-9 or _- characters"
               required
             />
           </V-Control>

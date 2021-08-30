@@ -12,7 +12,7 @@ const emit = defineEmits([
 
 const props = defineProps({
   fileList: {
-    type: Array as Array<IFile>,
+    type: Array as PropType<Array<IFile>>,
     default: () => [],
   },
   selectedFile: {

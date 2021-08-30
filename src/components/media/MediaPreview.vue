@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import type { PropType } from 'vue'
 import moment from 'moment'
 import { thumbnailFileIcon } from '/@src/helpers/file-manager.helper'
 import type { IFile } from '/@src/types/interfaces/file-manager.interface'
 
 const props = defineProps({
   file: {
-    type: Object as IFile,
+    type: Object as PropType<IFile>,
     default: undefined,
   },
 })

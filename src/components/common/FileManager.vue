@@ -21,11 +21,11 @@ const { downloadItem, copyUrlClipboard } = useFileAction()
 
 const emit = defineEmits(['select'])
 const selected = ref(undefined)
-const isLoaderActive = ref(false)
-const isPreview = ref(false)
-const openModalAddFolder = ref(false)
-const newFolderName = ref('')
-const search = ref('')
+const isLoaderActive = ref<boolean>(false)
+const isPreview = ref<boolean>(false)
+const openModalAddFolder = ref<boolean>(false)
+const newFolderName = ref<string>('')
+const search = ref<string>('')
 const navigateFolder = ref<string>(currentDirectory || '')
 const selectFile = (item: IFile) => {
   selected.value = item
@@ -34,7 +34,7 @@ const selectFile = (item: IFile) => {
     isPreview.value = true
   }
 }
-const onUploadFile = async (event) => {
+const onUploadFile = async (event: File) => {
   isLoaderActive.value = true
   const newFile = await uploadFileItem(event.target.files[0])
   isLoaderActive.value = false
@@ -58,7 +58,7 @@ const onChangeNavigateFolder = async (folder: IDirectoryNavigator) => {
   isLoaderActive.value = true
   await fetchFileList({ prefix: folder.key })
   isLoaderActive.value = false
-  search.value = '' //Show search in order to know what's the current search
+  search.value = '' //Clear search when navigate new folder
   onReset()
 }
 const onSearch = async () => {
@@ -76,10 +76,12 @@ const onReset = () => {
 </script>
 <template>
   <div class="tile-grid-toolbar">
+    <!-- Breadcrumb for navigate folder -->
     <BreadcrumbFileManager
       :breadcrumb="directories"
       @change-navigate="onChangeNavigateFolder($event)"
     />
+    <!-- Add folder or upload file  -->
     <div class="buttons">
       <V-Button icon="fas fa-folder" @click="openModalAddFolder = true"
         >Add Folder</V-Button
@@ -104,19 +106,21 @@ const onReset = () => {
       <br />
     </div>
   </div>
+  <!-- Search folder -->
   <div class="is-flex is-justify-content-flex-end mb-5 mr-5">
     <V-Control icon="feather:search">
       <input
         v-model="search"
         type="text"
         class="input is-rounded"
-        placeholder="Search folders in this folder (Sensitive case)"
+        placeholder="Search any folders in this folder(Sensitive case)"
         @keyup.enter="onSearch"
       />
     </V-Control>
   </div>
 
   <V-Loader size="large" :active="isLoaderActive" grey translucent>
+    <!-- The component will show when no media-->
     <V-PlaceholderPage
       :class="[fileList.length ? 'is-hidden' : '']"
       title="No media to show"
@@ -137,12 +141,14 @@ const onReset = () => {
       </template>
     </V-PlaceholderPage>
     <div class="columns pr-5 pl-5">
+      <!-- Show Preview Media-->
       <MediaPreview
         v-if="isPreview"
         :key="selected"
         :file="selected"
         @on-close="isPreview = false"
       />
+      <!-- Show media list -->
       <div class="column scoll-y">
         <div class="tile-grid">
           <div class="columns is-flex-tablet-p is-half-tablet-p is-multiline">
@@ -156,6 +162,7 @@ const onReset = () => {
             />
           </div>
         </div>
+        <!-- Show Load more button -->
         <div class="flex has-text-centered m-5">
           <V-Button
             v-show="nextToken"
