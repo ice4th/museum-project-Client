@@ -4,7 +4,7 @@ import { defineProps, computed, ref } from 'vue'
 import type { IDirectoryNavigator } from '/@src/types/interfaces/file-manager.interface'
 const props = defineProps({
   breadcrumb: {
-    type: Array as Array<IDirectoryNavigator>,
+    type: Array as PropType<Array<IDirectoryNavigator>>,
     default: () => [],
   },
 })
