@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { defineProps, computed, ref } from 'vue'
-
+import type { IDirectoryNavigator } from '/@src/types/interfaces/file-manager.interface'
 const props = defineProps({
   breadcrumb: {
-    type: Object,
-    default: () => {},
+    type: Array as Array<IDirectoryNavigator>,
+    default: () => [],
   },
 })
 
@@ -18,8 +18,6 @@ const emit = defineEmits(['change-navigate'])
       <a class="dark-inverted" @click="emit('change-navigate', item)">{{
         item.label
       }}</a>
-      <!-- <i class="is-flex m-auto dark-inverted fas fa-long-arrow-alt-right"></i> -->
-      <!-- <span>/</span> -->
       <i class="is-flex m-auto dark-inverted fas fa-chevron-right"></i>
     </div>
   </div>
@@ -30,6 +28,7 @@ const emit = defineEmits(['change-navigate'])
 @import '../../scss/abstracts/_mixins.scss';
 .breadcrumb {
   padding: 0.75rem 0;
+  border-radius: 16px;
   .breadcrumb-item {
     padding: 10px 0;
     display: flex;
@@ -43,7 +42,6 @@ const emit = defineEmits(['change-navigate'])
     }
   }
 }
-
 .is-dark {
   .breadcrumb {
     @include vuero-card--dark();

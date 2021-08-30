@@ -1,6 +1,7 @@
-export interface IGetFile {
+export interface IGetFileWithPagination {
   max: number
-  prefix?: string
+  prefix: string
+  search?: string
   continuationToken?: string
 }
 
@@ -13,7 +14,7 @@ export interface IFileList {
   baseUrl: string
   currentDirectory: string
   files: IFile[]
-  subDirectories: string[]
+  subDirectories: IFile[]
   total: number
   nextContinuationToken: string
 }
@@ -24,4 +25,9 @@ export interface IFile {
   lastModified: string
   size: string
   type: string
+}
+
+export interface IDirectoryNavigator {
+  key: string
+  label: string
 }

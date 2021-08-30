@@ -4,7 +4,10 @@
   border-radius: 14px;
   padding: 16px;
   cursor: pointer;
-
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   &:hover,
   &.is-active {
     border-color: $primary;
@@ -23,10 +26,6 @@
       object-fit: cover;
       border-radius: 8px;
       box-shadow: $light-box-shadow;
-      -moz-user-select: none;
-      -webkit-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
     }
 
     .meta {

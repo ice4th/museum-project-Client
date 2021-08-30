@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { defineProps, defineAsyncComponent, computed } from 'vue'
+import type { IFile } from '/@src/types/interfaces/file-manager.interface'
 import moment from 'moment'
 const emit = defineEmits([
   'handle-file',
@@ -11,11 +12,11 @@ const emit = defineEmits([
 
 const props = defineProps({
   fileList: {
-    type: Array,
+    type: Array as Array<IFile>,
     default: () => [],
   },
   selectedFile: {
-    type: Object || String,
+    type: Object,
     default: undefined,
   },
 })
@@ -26,8 +27,8 @@ const props = defineProps({
     v-for="file in fileList"
     :key="file.id"
     class="column"
-    @click="!file.type.match('folder') ? emit('handle-file', file) : null"
-    @dblclick="file.type.match('folder') ? emit('change-folder', file) : null"
+    @click="file.type !== 'folder' ? emit('handle-file', file) : null"
+    @dblclick="file.type == 'folder' ? emit('change-folder', file) : null"
   >
     <div class="tile-grid-item" :class="[file === selectedFile && 'is-active']">
       <MediaItem
