@@ -28,18 +28,6 @@ const props = defineProps({
     type: Number,
     default: 100,
   },
-  // currentPage: {
-  //   type: Number,
-  //   default: 1,
-  // },
-  // perPage: {
-  //   type: Number,
-  //   default: 10,
-  // },
-  // search: {
-  //   type: String,
-  //   default: '',
-  // },
   canSearchable: {
     type: Boolean,
     default: true,
@@ -64,11 +52,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  customPerPageOption: {
+    type: Array,
+    default: () => [10, 25, 50, 100],
+  },
 })
-
-const isDataOfArray = computed(
-  () => props.data.length > 0 && Array.isArray(props.data[0])
-)
+/**
+ * Router
+ */
 const {
   currentPage: page,
   perPage: limit,
@@ -76,9 +67,21 @@ const {
 } = usePaginationRoute()
 const router = useRouter()
 const route = useRoute()
+
+/**
+ * State
+ */
 const currentPage = ref(page || 1)
 const perPage = ref(limit || 10)
 const search = ref(querySearch || '')
+
+/**
+ * Methods
+ */
+
+const isDataOfArray = computed(
+  () => props.data.length > 0 && Array.isArray(props.data[0])
+)
 const changePerPage = (value) => {
   const query = {
     ...route.query,
@@ -138,10 +141,13 @@ watch(
           <V-Control>
             <div class="select is-rounded">
               <select v-model="perPage" @update:model-value="changePerPage">
-                <option :value="10">10 results per page</option>
-                <option :value="25">25 results per page</option>
-                <option :value="50">50 results per page</option>
-                <option :value="100">100 results per page</option>
+                <option
+                  v-for="pageNum in customPerPageOption"
+                  :key="`op-page-${pageNum}`"
+                  :value="pageNum"
+                >
+                  {{ pageNum }} results per page
+                </option>
               </select>
             </div>
           </V-Control>
