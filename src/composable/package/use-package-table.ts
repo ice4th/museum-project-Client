@@ -3,8 +3,9 @@
  */
 
 import { onMounted, reactive, toRefs } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import usePackageApi from '../api/usePackageApi'
+import usePaginationRoute from '../use-pagination-route'
 import { IPaginationResponse } from '/@src/types/interfaces/common.interface'
 import { IPackageTableInfo } from '/@src/types/interfaces/package.interface'
 
@@ -12,9 +13,6 @@ interface UsePackageTableState {
   isLoading: boolean
   packages: IPackageTableInfo[]
   paginationData?: IPaginationResponse<IPackageTableInfo[]>
-  currentPage: number
-  perPage: number
-  search: string
 }
 export default function usePackageTable() {
   /**
@@ -26,7 +24,7 @@ export default function usePackageTable() {
    * Router
    */
   const router = useRouter()
-  const route = useRoute()
+  const { currentPage, perPage, search } = usePaginationRoute()
 
   /**
    * State
@@ -35,9 +33,6 @@ export default function usePackageTable() {
     isLoading: false,
     packages: [],
     paginationData: undefined,
-    currentPage: 1,
-    perPage: 10,
-    search: '',
   })
 
   /**
@@ -60,14 +55,13 @@ export default function usePackageTable() {
     state.isLoading = true
 
     const res = await getPackagesWithPagination({
-      currentPage: state.currentPage,
-      perPage: state.perPage,
-      search: state.search,
+      currentPage,
+      perPage,
+      search,
     })
     state.isLoading = false
     if (res) {
       state.paginationData = res
-      state.currentPage = res.currentPage
     }
   }
   const onViewPackage = async (id: number) => {
@@ -82,17 +76,11 @@ export default function usePackageTable() {
       params: { id },
     })
   }
-  const setDefaultPagination = () => {
-    state.currentPage = parseInt(`${route.query?.page || 1}`)
-    state.perPage = parseInt(`${route.query?.perPage || 10}`)
-    state.search = `${route.query?.search || ''}`
-  }
 
   /**
    * On Mounted
    */
   onMounted(() => {
-    setDefaultPagination()
     fetchAllPackages()
   })
 

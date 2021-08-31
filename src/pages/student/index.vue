@@ -15,8 +15,7 @@ import type { IPartner } from '/@src/types/interfaces/partner.interface'
 const route = useRoute()
 pageTitle.value = 'Student Information'
 
-const { data, totalPage, total, currentPage, perPage, isLoading, search } =
-  useStudentList()
+const { data, total, isLoading } = useStudentList()
 
 useHead({
   title: 'Whitehouse: Student',
@@ -41,13 +40,9 @@ const headers: IDatatableHeader = [
     <Datatable
       :is-loading="isLoading"
       search-placeholder="search by id, name, phone, email"
-      :search="search"
       :headers="headers"
       :data="data"
-      :current-page="currentPage"
-      :per-page="perPage"
       :total="total"
-      :total-page="totalPage"
     >
       <template #fullname="{ value }">
         <div class="student-name-col">

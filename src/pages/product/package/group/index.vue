@@ -23,6 +23,7 @@ const {
   currentViewMainPackageId,
   removePackageGroup,
   packageTableHeaders,
+  total,
 } = usePackageGroupTable()
 
 const showConfirmRemovePopup = ref(false)
@@ -67,9 +68,9 @@ const confirmRemovePackage = () => {
     </V-Modal>
 
     <Datatable
-      :can-searchable="false"
       :headers="packageTableHeaders"
       :data="packages"
+      :total="total"
       is-action
     >
       <template #custom-right>

@@ -48,10 +48,7 @@ const {
       :is-loading="isLoading"
       :headers="roleTableHeaders"
       :data="rolePagination.data"
-      :current-page="rolePagination.currentPage"
-      :per-page="rolePagination.perPage"
       :total="rolePagination.total"
-      :search="search"
       is-action
     >
       <template #custom-right>

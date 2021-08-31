@@ -4,6 +4,7 @@
 
 import { onMounted, reactive, toRefs } from 'vue'
 import usePackageApi from '../api/usePackageApi'
+import usePaginationRoute from '../use-pagination-route'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { IDatatableHeader } from '/@src/types/interfaces/component.interface'
@@ -17,6 +18,7 @@ interface UsePackageTableState {
   packages: IPackageGroupTable[]
   currentViewMainPackageId: number
   addonPackages: IPackageGroupInfo[]
+  total: number
 }
 export default function usePackageGroupTable() {
   const state = reactive<UsePackageTableState>({
@@ -24,7 +26,10 @@ export default function usePackageGroupTable() {
     packages: [],
     currentViewMainPackageId: 0,
     addonPackages: [],
+    total: 1,
   })
+
+  const { currentPage, perPage, search } = usePaginationRoute()
   const {
     getAllPackagesGroup,
     getAddonPackageByMainPackageId,
@@ -32,9 +37,10 @@ export default function usePackageGroupTable() {
   } = usePackageApi()
   const fetchAllPackages = async () => {
     state.isLoading = true
-    const data = await getAllPackagesGroup({ currentPage: 1, perPage: 10 })
+    const data = await getAllPackagesGroup({ currentPage, perPage, search })
     state.isLoading = false
     state.packages = data.data
+    state.total = data.total
   }
   const noty = useNotyf()
 

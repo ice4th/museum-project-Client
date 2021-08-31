@@ -14,9 +14,6 @@ const {
   isLoading,
   packageTableHeaders,
   paginationData,
-  currentPage,
-  perPage,
-  search,
   onViewPackage,
   onEditPackage,
   fetchAllPackages,
@@ -29,10 +26,7 @@ const {
       :is-loading="isLoading"
       :headers="packageTableHeaders"
       :data="paginationData?.data || []"
-      :current-page="currentPage"
-      :total="paginationData?.total"
-      :per-page="perPage"
-      :search="search"
+      :total="paginationData?.total || 0"
       is-action
     >
       <template #custom-right>
