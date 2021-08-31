@@ -36,7 +36,7 @@ const selectFile = (item: IFile) => {
 }
 const onUploadFile = async (event: File) => {
   isLoaderActive.value = true
-  const newFile = await uploadFileItem(event.target.files[0])
+  await uploadFileItem(event.target.files[0])
   isLoaderActive.value = false
 }
 const onAddFolder = async () => {
