@@ -1,49 +1,30 @@
-import { identity } from '@vueuse/core'
 import { onMounted, reactive, toRefs } from 'vue'
-import { ProductType, Purchasable } from '/@src/types/enums/product.enum'
+import { Purchasable } from '/@src/types/enums/product.enum'
 import useProductApi from '../api/useProductApi'
-import {
-  IProduct,
-  IProductDetail,
-} from '/@src/types/interfaces/product.interface'
+import { IProductDetail } from '/@src/types/interfaces/product.interface'
 import { useRoute, useRouter } from 'vue-router'
+import usePaginationRoute from '../use-pagination-route'
 
 interface UseProductTableState {
   products: IProductDetail[]
   isloading: boolean
-  currentPage: number
-  perPage: number
   total: number
-  totalPage: number
-  search?: string
   purchasable?: Purchasable
 }
 export default function useProductTable() {
   const state = reactive<UseProductTableState>({
     products: [],
     isloading: false,
-    currentPage: 1,
-    perPage: 10,
     total: 1,
-    totalPage: 1,
-    search: undefined,
     purchasable: undefined,
   })
   const route = useRoute()
   const router = useRouter()
+  const { currentPage, perPage, search } = usePaginationRoute()
   const { getAllProduct } = useProductApi()
 
   const fetchAllProduct = async () => {
     state.isloading = true
-    if (route.query.perPage) {
-      state.perPage = +(route.query.perPage as string)
-    }
-    if (route.query.page) {
-      state.currentPage = +(route.query.page as string)
-    }
-    if (route.query.search) {
-      state.search = route.query.search as string
-    }
     if (route.query.purchasable) {
       state.purchasable =
         route.query.purchasable === Purchasable.YES ||
@@ -52,16 +33,14 @@ export default function useProductTable() {
           : undefined
     }
     const res = await getAllProduct({
-      currentPage: state.currentPage,
-      perPage: state.perPage,
-      search: state.search,
+      currentPage,
+      perPage,
+      search,
       purchasable: state.purchasable,
     })
     state.isloading = false
     state.products = res.data
     state.total = res.total
-    state.totalPage = res.totalPage
-    console.log(route.query)
   }
   const selectPurchasable = () => {
     router.push({ query: { ...route.query, purchasable: state.purchasable } })

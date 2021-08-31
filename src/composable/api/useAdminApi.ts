@@ -6,7 +6,6 @@ import {
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
 interface GetAllAdminParams extends IPaginationParams {
-  search?: string
   status?: 'activate' | 'deactivate'
 }
 export default function useAdminApi() {
