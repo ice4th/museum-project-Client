@@ -1,5 +1,6 @@
 import {
   GenerateTicket,
+  PackageType,
   PrivateSlot,
   Purchasable,
   StatusPackage,
@@ -136,6 +137,27 @@ export interface TPackageInfo {
   featureGroupId?: number
   privateSlot: PrivateSlot
   courseId: number
+}
+
+export interface IPackageAddonDetail {
+  id: number
+  packageId: number
+  packageName: string
+  type: PackageType
+  purchasable: Purchasable
+  duration: number
+  price: number
+}
+export interface IPackageGroupTable {
+  id: number
+  packageId: number
+  packageName: string
+  type: PackageType
+  purchasable: Purchasable
+  price: number
+  duration: number
+  generateTicket: GenerateTicket
+  subPackages: IPackageAddonDetail[]
 }
 
 export interface IPackageGroupInfo {

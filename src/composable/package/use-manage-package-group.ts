@@ -67,7 +67,7 @@ const notyfSuccess = new Notyf({
     },
   ],
 })
-export default function useCreatePackage() {
+export default function useManagePackageGroup() {
   const showAddonSection = ref<boolean>(false)
   const showMainPackageSection = ref<boolean>(true)
   const state = reactive<IUseCreatePackageState>({
@@ -185,7 +185,7 @@ export default function useCreatePackage() {
         message: 'Created Success!',
       })
       router.push({
-        name: 'product-package-group-:packageid',
+        name: 'product-package-group-:packageid-details',
         params: { packageid: `${state.mainPackageId}` },
       })
       return

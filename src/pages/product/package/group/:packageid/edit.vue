@@ -2,12 +2,12 @@
 import { useWindowScroll } from '@vueuse/core'
 import { computed, onBeforeUpdate, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import useCreatePackage from '/@src/composable/package/use-create-package'
+import useManagePackageGroup from '/@src/composable/package/use-manage-package-group'
 import useViewPackageGroup from '/@src/composable/package/use-view-package-group'
 
 const route = useRoute()
 const router = useRouter()
-const showUpdate = ref(false)
+const showUpdate = ref(true)
 
 const {
   packages,
@@ -24,7 +24,7 @@ const {
   mainPackageId,
   mainSelectedPackage,
   removePackage,
-} = useCreatePackage()
+} = useManagePackageGroup()
 const {
   mainPackage,
   addonPackages: rawAddonPackages,
@@ -91,11 +91,6 @@ const reload = () => {
                     @click="updatePackage(addonPackages, mainPackageId)"
                   >
                     Update
-                  </V-Button>
-                </div>
-                <div v-else class="buttons">
-                  <V-Button color="primary" raised @click="showUpdate = true">
-                    Edit
                   </V-Button>
                 </div>
               </div>
@@ -246,9 +241,7 @@ const reload = () => {
 </template>
 
 <style lang="scss">
-@import '../../../scss/abstracts/_variables.scss';
-@import '../../../scss/abstracts/_mixins.scss';
-@import '../../../scss/pages/generic/_forms.scss';
+@import 'src/scss/pages/generic/_forms.scss';
 .form-fieldset {
   max-width: 540px;
 }

@@ -239,3 +239,8 @@ watch(
     />
   </div>
 </template>
+<style lang="scss" scoped>
+.table tbody td {
+  vertical-align: initial;
+}
+</style>

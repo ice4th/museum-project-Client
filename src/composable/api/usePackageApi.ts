@@ -10,6 +10,7 @@ import {
   IPackageGroupInfo,
   ICreatePackageGroup,
   IPackageDetail,
+  IPackageGroupTable,
 } from '/@src/types/interfaces/package.interface'
 
 export default function usePackageApi() {
@@ -31,10 +32,13 @@ export default function usePackageApi() {
     return catchReponse(res) || []
   }
 
-  const getAllPackagesGroup = async (): Promise<IPackageGroupInfo[]> => {
-    const res = await api.get<IPackageGroupInfo[], ApiResponse>(
-      `/PackageGroups`
-    )
+  const getAllPackagesGroup = async (
+    params: IPaginationParams
+  ): Promise<IPaginationResponse<IPackageGroupTable[]>> => {
+    const res = await api.get<
+      IPaginationResponse<IPackageGroupTable[]>,
+      ApiResponse
+    >(`/PackageGroups`, { params })
     return catchReponse(res) || []
   }
 
