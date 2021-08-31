@@ -1,4 +1,4 @@
-import { IUserInfo } from './admin.interface'
+import { IAdminInfo } from './admin.interface'
 
 export interface IMenu {
   id: number
@@ -36,21 +36,13 @@ export interface IEditRolePayload extends ISaveRolePayload {
   id: number
 }
 
-export interface ITeamInfo {
-  id: number
-  name: string
-  description: string
-  createdAt: Date
-  updatedAt: Date
-}
-
 export interface IRoleInfo {
   id: number
   name: string
   description: string
   permissions?: IPermission[]
-  users?: IUserInfo[]
-  team?: ITeamInfo
+  users?: IAdminInfo[]
+  team?: ITeamDetail
   teamId?: number
 }
 
@@ -71,4 +63,48 @@ export interface ISelectedMenuItem {
       name: string
     }[]
   }[]
+}
+
+export interface ITeamDetail {
+  id: number
+  name: string
+  description: string
+  createdAt: Date
+  updatedAt: Date
+}
+export interface ITeamInfo {
+  id: number
+  name: string
+  description: string
+  createdAt: Date
+  updatedAt: Date
+  admins: IMemberInfo
+}
+
+export interface IMemberInfo {
+  id: number
+  name: string
+  fullname: string
+  firstname: string
+  lastname: string
+  avatar: string
+  dob: Date
+  phone: string
+  email: string
+  country: string
+  manageCountry: string
+  teamId: number
+  teamName: string
+  roleId: number
+  roleName: string
+}
+
+export interface ITeamData {
+  name: string
+  description: string
+}
+
+export interface ITeamCreate {
+  name: string
+  description: string
 }
