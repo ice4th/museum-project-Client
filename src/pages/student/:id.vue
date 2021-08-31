@@ -55,6 +55,17 @@ onMounted(() => {
                   />
                 </template>
               </V-Block>
+              <div class="advanced-box p-3">
+                <V-Button
+                  icon="feather:log-in"
+                  color="primary"
+                  class="has-fullwidth"
+                  :loading="loadingLogin"
+                  outlined
+                  @click="loginAsStudent"
+                  >Login as Student</V-Button
+                >
+              </div>
 
               <div class="account-menu">
                 <RouterLink
