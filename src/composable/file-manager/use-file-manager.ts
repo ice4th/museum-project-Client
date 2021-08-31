@@ -60,18 +60,24 @@ export default function useFileManager() {
   }
 
   const uploadFileItem = async (file: File) => {
+    const isLt20M = file.size < 20 * 1000 * 1024 //check file size is less than 20Mb
+    if (!isLt20M) {
+      notyf.error(
+        'Your file was not uploaded because it exceeds the 20 MB size limit.'
+      )
+      return
+    }
     const res = await uploadFile({
       file,
       filePath: state.currentDirectory,
     })
     if (checkResponseStatus(res)) {
-      notyf.success('Upload file is completed!')
+      notyf.success('Your file was uploaded successfully!')
       state.newFile = [res.data, ...state.newFile]
     } else {
       if (typeof res.message === 'object') state.validate = res.message
       else notyf.error(errMessage(res.message))
     }
-    return res.data
   }
 
   const addFolder = async (data: IAddFolder) => {
@@ -80,7 +86,7 @@ export default function useFileManager() {
       path: data.path,
     })
     if (checkResponseStatus(res)) {
-      notyf.success('Add folder is completed!')
+      notyf.success('Adding folder has been completed!')
       state.newFile = [res.data, ...state.newFile]
     } else {
       if (typeof res.message === 'object') state.validate = res.message
