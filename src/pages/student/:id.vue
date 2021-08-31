@@ -49,7 +49,7 @@ onMounted(() => {
                   />
                 </template>
               </V-Block>
-              <div class="advanced-box">
+              <!-- <div class="advanced-box">
                 <div v-if="studentInfo">
                   <V-Field>
                     <label>Change Country</label>
@@ -70,7 +70,7 @@ onMounted(() => {
                     </V-Control>
                   </V-Field>
                 </div>
-              </div>
+              </div> -->
 
               <div class="account-menu">
                 <RouterLink
