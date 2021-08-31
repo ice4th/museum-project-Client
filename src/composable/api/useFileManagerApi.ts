@@ -11,14 +11,14 @@ export default function useFileManagerApi() {
   const api = useApi()
 
   const getFileListsWithPagination = (params: IGetFileWithPagination) => {
-    return api.get<any, ApiResponse<IFileList>>(`Media`, { params })
+    return api.get<any, ApiResponse<IFileList>>('Media', { params })
   }
 
   const uploadFile = (payload: IUploadFile) => {
     const formData = new FormData()
     formData.append('file', payload.file)
     formData.append('filePath', payload.filePath)
-    return api.post<any, ApiResponse>(`Media/Upload`, formData, {
+    return api.post<any, ApiResponse>('Media/Upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
