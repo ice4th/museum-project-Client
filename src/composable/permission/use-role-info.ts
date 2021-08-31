@@ -5,6 +5,7 @@ import { IPaginationResponse } from '../../types/interfaces/common.interface'
 import { useRoute, useRouter } from 'vue-router'
 import { Notyf } from 'notyf'
 import { errMessage } from '../../helpers/filter.helper'
+import usePaginationRoute from '../use-pagination-route'
 
 /**
  * global notify
@@ -20,7 +21,6 @@ const notyfMessage = new Notyf({
 export interface IUseRoleInfoState {
   rolePagination: IPaginationResponse<IRoleInfo[]>
   isLoading: boolean
-  search: string
   deleteActionItem?: IRoleInfo
 }
 
@@ -29,6 +29,7 @@ export default function useRoleInfo() {
    * Composable Api
    */
   const { getRolePagination, deleteRole } = usePermissionApi()
+  const { currentPage, perPage, search } = usePaginationRoute()
 
   /**
    * Router
@@ -49,7 +50,6 @@ export default function useRoleInfo() {
       total: 0,
       totalPage: 1,
     },
-    search: '',
     isLoading: false,
     deleteActionItem: undefined,
   })
@@ -71,17 +71,12 @@ export default function useRoleInfo() {
   const fetchRoleItems = async () => {
     state.isLoading = true
     const { data: pagination } = await getRolePagination({
-      currentPage: state.rolePagination.currentPage,
-      perPage: state.rolePagination.perPage,
-      search: state.search,
+      currentPage,
+      perPage,
+      search,
     })
     state.rolePagination = pagination
     state.isLoading = false
-  }
-  const setDefaultPagination = () => {
-    state.rolePagination.currentPage = parseInt(`${route.query?.page || 1}`)
-    state.rolePagination.perPage = parseInt(`${route.query?.perPage || 10}`)
-    state.search = `${route.query?.search || ''}`
   }
   const onViewDetails = async (id: number) => {
     await router.push({
@@ -101,7 +96,6 @@ export default function useRoleInfo() {
 
       if (status === 200) {
         // refresh data table
-        setDefaultPagination()
         await fetchRoleItems()
         // show notify success
         notyfMessage.open({
@@ -122,7 +116,6 @@ export default function useRoleInfo() {
    * On Mounted
    */
   onMounted(() => {
-    setDefaultPagination()
     fetchRoleItems()
   })
 

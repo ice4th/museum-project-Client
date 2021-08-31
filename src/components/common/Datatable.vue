@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import type { PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
+import usePaginationRoute from '/@src/composable/use-pagination-route'
 /**
  * @info header example
  * const headers: IDatatableHeader = [
@@ -27,18 +28,18 @@ const props = defineProps({
     type: Number,
     default: 100,
   },
-  currentPage: {
-    type: Number,
-    default: 1,
-  },
-  perPage: {
-    type: Number,
-    default: 10,
-  },
-  search: {
-    type: String,
-    default: '',
-  },
+  // currentPage: {
+  //   type: Number,
+  //   default: 1,
+  // },
+  // perPage: {
+  //   type: Number,
+  //   default: 10,
+  // },
+  // search: {
+  //   type: String,
+  //   default: '',
+  // },
   canSearchable: {
     type: Boolean,
     default: true,
@@ -68,12 +69,20 @@ const props = defineProps({
 const isDataOfArray = computed(
   () => props.data.length > 0 && Array.isArray(props.data[0])
 )
+const {
+  currentPage: page,
+  perPage: limit,
+  search: querySearch,
+} = usePaginationRoute()
 const router = useRouter()
 const route = useRoute()
+const currentPage = ref(page || 1)
+const perPage = ref(limit || 10)
+const search = ref(querySearch || '')
 const changePerPage = (value) => {
   const query = {
     ...route.query,
-    perPage: props.perPage,
+    perPage: perPage.value,
   }
 
   router.push({
@@ -95,13 +104,13 @@ const setSearch = () => {
     query: {
       ...route.query,
       page: 1,
-      search: props.search,
+      search: search.value,
     },
   })
 }
 watch(
-  () => props.search.value,
-  () => (props.search.value.length === 0 ? setSearch() : null)
+  () => search.value,
+  () => (search.value.length === 0 ? setSearch() : null)
 )
 </script>
 

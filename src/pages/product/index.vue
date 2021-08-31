@@ -13,10 +13,7 @@ const {
   products,
   isLoading,
   productTableHeaders,
-  currentPage,
-  perPage,
   total,
-  search,
   purchasable,
   selectPurchasable,
 } = useProductTable()
@@ -28,11 +25,8 @@ const {
     <Datatable
       :headers="productTableHeaders"
       :data="products"
-      :current-page="currentPage"
-      :per-page="perPage"
       :total="total"
       :is-loading="isLoading"
-      :search="search"
     >
       <template #custom-left>
         <V-Field>
