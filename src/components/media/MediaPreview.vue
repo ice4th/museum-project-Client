@@ -67,7 +67,7 @@ const emit = defineEmits(['on-close'])
           <p>
             Last modified:
             <span class="dark-inverted">{{
-              moment(file.lastUpdateModified).format('DD MMM YYYY HH:mm')
+              moment(file.lastModified).format('DD MMM YYYY HH:mm')
             }}</span>
           </p>
           <p>
