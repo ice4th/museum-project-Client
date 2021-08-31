@@ -32,6 +32,8 @@ const selectFile = (item: IFile) => {
   if (selected.value && selected.value?.type !== 'folder') {
     emit('select', item)
     isPreview.value = true
+  } else {
+    isPreview.value = false
   }
 }
 const onUploadFile = async (event: File) => {
