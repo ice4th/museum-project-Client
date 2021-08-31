@@ -246,9 +246,7 @@ const reload = () => {
 </template>
 
 <style lang="scss">
-@import '../../../scss/abstracts/_variables.scss';
-@import '../../../scss/abstracts/_mixins.scss';
-@import '../../../scss/pages/generic/_forms.scss';
+@import 'src/scss/pages/generic/_forms.scss';
 .form-fieldset {
   max-width: 540px;
 }
