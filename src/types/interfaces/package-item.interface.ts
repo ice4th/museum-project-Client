@@ -1,5 +1,3 @@
-import { IPackageInfo } from './package.interface'
-import { ITicketInfo } from './ticket.interface'
 import { TicketType } from '../enums/ticket.enum'
 
 export interface IStudentPackageItems {
@@ -20,4 +18,9 @@ export interface StudentPackageItemResponse {
   inactivePackages: IStudentPackageItems[]
   activePackages: IStudentPackageItems[]
   expirePackages: IStudentPackageItems[]
+}
+
+export interface IRedeemPackageStudent {
+  code: string
+  studentId: number
 }

@@ -2,9 +2,11 @@
 import { ref, computed, watch } from 'vue'
 import type { PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
+import usePaginationRoute from '/@src/composable/use-pagination-route'
 /**
  * @info header example
- * const headers = [
+ * const headers: IDatatableHeader = [
     { key: 'firstname', label: 'First name' },
     { key: 'lastname', label: 'Last name' },
     { key: 'position', label: 'Position', isEnd: true }
@@ -13,7 +15,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 /**
  * @info data example
- * const data = [
+ * const data: IDatatableHeader = [
     { firstname: 'Tina', lastname: 'Bergmann', position: 'Head of Sales' },
     { firstname: 'John', lastname: 'Wistmus', position: 'Senior Executive' },
     { firstname: 'Sam', lastname: 'Watson', position: 'Software Engineer' },
@@ -21,29 +23,23 @@ import { useRoute, useRouter } from 'vue-router'
     { firstname: 'Anders', lastname: 'Jensen', position: 'Accountant' },
   ]
  */
-interface IHeader {
-  key: string
-  label: string
-  isEnd?: Boolean
-  isRaw?: Boolean
-}
 const props = defineProps({
   total: {
     type: Number,
     default: 100,
   },
-  currentPage: {
-    type: Number,
-    default: 1,
-  },
-  perPage: {
-    type: Number,
-    default: 10,
-  },
-  search: {
-    type: String,
-    default: '',
-  },
+  // currentPage: {
+  //   type: Number,
+  //   default: 1,
+  // },
+  // perPage: {
+  //   type: Number,
+  //   default: 10,
+  // },
+  // search: {
+  //   type: String,
+  //   default: '',
+  // },
   canSearchable: {
     type: Boolean,
     default: true,
@@ -53,7 +49,7 @@ const props = defineProps({
     default: 'Filter...',
   },
   headers: {
-    type: Object as PropType<IHeader[]>,
+    type: Object as PropType<IDatatableHeader[]>,
     required: true,
   },
   data: {
@@ -73,12 +69,20 @@ const props = defineProps({
 const isDataOfArray = computed(
   () => props.data.length > 0 && Array.isArray(props.data[0])
 )
+const {
+  currentPage: page,
+  perPage: limit,
+  search: querySearch,
+} = usePaginationRoute()
 const router = useRouter()
 const route = useRoute()
+const currentPage = ref(page || 1)
+const perPage = ref(limit || 10)
+const search = ref(querySearch || '')
 const changePerPage = (value) => {
   const query = {
     ...route.query,
-    perPage: props.perPage,
+    perPage: perPage.value,
   }
 
   router.push({
@@ -100,13 +104,13 @@ const setSearch = () => {
     query: {
       ...route.query,
       page: 1,
-      search: props.search,
+      search: search.value,
     },
   })
 }
 watch(
-  () => props.search.value,
-  () => (props.search.value.length === 0 ? setSearch() : null)
+  () => search.value,
+  () => (search.value.length === 0 ? setSearch() : null)
 )
 </script>
 
@@ -114,8 +118,8 @@ watch(
   <div class="flex-table-wrapper mt-4">
     <!--Custom table toolbar-->
     <div class="flex-table-toolbar">
-      <div v-show="canSearchable" class="left">
-        <V-Field>
+      <div class="left">
+        <V-Field v-show="canSearchable">
           <V-Control icon="feather:search">
             <input
               v-model="search"
@@ -126,6 +130,7 @@ watch(
             />
           </V-Control>
         </V-Field>
+        <slot name="custom-left" />
       </div>
 
       <div class="right">
@@ -141,6 +146,7 @@ watch(
             </div>
           </V-Control>
         </V-Field>
+        <slot name="custom-right" />
       </div>
     </div>
 
@@ -153,22 +159,20 @@ watch(
               v-for="(header, index) in headers"
               :key="`h-${index}`"
               scope="col"
-              :class="{
-                'is-end': header.isEnd,
-              }"
             >
               <span
                 :class="[
-                  header.isEnd &&
-                    'dark-inverted is-flex is-justify-content-flex-end',
+                  header.isEnd && 'is-flex is-justify-content-flex-end',
+                  header.isCenter && 'is-flex is-justify-content-center',
+                  header.customHeaderClass,
                 ]"
               >
                 {{ header.label }}
               </span>
             </th>
             <th v-if="isAction" scope="col" class="is-end">
-              <span class="dark-inverted is-flex is-justify-content-center">
-                Action
+              <span class="dark-inverted is-flex is-justify-content-flex-end">
+                Actions
               </span>
             </th>
           </tr>
@@ -186,13 +190,21 @@ watch(
           <template v-else>
             <tr v-for="(dataList, index) in data" :key="`tb-${index}`">
               <td v-for="(header, i) in headers" :key="`tb-data-${i}`">
-                <span v-if="!$slots[header.key]">{{
-                  parseData(dataList, header.key)
-                }}</span>
-                <slot
-                  :name="header.key"
-                  :value="parseData(dataList, header.key, header.isRaw)"
-                />
+                <span
+                  :class="[
+                    header.isEnd && 'is-flex is-justify-content-flex-end',
+                    header.isCenter && 'is-flex is-justify-content-center',
+                    header.customRowClass,
+                  ]"
+                >
+                  <span v-if="!$slots[header.key]">{{
+                    parseData(dataList, header.key)
+                  }}</span>
+                  <slot
+                    :name="header.key"
+                    :value="parseData(dataList, header.key, header.isRaw)"
+                  />
+                </span>
               </td>
               <td v-if="isAction">
                 <FlexTableDropdown v-if="!$slots.action" />
@@ -236,3 +248,8 @@ watch(
     />
   </div>
 </template>
+<style lang="scss" scoped>
+.table tbody td {
+  vertical-align: initial;
+}
+</style>

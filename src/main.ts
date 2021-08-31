@@ -46,8 +46,6 @@ import './scss/vendors/font-awesome-v5.css'
 import './scss/vendors/line-icons-pro.css'
 import './scss/vendors/prism-coldark-cold.css'
 
-import './scss/main.scss'
-
 /**
  * We create our app and mount it when it is ready
  *

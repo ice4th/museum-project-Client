@@ -4,9 +4,8 @@ import { computed, onBeforeMount, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 import useNotyf from '/@src/composable/useNotyf'
 import type {
-  IStudentInfo,
   IUpdateStudentProfile,
-  StudentInfoResponse,
+  IStudentInfo,
 } from '/@src/types/interfaces/student.interface'
 import sleep from '/@src/utils/sleep'
 import occupationList from '/@src/data/occupation-list.json'
@@ -16,7 +15,7 @@ import _ from 'lodash'
 
 const props = defineProps({
   studentInfo: {
-    type: Object as PropType<StudentInfoResponse>,
+    type: Object as PropType<IStudentInfo>,
     required: true,
   },
   validation: {
@@ -35,7 +34,7 @@ const isScrolling = computed(() => {
 
 const isEditMode = ref(false)
 const isLoading = ref(false)
-const internalStudentInfo = ref<StudentInfoResponse | undefined>(undefined)
+const internalStudentInfo = ref<IStudentInfo | undefined>(undefined)
 const internalValidation = ref(props.validation)
 
 watch(

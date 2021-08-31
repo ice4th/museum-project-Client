@@ -1,14 +1,17 @@
-import { checkResponseStatus } from '.'
-import useApi, { ApiResponse } from '../useApi'
+import useApi, { apiHandleError, ApiResponse } from '../useApi'
+import useUserSession from '../useUserSession'
 import {
   IPaginationParams,
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
-import { StudentPackageItemResponse } from '/@src/types/interfaces/package-item.interface'
+import {
+  IRedeemPackageStudent,
+  StudentPackageItemResponse,
+} from '/@src/types/interfaces/package-item.interface'
 import {
   IStudentList,
   IUpdateStudentProfile,
-  StudentInfoResponse,
+  IStudentInfo,
 } from '/@src/types/interfaces/student.interface'
 import {
   IAddTicketStudent,
@@ -16,35 +19,38 @@ import {
   IExpireTicketStudent,
   IDeleteTicketPayload,
 } from '/@src/types/interfaces/ticket.interface'
-
+interface LoginAsStudentResponse {
+  link: string
+}
 export default function useStudentApi() {
   const api = useApi()
+  const { catchReponse } = apiHandleError()
+  const { user: adminProfile } = useUserSession()
 
   const getStudentInfoById = async (
     studentId: number
-  ): Promise<StudentInfoResponse | null> => {
-    const res = await api.get<StudentInfoResponse>(
+  ): Promise<IStudentInfo | undefined> => {
+    const res = await api.get<IStudentInfo, ApiResponse>(
       `/Students/Info/${studentId}`
     )
-    return checkResponseStatus(res)
+    return catchReponse(res)
   }
 
   const getAllStudents = async (
-    params: IPaginationParams,
-    search?: string
+    params: IPaginationParams
   ): Promise<IPaginationResponse<IStudentList[]>> => {
-    const res = await api.get<IPaginationResponse<IStudentList[]>>(
+    const res = await api.get<IPaginationResponse<IStudentList[]>, ApiResponse>(
       `/Students/Info/All`,
-      { params: { ...params, search } }
+      { params: { ...params } }
     )
-    return checkResponseStatus(res)
+    return catchReponse(res)
   }
 
   const updateStudentInfoById = async (
     studentId: number,
     payload: IUpdateStudentProfile
   ) => {
-    const res = await api.put<StudentInfoResponse, ApiResponse>(
+    const res = await api.put<IStudentInfo, ApiResponse>(
       `/Students/Info/${studentId}`,
       payload
     )
@@ -54,10 +60,10 @@ export default function useStudentApi() {
   const getStudentPackageItems = async (
     studentId: number
   ): Promise<StudentPackageItemResponse | null> => {
-    const res = await api.get<StudentPackageItemResponse>(
+    const res = await api.get<StudentPackageItemResponse, ApiResponse>(
       `/Students/${studentId}/Packages`
     )
-    return checkResponseStatus(res)
+    return catchReponse(res)
   }
 
   const addNewTicketStudent = async (payload: IAddTicketStudent) => {
@@ -126,6 +132,23 @@ export default function useStudentApi() {
     )
   }
 
+  const redeemPackageByStudentId = async (data: IRedeemPackageStudent) => {
+    const payload = {
+      ...data,
+      urlPath: window.location.href,
+      agent: navigator.userAgent,
+      adminId: adminProfile?.id,
+    }
+    return api.post<any, ApiResponse>(`Redeems/Activate`, payload)
+  }
+
+  const loginByStudentId = async (studentId: number) => {
+    return api.post<
+      LoginAsStudentResponse,
+      ApiResponse<LoginAsStudentResponse>
+    >(`Students/${studentId}/LoginAsStudent`)
+  }
+
   return {
     getStudentInfoById,
     getAllStudents,
@@ -139,5 +162,7 @@ export default function useStudentApi() {
     sendPackageToAnotherStudent,
     changePackage,
     deletePackageByPackageItem,
+    redeemPackageByStudentId,
+    loginByStudentId,
   }
 }

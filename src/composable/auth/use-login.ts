@@ -1,5 +1,5 @@
 /**
- * useRegister Composition API
+ * useLogin Composition API
  */
 import { reactive, ref, toRefs } from 'vue'
 import { Notyf } from 'notyf'

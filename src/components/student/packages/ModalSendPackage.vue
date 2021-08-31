@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // ModalSendPackage Component
-import { onBeforeMount, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import type { PropType } from 'vue'
 import type { StudentOption } from '/@src/types/interfaces/option.interface'
 import useOptionApi from '/@src/composable/api/useOptionApi'
@@ -15,13 +15,20 @@ const props = defineProps({
     default: '',
   },
 })
-const { getStudents } = useOptionApi()
-const studentList = ref<StudentOption[]>([])
+const isLoading = ref(true)
 const student = ref(undefined)
-onBeforeMount(async () => {
-  studentList.value = await getStudents()
-})
+const { getStudents, studentOptions } = useOptionApi()
 const emit = defineEmits(['toggle-close', 'on-change'])
+const searchStudent = async (value: string) => {
+  isLoading.value = true
+  await getStudents(value)
+  isLoading.value = false
+}
+onMounted(async () => {
+  isLoading.value = true
+  await getStudents()
+  isLoading.value = false
+})
 </script>
 
 <template>
@@ -38,10 +45,11 @@ const emit = defineEmits(['toggle-close', 'on-change'])
           <Multiselect
             v-model="student"
             placeholder="Select student for send package"
-            :options="studentList"
+            :options="studentOptions"
             :searchable="true"
             track-by="id"
             value-prop="id"
+            @search-change="searchStudent"
           >
             <template #singlelabel="{ value }">
               <div class="multiselect-single-label">
@@ -70,6 +78,6 @@ const emit = defineEmits(['toggle-close', 'on-change'])
 </template>
 <style lang="scss" scoped>
 .v-modal .modal-content .modal-card .modal-card-body .modal-form {
-  height: 350px;
+  height: 150px;
 }
 </style>

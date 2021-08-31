@@ -1,22 +1,19 @@
 /**
  * useRegister Composition API
  */
-import { reactive, ref, toRefs } from 'vue'
+import { onMounted, reactive, ref, toRefs } from 'vue'
 import { ICreateAdminUser } from '/@src/types/interfaces/auth.interface'
 import { Notyf } from 'notyf'
-import { themeColors } from '/@src/utils/themeColors'
 import useAuthApi from '../api/useAuthApi'
-import { checkResponseStatus } from '../api'
+import { isSuccess } from '../api'
+import useOptionApi from '../api/useOptionApi'
+import { AdminCountry } from '/@src/types/enums/admin.enum'
+import { errMessage } from '/@src/helpers/filter.helper'
+import { toFormat } from '/@src/helpers/date.helper'
 
 interface UseRegisterState {
-  name: string
-  email: string
-  password: string
+  newUser: ICreateAdminUser
   confirmPassword: string
-  firstname: string
-  lastname: string
-  phone: string
-  dob?: string
   validation: object
 }
 export default function useRegister() {
@@ -29,38 +26,38 @@ export default function useRegister() {
   })
   const isLoading = ref(false)
   const state = reactive<UseRegisterState>({
-    name: '',
-    email: '',
-    password: '',
     confirmPassword: '',
-    firstname: '',
-    lastname: '',
-    phone: '',
-    dob: undefined,
+    newUser: {
+      name: '',
+      email: '',
+      password: '',
+      firstname: '',
+      lastname: '',
+      phone: '',
+      dob: toFormat(undefined, 'YYYY-MM-DD'),
+      country: AdminCountry.TH,
+      teamId: 0,
+    },
     validation: {},
   })
 
   const { registerAdmin } = useAuthApi()
+  const { getTeams, teamOptions } = useOptionApi()
   const register = async () => {
-    const { name, email, password, firstname, lastname, phone, dob } = state
-    const payload = {
-      name,
-      email,
-      password,
-      firstname,
-      lastname,
-      phone,
-      dob,
-    } as ICreateAdminUser
     isLoading.value = true
-    const res = await registerAdmin(payload)
+    const res = await registerAdmin(state.newUser)
     isLoading.value = false
-    if (checkResponseStatus(res)) return true
+    if (isSuccess(res)) return true
     if (typeof res?.message === 'object') {
       state.validation = res.message
+      return
     }
-    notyf.error(res?.message || 'Fail! Please try again')
+    notyf.error(errMessage(res.message) || 'Fail! Please try again')
   }
 
-  return { ...toRefs(state), isLoading, register }
+  onMounted(() => {
+    getTeams()
+  })
+
+  return { ...toRefs(state), teamOptions, isLoading, register }
 }

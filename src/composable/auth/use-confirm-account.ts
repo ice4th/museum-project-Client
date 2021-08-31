@@ -2,28 +2,26 @@
  * useConfirmAccount Composition API
  */
 import { onMounted, ref } from 'vue'
-import { Notyf } from 'notyf'
 import { useRoute } from 'vue-router'
 import useAuthApi from '../api/useAuthApi'
 import { errMessage } from '/@src/helpers/filter.helper'
+import { IUserInfo } from '/@src/types/interfaces/admin.interface'
 export default function useConfirmAccount() {
-  const notyf = new Notyf({
-    duration: 2000,
-    position: {
-      x: 'center',
-      y: 'top',
-    },
-  })
   const route = useRoute()
   const isLoading = ref(false)
   const messageError = ref('')
-  const { activeAccount } = useAuthApi()
+  const myProfile = ref<IUserInfo | undefined>(undefined)
+  const { activeAccount, getMyAdminInfo } = useAuthApi()
   const activateAccount = async () => {
     isLoading.value = true
     const token = route.query.token as string
     const { status, message } = await activeAccount(token)
     isLoading.value = false
-    if (status === 201) return
+    if (status === 201) {
+      const data = await getMyAdminInfo()
+      myProfile.value = data || undefined
+      return
+    }
     messageError.value = errMessage(message)
   }
 
@@ -31,5 +29,5 @@ export default function useConfirmAccount() {
     activateAccount()
   })
 
-  return { activateAccount, isLoading, messageError }
+  return { activateAccount, isLoading, messageError, myProfile }
 }

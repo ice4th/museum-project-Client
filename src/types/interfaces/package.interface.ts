@@ -1,5 +1,6 @@
 import {
   GenerateTicket,
+  PackageType,
   PrivateSlot,
   Purchasable,
   StatusPackage,
@@ -41,6 +42,53 @@ export interface IPackageInfo {
   createdAt?: string
   updatedAt?: string
   product?: IProduct
+}
+
+export interface ICurriculumInfo {
+  id: number
+  name: string
+  internalName: string
+  type: string
+  detail: string
+  lesson: number
+  level: string
+  used: number
+  coachMaterial: string
+  studentMaterial: string
+}
+
+export interface IPackageDetail {
+  id: number
+  packageName: string
+  packageNameInternal?: string
+  detail: string
+  nameInternal: string
+  comment: string
+  accessLevel: string
+  price: number
+  beforeDiscount: number
+  duration: number
+  ticket: number
+  freeTalkTicket: number
+  fmcId: number
+  status: StatusPackage
+  country: string
+  purchasable: Purchasable
+  photo: string
+  curriculumSheet: string
+  type: string
+  engder: string
+  installmentMonth: number
+  groupClassTicket?: number
+  masterClassTicket?: number
+  curriculumId: number
+  cefrLevel?: string
+  globishLevel: string
+  featureGroupId?: number
+  privateSlot: PrivateSlot
+  courseId: number
+  curriculumInfo: ICurriculumInfo
+  productInfo: IProduct
 }
 
 export interface IPackageTableInfo {
@@ -91,6 +139,27 @@ export interface TPackageInfo {
   courseId: number
 }
 
+export interface IPackageAddonDetail {
+  id: number
+  packageId: number
+  packageName: string
+  type: PackageType
+  purchasable: Purchasable
+  duration: number
+  price: number
+}
+export interface IPackageGroupTable {
+  id: number
+  packageId: number
+  packageName: string
+  type: PackageType
+  purchasable: Purchasable
+  price: number
+  duration: number
+  generateTicket: GenerateTicket
+  subPackages: IPackageAddonDetail[]
+}
+
 export interface IPackageGroupInfo {
   id: number
   isMainPackage: boolean
@@ -125,7 +194,8 @@ export interface ICreatePackageGroup {
   addonPackages: IUpdateAddonPackage[] // include main package
 }
 
-export interface ICratePackageForm {
+export interface IFormPackageInfo {
+  packageId?: number
   packageName: string
   packageNameInternal?: string
   productId: number
@@ -189,5 +259,8 @@ export interface IUseCratePackageForm {
   featureGroups: any[]
   fmcPackages: any[]
   moocCourses: any[]
-  createPackageForm: ICratePackageForm
+  loadingOptions: boolean
+  loadingPackage: boolean
+  notFoundPackage: boolean
+  formPackageInfo: IFormPackageInfo
 }
