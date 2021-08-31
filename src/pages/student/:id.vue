@@ -10,8 +10,14 @@ pageTitle.value = 'Student Information'
 useHead({
   title: 'Whitehouse: Student',
 })
-const { fetchStudentInfoById, studentInfo, updateStudentProfile, isLoading } =
-  useStudentInfo()
+const {
+  fetchStudentInfoById,
+  studentInfo,
+  updateStudentProfile,
+  isLoading,
+  loginAsStudent,
+  loadingLogin,
+} = useStudentInfo()
 
 const studentName = computed(() => displayStudentFullname(studentInfo?.value))
 const studentFlag = computed(() => {
@@ -49,28 +55,6 @@ onMounted(() => {
                   />
                 </template>
               </V-Block>
-              <!-- <div class="advanced-box">
-                <div v-if="studentInfo">
-                  <V-Field>
-                    <label>Change Country</label>
-                    <V-Control>
-                      <div class="select">
-                        <select
-                          v-model="studentInfo.country"
-                          @change="
-                            updateStudentProfile({
-                              country: $event.target.value,
-                            })
-                          "
-                        >
-                          <option value="th">TH</option>
-                          <option value="vn">VN</option>
-                        </select>
-                      </div>
-                    </V-Control>
-                  </V-Field>
-                </div>
-              </div> -->
 
               <div class="account-menu">
                 <RouterLink
