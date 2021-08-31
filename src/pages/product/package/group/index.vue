@@ -72,6 +72,17 @@ const confirmRemovePackage = () => {
       :data="packages"
       is-action
     >
+      <template #custom-right>
+        <div class="is-flex is-justify-content-flex-end pt-4">
+          <V-Button
+            color="primary"
+            icon="fas fa-plus"
+            :to="{ name: 'product-package-group-create' }"
+          >
+            Add Package
+          </V-Button>
+        </div>
+      </template>
       <template #generateTicket="{ value }">
         <V-Tag
           :color="+value ? 'success' : 'danger'"
@@ -137,7 +148,7 @@ const confirmRemovePackage = () => {
                 class="dropdown-item is-media"
               >
                 <div class="icon">
-                  <i aria-hidden="true" class="lnil lnil-eye"></i>
+                  <i aria-hidden="true" class="lnil lnil-pencil"></i>
                 </div>
                 <div class="meta">
                   <span>Edit</span>

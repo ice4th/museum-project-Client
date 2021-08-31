@@ -2,7 +2,7 @@
 import { useWindowScroll } from '@vueuse/core'
 import { computed, onBeforeUpdate, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import useCreatePackage from '/@src/composable/package/use-create-package'
+import useManagePackageGroup from '/@src/composable/package/use-manage-package-group'
 import useViewPackageGroup from '/@src/composable/package/use-view-package-group'
 
 const route = useRoute()
@@ -24,7 +24,7 @@ const {
   mainPackageId,
   mainSelectedPackage,
   removePackage,
-} = useCreatePackage()
+} = useManagePackageGroup()
 const {
   mainPackage,
   addonPackages: rawAddonPackages,
@@ -72,29 +72,27 @@ const reload = () => {
           >
             <div class="form-header-inner">
               <div class="left">
-                <h3>View/Edit Package Group</h3>
+                <h3>Package Group Details</h3>
               </div>
               <div class="right">
-                <div v-if="showUpdate" class="buttons">
+                <div class="buttons">
                   <V-Button
                     icon="lnir lnir-arrow-left rem-100"
                     light
                     dark-outlined
-                    @click="reload"
+                    :to="{ name: 'product-package-group' }"
                   >
-                    Cancel
+                    Back
                   </V-Button>
                   <V-Button
+                    icon="lnir lnir-pencil rem-100"
                     color="primary"
-                    raised
-                    :disabled="isUpdating"
-                    @click="updatePackage(addonPackages, mainPackageId)"
+                    dark-outlined
+                    :to="{
+                      name: 'product-package-group-:packageid-edit',
+                      params: { ...$route.params },
+                    }"
                   >
-                    Update
-                  </V-Button>
-                </div>
-                <div v-else class="buttons">
-                  <V-Button color="primary" raised @click="showUpdate = true">
                     Edit
                   </V-Button>
                 </div>
@@ -105,9 +103,7 @@ const reload = () => {
             <div v-if="addonPackages.length" class="form-section is-grey">
               <VueDraggable
                 v-model="addonPackages"
-                :disabled="
-                  !showUpdate || showMainPackageSection || showAddonSection
-                "
+                :disabled="true"
                 item-key="packageId"
                 class="list-group"
                 ghost-class="ghost"

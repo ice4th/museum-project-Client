@@ -1,48 +1,42 @@
 <script setup lang="ts">
 import { useWindowScroll } from '@vueuse/core'
-import { computed, onBeforeUpdate, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed, reactive, ref } from 'vue'
+import { useHead } from '@vueuse/head'
+import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import useManagePackageGroup from '/@src/composable/package/use-manage-package-group'
-import useViewPackageGroup from '/@src/composable/package/use-view-package-group'
+import useFormPackageInfo from '/@src/composable/package/use-form-package-info'
+import { pageTitle } from '/@src/state/sidebarLayoutState'
 
-const route = useRoute()
-const router = useRouter()
-const showUpdate = ref(true)
+pageTitle.value = 'Package Group Management'
 
+useHead({
+  title: 'Whitehouse Group Package',
+})
+
+const showDependOnSelector = ref(false)
 const {
-  packages,
-  addMainPackage,
-  addAddonPackage,
   addonPackages,
+  addMainPackage,
   currentAddonPackage,
+  createPackageGroup,
+  dependOnPackageList,
   displayPackageNameById,
   displayPackageImageById,
-  toggleShowAddonPackageSection,
-  toggleShowMainPackageSection,
-  showMainPackageSection,
-  showAddonSection,
+  isLoadingPackages,
   mainPackageId,
   mainSelectedPackage,
+  packages,
+  addAddonPackage,
+  showAddonSection,
   removePackage,
+  showMainPackageSection,
+  toggleShowAddonPackageSection,
+  toggleShowMainPackageSection,
 } = useManagePackageGroup()
-const {
-  mainPackage,
-  addonPackages: rawAddonPackages,
-  isLoading,
-  updatePackage,
-  isUpdating,
-} = useViewPackageGroup()
-onBeforeUpdate(() => {
-  showMainPackageSection.value = false
-  addonPackages.value = rawAddonPackages.value
-  if (mainSelectedPackage) {
-    mainSelectedPackage.value = mainPackage?.value
-    mainPackageId.value = mainPackage?.value?.packageId || 0
-  }
-})
+
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
-  return y.value > 50
+  return y.value > 30
 })
 
 const swapOrderIndex = () => {
@@ -50,10 +44,8 @@ const swapOrderIndex = () => {
     return { ...addon, idx: index + 1 }
   })
 }
-const reload = () => {
-  router.go(0)
-}
 </script>
+
 <template>
   <div class="page-content-inner">
     <!-- create group package -->
@@ -63,7 +55,7 @@ const reload = () => {
         lighter
         grey
         translucent
-        :active="isLoading || isUpdating"
+        :active="isLoadingPackages"
       >
         <div class="form-outer">
           <div
@@ -72,37 +64,32 @@ const reload = () => {
           >
             <div class="form-header-inner">
               <div class="left">
-                <h3>View/Edit Package Group</h3>
+                <h3>Create Package Group</h3>
               </div>
               <div class="right">
-                <div v-if="showUpdate" class="buttons">
+                <div class="buttons">
                   <V-Button
                     icon="lnir lnir-arrow-left rem-100"
                     light
                     dark-outlined
-                    @click="reload"
                   >
                     Cancel
                   </V-Button>
-                  <V-Button
-                    color="primary"
-                    raised
-                    :disabled="isUpdating"
-                    @click="updatePackage(addonPackages, mainPackageId)"
-                  >
-                    Update
+                  <V-Button color="primary" raised @click="createPackageGroup">
+                    Create
                   </V-Button>
                 </div>
               </div>
             </div>
           </div>
           <div class="form-body">
-            <div v-if="addonPackages.length" class="form-section is-grey">
+            <div
+              v-show="addonPackages.length && !showMainPackageSection"
+              class="form-section is-grey"
+            >
               <VueDraggable
                 v-model="addonPackages"
-                :disabled="
-                  !showUpdate || showMainPackageSection || showAddonSection
-                "
+                :disabled="showMainPackageSection || showAddonSection"
                 item-key="packageId"
                 class="list-group"
                 ghost-class="ghost"
@@ -132,10 +119,7 @@ const reload = () => {
                         <i class="iconify" data-icon="feather:flag"></i>
                       </V-IconBox>
                       <template
-                        v-if="
-                          showUpdate &&
-                          !(showMainPackageSection || showAddonSection)
-                        "
+                        v-if="!(showMainPackageSection || showAddonSection)"
                       >
                         <V-Button
                           v-if="addon.packageId === mainPackageId"
@@ -210,7 +194,7 @@ const reload = () => {
                   </V-CardAction>
                 </template>
               </VueDraggable>
-              <div v-if="showUpdate" class="p-3 right">
+              <div class="p-3 right">
                 <V-Button @click="toggleShowAddonPackageSection"
                   >Add addon package</V-Button
                 >
@@ -236,15 +220,76 @@ const reload = () => {
           </div>
         </div>
       </V-Loader>
+      <!-- <V-Tabs
+        selected="package"
+        :tabs="[
+          { label: 'Package', value: 'package' },
+          { label: 'Package Group', value: 'package-group' },
+        ]"
+      >
+        <template #tab="{ activeValue }">
+          <div v-if="activeValue === 'package'">
+            <V-Loader
+              size="small"
+              lighter
+              grey
+              translucent
+              :active="isLoadingPackages"
+            >
+              <div class="form-outer">
+                <div
+                  :class="[isStuck && 'is-stuck']"
+                  class="form-header stuck-header"
+                >
+                  <div class="form-header-inner">
+                    <div class="left"><h3>Create Package</h3></div>
+                    <div class="right">
+                      <div class="buttons">
+                        <V-Button
+                          :to="{ name: 'product-package' }"
+                          icon="lnir lnir-arrow-left rem-100"
+                          dark-outlined
+                          light
+                        >
+                          Back
+                        </V-Button>
+                        <V-Button
+                          icon="lnir lnir-checkmark rem-100"
+                          color="primary"
+                          raised
+                          :disabled="disabledDone"
+                          @click="savePackage"
+                        >
+                          Done
+                        </V-Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-body">
+                  <FormPackageInfo
+                    :form-package-info="formPackageInfo"
+                    :feature-groups="featureGroups"
+                    :mooc-courses="moocCourses"
+                    :fmc-packages="fmcPackages"
+                    :curriculums="curriculums"
+                    :products="products"
+                  />
+                </div>
+              </div>
+            </V-Loader>
+          </div>
+          <div v-else-if="activeValue === 'package-group'">
+            
+          </div>
+        </template>
+      </V-Tabs> -->
     </div>
   </div>
 </template>
 
 <style lang="scss">
 @import 'src/scss/pages/generic/_forms.scss';
-.form-fieldset {
-  max-width: 540px;
-}
 .button-submit {
   text-align: end;
 }

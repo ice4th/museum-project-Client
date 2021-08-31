@@ -37,7 +37,11 @@ const {
     >
       <template #custom-right>
         <div class="is-flex is-justify-content-flex-end pt-4">
-          <V-Button color="primary" icon="fas fa-plus" to="create-package">
+          <V-Button
+            color="primary"
+            icon="fas fa-plus"
+            :to="{ name: 'product-package-create' }"
+          >
             Add Package
           </V-Button>
         </div>
