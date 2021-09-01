@@ -17,7 +17,7 @@ const submit = (ev) => {
   <V-Modal
     :open="open"
     title="File Manager"
-    size="medium"
+    size="big"
     actions="right"
     @close="emit('close')"
   >

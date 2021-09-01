@@ -239,7 +239,6 @@ const {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     box-sizing: border-box;
 
     & > * {

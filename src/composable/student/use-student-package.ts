@@ -1,5 +1,5 @@
-import { onMounted, reactive, toRefs } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted, reactive, toRefs } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 import {
   IAddTicketStudent,
@@ -36,7 +36,9 @@ export default function useStudentPackageItem() {
     currentTicketType: undefined,
   })
   const route = useRoute()
+  const router = useRouter()
   const notyf = useNotyf()
+  const studentId = computed(() => +route.params.id)
 
   const {
     getStudentPackageItems,
@@ -48,6 +50,7 @@ export default function useStudentPackageItem() {
     sendPackageToAnotherStudent,
     changePackage,
     deletePackageByPackageItem,
+    redeemPackageByStudentId,
   } = useStudentApi()
 
   const notyfError = (message: any) => {
@@ -60,8 +63,7 @@ export default function useStudentPackageItem() {
 
   const fetchStudentPackages = async () => {
     state.isLoading = true
-    const studentId = route.params.id as string
-    const data = await getStudentPackageItems(+studentId)
+    const data = await getStudentPackageItems(studentId.value)
     state.isLoading = false
     if (data) {
       state.packageItems = data
@@ -69,12 +71,11 @@ export default function useStudentPackageItem() {
   }
 
   const addTicketStudent = async (payload: IAddTicketStudent) => {
-    const studentId = route.params.id as string
     const { status, message } = await addNewTicketStudent({
       ...payload,
       packageItemId:
         state.currentPackageItem?.packageItemId || payload.packageItemId,
-      studentId: +studentId,
+      studentId: studentId.value,
     })
     if (status === 201) {
       notyf.success('Adding ticket(s) completed!')
@@ -144,11 +145,11 @@ export default function useStudentPackageItem() {
     }
   }
 
-  const sendPackage = async (studentId: number) => {
+  const sendPackage = async (newstudentId: number) => {
     if (!state.currentPackageItem) return
     const { status, message } = await sendPackageToAnotherStudent(
       state.currentPackageItem.packageItemId,
-      studentId
+      newstudentId
     )
     if (status === 201) {
       notyf.success('Send package is completed!')
@@ -185,6 +186,19 @@ export default function useStudentPackageItem() {
       notyfError(message)
     }
   }
+  const redeemPackage = async (code: string) => {
+    const { status, message } = await redeemPackageByStudentId({
+      code,
+      studentId: studentId.value,
+    })
+    if (status === 201) {
+      notyf.success('Redeem Package Success!')
+      await fetchStudentPackages()
+      return status === 201
+    } else {
+      notyfError(message)
+    }
+  }
   onMounted(() => {
     Promise.all([fetchStudentPackages()])
   })
@@ -199,5 +213,6 @@ export default function useStudentPackageItem() {
     sendPackage,
     changeToNewPackage,
     removePackage,
+    redeemPackage,
   }
 }
