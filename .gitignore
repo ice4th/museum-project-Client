@@ -125,3 +125,6 @@ cypress/videos
 
 # sonarqube
 .scannerwork
+
+*.DS_Store
+.DS_Store
