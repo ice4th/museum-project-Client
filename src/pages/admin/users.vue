@@ -102,13 +102,9 @@ const confirmChangeCountry = async () => {
     <Datatable
       :is-loading="isLoading"
       search-placeholder="search by id, name, phone, email"
-      :search="search"
       :headers="headers"
       :data="data"
-      :current-page="currentPage"
-      :per-page="perPage"
       :total="total"
-      :total-page="totalPage"
     >
       <template #custom-left>
         <div>

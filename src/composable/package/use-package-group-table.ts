@@ -2,17 +2,23 @@
  * usePackageTable Composition API
  */
 
-import { computed, onMounted, reactive, toRefs } from 'vue'
+import { onMounted, reactive, toRefs } from 'vue'
 import usePackageApi from '../api/usePackageApi'
+import usePaginationRoute from '../use-pagination-route'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
-import { IPackageGroupInfo } from '/@src/types/interfaces/package.interface'
+import { IDatatableHeader } from '/@src/types/interfaces/component.interface'
+import {
+  IPackageGroupInfo,
+  IPackageGroupTable,
+} from '/@src/types/interfaces/package.interface'
 
 interface UsePackageTableState {
   isLoading: boolean
-  packages: IPackageGroupInfo[]
+  packages: IPackageGroupTable[]
   currentViewMainPackageId: number
   addonPackages: IPackageGroupInfo[]
+  total: number
 }
 export default function usePackageGroupTable() {
   const state = reactive<UsePackageTableState>({
@@ -20,7 +26,10 @@ export default function usePackageGroupTable() {
     packages: [],
     currentViewMainPackageId: 0,
     addonPackages: [],
+    total: 1,
   })
+
+  const { currentPage, perPage, search } = usePaginationRoute()
   const {
     getAllPackagesGroup,
     getAddonPackageByMainPackageId,
@@ -28,43 +37,23 @@ export default function usePackageGroupTable() {
   } = usePackageApi()
   const fetchAllPackages = async () => {
     state.isLoading = true
-    const data = await getAllPackagesGroup()
+    const data = await getAllPackagesGroup({ currentPage, perPage, search })
     state.isLoading = false
-    state.packages = data
+    state.packages = data.data
+    state.total = data.total
   }
   const noty = useNotyf()
 
-  const packageTableHeaders = [
-    { key: 'packageId', label: 'Package ID' },
-    { key: 'packageInfo.packageName', label: 'Package Name' },
-    { key: 'packageInfo.type', label: 'Type' },
-    { key: 'packageInfo.purchasable', label: 'Purchasable' },
-    { key: 'packageInfo.price', label: 'Price' },
-    { key: 'packageInfo.duration', label: 'Duration' },
+  const packageTableHeaders: IDatatableHeader[] = [
+    { key: 'packageId', label: 'Main ID' },
+    { key: 'packageName', label: 'Package Name' },
+    { key: 'generateTicket', label: 'Generate Ticket? (Main)', isCenter: true },
+    { key: 'subPackages', label: 'Sub Packages' },
+    { key: 'type', label: 'Type', isCenter: true },
+    { key: 'purchasable', label: 'Purchasable', isCenter: true },
+    { key: 'price', label: 'Price', isCenter: true },
+    { key: 'duration', label: 'Duration', isCenter: true },
   ]
-
-  const packageTableFormat = computed(() => {
-    //heading  ['id', 'Name', 'Type', 'Purchasable', 'Price', 'Duration']
-    return state.packages.map((pk) => [
-      pk.packageId,
-      pk.packageInfo.packageName,
-      pk.packageInfo.type,
-      pk.packageInfo.purchasable,
-      pk.packageInfo.price,
-      pk.packageInfo.duration,
-    ])
-  })
-  const optionsTable = computed(() => {
-    return {
-      // searchable: true,
-      // sortable: true,
-      // perPageSelect: true,
-      data: {
-        headings: ['id', 'Name', 'Type', 'Purchasable', 'Price', 'Duration'],
-        data: packageTableFormat.value,
-      },
-    }
-  })
 
   const viewAddonPackage = async (packageId: number) => {
     const data = await getAddonPackageByMainPackageId(packageId)
@@ -92,8 +81,6 @@ export default function usePackageGroupTable() {
 
   return {
     ...toRefs(state),
-    packageTableFormat,
-    optionsTable,
     viewAddonPackage,
     removePackageGroup,
     packageTableHeaders,

@@ -7,6 +7,7 @@ import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import useOptionApi from '../api/useOptionApi'
 import useRedeemApi from '../api/useRedeemApi'
+import usePaginationRoute from '../use-pagination-route'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { RedeemType } from '/@src/types/enums/redeem.enum'
@@ -21,9 +22,6 @@ import {
 
 interface UseRedeemTableState {
   data: IRedeemDetail[]
-  currentPage: number
-  totalPage: number
-  perPage: number
   total: number
   currentRedeemId?: number
   redeemDetail: IRedeemDetail[]
@@ -36,10 +34,7 @@ interface UseRedeemTableState {
 export default function useRedeemTable() {
   const state = reactive<UseRedeemTableState>({
     data: [],
-    currentPage: 1,
-    perPage: 10,
-    totalPage: 1,
-    total: 1,
+    total: 0,
     currentRedeemId: undefined,
     redeemDetail: [],
     createNewRedeem: {
@@ -55,31 +50,23 @@ export default function useRedeemTable() {
     partners: [],
     isLoading: false,
   })
-  const route = useRoute()
   const router = useRouter()
   const notyf = useNotyf()
+  const { currentPage, perPage, search } = usePaginationRoute()
   const { getPackages, getPartners } = useOptionApi()
   const redeemApi = useRedeemApi()
 
   const fetchAllRedeem = async () => {
     state.isLoading = true
-    const perPage = route.query.perPage as string
-    const page = route.query.page as string
-    if (route.query.currentPage) {
-      state.currentPage = +page
-    }
-    if (route.query.perPage) {
-      state.perPage = +perPage
-    }
     const data = await redeemApi.getAllRedeems({
-      currentPage: state.currentPage,
-      perPage: state.perPage,
+      currentPage,
+      perPage,
+      search,
     })
     state.isLoading = false
     if (data.total) {
       state.data = data.data
       state.total = data.total
-      state.totalPage = data.totalPage
     }
   }
 
@@ -109,13 +96,6 @@ export default function useRedeemTable() {
   }
 
   onMounted(async () => {
-    const page = route.query.page as string
-    if (page) {
-      state.currentPage = +page
-    }
-    if (route.query.perPage) {
-      state.perPage = +route.query.perPage
-    }
     const today = moment().format('YYYY-MM-DD')
     const todayIso = moment(today).toISOString()
     state.createNewRedeem.ticketStartDate = todayIso

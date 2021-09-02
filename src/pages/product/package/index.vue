@@ -14,9 +14,6 @@ const {
   isLoading,
   packageTableHeaders,
   paginationData,
-  currentPage,
-  perPage,
-  search,
   onViewPackage,
   onEditPackage,
   fetchAllPackages,
@@ -29,15 +26,16 @@ const {
       :is-loading="isLoading"
       :headers="packageTableHeaders"
       :data="paginationData?.data || []"
-      :current-page="currentPage"
-      :total="paginationData?.total"
-      :per-page="perPage"
-      :search="search"
+      :total="paginationData?.total || 0"
       is-action
     >
       <template #custom-right>
         <div class="is-flex is-justify-content-flex-end pt-4">
-          <V-Button color="primary" icon="fas fa-plus" to="create-package">
+          <V-Button
+            color="primary"
+            icon="fas fa-plus"
+            :to="{ name: 'product-package-create' }"
+          >
             Add Package
           </V-Button>
         </div>
