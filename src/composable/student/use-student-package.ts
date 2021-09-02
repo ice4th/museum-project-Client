@@ -2,6 +2,7 @@ import { computed, onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 import {
+  IAddPackageStudent,
   IAddTicketStudent,
   IDeleteTicketPayload,
   IExpireTicketStudent,
@@ -13,7 +14,6 @@ import { TicketType } from '/@src/types/enums/ticket.enum'
 
 interface UseStudentPackageItemState {
   isLoading: Boolean
-  todayIso: string
   packageItems: {
     inactivePackages: IStudentPackageItems[]
     activePackages: IStudentPackageItems[]
@@ -31,7 +31,6 @@ export default function useStudentPackageItem() {
       activePackages: [],
       expirePackages: [],
     },
-    todayIso: '',
     currentPackageItem: undefined,
     currentTicketType: undefined,
   })
@@ -51,6 +50,7 @@ export default function useStudentPackageItem() {
     changePackage,
     deletePackageByPackageItem,
     redeemPackageByStudentId,
+    addPackageItemByStudentId,
   } = useStudentApi()
 
   const notyfError = (message: any) => {
@@ -93,7 +93,7 @@ export default function useStudentPackageItem() {
       startDate,
     })
     if (status === 201) {
-      notyf.success('Activate package is completed!')
+      notyf.success('Activate package completed!')
       return status
     } else {
       notyfError(message)
@@ -110,7 +110,7 @@ export default function useStudentPackageItem() {
         state.currentPackageItem?.packageItemId || payload.packageItemId,
     })
     if (status === 200) {
-      notyf.success('Change expire date is completed!')
+      notyf.success('Change expire date completed!')
       return status
     } else {
       notyfError(message)
@@ -138,7 +138,7 @@ export default function useStudentPackageItem() {
   const changeStartDateTicketStudent = async (payload: IStartTicketStudent) => {
     const { status, message } = await changeStartDateTicket(payload)
     if (status === 200) {
-      notyf.success('Change start date is completed!')
+      notyf.success('Change start date completed!')
       return status
     } else {
       notyfError(message)
@@ -152,7 +152,7 @@ export default function useStudentPackageItem() {
       newstudentId
     )
     if (status === 201) {
-      notyf.success('Send package is completed!')
+      notyf.success('Send package completed!')
       return status
     } else {
       notyfError(message)
@@ -166,7 +166,7 @@ export default function useStudentPackageItem() {
       newPackageId
     )
     if (status === 201) {
-      notyf.success('Change package is completed!')
+      notyf.success('Change package completed!')
       return status
     } else {
       notyfError(message)
@@ -180,12 +180,13 @@ export default function useStudentPackageItem() {
       comment
     )
     if (status === 200) {
-      notyf.success('Remove package is completed!')
+      notyf.success('Remove package completed!')
       return status
     } else {
       notyfError(message)
     }
   }
+
   const redeemPackage = async (code: string) => {
     const { status, message } = await redeemPackageByStudentId({
       code,
@@ -199,9 +200,25 @@ export default function useStudentPackageItem() {
       notyfError(message)
     }
   }
+
+  const addPackage = async (payload: IAddPackageStudent) => {
+    const { status, message } = await addPackageItemByStudentId({
+      ...payload,
+      studentId: studentId.value,
+    })
+    if (status === 201) {
+      notyf.success('Add package completed!')
+      await fetchStudentPackages()
+      return status
+    } else {
+      notyfError(message)
+    }
+  }
+
   onMounted(() => {
     Promise.all([fetchStudentPackages()])
   })
+
   return {
     ...toRefs(state),
     addTicketStudent,
@@ -214,5 +231,6 @@ export default function useStudentPackageItem() {
     changeToNewPackage,
     removePackage,
     redeemPackage,
+    addPackage,
   }
 }
