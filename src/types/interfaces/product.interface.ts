@@ -77,6 +77,7 @@ export interface IUpdateProduct {
   midTestId?: number
   postTestId?: number
 }
+
 export interface IProductDetail {
   id: number
   name: string

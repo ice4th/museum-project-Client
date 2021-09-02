@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  computed,
-  defineAsyncComponent,
-  onMounted,
-  ref,
-  watch,
-  onBeforeMount,
-} from 'vue'
+import { computed, defineAsyncComponent, onMounted, ref, watch } from 'vue'
 import useStudentPackageItemState from '/@src/composable/student/use-student-package'
 import { toFormat } from '/@src/helpers/date.helper'
 import { TicketType } from '/@src/types/enums/ticket.enum'
@@ -16,10 +9,7 @@ import type {
   IDeleteTicketPayload,
   IExpireTicketStudent,
   IStartTicketStudent,
-  IAddPackageStudent,
 } from '/@src/types/interfaces/ticket.interface'
-import type { PackageOption } from '/@src/types/interfaces/option.interface'
-import useOptionApi from '/@src/composable/api/useOptionApi'
 const ModalAddTicket = defineAsyncComponent(
   () => import('/@src/components/student/packages/ModalAddTicket.vue')
 )
@@ -56,10 +46,7 @@ const {
   changeToNewPackage,
   removePackage,
   redeemPackage,
-  addPackage,
 } = useStudentPackageItemState()
-const { getPackages } = useOptionApi()
-
 const customDate = ref(toFormat(undefined, 'YYYY-MM-DD'))
 type modalComponent =
   | 'add-ticket'
@@ -278,31 +265,6 @@ const submitRedeem = async () => {
     toggleRedeemPopup()
   }
 }
-
-const addPackagePayload = ref<IAddPackageStudent>({
-  startDate: toFormat(undefined, 'YYYY-MM-DD'),
-  comment: '',
-  packageId: 0,
-})
-const isOpenAddPackagePopup = ref(false)
-const packagesList = ref<PackageOption[]>([])
-const toggleAddPackagePopup = () => {
-  isOpenAddPackagePopup.value = false
-  addPackagePayload.value = {
-    startDate: toFormat(undefined, 'YYYY-MM-DD'),
-    comment: '',
-    packageId: 0,
-  }
-}
-onBeforeMount(async () => {
-  packagesList.value = await getPackages()
-})
-const submitAddPackage = async () => {
-  const res = await addPackage(addPackagePayload.value)
-  if (res) {
-    toggleAddPackagePopup()
-  }
-}
 </script>
 <template>
   <div v-if="!isLoading">
@@ -321,15 +283,6 @@ const submitAddPackage = async () => {
       @toggle-close="toggleModal"
     ></component>
     <div class="is-flex is-justify-content-flex-end">
-      <V-Button
-        icon="feather:package"
-        color="primary"
-        class="mb-3 mr-5"
-        outlined
-        @click="isOpenAddPackagePopup = true"
-      >
-        Add Package
-      </V-Button>
       <V-Button
         icon="fas fa-plus"
         color="primary"
@@ -365,84 +318,6 @@ const submitAddPackage = async () => {
       </template>
       <template #action>
         <V-Button @click="submitRedeem">Submit</V-Button>
-      </template>
-    </V-Modal>
-    <V-Modal
-      :open="isOpenAddPackagePopup"
-      title="Add Package for this student"
-      size="medium"
-      actions="right"
-      @close="toggleAddPackagePopup"
-    >
-      <template #content>
-        <form class="modal-form">
-          <V-Control>
-            <Multiselect
-              v-model="addPackagePayload.packageId"
-              placeholder="Select a package"
-              :options="packagesList"
-              :searchable="true"
-              track-by="packageName"
-              value-prop="id"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  ({{ value.id }}) {{ value.packageName }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  ({{ option.id }}) {{ option.packageName }}
-                </span>
-              </template>
-            </Multiselect>
-          </V-Control>
-          <v-date-picker
-            v-model="addPackagePayload.startDate"
-            color="orange"
-            :model-config="{
-              type: 'string',
-              mask: 'YYYY-MM-DD',
-            }"
-            :masks="{
-              input: 'DD/MM/YYYY',
-            }"
-            trim-weeks
-            :popover="{ visibility: 'click' }"
-          >
-            <template #default="{ inputValue, inputEvents }">
-              <V-Field>
-                <label>Start Date</label>
-                <V-Control icon="feather:calendar">
-                  <input
-                    class="input"
-                    type="text"
-                    placeholder="Start Date"
-                    :value="inputValue"
-                    required
-                    v-on="inputEvents"
-                  />
-                </V-Control>
-              </V-Field>
-            </template>
-          </v-date-picker>
-          <V-Field>
-            <label>Comment</label>
-            <V-Control>
-              <textarea
-                v-model="addPackagePayload.comment"
-                type="textarea"
-                class="textarea is-primary-focus"
-                rows="2"
-                placeholder="หมายเหตุ"
-                required
-              />
-            </V-Control>
-          </V-Field>
-        </form>
-      </template>
-      <template #action>
-        <V-Button @click="submitAddPackage">Submit</V-Button>
       </template>
     </V-Modal>
     <CollapseContent
@@ -518,8 +393,3 @@ const submitAddPackage = async () => {
     </CollapseContent>
   </div>
 </template>
-<style lang="scss" scoped>
-.v-modal .modal-content .modal-card .modal-card-body .modal-form {
-  height: 350px;
-}
-</style>

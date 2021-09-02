@@ -18,7 +18,6 @@ import {
   IStartTicketStudent,
   IExpireTicketStudent,
   IDeleteTicketPayload,
-  IAddPackageStudent,
 } from '/@src/types/interfaces/ticket.interface'
 interface LoginAsStudentResponse {
   link: string
@@ -150,10 +149,6 @@ export default function useStudentApi() {
     >(`Students/${studentId}/LoginAsStudent`)
   }
 
-  const addPackageItemByStudentId = async (payload: IAddPackageStudent) => {
-    return api.post<any, ApiResponse>(`PackageItems/Add`, payload)
-  }
-
   return {
     getStudentInfoById,
     getAllStudents,
@@ -169,6 +164,5 @@ export default function useStudentApi() {
     deletePackageByPackageItem,
     redeemPackageByStudentId,
     loginByStudentId,
-    addPackageItemByStudentId,
   }
 }
