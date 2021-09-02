@@ -518,3 +518,8 @@ const submitAddPackage = async () => {
     </CollapseContent>
   </div>
 </template>
+<style lang="scss" scoped>
+.v-modal .modal-content .modal-card .modal-card-body .modal-form {
+  height: 350px;
+}
+</style>
