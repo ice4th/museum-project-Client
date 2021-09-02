@@ -46,11 +46,6 @@ export interface IRoleInfo {
   teamId?: number
 }
 
-export interface IDeleteRole {
-  teamId: number
-  roleId: number
-}
-
 export interface ISelectedMenuItem {
   name: string
   icon: string

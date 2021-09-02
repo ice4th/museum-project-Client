@@ -127,21 +127,6 @@ watch(
             <i aria-hidden="true" class="iconify" :data-icon="navItem.icon"></i>
           </a>
         </li>
-
-        <!-- Roles & Permissions -->
-        <li>
-          <RouterLink
-            :to="{ name: 'permission-role' }"
-            :class="[activeMobileSubsidebar === 'permission' && 'is-active']"
-            @click="activeMobileSubsidebar = 'permission'"
-          >
-            <i
-              aria-hidden="true"
-              class="iconify"
-              data-icon="feather:unlock"
-            ></i>
-          </RouterLink>
-        </li>
       </template>
 
       <template #bottom-links>
