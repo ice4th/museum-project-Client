@@ -48,11 +48,11 @@ export default ({ mode }) => {
         },
       ],
     },
-    css: {
-      preprocessorOptions: {
-        scss: { additionalData: `@import "src/scss/main.scss";` },
-      },
-    },
+    // css: {
+    //   preprocessorOptions: {
+    //     scss: { additionalData: `@import "src/scss/main.scss";` },
+    //   },
+    // },
 
     build: {
       sourcemap: process.env.SOURCE_MAP === 'true',
