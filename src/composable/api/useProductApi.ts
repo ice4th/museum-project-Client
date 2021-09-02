@@ -1,9 +1,9 @@
 import useApi, { apiHandleError, ApiResponse } from '../useApi'
 import {
-  IProductDetail,
   IProduct,
   IUpdateProduct,
 } from '/@src/types/interfaces/product.interface'
+import { IProductDetail } from '/@src/types/interfaces/product.interface'
 
 import {
   IPaginationParams,
@@ -37,6 +37,7 @@ export default function useProductApi() {
   const createProduct = (payload: IUpdateProduct) => {
     return api.post<any, ApiResponse>(`Products`, payload)
   }
+
   const updateProduct = (productId: number, payload: IUpdateProduct) => {
     return api.put<IProduct, ApiResponse>(`Products/${productId}`, {
       ...payload,
