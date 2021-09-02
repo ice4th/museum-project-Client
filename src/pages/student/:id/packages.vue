@@ -370,7 +370,7 @@ const submitAddPackage = async () => {
     <V-Modal
       :open="isOpenAddPackagePopup"
       title="Add Package for this student"
-      size="small"
+      size="medium"
       actions="right"
       @close="toggleAddPackagePopup"
     >
