@@ -150,6 +150,10 @@ export default function useStudentApi() {
     >(`Students/${studentId}/LoginAsStudent`)
   }
 
+  const forgotPassword = async (id: number) => {
+    return await api.post<any, ApiResponse>(`Students/${id}/ForgotPassword`)
+  }
+
   return {
     getStudentInfoById,
     getAllStudents,
@@ -165,5 +169,6 @@ export default function useStudentApi() {
     deletePackageByPackageItem,
     redeemPackageByStudentId,
     loginByStudentId,
+    forgotPassword,
   }
 }
