@@ -53,6 +53,15 @@ const emit = defineEmits(['close'])
                 <span>Team Information</span>
               </RouterLink>
             </li>
+            <li>
+              <RouterLink
+                :to="{ name: 'permission-team-create' }"
+                class="is-submenu"
+              >
+                <i class="lnil lnil-books"></i>
+                <span>Create Team</span>
+              </RouterLink>
+            </li>
           </ul>
         </li>
       </ul>
