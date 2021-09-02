@@ -41,7 +41,7 @@ export const productSubsidebarList: SubsideBarItemDetail[] = [
     action: 'VIEW_LIST_OF_PACKAGE',
   },
   {
-    routeName: 'product-create-package',
+    routeName: 'product-package-create',
     label: 'Create Package',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PACKAGE',
@@ -54,7 +54,7 @@ export const productSubsidebarList: SubsideBarItemDetail[] = [
     action: 'VIEW_LIST_OF_PACKAGE',
   },
   {
-    routeName: 'product-create-package',
+    routeName: 'product-package-group-create',
     label: 'Create Package Group',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PACKAGE',

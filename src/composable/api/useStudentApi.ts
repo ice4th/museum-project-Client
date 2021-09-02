@@ -37,12 +37,11 @@ export default function useStudentApi() {
   }
 
   const getAllStudents = async (
-    params: IPaginationParams,
-    search?: string
+    params: IPaginationParams
   ): Promise<IPaginationResponse<IStudentList[]>> => {
     const res = await api.get<IPaginationResponse<IStudentList[]>, ApiResponse>(
       `/Students/Info/All`,
-      { params: { ...params, search } }
+      { params: { ...params } }
     )
     return catchReponse(res)
   }

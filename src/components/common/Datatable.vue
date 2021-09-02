@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import type { PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
+import usePaginationRoute from '/@src/composable/use-pagination-route'
 /**
  * @info header example
  * const headers: IDatatableHeader = [
@@ -26,18 +27,6 @@ const props = defineProps({
   total: {
     type: Number,
     default: 100,
-  },
-  currentPage: {
-    type: Number,
-    default: 1,
-  },
-  perPage: {
-    type: Number,
-    default: 10,
-  },
-  search: {
-    type: String,
-    default: '',
   },
   canSearchable: {
     type: Boolean,
@@ -63,17 +52,40 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  customPerPageOption: {
+    type: Array,
+    default: () => [10, 25, 50, 100],
+  },
 })
+/**
+ * Router
+ */
+const {
+  currentPage: page,
+  perPage: limit,
+  search: querySearch,
+} = usePaginationRoute()
+const router = useRouter()
+const route = useRoute()
+
+/**
+ * State
+ */
+const currentPage = ref(page || 1)
+const perPage = ref(limit || 10)
+const search = ref(querySearch || '')
+
+/**
+ * Methods
+ */
 
 const isDataOfArray = computed(
   () => props.data.length > 0 && Array.isArray(props.data[0])
 )
-const router = useRouter()
-const route = useRoute()
 const changePerPage = (value) => {
   const query = {
     ...route.query,
-    perPage: props.perPage,
+    perPage: perPage.value,
   }
 
   router.push({
@@ -95,13 +107,13 @@ const setSearch = () => {
     query: {
       ...route.query,
       page: 1,
-      search: props.search,
+      search: search.value,
     },
   })
 }
 watch(
-  () => props.search.value,
-  () => (props.search.value.length === 0 ? setSearch() : null)
+  () => search.value,
+  () => (search.value.length === 0 ? setSearch() : null)
 )
 </script>
 
@@ -129,10 +141,13 @@ watch(
           <V-Control>
             <div class="select is-rounded">
               <select v-model="perPage" @update:model-value="changePerPage">
-                <option :value="10">10 results per page</option>
-                <option :value="25">25 results per page</option>
-                <option :value="50">50 results per page</option>
-                <option :value="100">100 results per page</option>
+                <option
+                  v-for="pageNum in customPerPageOption"
+                  :key="`op-page-${pageNum}`"
+                  :value="pageNum"
+                >
+                  {{ pageNum }} results per page
+                </option>
               </select>
             </div>
           </V-Control>
@@ -239,3 +254,8 @@ watch(
     />
   </div>
 </template>
+<style lang="scss" scoped>
+.table tbody td {
+  vertical-align: initial;
+}
+</style>

@@ -11,8 +11,6 @@ useHead({
   title: 'Whitehouse: Code',
 })
 const {
-  currentPage,
-  perPage,
   total,
   data,
   fetchRedeemById,
@@ -301,8 +299,6 @@ const tableOptions = computed(() => {
     <Datatable
       :headers="redeemTableHeaders"
       :data="data"
-      :current-page="currentPage"
-      :per-page="perPage"
       :total="total"
       :is-loading="isLoading"
       is-action
