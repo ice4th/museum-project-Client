@@ -154,6 +154,10 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>(`PackageItems/Add`, payload)
   }
 
+  const forgotPassword = async (id: number) => {
+    return await api.post<any, ApiResponse>(`Students/${id}/ForgotPassword`)
+  }
+
   return {
     getStudentInfoById,
     getAllStudents,
@@ -170,5 +174,6 @@ export default function useStudentApi() {
     redeemPackageByStudentId,
     loginByStudentId,
     addPackageItemByStudentId,
+    forgotPassword,
   }
 }
