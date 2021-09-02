@@ -372,7 +372,6 @@ const submitAddPackage = async () => {
       title="Add Package for this student"
       size="medium"
       actions="right"
-      class="addpackage"
       @close="toggleAddPackagePopup"
     >
       <template #content>
