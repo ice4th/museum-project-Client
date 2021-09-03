@@ -16,7 +16,6 @@ import { TicketType } from '/@src/types/enums/ticket.enum'
 
 interface UseStudentPackageItemState {
   isLoading: Boolean
-  todayIso: string
   packageItems: {
     inactivePackages: IStudentPackageItems[]
     activePackages: IStudentPackageItems[]
@@ -34,7 +33,6 @@ export default function useStudentPackageItem() {
       activePackages: [],
       expirePackages: [],
     },
-    todayIso: '',
     currentPackageItem: undefined,
     currentTicketType: undefined,
   })
