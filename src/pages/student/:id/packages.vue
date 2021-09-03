@@ -3,9 +3,9 @@ import {
   computed,
   defineAsyncComponent,
   onMounted,
+  onBeforeMount,
   ref,
   watch,
-  onBeforeMount,
 } from 'vue'
 import useStudentPackageItemState from '/@src/composable/student/use-student-package'
 import { toFormat } from '/@src/helpers/date.helper'
@@ -16,7 +16,6 @@ import type {
   IDeleteTicketPayload,
   IExpireTicketStudent,
   IStartTicketStudent,
-  IAddPackageStudent,
 } from '/@src/types/interfaces/ticket.interface'
 import type { PackageOption } from '/@src/types/interfaces/option.interface'
 import useOptionApi from '/@src/composable/api/useOptionApi'
@@ -59,7 +58,6 @@ const {
   addPackage,
 } = useStudentPackageItemState()
 const { getPackages } = useOptionApi()
-
 const customDate = ref(toFormat(undefined, 'YYYY-MM-DD'))
 type modalComponent =
   | 'add-ticket'
@@ -518,6 +516,7 @@ const submitAddPackage = async () => {
     </CollapseContent>
   </div>
 </template>
+
 <style lang="scss" scoped>
 .v-modal .modal-content .modal-card .modal-card-body .modal-form {
   height: 350px;

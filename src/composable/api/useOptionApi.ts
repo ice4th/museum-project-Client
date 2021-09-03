@@ -113,7 +113,6 @@ export default function useOptionApi() {
     state.quizOptions = checkResponseStatus(res) || []
     return state.quizOptions
   }
-
   return {
     ...toRefs(state),
     getProducts,

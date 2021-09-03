@@ -41,10 +41,3 @@ export interface IDeleteTicketPayload {
   type: TicketType
   comment: string
 }
-
-export interface IAddPackageStudent {
-  comment: string
-  packageId: number
-  studentId?: number
-  startDate?: string | null
-}
