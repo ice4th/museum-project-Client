@@ -95,7 +95,7 @@ export default function useStudentPackageItem() {
       startDate,
     })
     if (status === 201) {
-      notyf.success('Activate package is completed!')
+      notyf.success('Activate package completed!')
       return status
     } else {
       notyfError(message)
@@ -112,7 +112,7 @@ export default function useStudentPackageItem() {
         state.currentPackageItem?.packageItemId || payload.packageItemId,
     })
     if (status === 200) {
-      notyf.success('Change expire date is completed!')
+      notyf.success('Change expire date completed!')
       return status
     } else {
       notyfError(message)
@@ -129,7 +129,7 @@ export default function useStudentPackageItem() {
     })
     if (status === 200) {
       notyf.success(
-        `Remove ticket type ${payload.type} (amount: ${payload.amount}) is completed!`
+        `Remove ticket type ${payload.type} (amount: ${payload.amount}) completed!`
       )
       return status
     } else {
@@ -140,7 +140,7 @@ export default function useStudentPackageItem() {
   const changeStartDateTicketStudent = async (payload: IStartTicketStudent) => {
     const { status, message } = await changeStartDateTicket(payload)
     if (status === 200) {
-      notyf.success('Change start date is completed!')
+      notyf.success('Change start date completed!')
       return status
     } else {
       notyfError(message)
@@ -154,7 +154,7 @@ export default function useStudentPackageItem() {
       newstudentId
     )
     if (status === 201) {
-      notyf.success('Send package is completed!')
+      notyf.success('Send package completed!')
       return status
     } else {
       notyfError(message)
@@ -168,7 +168,7 @@ export default function useStudentPackageItem() {
       newPackageId
     )
     if (status === 201) {
-      notyf.success('Change package is completed!')
+      notyf.success('Change package completed!')
       return status
     } else {
       notyfError(message)
@@ -182,7 +182,7 @@ export default function useStudentPackageItem() {
       comment
     )
     if (status === 200) {
-      notyf.success('Remove package is completed!')
+      notyf.success('Remove package completed!')
       return status
     } else {
       notyfError(message)
