@@ -1,8 +1,10 @@
 import { computed, onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 import {
   IAddPackageStudent,
+  IStudentPackageItems,
+} from '/@src/types/interfaces/package-item.interface'
+import {
   IAddTicketStudent,
   IDeleteTicketPayload,
   IExpireTicketStudent,
@@ -127,7 +129,7 @@ export default function useStudentPackageItem() {
     })
     if (status === 200) {
       notyf.success(
-        `Remove ticket type ${payload.type} (amount: ${payload.amount}) is completed!`
+        `Remove ticket type ${payload.type} (amount: ${payload.amount}) completed!`
       )
       return status
     } else {
@@ -186,7 +188,6 @@ export default function useStudentPackageItem() {
       notyfError(message)
     }
   }
-
   const redeemPackage = async (code: string) => {
     const { status, message } = await redeemPackageByStudentId({
       code,
@@ -200,7 +201,6 @@ export default function useStudentPackageItem() {
       notyfError(message)
     }
   }
-
   const addPackage = async (payload: IAddPackageStudent) => {
     const { status, message } = await addPackageItemByStudentId({
       ...payload,
@@ -218,7 +218,6 @@ export default function useStudentPackageItem() {
   onMounted(() => {
     Promise.all([fetchStudentPackages()])
   })
-
   return {
     ...toRefs(state),
     addTicketStudent,

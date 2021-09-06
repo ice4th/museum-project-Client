@@ -7,6 +7,7 @@ import {
 import {
   IRedeemPackageStudent,
   StudentPackageItemResponse,
+  IAddPackageStudent,
 } from '/@src/types/interfaces/package-item.interface'
 import {
   IStudentList,
@@ -18,7 +19,6 @@ import {
   IStartTicketStudent,
   IExpireTicketStudent,
   IDeleteTicketPayload,
-  IAddPackageStudent,
 } from '/@src/types/interfaces/ticket.interface'
 interface LoginAsStudentResponse {
   link: string
