@@ -5,8 +5,8 @@ export interface IStudentPackageItems {
   packageId: number
   packageName: string
   packageImage: string
-  studentId?: number
   tickets: ITicketPackageItems[]
+  studentId?: number
 }
 export interface ITicketPackageItems {
   type: TicketType
@@ -23,4 +23,11 @@ export interface StudentPackageItemResponse {
 export interface IRedeemPackageStudent {
   code: string
   studentId: number
+}
+
+export interface IAddPackageStudent {
+  comment: string
+  packageId: number
+  studentId?: number
+  startDate?: string | null
 }
