@@ -2,7 +2,7 @@
 import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import useTeamTable from '/@src/composable/permission/use-team-table'
+import useTeamTable from '/@src/composable/permission/useTeamTable'
 import { ref } from 'vue'
 pageTitle.value = 'Team'
 useHead({
@@ -79,7 +79,7 @@ const {
                 role="menuitem"
                 class="dropdown-item is-media"
                 :to="{
-                  name: 'permission-team-:id-edit',
+                  name: 'permission-team-:id',
                   params: { id: `${value.id}` },
                 }"
               >
@@ -87,8 +87,8 @@ const {
                   <i aria-hidden="true" class="lnil lnil-pencil"></i>
                 </div>
                 <div class="meta">
-                  <span>Edit</span>
-                  <span>Edit team details</span>
+                  <span>View</span>
+                  <span>View team details</span>
                 </div>
               </RouterLink>
               <a

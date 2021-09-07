@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useCreateTeam from '/@src/composable/permission/use-create-team'
+import useCreateTeam from '/@src/composable/permission/useCreateTeam'
 const { teamInfo, createTeam, validate } = useCreateTeam()
 </script>
 

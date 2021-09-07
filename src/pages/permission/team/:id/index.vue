@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useUpdateTeam from '/@src/composable/permission/use-update-team'
+import useUpdateTeam from '/@src/composable/permission/useUpdateTeam'
 const { teamInfo, editTeam, validate } = useUpdateTeam()
 </script>
 
