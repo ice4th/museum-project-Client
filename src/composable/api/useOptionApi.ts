@@ -26,6 +26,7 @@ interface UseOptionApiState {
   teamOptions: TeamOption[]
   quizOptions: QuizOption[]
 }
+
 export default function useOptionApi() {
   const api = useApi()
   const state = reactive<UseOptionApiState>({

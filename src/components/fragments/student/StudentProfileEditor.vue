@@ -586,7 +586,7 @@ const removeValidation = (key: string) => {
 </template>
 
 <style lang="scss" scoped>
-@import '../../scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_variables.scss';
 .input.gender {
   text-transform: capitalize;
 }

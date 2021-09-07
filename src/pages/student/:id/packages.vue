@@ -20,25 +20,35 @@ import type {
 import type { PackageOption } from '/@src/types/interfaces/option.interface'
 import useOptionApi from '/@src/composable/api/useOptionApi'
 const ModalAddTicket = defineAsyncComponent(
-  () => import('/@src/components/student/packages/ModalAddTicket.vue')
+  () => import('/@src/components/fragments/student/packages/ModalAddTicket.vue')
 )
 const ModalSetExpireTicket = defineAsyncComponent(
-  () => import('/@src/components/student/packages/ModalSetExpireTicket.vue')
+  () =>
+    import(
+      '/@src/components/fragments/student/packages/ModalSetExpireTicket.vue'
+    )
 )
 const ModalChangePackage = defineAsyncComponent(
-  () => import('/@src/components/student/packages/ModalChangePackage.vue')
+  () =>
+    import('/@src/components/fragments/student/packages/ModalChangePackage.vue')
 )
 const ModalSendPackage = defineAsyncComponent(
-  () => import('/@src/components/student/packages/ModalSendPackage.vue')
+  () =>
+    import('/@src/components/fragments/student/packages/ModalSendPackage.vue')
 )
 const ModalRemovePackage = defineAsyncComponent(
-  () => import('/@src/components/student/packages/ModalRemovePackage.vue')
+  () =>
+    import('/@src/components/fragments/student/packages/ModalRemovePackage.vue')
 )
 const ModalSetStartTicket = defineAsyncComponent(
-  () => import('/@src/components/student/packages/ModalSetStartTicket.vue')
+  () =>
+    import(
+      '/@src/components/fragments/student/packages/ModalSetStartTicket.vue'
+    )
 )
 const ModalRemoveTicket = defineAsyncComponent(
-  () => import('/@src/components/student/packages/ModalRemoveTicket.vue')
+  () =>
+    import('/@src/components/fragments/student/packages/ModalRemoveTicket.vue')
 )
 const {
   packageItems,
