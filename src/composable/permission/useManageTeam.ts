@@ -1,18 +1,17 @@
-import { Notyf } from 'notyf'
-import { onMounted, reactive, toRefs } from 'vue'
+import { computed, onMounted, reactive, toRefs } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import usePermissionApi from '../api/usePermissionApi'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { ITeamData } from '/@src/types/interfaces/permission.interface'
 
-export interface IUseUpdateTeamstate {
+export interface IUseManageTeamstate {
   teamInfo: ITeamData
   validate: Object
 }
 
-export default function useUpdateTeam() {
-  const state = reactive<IUseUpdateTeamstate>({
+export default function useManageTeam() {
+  const state = reactive<IUseManageTeamstate>({
     teamInfo: {
       name: '',
       description: '',
@@ -24,6 +23,9 @@ export default function useUpdateTeam() {
   const notyf = useNotyf()
   const { getTeamById, updateTeam } = usePermissionApi()
   const teamId = route.params.id as string
+
+  const isEdit = computed(() => route.hash === '#edit')
+
   const getTeamInfo = async () => {
     const res = await getTeamById(+teamId)
     state.teamInfo = res
@@ -47,5 +49,5 @@ export default function useUpdateTeam() {
   onMounted(() => {
     getTeamInfo()
   })
-  return { ...toRefs(state), editTeam }
+  return { ...toRefs(state), editTeam, isEdit }
 }

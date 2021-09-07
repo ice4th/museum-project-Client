@@ -1,16 +1,41 @@
 <script setup lang="ts">
-import useManageTeam from '/@src/composable/permission/useManageTeam.ts'
-const { teamInfo, editTeam, validate, isEdit } = useManageTeam()
+// TeamForm Component
+
+import type { PropType } from 'vue'
+import type { ITeamData } from '/@src/types/interfaces/permission.interface'
+
+const props = defineProps({
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
+  info: {
+    type: Object as PropType<ITeamData>,
+    default: undefined,
+  },
+  validate: {
+    type: Object,
+    default: undefined,
+  },
+})
+const emit = defineEmits(['edit'])
+const editTeam = () => {
+  const team = {
+    name: props.info?.name,
+    description: props.info?.description,
+  } as ITeamData
+  emit('edit', team)
+}
 </script>
 
 <template>
   <div class="page-content-inner">
-    <div class="form-layout">
-      <!-- <div class="form-outer">
+    <div v-if="info" class="form-layout">
+      <div class="form-outer">
         <div class="form-header">
           <div class="form-header-inner">
             <div class="left">
-              <h3>Edit team</h3>
+              <h3>Team information</h3>
             </div>
             <div class="right">
               <div class="buttons">
@@ -21,7 +46,15 @@ const { teamInfo, editTeam, validate, isEdit } = useManageTeam()
                   :to="{ name: 'permission-team' }"
                   >Cancel</V-Button
                 >
-                <V-Button color="primary" raised @click="editTeam"
+
+                <V-Button
+                  v-if="readonly"
+                  icon="feature:edit-2"
+                  to="#edit"
+                  color="primary"
+                  >Edit</V-Button
+                >
+                <V-Button v-else color="primary" raised @click="editTeam"
                   >Done</V-Button
                 >
               </div>
@@ -35,10 +68,11 @@ const { teamInfo, editTeam, validate, isEdit } = useManageTeam()
               <label>Name</label>
               <V-Control>
                 <input
-                  v-model="teamInfo.name"
+                  v-model="info.name"
                   type="text"
                   class="input"
                   placeholder="Team name"
+                  :readonly="readonly"
                 />
               </V-Control>
               <p v-show="validate.name" class="help text-danger">
@@ -49,10 +83,11 @@ const { teamInfo, editTeam, validate, isEdit } = useManageTeam()
               <label>Description</label>
               <V-Control>
                 <textarea
-                  v-model="teamInfo.description"
+                  v-model="info.description"
                   class="textarea"
                   rows="3"
                   placeholder="Team description"
+                  :readonly="readonly"
                 ></textarea>
               </V-Control>
               <p v-show="validate.description" class="help text-danger">
@@ -61,17 +96,6 @@ const { teamInfo, editTeam, validate, isEdit } = useManageTeam()
             </V-Field>
           </div>
         </div>
-      </div> -->
-
-      <div class="form-outer">
-        <TeamForm
-          v-if="teamInfo"
-          :info="teamInfo"
-          :readonly="!isEdit"
-          :validate="validate"
-          @edit="editTeam"
-        >
-        </TeamForm>
       </div>
     </div>
   </div>
