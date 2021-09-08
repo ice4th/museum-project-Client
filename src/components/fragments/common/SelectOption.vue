@@ -7,7 +7,7 @@ import type { PropType } from 'vue'
  *
  * callBackSearch => fetch data from api ** function return array Or object[] for display options **
  * labelBy => display text by 'labelBy' default is 'name'
- * trackBy => search by 'trackBy' default is 'name'
+ * trackBy => search by 'trackBy' default is labelBy
  * valueProps => track value by 'valueProps' (type as modelValue) default is 'id'
  */
 /**
@@ -43,7 +43,7 @@ const props = defineProps({
   },
   trackBy: {
     type: String,
-    default: 'name',
+    default: '',
   },
   valueProp: {
     type: String,
@@ -74,25 +74,28 @@ onMounted(() => {
     :placeholder="placeholder"
     :options="searchOption"
     :filterResults="false"
-    :min-chars="1"
     :resolve-on-load="false"
     :delay="0"
     :searchable="searchable"
     :label="labelBy"
-    :track-by="trackBy"
+    :track-by="trackBy || labelBy"
     :value-prop="valueProp"
+    :no-options-text="'search...'"
+    clear-on-select
     clear-on-search
     @select="emit('update:modelValue', $event)"
   >
     <template #singlelabel="{ value }">
       <div class="multiselect-single-label">
-        <span v-show="isShowId && value.id">({{ value.id }})</span>
+        <span v-show="isShowId && value.id" class="pr-1">({{ value.id }})</span>
         {{ value[labelBy] }}
       </div>
     </template>
     <template #option="{ option }">
       <span class="select-option-text">
-        <span v-show="isShowId && option.id">({{ option.id }})</span>
+        <span v-show="isShowId && option.id" class="pr-1"
+          >({{ option.id }})</span
+        >
         {{ option[labelBy] }}
       </span>
     </template>
