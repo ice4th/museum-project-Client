@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import useManageProduct from '/@src/composable/product/use-manage-product'
+import useManageProduct from '/@src/composable/products/useManageProduct'
 const route = useRoute()
 const productId = route.params.productid as string
 const { fetchProductById, validate, productInfo, submitUpdateProduct } =

@@ -80,7 +80,7 @@ const reload = () => {
                     icon="lnir lnir-arrow-left rem-100"
                     light
                     dark-outlined
-                    :to="{ name: 'product-package-group' }"
+                    :to="{ name: 'products-package-group' }"
                   >
                     Back
                   </V-Button>
@@ -89,7 +89,7 @@ const reload = () => {
                     color="primary"
                     dark-outlined
                     :to="{
-                      name: 'product-package-group-:packageid-edit',
+                      name: 'products-package-group-:packageid-edit',
                       params: { ...$route.params },
                     }"
                   >

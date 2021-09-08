@@ -35,7 +35,7 @@ export default function useManageProduct() {
     if (checkResponseStatus(res)) {
       state.validate = {}
       notyf.success('Success!')
-      router.push({ name: 'product' })
+      router.push({ name: 'products' })
       return
     }
     if (typeof res.message === 'object') state.validate = res.message
@@ -50,7 +50,7 @@ export default function useManageProduct() {
       state.productInfo = data
       state.validate = {}
       notyf.success('Success!')
-      router.push({ name: 'product' })
+      router.push({ name: 'products' })
       return
     }
     if (typeof res.message === 'object') state.validate = res.message

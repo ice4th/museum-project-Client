@@ -644,8 +644,8 @@ const onChangePurchasable = () => {
 </template>
 
 <style lang="scss">
-@import '../../../scss/abstracts/_variables.scss';
-@import '../../../scss/abstracts/_mixins.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_mixins.scss';
 .is-dark .box {
   background: #323236;
   border-color: #404046;
