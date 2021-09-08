@@ -1,5 +1,5 @@
 import { computed, onMounted, reactive, toRefs } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import {
   IAddPackageStudent,
   IStudentPackageItems,
@@ -37,7 +37,6 @@ export default function useStudentPackageItem() {
     currentTicketType: undefined,
   })
   const route = useRoute()
-  const router = useRouter()
   const notyf = useNotyf()
   const studentId = computed(() => +route.params.id)
 
