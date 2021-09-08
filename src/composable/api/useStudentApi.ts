@@ -41,7 +41,7 @@ export default function useStudentApi() {
     params: IPaginationParams
   ): Promise<IPaginationResponse<IStudentList[]>> => {
     const res = await api.get<IPaginationResponse<IStudentList[]>, ApiResponse>(
-      `/Students/Info/All`,
+      '/Students/Info/All',
       { params: { ...params } }
     )
     return catchReponse(res)
@@ -68,10 +68,7 @@ export default function useStudentApi() {
   }
 
   const addNewTicketStudent = async (payload: IAddTicketStudent) => {
-    const res = await api.post<any, ApiResponse>(
-      `/Tickets/${payload.packageItemId}/Add`,
-      payload
-    )
+    const res = await api.post<any, ApiResponse>('/Tickets', payload)
     return res
   }
 
@@ -86,24 +83,15 @@ export default function useStudentApi() {
   }
 
   const changeStartDateTicket = async (payload: IStartTicketStudent) => {
-    return await api.put<any, ApiResponse>(
-      `/Tickets/${payload.packageItemId}/StartDate`,
-      payload
-    )
+    return await api.put<any, ApiResponse>('/Tickets/Start', payload)
   }
 
   const changeExpireDateTicket = async (payload: IExpireTicketStudent) => {
-    return await api.put<any, ApiResponse>(
-      `/Tickets/${payload.packageItemId}/ExpireDate`,
-      payload
-    )
+    return await api.put<any, ApiResponse>('/Tickets/Expire', payload)
   }
 
   const deleteTicketByPackageItem = async (data: IDeleteTicketPayload) => {
-    return await api.delete<any, ApiResponse>(
-      `Tickets/${data.packageItemId}/Delete`,
-      { data }
-    )
+    return await api.delete<any, ApiResponse>('Tickets', { data })
   }
 
   const sendPackageToAnotherStudent = async (
@@ -111,14 +99,14 @@ export default function useStudentApi() {
     studentId: number
   ) => {
     return await api.post<any, ApiResponse>(
-      `PackageItems/${packageItemId}/SendPackage`,
+      `PackageItems/${packageItemId}/Send`,
       { studentId }
     )
   }
 
   const changePackage = async (packageItemId: number, newPackageId: number) => {
     return await api.post<any, ApiResponse>(
-      `PackageItems/${packageItemId}/ChangePackage`,
+      `PackageItems/${packageItemId}/Change`,
       { newPackageId }
     )
   }
@@ -127,10 +115,9 @@ export default function useStudentApi() {
     packageItemId: number,
     comment: string
   ) => {
-    return await api.delete<any, ApiResponse>(
-      `PackageItems/${packageItemId}/Delete`,
-      { data: { comment } }
-    )
+    return await api.delete<any, ApiResponse>(`PackageItems/${packageItemId}`, {
+      data: { comment },
+    })
   }
 
   const redeemPackageByStudentId = async (data: IRedeemPackageStudent) => {
@@ -140,7 +127,7 @@ export default function useStudentApi() {
       agent: navigator.userAgent,
       adminId: adminProfile?.id,
     }
-    return api.post<any, ApiResponse>(`Redeems/Activate`, payload)
+    return api.post<any, ApiResponse>('Redeems/Activate', payload)
   }
 
   const loginByStudentId = async (studentId: number) => {
@@ -151,7 +138,7 @@ export default function useStudentApi() {
   }
 
   const addPackageItemByStudentId = async (payload: IAddPackageStudent) => {
-    return api.post<any, ApiResponse>(`PackageItems/Add`, payload)
+    return api.post<any, ApiResponse>('PackageItems', payload)
   }
 
   return {
