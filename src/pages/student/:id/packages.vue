@@ -7,7 +7,7 @@ import {
   ref,
   watch,
 } from 'vue'
-import useStudentPackageItemState from '../../../composable/student/useStudentPackage'
+import useStudentPackageItemState from '/@src/composable/student/useStudentPackage'
 import { toFormat } from '/@src/helpers/date.helper'
 import { TicketType } from '/@src/types/enums/ticket.enum'
 import type { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'

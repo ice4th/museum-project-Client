@@ -127,7 +127,7 @@ export default function useStudentApi() {
       agent: navigator.userAgent,
       adminId: adminProfile?.id,
     }
-    return api.post<any, ApiResponse>(`Redeems/Activate`, payload)
+    return api.post<any, ApiResponse>('Redeems/Activate', payload)
   }
 
   const loginByStudentId = async (studentId: number) => {
@@ -138,7 +138,7 @@ export default function useStudentApi() {
   }
 
   const addPackageItemByStudentId = async (payload: IAddPackageStudent) => {
-    return api.post<any, ApiResponse>(`PackageItems`, payload)
+    return api.post<any, ApiResponse>('PackageItems', payload)
   }
 
   return {
