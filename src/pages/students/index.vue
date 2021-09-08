@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
 import { onMounted, watch } from 'vue'
-import useStudentList from '/@src/composable/student/use-student-list'
+import useStudentList from '/@src/composable/students/useStudentList'
 import {
   displayStudentFullname,
   countryFlag,

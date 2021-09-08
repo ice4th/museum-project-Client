@@ -2,7 +2,7 @@
 import { useHead } from '@vueuse/head'
 import { computed, onMounted, ref } from 'vue-demi'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import useStudentInfo from '/@src/composable/student/use-student-info'
+import useStudentInfo from '/@src/composable/students/useStudentInfo'
 import { displayStudentFullname } from '/@src/helpers/student.helper'
 
 pageTitle.value = 'Student Information'
