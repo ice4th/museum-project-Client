@@ -72,7 +72,7 @@ export const studentSubsidebarList: SubsideBarItemDetail[] = [
 
 export const codeSubsidebarList: SubsideBarItemDetail[] = [
   {
-    routeName: 'code',
+    routeName: 'codes-redeems',
     label: 'Redeem Management',
     icon: '<i class="iconify mr-2" data-icon="feather:gift"></i>',
     action: 'VIEW_LIST_OF_REDEEM',

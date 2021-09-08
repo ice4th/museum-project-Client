@@ -36,7 +36,6 @@ const { getStudents } = useOptionApi()
             v-model="student"
             :callback-search="getStudents"
             label-by="fullnameTh"
-            track-by="fullnameTh"
             value-prop="id"
             placeholder="Select student for send package (Search by name)"
           />

@@ -99,7 +99,7 @@ export default function useOptionApi() {
   }
 
   const getTeams = async (): Promise<TeamOption[]> => {
-    const res = await api.get<StudentOption[]>('/Options/Teams')
+    const res = await api.get<TeamOption[]>('/Options/Teams')
     state.teamOptions = checkResponseStatus(res) || []
     return state.teamOptions
   }
