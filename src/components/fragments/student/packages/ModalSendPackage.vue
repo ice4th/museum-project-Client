@@ -2,7 +2,6 @@
 // ModalSendPackage Component
 import { onMounted, ref } from 'vue'
 import type { PropType } from 'vue'
-import type { StudentOption } from '/@src/types/interfaces/option.interface'
 import useOptionApi from '/@src/composable/api/useOptionApi'
 
 const props = defineProps({
@@ -15,20 +14,11 @@ const props = defineProps({
     default: '',
   },
 })
-const isLoading = ref(true)
-const student = ref(undefined)
-const { getStudents, studentOptions } = useOptionApi()
 const emit = defineEmits(['toggle-close', 'on-change'])
-const searchStudent = async (value: string) => {
-  isLoading.value = true
-  await getStudents(value)
-  isLoading.value = false
-}
-onMounted(async () => {
-  isLoading.value = true
-  await getStudents()
-  isLoading.value = false
-})
+
+const student = ref(undefined)
+const isLoading = ref(false)
+const { getStudents } = useOptionApi()
 </script>
 
 <template>
@@ -42,26 +32,14 @@ onMounted(async () => {
     <template #content>
       <form class="modal-form">
         <V-Control>
-          <Multiselect
+          <SelectOption
             v-model="student"
-            placeholder="Select student for send package"
-            :options="studentOptions"
-            :searchable="true"
-            track-by="id"
+            :callback-search="getStudents"
+            label-by="fullnameTh"
+            track-by="fullnameTh"
             value-prop="id"
-            @search-change="searchStudent"
-          >
-            <template #singlelabel="{ value }">
-              <div class="multiselect-single-label">
-                ({{ value.id }}) {{ value.fullnameTh }}
-              </div>
-            </template>
-            <template #option="{ option }">
-              <span class="select-option-text">
-                ({{ option.id }}) {{ option.fullnameTh }}
-              </span>
-            </template>
-          </Multiselect>
+            placeholder="Select student for send package (Search by name)"
+          />
         </V-Control>
       </form>
     </template>
