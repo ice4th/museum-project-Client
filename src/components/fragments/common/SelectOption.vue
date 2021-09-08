@@ -81,6 +81,8 @@ onMounted(() => {
     :track-by="trackBy || labelBy"
     :value-prop="valueProp"
     :no-options-text="'search...'"
+    clear-on-select
+    clear-on-search
     @select="emit('update:modelValue', $event)"
   >
     <template #singlelabel="{ value }">

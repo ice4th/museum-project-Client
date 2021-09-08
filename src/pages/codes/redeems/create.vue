@@ -4,18 +4,22 @@
 import useOptionApi from '/@src/composable/api/useOptionApi'
 import useRedeemManagement from '/@src/composable/redeems/useRedeemManagement'
 
-const { createNewRedeem, redeemTypeChange, createRedeem } =
+const { createNewRedeem, redeemTypeChange, createRedeem, isLoading } =
   useRedeemManagement()
 const { getPartners, getPackages } = useOptionApi()
-const create = () => {
-  //
-}
 </script>
 
 <template>
   <FormTemplate title="Create Redeem">
     <template #buttons>
-      <V-Button color="primary" raised @click="createRedeem">Create</V-Button>
+      <V-Button
+        color="primary"
+        icon="lnir lnir-checkmark rem-100"
+        :loading="isLoading"
+        raised
+        @click="createRedeem"
+        >Submit</V-Button
+      >
     </template>
     <div class="columns is-multiline">
       <div class="column is-12">
@@ -66,8 +70,15 @@ const create = () => {
         <v-date-picker
           v-model="createNewRedeem.ticketStartDate"
           color="orange"
-          :popover="{ visibility: 'click' }"
+          :model-config="{
+            type: 'string',
+            mask: 'YYYY-MM-DD',
+          }"
+          :masks="{
+            input: 'YYYY-MM-DD',
+          }"
           trim-weeks
+          :popover="{ visibility: 'click' }"
         >
           <template #default="{ inputValue, inputEvents }">
             <V-Field>
@@ -89,8 +100,15 @@ const create = () => {
         <v-date-picker
           v-model="createNewRedeem.expireDate"
           color="orange"
-          :popover="{ visibility: 'click' }"
+          :model-config="{
+            type: 'string',
+            mask: 'YYYY-MM-DD',
+          }"
+          :masks="{
+            input: 'YYYY-MM-DD',
+          }"
           trim-weeks
+          :popover="{ visibility: 'click' }"
         >
           <template #default="{ inputValue, inputEvents }">
             <V-Field>
