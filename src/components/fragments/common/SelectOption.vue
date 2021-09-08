@@ -1,8 +1,27 @@
 <script setup lang="ts">
 // SelectOption Component
+import { onMounted, ref, defineProps, watch } from 'vue'
 import type { PropType } from 'vue'
-import { ref, defineProps, watch } from 'vue'
-import { toFormat } from '/@src/helpers/date.helper'
+/**
+ * @Guide
+ *
+ * callBackSearch => fetch data from api ** function return array Or object[] for display options **
+ * labelBy => display text by 'labelBy' default is 'name'
+ * trackBy => search by 'trackBy' default is 'name'
+ * valueProps => track value by 'valueProps' (type as modelValue) default is 'id'
+ */
+/**
+ * @example
+ * 
+ * <SelectOption
+      v-model="student"
+      :callback-search="getStudents"
+      label-by="fullnameTh"
+      track-by="fullnameTh"
+      value-prop="id"
+      placeholder="Select student for send package (Search by name)"
+    />
+ */
 
 const props = defineProps({
   modelValue: {
@@ -17,10 +36,6 @@ const props = defineProps({
   searchable: {
     type: Boolean,
     default: true,
-  },
-  options: {
-    type: [Array, Object],
-    default: () => [],
   },
   labelBy: {
     type: String,
@@ -38,25 +53,36 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  callbackSearch: {
+    type: Function,
+    default: () => [],
+  },
 })
-const emit = defineEmits(['search', 'update:modelValue'])
+const emit = defineEmits(['update:modelValue'])
 
-const searchOption = (value: string) => {
-  emit('search', value)
+const searchOption = async (query?: string) => {
+  return await props.callbackSearch(query)
 }
+onMounted(() => {
+  searchOption()
+})
 </script>
 
 <template>
   <Multiselect
     v-model="modelValue"
     :placeholder="placeholder"
-    :options="options"
+    :options="searchOption"
+    :filterResults="false"
+    :min-chars="1"
+    :resolve-on-load="false"
+    :delay="0"
     :searchable="searchable"
     :label="labelBy"
     :track-by="trackBy"
     :value-prop="valueProp"
-    @search-change="searchOption"
-    @change="emit('update:modelValue', $event)"
+    clear-on-search
+    @select="emit('update:modelValue', $event)"
   >
     <template #singlelabel="{ value }">
       <div class="multiselect-single-label">

@@ -17,15 +17,8 @@ const props = defineProps({
 const emit = defineEmits(['toggle-close', 'on-change'])
 
 const student = ref(undefined)
-const { getStudents, studentOptions } = useOptionApi()
-
-const searchStudent = async (value: string) => {
-  await getStudents(value)
-}
-
-onMounted(async () => {
-  await getStudents()
-})
+const isLoading = ref(false)
+const { getStudents } = useOptionApi()
 </script>
 
 <template>
@@ -39,35 +32,13 @@ onMounted(async () => {
     <template #content>
       <form class="modal-form">
         <V-Control>
-          <!-- <Multiselect
-            v-model="student"
-            placeholder="Select student for send package"
-            :options="studentOptions"
-            :searchable="true"
-            label="fullnameTh"
-            track-by="fullnameTh"
-            value-prop="id"
-            @search-change="searchStudent"
-          >
-            <template #singlelabel="{ value }">
-              <div class="multiselect-single-label">
-                ({{ value.id }}) {{ value.fullnameTh }}
-              </div>
-            </template>
-            <template #option="{ option }">
-              <span class="select-option-text">
-                ({{ option.id }}) {{ option.fullnameTh }}
-              </span>
-            </template>
-          </Multiselect> -->
           <SelectOption
             v-model="student"
-            :options="studentOptions"
+            :callback-search="getStudents"
             label-by="fullnameTh"
             track-by="fullnameTh"
             value-prop="id"
             placeholder="Select student for send package (Search by name)"
-            @search="searchStudent"
           />
         </V-Control>
       </form>

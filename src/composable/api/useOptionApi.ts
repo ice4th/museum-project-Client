@@ -22,7 +22,6 @@ import {
 interface UseOptionApiState {
   productOptions: ProductOption[]
   productTypeOptions: ProductType[]
-  studentOptions: StudentOption[]
   teamOptions: TeamOption[]
   quizOptions: QuizOption[]
 }
@@ -32,7 +31,6 @@ export default function useOptionApi() {
   const state = reactive<UseOptionApiState>({
     productOptions: [],
     productTypeOptions: [],
-    studentOptions: [],
     teamOptions: [],
     quizOptions: [],
   })
@@ -97,8 +95,7 @@ export default function useOptionApi() {
         },
       }
     )
-    state.studentOptions = checkResponseStatus(res) ? res.data.data : []
-    return checkResponseStatus(res)
+    return checkResponseStatus(res) ? res.data.data : []
   }
 
   const getTeams = async (): Promise<TeamOption[]> => {
