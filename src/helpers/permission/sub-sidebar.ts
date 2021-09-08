@@ -63,7 +63,7 @@ export const productSubsidebarList: SubsideBarItemDetail[] = [
 
 export const studentSubsidebarList: SubsideBarItemDetail[] = [
   {
-    routeName: 'student',
+    routeName: 'students',
     label: 'Student Info',
     icon: '<i class="lnil lnil-users-alt mr-2"></i>',
     action: 'VIEW_LIST_OF_STUDENT',

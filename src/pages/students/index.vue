@@ -24,7 +24,8 @@ const displayPartner = (partners: IPartner[]) => {
   return partners.map((p) => p.partnerName).join(', ')
 }
 const headers: IDatatableHeader = [
-  { key: 'studentId', label: 'ID' },
+  { key: 'id', label: 'ID' },
+  { key: 'avatar', label: '', isRaw: true },
   { key: 'fullname', label: 'Fullname', isRaw: true },
   { key: 'nickname', label: 'Nickname' },
   { key: 'partners', label: 'Partner' },
@@ -44,20 +45,15 @@ const headers: IDatatableHeader = [
       :data="data"
       :total="total"
     >
+      <template #avatar="{ value }">
+        <V-Avatar
+          size="small"
+          :picture="value.avatar"
+          :badge="countryFlag[value.country]"
+        />
+      </template>
       <template #fullname="{ value }">
-        <div class="student-name-col">
-          <V-Avatar
-            size="small"
-            :picture="value.avatar"
-            :badge="countryFlag[value.country]"
-          />
-          <router-link
-            :to="{ path: `/student/${value?.studentId}` }"
-            class="link"
-          >
-            {{ displayStudentFullname(value) }}
-          </router-link>
-        </div>
+        <p class="subtitle is-6 px-1">{{ displayStudentFullname(value) }}</p>
       </template>
       <template #nickname="{ value }">
         {{ value?.th || value?.en || '-' }}
@@ -90,12 +86,12 @@ const headers: IDatatableHeader = [
               role="menuitem"
               class="dropdown-item is-media"
               :to="{
-                name: 'student-:id',
-                params: { id: `${value.studentId}` },
+                name: 'students-:id',
+                params: { id: `${value.id}` },
               }"
             >
               <div class="icon">
-                <i aria-hidden="true" class="lnil lnil-flag"></i>
+                <i aria-hidden="true" class="lnil lnil-eye"></i>
               </div>
               <div class="meta">
                 <span>View Profile</span>
@@ -106,12 +102,12 @@ const headers: IDatatableHeader = [
               role="menuitem"
               class="dropdown-item is-media"
               :to="{
-                name: 'student-:id',
-                params: { id: `${value.studentId}` },
+                name: 'students-:id',
+                params: { id: `${value.id}` },
               }"
             >
               <div class="icon">
-                <i aria-hidden="true" class="lnil lnil-flag"></i>
+                <i aria-hidden="true" class="lnil lnil-pencil"></i>
               </div>
               <div class="meta">
                 <span>Edit Profile</span>

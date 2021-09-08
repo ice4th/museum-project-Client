@@ -43,7 +43,8 @@ onMounted(() => {
           <div class="column is-4">
             <div class="account-box is-navigation">
               <V-Block
-                :title="`(${studentInfo?.studentId}) ${studentName}`"
+                v-show="studentInfo"
+                :title="`(${studentInfo?.id}) ${studentName}`"
                 :subtitle="studentInfo?.email"
                 center
               >
@@ -89,7 +90,7 @@ onMounted(() => {
 
               <div class="account-menu">
                 <RouterLink
-                  :to="{ name: 'student-:id' }"
+                  :to="{ name: 'students-:id' }"
                   class="account-menu-item"
                 >
                   <i aria-hidden="true" class="lnil lnil-user-alt"></i>
@@ -99,7 +100,7 @@ onMounted(() => {
                   </span>
                 </RouterLink>
                 <RouterLink
-                  :to="{ name: 'student-:id-packages' }"
+                  :to="{ name: 'students-:id-packages' }"
                   class="account-menu-item"
                 >
                   <i aria-hidden="true" class="lnil lnil-book"></i>
@@ -109,7 +110,7 @@ onMounted(() => {
                   </span>
                 </RouterLink>
                 <RouterLink
-                  :to="{ name: 'student-:id-private-class' }"
+                  :to="{ name: 'students-:id-private-class' }"
                   class="account-menu-item"
                 >
                   <i aria-hidden="true" class="lnil lnil-user-alt"></i>
@@ -119,7 +120,7 @@ onMounted(() => {
                   </span>
                 </RouterLink>
                 <RouterLink
-                  :to="{ name: 'student-:id-discussion-class' }"
+                  :to="{ name: 'students-:id-discussion-class' }"
                   class="account-menu-item"
                 >
                   <i aria-hidden="true" class="lnil lnil-users-alt"></i>
@@ -129,7 +130,7 @@ onMounted(() => {
                   </span>
                 </RouterLink>
                 <RouterLink
-                  :to="{ name: 'student-:id-family-account' }"
+                  :to="{ name: 'students-:id-family-account' }"
                   class="account-menu-item"
                 >
                   <i aria-hidden="true" class="lnil lnil-users"></i>
@@ -139,7 +140,7 @@ onMounted(() => {
                   </span>
                 </RouterLink>
                 <RouterLink
-                  :to="{ name: 'student-:id-report' }"
+                  :to="{ name: 'students-:id-report' }"
                   class="account-menu-item"
                 >
                   <i aria-hidden="true" class="lnil lnil-control-panel"></i>
@@ -149,7 +150,7 @@ onMounted(() => {
                   </span>
                 </RouterLink>
                 <RouterLink
-                  :to="{ name: 'student-:id-settings' }"
+                  :to="{ name: 'students-:id-settings' }"
                   class="account-menu-item"
                 >
                   <i aria-hidden="true" class="lnil lnil-cog"></i>

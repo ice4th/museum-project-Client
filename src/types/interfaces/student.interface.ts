@@ -39,7 +39,7 @@ export interface IStudentNote {
 
 export interface IStudentInfo {
   personalTitle: StudentPersonalTitle
-  studentId: number
+  id: number
   firstname: INameLang
   lastname: INameLang
   nickname: INameLang
