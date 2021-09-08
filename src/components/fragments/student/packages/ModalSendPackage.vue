@@ -2,7 +2,6 @@
 // ModalSendPackage Component
 import { onMounted, ref } from 'vue'
 import type { PropType } from 'vue'
-import type { StudentOption } from '/@src/types/interfaces/option.interface'
 import useOptionApi from '/@src/composable/api/useOptionApi'
 
 const props = defineProps({
@@ -15,19 +14,17 @@ const props = defineProps({
     default: '',
   },
 })
-const isLoading = ref(true)
+const emit = defineEmits(['toggle-close', 'on-change'])
+
 const student = ref(undefined)
 const { getStudents, studentOptions } = useOptionApi()
-const emit = defineEmits(['toggle-close', 'on-change'])
+
 const searchStudent = async (value: string) => {
-  isLoading.value = true
   await getStudents(value)
-  isLoading.value = false
 }
+
 onMounted(async () => {
-  isLoading.value = true
   await getStudents()
-  isLoading.value = false
 })
 </script>
 
@@ -42,12 +39,13 @@ onMounted(async () => {
     <template #content>
       <form class="modal-form">
         <V-Control>
-          <Multiselect
+          <!-- <Multiselect
             v-model="student"
             placeholder="Select student for send package"
             :options="studentOptions"
             :searchable="true"
-            track-by="id"
+            label="fullnameTh"
+            track-by="fullnameTh"
             value-prop="id"
             @search-change="searchStudent"
           >
@@ -61,7 +59,16 @@ onMounted(async () => {
                 ({{ option.id }}) {{ option.fullnameTh }}
               </span>
             </template>
-          </Multiselect>
+          </Multiselect> -->
+          <SelectOption
+            v-model="student"
+            :options="studentOptions"
+            label-by="fullnameTh"
+            track-by="fullnameTh"
+            value-prop="id"
+            placeholder="Select student for send package (Search by name)"
+            @search="searchStudent"
+          />
         </V-Control>
       </form>
     </template>
