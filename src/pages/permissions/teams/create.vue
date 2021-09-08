@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useCreateTeam from '/@src/composable/permission/useCreateTeam'
+import useCreateTeam from '/@src/composable/permissions/useCreateTeam'
 const { teamInfo, createTeam, validate } = useCreateTeam()
 </script>
 
@@ -10,7 +10,7 @@ const { teamInfo, createTeam, validate } = useCreateTeam()
         <div class="form-header">
           <div class="form-header-inner">
             <div class="left">
-              <h3>Edit team</h3>
+              <h3>Create team</h3>
             </div>
             <div class="right">
               <div class="buttons">
@@ -18,7 +18,7 @@ const { teamInfo, createTeam, validate } = useCreateTeam()
                   icon="lnir lnir-arrow-left rem-100"
                   light
                   dark-outline
-                  :to="{ name: 'permission-team' }"
+                  :to="{ name: 'permissions-teams' }"
                   >Cancel</V-Button
                 >
                 <V-Button color="primary" raised @click="createTeam"

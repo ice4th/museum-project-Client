@@ -43,7 +43,7 @@ const editTeam = () => {
                   icon="lnir lnir-arrow-left rem-100"
                   light
                   dark-outline
-                  :to="{ name: 'permission-team' }"
+                  :to="{ name: 'permissions-teams' }"
                   >Cancel</V-Button
                 >
 

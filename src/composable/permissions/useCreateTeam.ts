@@ -26,7 +26,7 @@ export default function useCreateTeam() {
     if (data.status === 201) {
       notyf.success('success!')
       state.validate = {}
-      router.push({ name: 'permission-team' })
+      router.push({ name: 'permissions-teams' })
     } else {
       if (typeof data.message === 'object') {
         state.validate = data.message

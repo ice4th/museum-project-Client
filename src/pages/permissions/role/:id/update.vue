@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import useUpdateRole from '../../../../composable/permission/use-update-role'
+import useUpdateRole from '../../../../composable/permissions/use-update-role'
 
 pageTitle.value = 'Update Role'
 
@@ -255,7 +255,6 @@ const {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     box-sizing: border-box;
 
     & > * {

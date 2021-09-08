@@ -36,7 +36,7 @@ export default function useManageTeam() {
     if (res.status === 200) {
       notyf.success('success!')
       state.validate = {}
-      router.push({ name: 'permission-team' })
+      router.push({ name: 'permissions-teams' })
     } else {
       if (typeof res.message === 'object') {
         state.validate = res.message

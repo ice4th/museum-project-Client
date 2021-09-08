@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useManageTeam from '/@src/composable/permission/useManageTeam.ts'
+import useManageTeam from '/@src/composable/permissions/useManageTeam.ts'
 const { teamInfo, editTeam, validate, isEdit } = useManageTeam()
 </script>
 
