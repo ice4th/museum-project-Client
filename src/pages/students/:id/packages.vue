@@ -143,7 +143,7 @@ const isOpenModalComponent = computed(() => {
 })
 // Dynamic modal title
 const modalTitle = computed(() => {
-  const packageItemTitle = `(Item ID: ${currentPackageItem?.value?.packageItemId}) ${currentPackageItem?.value?.packageName}`
+  const packageItemTitle = `(Item ID: ${currentPackageItem?.value?.id}) ${currentPackageItem?.value?.packageName}`
   switch (currentModal.value) {
     /**
      * @info modal for package action
@@ -508,6 +508,7 @@ const submitAddPackage = async () => {
     </CollapseContent>
     <CollapseContent
       v-if="packageItems.expirePackages.length"
+      open
       with-chevron
       title="Expired Package"
     >
