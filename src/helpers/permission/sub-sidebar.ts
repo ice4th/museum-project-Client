@@ -22,39 +22,39 @@ export const adminSubsidebarList: SubsideBarItemDetail[] = [
 
 export const productSubsidebarList: SubsideBarItemDetail[] = [
   {
-    routeName: 'product',
+    routeName: 'products',
     label: 'Product Detail',
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
     action: 'VIEW_LIST_OF_PRODUCT',
   },
   {
-    routeName: 'product-create-product',
+    routeName: 'products-create',
     label: 'Create Product',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PRODUCT',
   },
   { isDivider: true },
   {
-    routeName: 'product-package',
+    routeName: 'products-package',
     label: 'Package Detail',
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
     action: 'VIEW_LIST_OF_PACKAGE',
   },
   {
-    routeName: 'product-package-create',
+    routeName: 'products-package-create',
     label: 'Create Package',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PACKAGE',
   },
   { isDivider: true },
   {
-    routeName: 'product-package-group',
+    routeName: 'products-package-group',
     label: 'Package Group Detail',
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
     action: 'VIEW_LIST_OF_PACKAGE',
   },
   {
-    routeName: 'product-package-group-create',
+    routeName: 'products-package-group-create',
     label: 'Create Package Group',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PACKAGE',

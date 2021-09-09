@@ -39,7 +39,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['create', 'update'])
+const emit = defineEmits(['create', 'edit', 'view'])
 const productInfo = ref<IUpdateProduct>({
   name: props.productDetail?.name || '',
   excerpt: props.productDetail?.excerpt || '',
@@ -111,6 +111,7 @@ const onChangePurchasable = () => {
       <span>{{ key }}: {{ value }}</span>
     </span>
   </V-Message>
+
   <div class="tile is-ancestor">
     <div class="tile is-12 is-vertical is-parent">
       <div class="tile is-child box">
@@ -134,20 +135,30 @@ const onChangePurchasable = () => {
             </V-Field>
           </div>
           <div class="column is-6 ml-auto">
-            <V-Button
-              v-show="!productDetail"
-              icon="feather:edit-2"
-              color="primary"
-              @click="emit('create', productInfo)"
-              >Submit</V-Button
-            >
-            <V-Button
-              v-show="productDetail && !readonly"
-              icon="feather:edit-2"
-              color="primary"
-              @click="emit('update', productInfo)"
-              >Update</V-Button
-            >
+            <div class="is-flex is-justify-content-flex-end">
+              <V-Button
+                v-show="!productDetail"
+                icon="feather:edit-2"
+                color="primary"
+                @click="emit('create', productInfo)"
+                >Submit</V-Button
+              >
+              <V-Button
+                v-show="productDetail && !readonly"
+                icon="feather:edit-2"
+                color="primary"
+                @click="emit('update', productInfo)"
+                >Update</V-Button
+              >
+              <V-Button
+                v-show="productDetail && readonly"
+                to="#edit"
+                icon="feather:edit-2"
+                color="primary"
+                @click="emit('view', productInfo)"
+                >Edit</V-Button
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -644,8 +655,8 @@ const onChangePurchasable = () => {
 </template>
 
 <style lang="scss">
-@import '../../../scss/abstracts/_variables.scss';
-@import '../../../scss/abstracts/_mixins.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_mixins.scss';
 .is-dark .box {
   background: #323236;
   border-color: #404046;

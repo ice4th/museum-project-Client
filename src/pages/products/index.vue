@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
-import useProductTable from '/@src/composable/product/use-product-table'
+import useProductTable from '/@src/composable/products/useProductTable'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { addCommas } from '/@src/helpers/filter.helper'
@@ -71,7 +71,7 @@ const {
                 role="menuitem"
                 class="dropdown-item is-media"
                 :to="{
-                  name: 'product-:productid-view',
+                  name: 'products-:productid',
                   params: { productid: `${value.id}` },
                 }"
               >
@@ -81,22 +81,6 @@ const {
                 <div class="meta">
                   <span>View</span>
                   <span>View product details</span>
-                </div>
-              </RouterLink>
-              <RouterLink
-                role="menuitem"
-                class="dropdown-item is-media"
-                :to="{
-                  name: 'product-:productid-edit',
-                  params: { productid: `${value.id}` },
-                }"
-              >
-                <div class="icon">
-                  <i aria-hidden="true" class="lnil lnil-pencil"></i>
-                </div>
-                <div class="meta">
-                  <span>Edit</span>
-                  <span>Edit product details</span>
                 </div>
               </RouterLink>
             </template>

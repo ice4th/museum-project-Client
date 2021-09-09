@@ -54,7 +54,7 @@ const isStuck = computed(() => {
             <V-Button
               color="primary"
               elevated
-              :to="{ name: 'product-package' }"
+              :to="{ name: 'products-package' }"
             >
               Take me Back
             </V-Button>
@@ -72,7 +72,7 @@ const isStuck = computed(() => {
             <div class="right">
               <div class="buttons">
                 <V-Button
-                  :to="{ name: 'product-package' }"
+                  :to="{ name: 'products-package' }"
                   icon="lnir lnir-arrow-left rem-100"
                   class="custom-btn"
                   dark-outlined
@@ -102,10 +102,10 @@ const isStuck = computed(() => {
 </template>
 
 <style lang="scss">
-@import '../../../../scss/abstracts/_variables.scss';
-@import '../../../../scss/abstracts/_mixins.scss';
-@import '../../../../scss/pages/generic/_forms.scss';
-@import '../../../../scss/pages/generic/_utility.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_mixins.scss';
+@import 'src/scss/pages/generic/_forms.scss';
+@import 'src/scss/pages/generic/_utility.scss';
 
 * {
   box-sizing: border-box;

@@ -1,6 +1,6 @@
-import { toRefs } from 'vue'
+import { computed, toRefs } from 'vue'
 import { reactive } from 'vue-demi'
-import { useRouter } from 'vue-router'
+import { routeLocationKey, useRoute, useRouter } from 'vue-router'
 import { checkResponseStatus } from '../api'
 import useProductApi from '../api/useProductApi'
 import useNotyf from '../useNotyf'
@@ -19,9 +19,13 @@ export default function useManageProduct() {
     validate: {},
     productInfo: undefined,
   })
+
+  const route = useRoute()
   const router = useRouter()
   const notyf = useNotyf()
   const { getProductById, createProduct, updateProduct } = useProductApi()
+
+  const isEdit = computed(() => route.hash === '#edit')
 
   const fetchProductById = async (productId: number) => {
     const data = await getProductById(productId)
@@ -35,7 +39,7 @@ export default function useManageProduct() {
     if (checkResponseStatus(res)) {
       state.validate = {}
       notyf.success('Success!')
-      router.push({ name: 'product' })
+      router.push({ name: 'products' })
       return
     }
     if (typeof res.message === 'object') state.validate = res.message
@@ -50,7 +54,7 @@ export default function useManageProduct() {
       state.productInfo = data
       state.validate = {}
       notyf.success('Success!')
-      router.push({ name: 'product' })
+      router.push({ name: 'products' })
       return
     }
     if (typeof res.message === 'object') state.validate = res.message
@@ -62,5 +66,6 @@ export default function useManageProduct() {
     submitCreateProduct,
     submitUpdateProduct,
     fetchProductById,
+    isEdit,
   }
 }
