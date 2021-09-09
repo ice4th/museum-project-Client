@@ -78,7 +78,7 @@ const confirmRemovePackage = () => {
           <V-Button
             color="primary"
             icon="fas fa-plus"
-            :to="{ name: 'products-package-group-create' }"
+            :to="{ name: 'products-packages-groups-create' }"
           >
             Add Package
           </V-Button>
@@ -126,7 +126,7 @@ const confirmRemovePackage = () => {
             <template #content>
               <RouterLink
                 :to="{
-                  name: 'products-package-group-:packageid-details',
+                  name: 'products-packages-groups-:packageid',
                   params: { packageid: `${value.packageId}` },
                 }"
                 role="menuitem"
@@ -142,7 +142,7 @@ const confirmRemovePackage = () => {
               </RouterLink>
               <RouterLink
                 :to="{
-                  name: 'products-package-group-:packageid-edit',
+                  name: 'products-packages-groups-:packageid-edit',
                   params: { packageid: `${value.packageId}` },
                 }"
                 role="menuitem"

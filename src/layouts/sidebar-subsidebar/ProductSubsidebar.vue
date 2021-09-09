@@ -26,7 +26,7 @@ const emit = defineEmits(['close'])
         </li>
         <li class="divider"></li>
         <li>
-          <RouterLink :to="{ name: 'products-package' }" class="is-submenu">
+          <RouterLink :to="{ name: 'products-packages' }" class="is-submenu">
             <i class="lnil lnil-books"></i>
             <span>Package Detail</span>
           </RouterLink>
@@ -43,7 +43,7 @@ const emit = defineEmits(['close'])
         <li class="divider"></li>
         <li>
           <RouterLink
-            :to="{ name: 'products-package-group' }"
+            :to="{ name: 'products-packages-groups' }"
             class="is-submenu"
           >
             <i class="lnil lnil-books"></i>
