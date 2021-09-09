@@ -56,6 +56,14 @@ const props = defineProps({
     type: Array,
     default: () => [10, 25, 50, 100],
   },
+  hidePagination: {
+    type: Boolean,
+    default: false,
+  },
+  hidePerPage: {
+    type: Boolean,
+    default: false,
+  },
 })
 /**
  * Router
@@ -137,7 +145,7 @@ watch(
       </div>
 
       <div class="right">
-        <V-Field>
+        <V-Field v-show="!hidePerPage">
           <V-Control>
             <div class="select is-rounded">
               <select v-model="perPage" @update:model-value="changePerPage">
@@ -247,6 +255,7 @@ watch(
     </V-Loader>
 
     <V-FlexPagination
+      v-show="!hidePagination"
       :item-per-page="perPage"
       :total-items="total"
       :current-page="currentPage"
