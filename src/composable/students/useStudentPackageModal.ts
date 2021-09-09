@@ -3,35 +3,40 @@ import { toFormat } from '/@src/helpers/date.helper'
 import { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
 
 const ModalAddTicket = defineAsyncComponent(
-  () => import('/@src/components/fragments/student/packages/ModalAddTicket.vue')
+  () =>
+    import('/@src/components/fragments/students/packages/ModalAddTicket.vue')
 )
 const ModalSetExpireTicket = defineAsyncComponent(
   () =>
     import(
-      '/@src/components/fragments/student/packages/ModalSetExpireTicket.vue'
+      '/@src/components/fragments/students/packages/ModalSetExpireTicket.vue'
     )
 )
 const ModalChangePackage = defineAsyncComponent(
   () =>
-    import('/@src/components/fragments/student/packages/ModalChangePackage.vue')
+    import(
+      '/@src/components/fragments/students/packages/ModalChangePackage.vue'
+    )
 )
 const ModalSendPackage = defineAsyncComponent(
   () =>
-    import('/@src/components/fragments/student/packages/ModalSendPackage.vue')
+    import('/@src/components/fragments/students/packages/ModalSendPackage.vue')
 )
 const ModalRemovePackage = defineAsyncComponent(
   () =>
-    import('/@src/components/fragments/student/packages/ModalRemovePackage.vue')
+    import(
+      '/@src/components/fragments/students/packages/ModalRemovePackage.vue'
+    )
 )
 const ModalSetStartTicket = defineAsyncComponent(
   () =>
     import(
-      '/@src/components/fragments/student/packages/ModalSetStartTicket.vue'
+      '/@src/components/fragments/students/packages/ModalSetStartTicket.vue'
     )
 )
 const ModalRemoveTicket = defineAsyncComponent(
   () =>
-    import('/@src/components/fragments/student/packages/ModalRemoveTicket.vue')
+    import('/@src/components/fragments/students/packages/ModalRemoveTicket.vue')
 )
 
 type modalComponent =

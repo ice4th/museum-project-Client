@@ -32,7 +32,7 @@ export default function useStudentApi() {
     studentId: number
   ): Promise<IStudentInfo | undefined> => {
     const res = await api.get<IStudentInfo, ApiResponse>(
-      `/Students/Info/${studentId}`
+      `/Students/${studentId}`
     )
     return catchReponse(res)
   }
@@ -41,7 +41,7 @@ export default function useStudentApi() {
     params: IPaginationParams
   ): Promise<IPaginationResponse<IStudentList[]>> => {
     const res = await api.get<IPaginationResponse<IStudentList[]>, ApiResponse>(
-      '/Students/Info/All',
+      '/Students',
       { params: { ...params } }
     )
     return catchReponse(res)
@@ -52,7 +52,7 @@ export default function useStudentApi() {
     payload: IUpdateStudentProfile
   ) => {
     const res = await api.put<IStudentInfo, ApiResponse>(
-      `/Students/Info/${studentId}`,
+      `/Students/${studentId}`,
       payload
     )
     return res
@@ -62,7 +62,7 @@ export default function useStudentApi() {
     studentId: number
   ): Promise<StudentPackageItemResponse | null> => {
     const res = await api.get<StudentPackageItemResponse, ApiResponse>(
-      `/Students/${studentId}/Packages`
+      `/Students/${studentId}/PackageItems`
     )
     return catchReponse(res)
   }

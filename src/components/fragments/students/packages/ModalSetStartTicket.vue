@@ -33,7 +33,7 @@ const props = defineProps({
 
 const customDate = ref(false)
 const startTicketInput = ref<IStartTicketStudent>({
-  packageItemId: props.packageItem?.packageItemId || 0,
+  packageItemId: props.packageItem?.packageId || 0,
   comment: '',
   startDate: props.startDate,
   type: props.ticketType,

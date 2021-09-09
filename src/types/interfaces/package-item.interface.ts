@@ -1,12 +1,11 @@
 import { TicketType } from '../enums/ticket.enum'
 
 export interface IStudentPackageItems {
-  packageItemId: number
+  id: number
   packageId: number
   packageName: string
   packageImage: string
   tickets: ITicketPackageItems[]
-  studentId?: number
 }
 export interface ITicketPackageItems {
   type: TicketType

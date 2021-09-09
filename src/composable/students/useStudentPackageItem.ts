@@ -74,8 +74,7 @@ export default function useStudentPackageItem() {
   const addTicketStudent = async (payload: IAddTicketStudent) => {
     const { status, message } = await addNewTicketStudent({
       ...payload,
-      packageItemId:
-        state.currentPackageItem?.packageItemId || payload.packageItemId,
+      packageItemId: state.currentPackageItem?.id || payload.packageItemId,
       studentId: studentId.value,
     })
     if (status === 201) {
@@ -107,8 +106,7 @@ export default function useStudentPackageItem() {
     const { status, message } = await changeExpireDateTicket({
       ...payload,
       type: state.currentTicketType,
-      packageItemId:
-        state.currentPackageItem?.packageItemId || payload.packageItemId,
+      packageItemId: state.currentPackageItem?.id || payload.packageItemId,
     })
     if (status === 200) {
       notyf.success('Change expire date completed!')
@@ -122,8 +120,7 @@ export default function useStudentPackageItem() {
     if (!state.currentTicketType) return
     const { status, message } = await deleteTicketByPackageItem({
       ...payload,
-      packageItemId:
-        state.currentPackageItem?.packageItemId || payload.packageItemId,
+      packageItemId: state.currentPackageItem?.id || payload.packageItemId,
       type: state.currentTicketType,
     })
     if (status === 200) {
@@ -149,7 +146,7 @@ export default function useStudentPackageItem() {
   const sendPackage = async (newstudentId: number) => {
     if (!state.currentPackageItem) return
     const { status, message } = await sendPackageToAnotherStudent(
-      state.currentPackageItem.packageItemId,
+      state.currentPackageItem.id,
       newstudentId
     )
     if (status === 201) {
@@ -163,7 +160,7 @@ export default function useStudentPackageItem() {
   const changeToNewPackage = async (newPackageId: number) => {
     if (!state.currentPackageItem) return
     const { status, message } = await changePackage(
-      state.currentPackageItem.packageItemId,
+      state.currentPackageItem.id,
       newPackageId
     )
     if (status === 201) {
@@ -177,7 +174,7 @@ export default function useStudentPackageItem() {
   const removePackage = async (comment: string) => {
     if (!state.currentPackageItem) return
     const { status, message } = await deletePackageByPackageItem(
-      state.currentPackageItem.packageItemId,
+      state.currentPackageItem.id,
       comment
     )
     if (status === 200) {

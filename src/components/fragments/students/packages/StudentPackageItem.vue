@@ -30,16 +30,16 @@ const emit = defineEmits([
 <template>
   <V-CardAction
     v-for="packageItem in packageItems"
-    :key="`pk-${packageItem.packageItemId}`"
+    :key="`pk-${packageItem.id}`"
     :avatar="packageItem.packageImage"
     :title="`(ID: ${packageItem.packageId}) ${packageItem.packageName}`"
-    :subtitle="`Package Item ID: ${packageItem.packageItemId}`"
+    :subtitle="`Package Item ID: ${packageItem.id}`"
     class="mb-5"
   >
     <template #action>
       <PackageAction
         :can-activate="canActivate"
-        @activate-package="emit('activate-package', packageItem.packageItemId)"
+        @activate-package="emit('activate-package', packageItem.id)"
         @add-ticket="emit('add-ticket', packageItem)"
         @change-expire="emit('change-expire', packageItem)"
         @send-package="emit('send-package', packageItem)"
@@ -64,7 +64,7 @@ const emit = defineEmits([
       <tbody>
         <tr
           v-for="(ticket, idxTicket) in packageItem.tickets"
-          :key="`ticket-${packageItem.packageItemId}-${idxTicket}`"
+          :key="`ticket-${packageItem.id}-${idxTicket}`"
         >
           <td>
             {{

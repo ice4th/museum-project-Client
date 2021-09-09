@@ -7,7 +7,7 @@ import {
   ref,
   watch,
 } from 'vue'
-import useStudentPackageItemState from '/@src/composable/student/useStudentPackage'
+import useStudentPackageItem from '/@src/composable/students/useStudentPackageItem'
 import { toFormat } from '/@src/helpers/date.helper'
 import { TicketType } from '/@src/types/enums/ticket.enum'
 import type { IStudentPackageItems } from '/@src/types/interfaces/package-item.interface'
@@ -20,35 +20,40 @@ import type {
 import type { PackageOption } from '/@src/types/interfaces/option.interface'
 import useOptionApi from '/@src/composable/api/useOptionApi'
 const ModalAddTicket = defineAsyncComponent(
-  () => import('/@src/components/fragments/student/packages/ModalAddTicket.vue')
+  () =>
+    import('/@src/components/fragments/students/packages/ModalAddTicket.vue')
 )
 const ModalSetExpireTicket = defineAsyncComponent(
   () =>
     import(
-      '/@src/components/fragments/student/packages/ModalSetExpireTicket.vue'
+      '/@src/components/fragments/students/packages/ModalSetExpireTicket.vue'
     )
 )
 const ModalChangePackage = defineAsyncComponent(
   () =>
-    import('/@src/components/fragments/student/packages/ModalChangePackage.vue')
+    import(
+      '/@src/components/fragments/students/packages/ModalChangePackage.vue'
+    )
 )
 const ModalSendPackage = defineAsyncComponent(
   () =>
-    import('/@src/components/fragments/student/packages/ModalSendPackage.vue')
+    import('/@src/components/fragments/students/packages/ModalSendPackage.vue')
 )
 const ModalRemovePackage = defineAsyncComponent(
   () =>
-    import('/@src/components/fragments/student/packages/ModalRemovePackage.vue')
+    import(
+      '/@src/components/fragments/students/packages/ModalRemovePackage.vue'
+    )
 )
 const ModalSetStartTicket = defineAsyncComponent(
   () =>
     import(
-      '/@src/components/fragments/student/packages/ModalSetStartTicket.vue'
+      '/@src/components/fragments/students/packages/ModalSetStartTicket.vue'
     )
 )
 const ModalRemoveTicket = defineAsyncComponent(
   () =>
-    import('/@src/components/fragments/student/packages/ModalRemoveTicket.vue')
+    import('/@src/components/fragments/students/packages/ModalRemoveTicket.vue')
 )
 const {
   packageItems,
@@ -66,7 +71,7 @@ const {
   removePackage,
   redeemPackage,
   addPackage,
-} = useStudentPackageItemState()
+} = useStudentPackageItem()
 const { getPackages } = useOptionApi()
 const customDate = ref(toFormat(undefined, 'YYYY-MM-DD'))
 type modalComponent =
@@ -138,7 +143,7 @@ const isOpenModalComponent = computed(() => {
 })
 // Dynamic modal title
 const modalTitle = computed(() => {
-  const packageItemTitle = `(Item ID: ${currentPackageItem?.value?.packageItemId}) ${currentPackageItem?.value?.packageName}`
+  const packageItemTitle = `(Item ID: ${currentPackageItem?.value?.id}) ${currentPackageItem?.value?.packageName}`
   switch (currentModal.value) {
     /**
      * @info modal for package action
@@ -503,6 +508,7 @@ const submitAddPackage = async () => {
     </CollapseContent>
     <CollapseContent
       v-if="packageItems.expirePackages.length"
+      open
       with-chevron
       title="Expired Package"
     >
