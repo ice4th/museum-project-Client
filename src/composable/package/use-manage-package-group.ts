@@ -185,7 +185,7 @@ export default function useManagePackageGroup() {
         message: 'Created Success!',
       })
       router.push({
-        name: 'products-package-group-:packageid-details',
+        name: 'products-packages-groups-:packageid',
         params: { packageid: `${state.mainPackageId}` },
       })
       return
