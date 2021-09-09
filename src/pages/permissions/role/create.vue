@@ -1,21 +1,42 @@
 <script setup lang="ts">
-import { pageTitle } from '/@src/state/sidebarLayoutState'
-import useUpdateRole from '../../../../composable/permission/use-update-role'
+/**
+ * This is a Vue Component that will be
+ * automatically mapped to a entry on vue-router.
+ *
+ * You will be able to access this page at http://localhost:8083/sidebar-blank-page-5
+ * Page uri will match related path to src/pages folder
+ *
+ * Read more about routing:
+ * @see /vite.config.ts
+ * @see /src/router.ts
+ */
 
-pageTitle.value = 'Update Role'
+import { useHead } from '@vueuse/head'
+
+/**
+ * activeSidebar is an exported ref() that we can use everywhere
+ * @see /src/components/navigation/desktop/sidebar/subsidebars/GenericSidebar.vue
+ */
+import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
+import useCreateRole from '/@src/composable/permissions/use-create-role'
+import { pageTitle } from '/@src/state/sidebarLayoutState'
+import type { ISelectedMenuItem } from '/@src/types/interfaces/permission.interface'
+
+pageTitle.value = 'Create Role'
+
+useHead({
+  title: 'Whitehouse Create Role',
+})
 
 const {
   // state
-  roleData,
   menuItems,
   roleName,
   roleDescription,
-  teamOptions,
-  teamId,
-  // loading
-  loadingRole,
   menuLoading,
   loadingOption,
+  teamOptions,
+  teamId,
   // computed
   showMessage,
   colorMessage,
@@ -23,45 +44,18 @@ const {
   selectedItems,
   disabledCreateBtn,
   // methods
-  onUpdate,
-  onReset,
-} = useUpdateRole()
+  onCreate,
+  onClear,
+} = useCreateRole()
 </script>
 
 <template>
   <div class="box-container">
-    <div v-if="!roleData && !loadingRole && !menuLoading">
-      <div class="error-container">
-        <div class="error-wrapper">
-          <div class="error-inner has-text-centered">
-            <div class="bg-number">404</div>
-            <img
-              src="/@src/assets/illustrations/placeholders/error-1.svg"
-              alt=""
-            />
-            <h3>We couldn't find that page</h3>
-            <p>
-              Looks like we couldn't find that page. Please try again or contact
-              an administrator if the problem persists.
-            </p>
-            <div class="button-wrap">
-              <V-Button
-                color="primary"
-                elevated
-                :to="{ name: 'permission-role' }"
-              >
-                Take me Back
-              </V-Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-if="roleData && !loadingRole && !menuLoading" class="box-permission">
+    <div class="box-permission">
       <V-Card>
         <!-- Header -->
         <div class="py-4">
-          <h3 class="text-header">Update Role</h3>
+          <h3 class="text-header">Create Role</h3>
         </div>
         <!-- Input Field -->
         <div>
@@ -127,13 +121,13 @@ const {
         <!-- Create Button -->
         <div class="align-button mt-4 py-4">
           <V-Buttons>
-            <V-Button :loading="menuLoading" @click="onReset"> Reset </V-Button>
+            <V-Button :loading="menuLoading" @click="onClear"> Clear </V-Button>
             <V-Button
               color="primary"
               :disabled="disabledCreateBtn"
-              @click="onUpdate"
+              @click="onCreate"
             >
-              Update
+              Create
             </V-Button>
           </V-Buttons>
         </div>
@@ -175,7 +169,6 @@ const {
     </div>
 
     <FlexListPermission
-      v-if="roleData && !menuLoading"
       :items="menuItems"
       :show-message="verifyMessage"
       :color-message="colorMessage"
@@ -184,15 +177,6 @@ const {
 </template>
 
 <style lang="scss" scoped>
-@import '../../../../scss/abstracts/_variables.scss';
-@import '../../../../scss/abstracts/_mixins.scss';
-@import '../../../../scss/pages/generic/_forms.scss';
-@import '../../../../scss/pages/generic/_utility.scss';
-
-* {
-  box-sizing: border-box;
-}
-
 .box-container {
   display: flex;
   flex-wrap: wrap;
@@ -255,7 +239,6 @@ const {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     box-sizing: border-box;
 
     & > * {

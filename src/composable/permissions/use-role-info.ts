@@ -80,13 +80,13 @@ export default function useRoleInfo() {
   }
   const onViewDetails = async (id: number) => {
     await router.push({
-      name: 'permission-role-:id-details',
+      name: 'permissions-role-:id-details',
       params: { id },
     })
   }
   const onUpdateRole = async (id: number) => {
     await router.push({
-      name: 'permission-role-:id-update',
+      name: 'permissions-role-:id-update',
       params: { id },
     })
   }

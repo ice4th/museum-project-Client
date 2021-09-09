@@ -205,7 +205,7 @@ export default function useUpdateRole() {
 
     const team = state.teamOptions.find(({ id }) => id === state.teamId)
     await router.push({
-      name: 'permission-role',
+      name: 'permissions-role',
       query: {
         search: team?.name || '',
       },

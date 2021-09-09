@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import useUpdateTeam from '/@src/composable/permission/use-update-team'
-const { teamInfo, editTeam, validate } = useUpdateTeam()
+import useCreateTeam from '/@src/composable/permissions/useCreateTeam'
+const { teamInfo, createTeam, validate } = useCreateTeam()
 </script>
 
 <template>
@@ -10,7 +10,7 @@ const { teamInfo, editTeam, validate } = useUpdateTeam()
         <div class="form-header">
           <div class="form-header-inner">
             <div class="left">
-              <h3>Edit team</h3>
+              <h3>Create team</h3>
             </div>
             <div class="right">
               <div class="buttons">
@@ -18,11 +18,11 @@ const { teamInfo, editTeam, validate } = useUpdateTeam()
                   icon="lnir lnir-arrow-left rem-100"
                   light
                   dark-outline
-                  :to="{ name: 'permission-team' }"
+                  :to="{ name: 'permissions-teams' }"
                   >Cancel</V-Button
                 >
-                <V-Button color="primary" raised @click="editTeam"
-                  >Done</V-Button
+                <V-Button color="primary" raised @click="createTeam"
+                  >Create</V-Button
                 >
               </div>
             </div>
@@ -67,7 +67,7 @@ const { teamInfo, editTeam, validate } = useUpdateTeam()
 </template>
 
 <style lang="scss">
-@import '../../../../scss/abstracts/_variables.scss';
-@import '../../../../scss/abstracts/_mixins.scss';
-@import '../../../../scss/pages/generic/_forms.scss';
+@import '../../../scss/abstracts/_variables.scss';
+@import '../../../scss/abstracts/_mixins.scss';
+@import '../../../scss/pages/generic/_forms.scss';
 </style>
