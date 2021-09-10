@@ -4,9 +4,9 @@ export interface ITicketInfo {
   id: number
   type: TicketType
   packageItemId: number
-  startDate?: Date
   expireDate: Date
   studentId: number
+  startDate?: Date
   comment?: string
   partner?: number
 }
@@ -22,17 +22,17 @@ export interface IAddTicketStudent {
 }
 
 export interface IExpireTicketStudent {
-  type?: TicketType
   expireDate: string
   comment: string
   packageItemId: number
+  type?: TicketType
 }
 
 export interface IStartTicketStudent {
-  type?: string
   startDate: string | null
   comment: string
   packageItemId: number
+  type?: string
 }
 
 export interface IDeleteTicketPayload {

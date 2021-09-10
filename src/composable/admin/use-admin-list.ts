@@ -6,7 +6,7 @@ import usePaginationRoute from '../use-pagination-route'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { IAdminDetail } from '/@src/types/interfaces/admin.interface'
-interface UseStudentListState {
+interface useAdminListState {
   data: IAdminDetail[]
   total: number
   status: 'activate' | 'deactivate'
@@ -15,7 +15,7 @@ interface UseStudentListState {
 }
 
 export default function useAdminList() {
-  const state = reactive<UseStudentListState>({
+  const state = reactive<useAdminListState>({
     data: [],
     total: 0,
     status: 'activate',

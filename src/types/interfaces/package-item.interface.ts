@@ -1,11 +1,10 @@
 import { TicketType } from '../enums/ticket.enum'
 
 export interface IStudentPackageItems {
-  packageItemId: number
+  id: number
   packageId: number
   packageName: string
   packageImage: string
-  studentId?: number
   tickets: ITicketPackageItems[]
 }
 export interface ITicketPackageItems {
@@ -23,4 +22,11 @@ export interface StudentPackageItemResponse {
 export interface IRedeemPackageStudent {
   code: string
   studentId: number
+}
+
+export interface IAddPackageStudent {
+  comment: string
+  packageId: number
+  studentId?: number
+  startDate?: string | null
 }
