@@ -5,6 +5,7 @@ import usePermissionApi from '../api/usePermissionApi'
 import { errMessage } from '/@src/helpers/filter.helper'
 import useNotyf from '../useNotyf'
 import { IDatatableHeader } from '/@src/types/interfaces/component.interface'
+import { initAvatar } from '../../helpers/avatar.helper'
 
 export interface UseTeamTableState {
   teamInfo: ITeamInfo[]
@@ -52,7 +53,23 @@ export default function useTeamTable() {
       search: state.search,
     })
     state.isloading = false
-    state.teamInfo = res.data
+    state.teamInfo = res.data.map(({ admins, ...team }) => {
+      return {
+        ...team,
+        admins: admins.map(({ firstname, lastname, ...etc }) => {
+          const { initials, color } = initAvatar(firstname, lastname)
+          return {
+            ...etc,
+            picture: etc.avatar,
+            firstname,
+            lastname,
+            initials,
+            color,
+          }
+        }),
+      }
+    })
+    console.log(state.teamInfo)
     state.total = res.total
     state.totalPage = res.totalPage
   }
