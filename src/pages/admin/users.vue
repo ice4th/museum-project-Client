@@ -15,7 +15,6 @@ import type { IDatatableHeader } from '/@src/types/interfaces/component.interfac
 import useUserSession from '/@src/composable/useUserSession'
 
 const { user } = useUserSession()
-console.log(user)
 const router = useRouter()
 const route = useRoute()
 pageTitle.value = 'Admin list'

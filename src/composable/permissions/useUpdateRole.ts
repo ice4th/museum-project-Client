@@ -1,24 +1,19 @@
 import { Notyf } from 'notyf'
 import { computed, onMounted, reactive, toRefs } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { errMessage } from '../../helpers/filter.helper'
-import { TeamOption } from '../../types/interfaces/option.interface'
 import {
   IMenu,
+  IRoleInfo,
   ISelectedMenuItem,
 } from '../../types/interfaces/permission.interface'
 import useOptionApi from '../api/useOptionApi'
 import usePermissionApi from '../api/usePermissionApi'
+import { IUseCreateRoleState } from './useCreateRole'
 
-export interface IUseCreateRoleState {
-  menuItems: IMenu[]
-  roleName: string
-  roleDescription: string
-  teamId?: number
-  teamOptions: TeamOption[]
-  menuLoading: boolean
-  loadingOption: boolean
-  showMessage: boolean
+export interface IUseUpdateRoleState extends IUseCreateRoleState {
+  roleData: IRoleInfo | null
+  loadingRole: boolean
 }
 
 /**
@@ -32,32 +27,35 @@ const notyfMessage = new Notyf({
   },
 })
 
-export default function useCreateRole() {
+export default function useUpdateRole() {
   /**
    * Use Composable Api
    */
-  const { createRole, getMenus } = usePermissionApi()
+  const { getRoleById, getMenus, updateRole } = usePermissionApi()
   const { getTeams } = useOptionApi()
 
   /**
    * Use Router
    */
   const router = useRouter()
+  const route = useRoute()
 
   /**
    * State
    */
-  const state = reactive<IUseCreateRoleState>({
+  const state = reactive<IUseUpdateRoleState>({
+    roleData: null,
     menuItems: [],
     roleName: '',
     roleDescription: '',
     teamId: undefined,
     teamOptions: [],
     // Loading
+    loadingRole: false,
     menuLoading: false,
     loadingOption: false,
     // verify message
-    showMessage: true,
+    showMessage: false,
   })
 
   /**
@@ -119,42 +117,62 @@ export default function useCreateRole() {
   const setMenuItems = async () => {
     state.menuLoading = true
 
-    const { data } = await getMenus()
-    state.menuItems = data.map((mainMenu) => {
-      let totalActions = 0
+    if (state.roleData) {
+      const permissions = state.roleData.permissions?.map(({ id }) => id)
 
-      const subMenus = mainMenu.subMenus.map((subMenu) => {
-        const actions = subMenu.permissions.map((action) => ({
-          ...action,
-          selected: false,
-        }))
+      const { data } = await getMenus()
+      state.menuItems = data.map((mainMenu) => {
+        let totalActions = 0
 
-        totalActions += actions.length
+        const subMenus = mainMenu.subMenus.map((subMenu) => {
+          const actions = subMenu.permissions.map((action) => {
+            const selected = permissions?.includes(action.id)
+            return {
+              ...action,
+              selected,
+            }
+          })
+
+          totalActions += actions.length
+
+          return {
+            ...subMenu,
+            actions,
+          }
+        })
 
         return {
-          ...subMenu,
-          actions,
+          ...mainMenu,
+          show: false,
+          subtitles: subMenus.length,
+          actions: totalActions,
+          icon: 'feather:file-plus',
+          subMenus,
         }
       })
-
-      return {
-        ...mainMenu,
-        show: false,
-        subtitles: subMenus.length,
-        actions: totalActions,
-        icon: 'feather:file-plus',
-        subMenus,
-      }
-    })
+    }
 
     state.menuLoading = false
+    state.showMessage = false
   }
   const fetchOption = async () => {
     state.loadingOption = true
     state.teamOptions = await getTeams()
     state.loadingOption = false
   }
-  const onCreate = async () => {
+  const fetchRole = async (id: number) => {
+    state.loadingRole = true
+    const res = await getRoleById(id)
+
+    state.roleData = res
+    if (state.roleData) {
+      state.roleName = res.name || ''
+      state.roleDescription = res.description || ''
+      state.teamId = res.team?.id
+    }
+    state.loadingRole = false
+  }
+  const onUpdate = async () => {
     const permissionIds = selectedItems.value
       .map((item: any) =>
         item.subMenus.map((sub: any) =>
@@ -163,18 +181,19 @@ export default function useCreateRole() {
       )
       .flat(2)
 
-    if (state?.teamId) {
-      const { status, message } = await createRole({
+    if (state?.teamId && state.roleData?.id) {
+      const { status, message } = await updateRole({
         description: state.roleDescription,
+        id: state.roleData.id,
         teamId: state.teamId,
         name: state.roleName,
         permissionIds,
       })
 
-      if (status === 201) {
+      if (status === 200) {
         notyfMessage.open({
           type: 'success',
-          message: 'Role was created!',
+          message: 'Role was updated!',
         })
       } else {
         notyfMessage.open({
@@ -186,23 +205,24 @@ export default function useCreateRole() {
 
     const team = state.teamOptions.find(({ id }) => id === state.teamId)
     await router.push({
-      name: 'permissions-role',
+      name: 'permissions-roles',
       query: {
         search: team?.name || '',
       },
     })
   }
-  const onClear = async () => {
-    state.roleDescription = ''
-    state.roleName = ''
-    state.teamId = undefined
+  const onReset = async () => {
+    state.roleDescription = state.roleData?.description || ''
+    state.roleName = state.roleData?.name || ''
+    state.teamId = state.roleData?.team?.id
     await setMenuItems()
   }
 
   /**
    * On Mounted
    */
-  onMounted(() => {
+  onMounted(async () => {
+    await fetchRole(parseInt(`${route.params.id}`))
     setMenuItems()
     fetchOption()
   })
@@ -216,7 +236,7 @@ export default function useCreateRole() {
     colorMessage,
     // Methods
     fetchOption,
-    onCreate,
-    onClear,
+    onUpdate,
+    onReset,
   }
 }

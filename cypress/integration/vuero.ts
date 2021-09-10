@@ -21,7 +21,7 @@ const buildUri = ({ path, query }: { path: string; query?: any }) => {
     uri += `?${args.join('&')}`
   }
 
-  console.log('uri:', uri)
+  // console.log('uri:', uri)
 
   return uri
 }

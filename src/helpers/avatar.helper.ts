@@ -4,15 +4,15 @@ export const avatarColor = [
   '',
   'primary',
   'success',
-  'info',
   'warning',
   'danger',
-  'h-purple',
-  'h-orange',
-  'h-blue',
-  'h-gree',
-  'h-red',
+  'info',
   'h-yellow',
+  'h-orange',
+  'h-purple',
+  'h-green',
+  'h-blue',
+  'h-red',
 ]
 
 export const initAvatar = (fname: string, lname: string): IInitialAvatar => {
