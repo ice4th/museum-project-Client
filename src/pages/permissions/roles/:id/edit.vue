@@ -48,7 +48,7 @@ const {
               <V-Button
                 color="primary"
                 elevated
-                :to="{ name: 'permission-role' }"
+                :to="{ name: 'permissions-roles' }"
               >
                 Take me Back
               </V-Button>

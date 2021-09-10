@@ -186,7 +186,7 @@ export default function useCreateRole() {
 
     const team = state.teamOptions.find(({ id }) => id === state.teamId)
     await router.push({
-      name: 'permissions-role',
+      name: 'permissions-roles',
       query: {
         search: team?.name || '',
       },

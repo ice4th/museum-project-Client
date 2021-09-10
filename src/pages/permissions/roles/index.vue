@@ -36,8 +36,6 @@ const {
   // variable
   roleTableHeaders,
   // methods
-  onViewDetails,
-  onUpdateRole,
   onDeleteRole,
 } = useRoleInfo()
 </script>
@@ -53,7 +51,7 @@ const {
     >
       <template #custom-right>
         <div class="is-flex is-justify-content-flex-end pt-4">
-          <V-Button color="primary" icon="fas fa-plus" to="role/create">
+          <V-Button color="primary" icon="fas fa-plus" to="roles/create">
             Add Role
           </V-Button>
         </div>
@@ -71,33 +69,39 @@ const {
               </V-Button>
             </template>
             <template #content>
-              <a
+              <RouterLink
                 role="menuitem"
                 class="dropdown-item is-media"
-                @click="onViewDetails(value.id)"
+                :to="{
+                  name: 'permissions-roles-:id',
+                  params: { id: `${value.id}` },
+                }"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-eye"></i>
                 </div>
                 <div class="meta">
                   <span>View</span>
-                  <span>View package details</span>
+                  <span>View details</span>
                 </div>
-              </a>
+              </RouterLink>
 
-              <a
+              <RouterLink
                 role="menuitem"
                 class="dropdown-item is-media"
-                @click="onUpdateRole(value.id)"
+                :to="{
+                  name: 'permissions-roles-:id-edit',
+                  params: { id: `${value.id}` },
+                }"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-pencil"></i>
                 </div>
                 <div class="meta">
                   <span>Edit</span>
-                  <span>Edit package details</span>
+                  <span>Edit this item</span>
                 </div>
-              </a>
+              </RouterLink>
 
               <hr class="dropdown-divider" />
 
