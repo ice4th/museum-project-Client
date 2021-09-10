@@ -2,7 +2,7 @@
 import { useHead } from '@vueuse/head'
 
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
-import usePackageGroupTable from '/@src/composable/package/use-package-group-table'
+import usePackageGroupTable from '/@src/composable/package-groups/usePackageGroupTable'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { ref } from 'vue'
 import type { IPackageGroupInfo } from '/@src/types/interfaces/package.interface'
@@ -113,16 +113,7 @@ const confirmRemovePackage = () => {
       </template>
       <template #action="{ value }">
         <div class="dark-inverted is-flex is-justify-content-flex-end">
-          <V-Dropdown spaced right>
-            <template #button="{ toggle }">
-              <V-Button
-                icon="feather:more-vertical"
-                class="is-trigger"
-                @click="toggle"
-              >
-                Actions
-              </V-Button>
-            </template>
+          <DropdownAction>
             <template #content>
               <RouterLink
                 :to="{
@@ -171,7 +162,7 @@ const confirmRemovePackage = () => {
                 </div>
               </a>
             </template>
-          </V-Dropdown>
+          </DropdownAction>
         </div>
       </template>
     </Datatable>

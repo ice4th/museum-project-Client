@@ -6,18 +6,20 @@ import type { PropType } from 'vue'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
 import type { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
 import type { PackageOption } from '/@src/types/interfaces/option.interface'
+import useOptionApi from '/@src/composable/api/useOptionApi'
 
 const props = defineProps({
   mainPackage: {
     type: Object as PropType<IUpdateAddonPackage>,
     default: undefined,
   },
-  packages: {
-    type: Array as PropType<PackageOption[]>,
+  packageGroup: {
+    type: Array as PropType<IUpdateAddonPackage[]>,
     default: () => [],
   },
 })
 
+const { getPackages } = useOptionApi()
 const mainPackageId = ref<number>(props.mainPackage?.packageId || 0)
 const generateTicket = ref<GenerateTicket>(
   props.mainPackage?.generateTicket || GenerateTicket.NOT_GENERATE_TICKET
@@ -26,15 +28,23 @@ const emit = defineEmits({
   'on-update': Object,
 })
 
+const mainPackageInfo = ref<IUpdateAddonPackage>(
+  props.mainPackage || {
+    idx: undefined,
+    packageId: 0,
+    generateTicket: GenerateTicket.NOT_GENERATE_TICKET,
+  }
+)
+
 const addMainPackage = () => {
-  const mainPackageData = {
-    // ...props.mainPackage,
-    packageGroupId: props.mainPackage?.packageGroupId,
-    idx: props.mainPackage?.idx || 1,
-    packageId: mainPackageId.value,
-    generateTicket: generateTicket.value,
-  } as IUpdateAddonPackage
-  emit('on-update', mainPackageData)
+  // const mainPackageData = {
+  //   // ...props.mainPackage,
+  //   packageGroupId: props.mainPackage?.packageGroupId,
+  //   idx: props.mainPackage?.idx || 1,
+  //   packageId: mainPackageId.value,
+  //   generateTicket: generateTicket.value,
+  // } as IUpdateAddonPackage
+  emit('on-update', mainPackageInfo.value)
 }
 </script>
 
@@ -49,25 +59,13 @@ const addMainPackage = () => {
         <V-Field>
           <label>Main Package</label>
           <V-Control>
-            <Multiselect
-              v-model="mainPackageId"
-              placeholder="Select a main package"
-              :options="packages"
-              :searchable="true"
-              track-by="packageName"
+            <SelectOption
+              v-model="mainPackageInfo.packageId"
+              placeholder="Search for select a main package"
+              :callback-search="getPackages"
+              label-by="packageName"
               value-prop="id"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  ({{ value.id }}) {{ value.packageName }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  ({{ option.id }}) {{ option.packageName }}
-                </span>
-              </template>
-            </Multiselect>
+            />
           </V-Control>
         </V-Field>
       </div>
@@ -76,7 +74,7 @@ const addMainPackage = () => {
           <label>Generate Ticket</label>
           <V-Control>
             <V-Radio
-              v-model="generateTicket"
+              v-model="mainPackageInfo.generateTicket"
               value="1"
               label="Yes"
               name="outlined_squared_radio"
@@ -85,7 +83,7 @@ const addMainPackage = () => {
             />
 
             <V-Radio
-              v-model="generateTicket"
+              v-model="mainPackageInfo.generateTicket"
               value="0"
               label="No"
               name="outlined_squared_radio"
@@ -100,7 +98,7 @@ const addMainPackage = () => {
       <V-Button>Cancel</V-Button>
       <V-Button
         color="primary"
-        :disabled="!mainPackageId"
+        :disabled="!mainPackageInfo.packageId"
         class="ml-3"
         @click="addMainPackage"
         >Add Main Package</V-Button
