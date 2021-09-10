@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import useManageStudentFamily from '/@src/composable/students/useManageStudentFamily'
+import useOptionApi from '/@src/composable/api/useOptionApi'
 const {
   isOpenCreateFamilyPopup,
   isOpenDeleteConfirmPopup,
   familyTableHeaders,
   deleteMember,
+  students,
 } = useManageStudentFamily()
+const { getStudents } = useOptionApi()
 // family-account Component
+
 const familyData = [
   {
     id: 1,
@@ -62,15 +66,17 @@ const familyData = [
       </form>
     </template>
     <template #action>
-      <V-Button @click="isOpenCreateFamilyPopup = false">Submit</V-Button>
+      <V-Button color="primary" @click="isOpenCreateFamilyPopup = false"
+        >Submit</V-Button
+      >
     </template>
   </V-modal>
+
   <!-- family list -->
   <div class="account-box">
     <div class="is-flex is-justify-content-space-between">
       <div class="left">
         <h2 class="title is-5 is-narrow is-bolder">My Family Account</h2>
-        <p>This is a medium thin title</p>
       </div>
       <div class="right">
         <V-Button
@@ -83,6 +89,21 @@ const familyData = [
         </V-Button>
       </div>
     </div>
+    <div class="columns">
+      <div class="column is-6">
+        <SelectOption
+          v-model="students"
+          :callback-search="getStudents"
+          label-by="fullnameTh"
+          track-by="fullnameTh"
+          value-prop="id"
+          placeholder="Select student for send package (Search by name)"
+        />
+      </div>
+      <div class="column is-6">
+        <V-Button color="primary">Add</V-Button>
+      </div>
+    </div>
 
     <Datatable
       :headers="familyTableHeaders"
@@ -92,7 +113,10 @@ const familyData = [
       hide-pagination
     >
       <template #action>
-        <V-Button color="primary" @click="isOpenDeleteConfirmPopup = true"
+        <V-Button
+          color="danger"
+          outlined
+          @click="isOpenDeleteConfirmPopup = true"
           >Delete</V-Button
         >
       </template>
@@ -100,14 +124,27 @@ const familyData = [
   </div>
   <V-Modal
     :open="isOpenDeleteConfirmPopup"
-    title="Delete confirmation"
     size="small"
     actions="center"
     @close="isOpenDeleteConfirmPopup = false"
   >
-    <template #content><p>Are you sure to delete?</p></template>
+    <!-- <template #content>
+      <p class="title has-text-danger is-justify-content-center">
+        Are you sure to delete ?
+      </p>
+    </template> -->
+    <!-- <template #content>
+      <V-PlaceholderSection
+        class="has-text-danger-dark"
+        title="Confirmation"
+        subtitle="Are you sure to delete ?"
+      />
+    </template> -->
+    <template #content>
+      <V-Message color="danger"> Confirm Remove </V-Message>
+    </template>
     <template #action>
-      <V-Button @click="deleteMember">Delete</V-Button>
+      <V-Button color="danger" outlined @click="deleteMember">Comfirm</V-Button>
     </template>
   </V-Modal>
 </template>
