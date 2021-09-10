@@ -46,7 +46,7 @@ const emit = defineEmits(['download-item', 'copy-item'])
 </template>
 
 <style lang="scss" scoped>
-@import '../../scss/abstracts/_variables.scss';
-@import '../../scss/abstracts/_mixins.scss';
-@import '../../scss/pages/media/_tile-grid-media.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_mixins.scss';
+@import 'src/scss/pages/media/_tile-grid-media.scss';
 </style>
