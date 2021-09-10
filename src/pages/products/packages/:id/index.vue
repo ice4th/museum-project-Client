@@ -4,7 +4,7 @@ import { computed, ref } from 'vue'
 import { useHead } from '@vueuse/head'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
-import useFormPackageInfo from '/@src/composable/package/use-form-package-info'
+import usePackageDetails from '/@src/composable/package/usePackageDetails'
 
 pageTitle.value = 'Package Details'
 
@@ -24,7 +24,9 @@ const {
   notFoundPackage,
   // computed
   disabledDone,
-} = useFormPackageInfo()
+  // logic
+  editable,
+} = usePackageDetails()
 
 /**
  * Methods
@@ -80,6 +82,14 @@ const isStuck = computed(() => {
                 >
                   Back
                 </V-Button>
+                <V-Button
+                  icon="lnir lnir-pencil rem-100"
+                  color="primary"
+                  raised
+                  @click="editable = true"
+                >
+                  Edit
+                </V-Button>
               </div>
             </div>
           </div>
@@ -93,7 +103,7 @@ const isStuck = computed(() => {
             :curriculums="curriculums"
             :products="products"
             :loading-options="loadingOptions"
-            readonly
+            :readonly="!editable"
           />
         </div>
       </div>
@@ -113,14 +123,5 @@ const isStuck = computed(() => {
 
 .is-stuck {
   top: 0 !important;
-}
-
-@media only screen and (max-width: 767px) {
-  .buttons {
-    justify-content: center !important;
-    .custom-btn {
-      width: 90% !important;
-    }
-  }
 }
 </style>

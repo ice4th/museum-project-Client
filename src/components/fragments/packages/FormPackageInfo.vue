@@ -763,64 +763,6 @@ const privateSlots = [
           </V-Control>
         </V-Field>
       </div>
-
-      <!-- <div class="column is-12">
-        <V-Field>
-          <label>Subscription class type</label>
-          <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select subscription class type</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
-          </V-Control>
-        </V-Field>
-      </div>
-      <div class="column is-4">
-        <V-Field>
-          <label>Limit per day</label>
-          <V-Control icon="lnil lnil-ticket">
-            <input
-              v-model="duration"
-              type="number"
-              class="input"
-              placeholder="Limit ticket..."
-            />
-          </V-Control>
-        </V-Field>
-      </div>
-      <div class="column is-4">
-        <V-Field>
-          <label>Limit per week</label>
-          <V-Control icon="lnil lnil-ticket">
-            <input
-              v-model="duration"
-              type="number"
-              class="input"
-              placeholder="Limit ticket..."
-            />
-          </V-Control>
-        </V-Field>
-      </div>
-      <div class="column is-4">
-        <V-Field>
-          <label>Limit per month</label>
-          <V-Control icon="lnil lnil-ticket">
-            <input
-              v-model="duration"
-              type="number"
-              class="input"
-              placeholder="Limit ticket..."
-            />
-          </V-Control>
-        </V-Field>
-      </div> -->
     </div>
   </div>
 </template>
