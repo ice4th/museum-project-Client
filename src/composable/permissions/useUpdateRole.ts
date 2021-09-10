@@ -9,7 +9,7 @@ import {
 } from '../../types/interfaces/permission.interface'
 import useOptionApi from '../api/useOptionApi'
 import usePermissionApi from '../api/usePermissionApi'
-import { IUseCreateRoleState } from './use-create-role'
+import { IUseCreateRoleState } from './useCreateRole'
 
 export interface IUseUpdateRoleState extends IUseCreateRoleState {
   roleData: IRoleInfo | null

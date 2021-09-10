@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import useRoleDetails from '../../../../composable/permissions/use-role-details'
+import useRoleDetails from '../../../../composable/permissions/useRoleDetails'
 
 pageTitle.value = 'Role Details'
 

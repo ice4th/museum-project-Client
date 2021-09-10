@@ -18,7 +18,7 @@ import { useHead } from '@vueuse/head'
  * @see /src/components/navigation/desktop/sidebar/subsidebars/GenericSidebar.vue
  */
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
-import useCreateRole from '/@src/composable/permissions/use-create-role'
+import useCreateRole from '/@src/composable/permissions/useCreateRole'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import type { ISelectedMenuItem } from '/@src/types/interfaces/permission.interface'
 

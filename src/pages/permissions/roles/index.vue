@@ -19,7 +19,7 @@ import { useHead } from '@vueuse/head'
  */
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import useRoleInfo from '/@src/composable/permissions/use-role-info'
+import useRoleInfo from '/@src/composable/permissions/useRoleInfo'
 
 pageTitle.value = 'Role Information'
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { pageTitle } from '/@src/state/sidebarLayoutState'
-import useUpdateRole from '../../../../composable/permissions/use-update-role'
+import useUpdateRole from '../../../../composable/permissions/useUpdateRole'
 
 pageTitle.value = 'Update Role'
 
