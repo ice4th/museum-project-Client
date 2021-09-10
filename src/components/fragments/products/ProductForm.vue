@@ -147,7 +147,7 @@ const onChangePurchasable = () => {
                 v-show="productDetail && !readonly"
                 icon="feather:edit-2"
                 color="primary"
-                @click="emit('update', productInfo)"
+                @click="emit('edit', productInfo)"
                 >Update</V-Button
               >
               <V-Button

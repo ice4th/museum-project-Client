@@ -66,13 +66,13 @@ export default function usePackageTable() {
   }
   const onViewPackage = async (id: number) => {
     await router.push({
-      name: 'products-package-:id-details',
+      name: 'products-packages-:id',
       params: { id },
     })
   }
   const onEditPackage = async (id: number) => {
     await router.push({
-      name: 'products-package-:id-update',
+      name: 'products-packages-:id-edit',
       params: { id },
     })
   }

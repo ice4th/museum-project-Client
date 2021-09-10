@@ -82,8 +82,8 @@ const emit = defineEmits(['on-close'])
   </div>
 </template>
 <style lang="scss" scoped>
-@import '../../scss/abstracts/_variables.scss';
-@import '../../scss/abstracts/_mixins.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_mixins.scss';
 
 .close-button {
   position: absolute;

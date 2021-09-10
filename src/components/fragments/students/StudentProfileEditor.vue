@@ -34,7 +34,9 @@ const isScrolling = computed(() => {
 
 const isEditMode = ref(false)
 const isLoading = ref(false)
-const internalStudentInfo = ref<IStudentInfo | undefined>(undefined)
+const internalStudentInfo = ref<IStudentInfo | undefined>(
+  _.cloneDeep(props.studentInfo)
+)
 const internalValidation = ref(props.validation)
 
 watch(
@@ -88,9 +90,6 @@ const onCancelEdit = () => {
 }
 
 onBeforeMount(() => {
-  if (props.studentInfo) {
-    internalStudentInfo.value = _.cloneDeep(props.studentInfo)
-  }
   if (
     !occupationOptions.some(
       (oc) => oc.value === props.studentInfo?.studentNote?.occupation

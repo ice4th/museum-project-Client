@@ -43,7 +43,6 @@ export default function useStudentInfo() {
 
   const updateStudentProfile = async (payload: IUpdateStudentProfile) => {
     const id = route.params.id as string
-    console.table(payload)
     const { status, data, message } = await updateStudentInfoById(+id, payload)
     if (status === 200) {
       state.studentInfo = data

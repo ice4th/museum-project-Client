@@ -34,7 +34,7 @@ const {
           <V-Button
             color="primary"
             icon="fas fa-plus"
-            :to="{ name: 'products-package-create' }"
+            :to="{ name: 'products-packages-create' }"
           >
             Add Package
           </V-Button>

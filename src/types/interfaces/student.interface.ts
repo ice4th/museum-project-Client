@@ -88,3 +88,36 @@ export interface IUpdateStudentProfile {
   occupation?: string
   file?: File
 }
+
+export interface IStudentGlobishPlusInfo {
+  firstname: string
+  lasstname: string
+  phone: string
+  email: string
+  voxyLevel: number
+  globishLevel: number
+  featureGroupId: number
+  featureGroup: {
+    id: number
+    name: string
+  }
+  joinedDate: string
+  expireDate: string
+  dateOfNextVpa: string
+  nativeLanguage: string
+  accessType: string
+  segments: unknown
+  purchasedTutoringCredits: number
+  tutoringCredits: number
+  tutoringCreditsUsed: number
+  canReserveGroupSessions: boolean
+}
+
+export interface IUpdateStudentGlobishPlusProfile {
+  expireDate: Date
+  firstname: string
+  lastname: string
+  email: string
+  globishLevel: number
+  featureGroupId: number
+}

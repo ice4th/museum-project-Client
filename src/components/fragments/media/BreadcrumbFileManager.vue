@@ -24,8 +24,8 @@ const emit = defineEmits(['change-navigate'])
   <hr />
 </template>
 <style lang="scss" scoped>
-@import '../../scss/abstracts/_variables.scss';
-@import '../../scss/abstracts/_mixins.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_mixins.scss';
 .breadcrumb {
   padding: 0.75rem 0;
   border-radius: 16px;
