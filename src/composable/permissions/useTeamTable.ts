@@ -69,7 +69,6 @@ export default function useTeamTable() {
         }),
       }
     })
-    console.log(state.teamInfo)
     state.total = res.total
     state.totalPage = res.totalPage
   }
@@ -95,7 +94,7 @@ export default function useTeamTable() {
     { key: 'name', label: 'Team' },
     { key: 'description', label: 'Description' },
     { key: 'member', label: 'Member', isRaw: true },
-    { key: 'action', label: 'Action', isEnd: true, isRaw: true },
+    { key: 'actions', label: '', isEnd: true, isRaw: true },
   ]
 
   return { ...toRefs(state), teamTableHeaders, deleteTeam }
