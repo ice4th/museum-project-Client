@@ -14,7 +14,7 @@
           </div>
           <ul>
             <li>
-              <RouterLink :to="{ name: 'product' }" class="is-submenu">
+              <RouterLink :to="{ name: 'products' }" class="is-submenu">
                 <i class="lnil lnil-books"></i>
                 <span>Product Detail</span>
               </RouterLink>
@@ -29,14 +29,17 @@
           </div>
           <ul>
             <li>
-              <RouterLink :to="{ name: 'product-package' }" class="is-submenu">
+              <RouterLink
+                :to="{ name: 'products-packages' }"
+                class="is-submenu"
+              >
                 <i class="lnil lnil-books"></i>
                 <span>Package Detail</span>
               </RouterLink>
             </li>
             <li>
               <RouterLink
-                :to="{ name: 'product-package-group' }"
+                :to="{ name: 'products-packages-groups' }"
                 class="is-submenu"
               >
                 <i class="lnil lnil-books"></i>
@@ -45,7 +48,7 @@
             </li>
             <li>
               <RouterLink
-                :to="{ name: 'product-create-package' }"
+                :to="{ name: 'products-create-package' }"
                 class="is-submenu"
               >
                 <i class="lnil lnil-books"></i>

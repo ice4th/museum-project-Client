@@ -5,7 +5,7 @@ import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 import { useWindowScroll } from '@vueuse/core'
-import useManageProduct from '/@src/composable/product/use-manage-product'
+import useManageProduct from '/@src/composable/products/useManageProduct'
 
 pageTitle.value = 'Create Product'
 
@@ -25,9 +25,9 @@ const isStuck = computed(() => {
   </div>
 </template>
 <style lang="scss">
-@import '../../scss/abstracts/_variables.scss';
-@import '../../scss/abstracts/_mixins.scss';
-@import '../../scss/pages/generic/_forms.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_mixins.scss';
+@import 'src/scss/pages/generic/_forms.scss';
 // .form-fieldset {
 //   max-width: 800px;
 // }

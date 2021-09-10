@@ -57,7 +57,7 @@ const isStuck = computed(() => {
             <V-Button
               color="primary"
               elevated
-              :to="{ name: 'product-package' }"
+              :to="{ name: 'products-packages' }"
             >
               Take me Back
             </V-Button>
@@ -75,7 +75,7 @@ const isStuck = computed(() => {
             <div class="right">
               <div class="buttons">
                 <V-Button
-                  :to="{ name: 'product-package' }"
+                  :to="{ name: 'products-packages' }"
                   icon="lnir lnir-arrow-left rem-100"
                   dark-outlined
                   light
