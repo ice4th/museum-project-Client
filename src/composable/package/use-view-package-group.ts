@@ -104,7 +104,7 @@ export default function useViewPackageGroup() {
     state.isUpdating = false
     if (status === 200) {
       router.push({
-        name: 'products-package-group-:packageid-details',
+        name: 'products-packages-groups-:packageid',
         params: { packageid: `${mainId || mainPackageId.value}` },
       })
     } else {

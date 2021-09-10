@@ -10,6 +10,7 @@ import {
   IPaginationResponse,
 } from '/@src/types/interfaces/common.interface'
 import { Purchasable } from '/@src/types/enums/product.enum'
+import { Console } from 'console'
 
 interface GetAllProductParams extends IPaginationParams {
   search?: string
@@ -26,12 +27,13 @@ export default function useProductApi() {
     const res = await api.get<
       IPaginationResponse<IProductDetail[]>,
       ApiResponse
-    >(`/Products/List`, { params })
+    >(`/Products`, { params })
     return catchReponse(res)
   }
 
   const getProductById = async (productId: number) => {
     const res = await api.get<IProduct, ApiResponse>(`Products/${productId}`)
+    console.log('get proguct id' + res)
     return catchReponse(res)
   }
   const createProduct = (payload: IUpdateProduct) => {

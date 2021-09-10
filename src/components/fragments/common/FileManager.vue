@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import useFileManager from '/@src/composable/file-manager/use-file-manager'
-import useFileAction from '/@src/composable/file-manager/use-file-action'
+import useFileManager from '/@src/composable/file-managers/useFileManager'
+import useFileAction from '/@src/composable/file-managers/useFileAction'
 import type {
   IFile,
   IDirectoryNavigator,
