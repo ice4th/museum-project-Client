@@ -13,6 +13,7 @@ import {
   IStudentList,
   IUpdateStudentProfile,
   IStudentInfo,
+  IStudentGroupClass,
 } from '/@src/types/interfaces/student.interface'
 import {
   IAddTicketStudent,
@@ -141,6 +142,17 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>('PackageItems', payload)
   }
 
+  const getStudentGroupClass = async (
+    id: number,
+    params: IPaginationParams
+  ): Promise<IPaginationResponse<IStudentGroupClass[]>> => {
+    const res = await api.get<
+      IPaginationResponse<IStudentGroupClass[]>,
+      ApiResponse
+    >(`/Students/${id}/GroupClass`, { params: { ...params } })
+    return catchReponse(res)
+  }
+
   return {
     getStudentInfoById,
     getAllStudents,
@@ -157,5 +169,6 @@ export default function useStudentApi() {
     redeemPackageByStudentId,
     loginByStudentId,
     addPackageItemByStudentId,
+    getStudentGroupClass,
   }
 }
