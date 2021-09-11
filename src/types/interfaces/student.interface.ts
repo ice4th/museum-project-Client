@@ -88,3 +88,14 @@ export interface IUpdateStudentProfile {
   occupation?: string
   file?: File
 }
+
+export interface IStudentGroupClass {
+  id: number
+  topic: string
+  type: string
+  level: string
+  teacher: string
+  date: string
+  time: string
+  attend: string
+}
