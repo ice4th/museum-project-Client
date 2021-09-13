@@ -89,6 +89,17 @@ export interface IUpdateStudentProfile {
   file?: File
 }
 
+export interface IStudentGroupClass {
+  id: number
+  topic: string
+  type: string
+  level: string
+  teacher: string
+  date: string
+  time: string
+  attend: string
+}
+
 export interface IStudentGlobishPlusInfo {
   firstname: string
   lasstname: string

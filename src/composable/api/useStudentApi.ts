@@ -14,6 +14,7 @@ import {
   IStudentList,
   IUpdateStudentProfile,
   IStudentInfo,
+  IStudentGroupClass,
   IUpdateStudentGlobishPlusProfile,
   IStudentGlobishPlusInfo,
 } from '/@src/types/interfaces/student.interface'
@@ -144,6 +145,17 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>('PackageItems', payload)
   }
 
+  const getStudentGroupClass = async (
+    id: number,
+    params: IPaginationParams
+  ): Promise<IPaginationResponse<IStudentGroupClass[]>> => {
+    const res = await api.get<
+      IPaginationResponse<IStudentGroupClass[]>,
+      ApiResponse
+    >(`/Students/${id}/GroupClass`, { params: { ...params } })
+    return catchReponse(res)
+  }
+
   const forgotPassword = async (id: number) => {
     return await api.post<any, ApiResponse>(`Students/${id}/ForgotPassword`)
   }
@@ -183,6 +195,7 @@ export default function useStudentApi() {
     redeemPackageByStudentId,
     loginByStudentId,
     addPackageItemByStudentId,
+    getStudentGroupClass,
     forgotPassword,
     getStudentGlobishPlusById,
     updateStudentGlobishPlusById,
