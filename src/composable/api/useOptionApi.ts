@@ -98,9 +98,17 @@ export default function useOptionApi() {
     return checkResponseStatus(res) ? res.data.data : []
   }
 
-  const getTeams = async (): Promise<TeamOption[]> => {
-    const res = await api.get<TeamOption[]>('/Options/Teams')
-    state.teamOptions = checkResponseStatus(res) || []
+  const getTeams = async ({
+    currentPage,
+    perPage,
+    search,
+  }: IPaginationParams): Promise<TeamOption[]> => {
+    const res = await api.get<TeamOption[]>(
+      `/Options/Teams?currentPage=${currentPage}&perPage=${perPage}&search=${
+        search || ''
+      }`
+    )
+    state.teamOptions = checkResponseStatus(res).data || []
     return state.teamOptions
   }
 

@@ -155,10 +155,15 @@ export default function useUpdateRole() {
     state.menuLoading = false
     state.showMessage = false
   }
-  const fetchOption = async () => {
+  const fetchOption = async (search?: string) => {
     state.loadingOption = true
-    state.teamOptions = await getTeams()
+    state.teamOptions = await getTeams({
+      currentPage: 1,
+      perPage: 25,
+      search,
+    })
     state.loadingOption = false
+    return state.teamOptions
   }
   const fetchRole = async (id: number) => {
     state.loadingRole = true

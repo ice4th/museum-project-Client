@@ -23,6 +23,7 @@ const {
   selectedItems,
   disabledCreateBtn,
   // methods
+  fetchOption,
   onUpdate,
   onReset,
 } = useUpdateRole()
@@ -99,25 +100,13 @@ const {
           <V-Field class="is-autocomplete-select">
             <label>Team</label>
             <V-Control icon="feather:search" :loading="loadingOption">
-              <Multiselect
+              <SelectOption
                 v-model="teamId"
-                placeholder="Select team"
-                :options="teamOptions"
-                :searchable="true"
-                track-by="name"
+                :callback-search="fetchOption"
+                label-by="name"
                 value-prop="id"
-              >
-                <template #singlelabel="{ value }">
-                  <div class="multiselect-single-label">
-                    ({{ value.id }}) {{ value.name }}
-                  </div>
-                </template>
-                <template #option="{ option }">
-                  <span class="select-option-text">
-                    ({{ option.id }}) {{ option.name }}
-                  </span>
-                </template>
-              </Multiselect>
+                placeholder="Select team"
+              />
               <p v-show="!teamId" class="help text-danger">
                 Choose team for this role.
               </p>
