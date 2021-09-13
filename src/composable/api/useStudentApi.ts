@@ -1,5 +1,6 @@
 import useApi, { apiHandleError, ApiResponse } from '../useApi'
 import useUserSession from '../useUserSession'
+import { ISuccessMessage } from '../../types/interfaces/common.interface'
 import {
   IPaginationParams,
   IPaginationResponse,
@@ -14,6 +15,8 @@ import {
   IUpdateStudentProfile,
   IStudentInfo,
   IStudentGroupClass,
+  IUpdateStudentGlobishPlusProfile,
+  IStudentGlobishPlusInfo,
 } from '/@src/types/interfaces/student.interface'
 import {
   IAddTicketStudent,
@@ -153,6 +156,29 @@ export default function useStudentApi() {
     return catchReponse(res)
   }
 
+  const forgotPassword = async (id: number) => {
+    return await api.post<any, ApiResponse>(`Students/${id}/ForgotPassword`)
+  }
+
+  const getStudentGlobishPlusById = async (
+    studentId: number
+  ): Promise<IStudentGlobishPlusInfo | undefined> => {
+    const res = await api.get<IStudentGlobishPlusInfo, ApiResponse>(
+      `/Students/${studentId}/GlobishPlus`
+    )
+    return catchReponse(res)
+  }
+
+  const updateStudentGlobishPlusById = async (
+    studentId: number,
+    payload: IUpdateStudentGlobishPlusProfile
+  ) => {
+    const res = await api.put<ISuccessMessage, ApiResponse>(
+      `/Students/${studentId}/GlobishPlus`,
+      payload
+    )
+    return res
+  }
   return {
     getStudentInfoById,
     getAllStudents,
@@ -170,5 +196,8 @@ export default function useStudentApi() {
     loginByStudentId,
     addPackageItemByStudentId,
     getStudentGroupClass,
+    forgotPassword,
+    getStudentGlobishPlusById,
+    updateStudentGlobishPlusById,
   }
 }

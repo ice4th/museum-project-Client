@@ -56,7 +56,7 @@ onMounted(() => {
                   />
                 </template>
               </V-Block>
-              <div class="advanced-box">
+              <div class="advanced-box p-3">
                 <V-Button
                   icon="feather:log-in"
                   color="primary"
@@ -66,26 +66,6 @@ onMounted(() => {
                   @click="loginAsStudent"
                   >Login as Student</V-Button
                 >
-                <div v-if="studentInfo">
-                  <V-Field>
-                    <label>Change Country</label>
-                    <V-Control>
-                      <div class="select">
-                        <select
-                          v-model="studentInfo.country"
-                          @change="
-                            updateStudentProfile({
-                              country: $event.target.value,
-                            })
-                          "
-                        >
-                          <option value="th">TH</option>
-                          <option value="vn">VN</option>
-                        </select>
-                      </div>
-                    </V-Control>
-                  </V-Field>
-                </div>
               </div>
 
               <div class="account-menu">
@@ -94,7 +74,7 @@ onMounted(() => {
                   class="account-menu-item"
                 >
                   <i aria-hidden="true" class="lnil lnil-user-alt"></i>
-                  <span>General</span>
+                  <span>Profile</span>
                   <span class="end">
                     <i aria-hidden="true" class="fas fa-arrow-right"></i>
                   </span>
@@ -103,7 +83,7 @@ onMounted(() => {
                   :to="{ name: 'students-:id-packages' }"
                   class="account-menu-item"
                 >
-                  <i aria-hidden="true" class="lnil lnil-book"></i>
+                  <i aria-hidden="true" class="lnil lnil-package"></i>
                   <span>Packages</span>
                   <span class="end">
                     <i aria-hidden="true" class="fas fa-arrow-right"></i>
@@ -113,7 +93,7 @@ onMounted(() => {
                   :to="{ name: 'students-:id-private-class' }"
                   class="account-menu-item"
                 >
-                  <i aria-hidden="true" class="lnil lnil-user-alt"></i>
+                  <i aria-hidden="true" class="lnil lnil-classroom"></i>
                   <span>Private Class</span>
                   <span class="end">
                     <i aria-hidden="true" class="fas fa-arrow-right"></i>
@@ -130,10 +110,20 @@ onMounted(() => {
                   </span>
                 </RouterLink>
                 <RouterLink
+                  :to="{ name: 'students-:id-globish-plus' }"
+                  class="account-menu-item"
+                >
+                  <i aria-hidden="true" class="lnil lnil-global"></i>
+                  <span>Globish Plus</span>
+                  <span class="end">
+                    <i aria-hidden="true" class="fas fa-arrow-right"></i>
+                  </span>
+                </RouterLink>
+                <RouterLink
                   :to="{ name: 'students-:id-family-account' }"
                   class="account-menu-item"
                 >
-                  <i aria-hidden="true" class="lnil lnil-users"></i>
+                  <i aria-hidden="true" class="lnil lnil-hierchy-alt"></i>
                   <span>Family Account</span>
                   <span class="end">
                     <i aria-hidden="true" class="fas fa-arrow-right"></i>
