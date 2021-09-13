@@ -25,7 +25,6 @@ const x = 'test&#013;\ntesttest&#013;\ntesttest&#013;\ntest'
 
 onMounted(async () => {
   await fetchStudentGroupClass(route.params.id)
-  console.log(data)
 })
 </script>
 
