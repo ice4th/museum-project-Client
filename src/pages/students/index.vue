@@ -29,9 +29,10 @@ const headers: IDatatableHeader = [
   { key: 'fullname', label: 'Fullname', isRaw: true },
   { key: 'nickname', label: 'Nickname' },
   { key: 'partners', label: 'Partner' },
-  { key: 'globishLevel', label: 'level', isRaw: true },
   { key: 'email', label: 'Email' },
   { key: 'phone', label: 'Phone' },
+  { key: 'ticketUsed', label: 'Used', isRaw: true, isCenter: true },
+  { key: 'ticketAvailable', label: 'Remain', isRaw: true, isCenter: true },
   { key: 'action', label: 'Action', isRaw: true, isEnd: true },
 ]
 </script>
@@ -45,6 +46,25 @@ const headers: IDatatableHeader = [
       :data="data"
       :total="total"
     >
+      <template #thead>
+        <tr>
+          <th scope="col" rowspan="2" class="has-text-centered">ID</th>
+          <th scope="col" rowspan="2"></th>
+          <th scope="col" rowspan="2">Fullname</th>
+          <th scope="col" rowspan="2">Nickname</th>
+          <th scope="col" rowspan="2">Partner</th>
+          <th scope="col" rowspan="2">E-mail</th>
+          <th scope="col" rowspan="2">Phone</th>
+          <th scope="col" colspan="2" class="has-text-centered">Ticket</th>
+          <th scope="col" rowspan="2" colspan="2" class="has-text-centered">
+            Action
+          </th>
+        </tr>
+        <tr>
+          <th class="has-text-centered">Used</th>
+          <th class="has-text-centered">Remain</th>
+        </tr>
+      </template>
       <template #avatar="{ value }">
         <V-Avatar
           size="small"
@@ -61,14 +81,17 @@ const headers: IDatatableHeader = [
       <template #partners="{ value }">
         {{ value?.length ? displayPartner(value) : '-' }}
       </template>
-      <template #globishLevel="{ value }">
-        {{ value.lastUsedPackage?.globishLevel || '-' }}
-      </template>
       <template #email="{ value }">
         {{ value || '-' }}
       </template>
       <template #phone="{ value }">
         {{ value || '-' }}
+      </template>
+      <template #ticketUsed="{ value }">
+        {{ value.ticket.used }}
+      </template>
+      <template #ticketAvailable="{ value }">
+        {{ value.ticket.available }}
       </template>
       <template #action="{ value }">
         <V-Dropdown spaced right>
@@ -141,6 +164,11 @@ td {
   align-items: center;
   > a {
     margin-left: 10px;
+  }
+}
+tr {
+  th {
+    vertical-align: middle;
   }
 }
 </style>
