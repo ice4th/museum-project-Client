@@ -143,10 +143,15 @@ export default function useRoleDetails() {
 
     state.menuLoading = false
   }
-  const fetchOption = async () => {
+  const fetchTeamsOption = async (search?: string) => {
     state.loadingOption = true
-    state.teamOptions = await getTeams()
+    state.teamOptions = await getTeams({
+      currentPage: 1,
+      perPage: 25,
+      search,
+    })
     state.loadingOption = false
+    return state.teamOptions
   }
   const fetchRole = async (id: number) => {
     state.loadingRole = true
@@ -172,7 +177,7 @@ export default function useRoleDetails() {
   onMounted(async () => {
     await fetchRole(parseInt(`${route.params.id}`))
     setMenuItems()
-    fetchOption()
+    fetchTeamsOption()
   })
 
   return {
@@ -180,5 +185,7 @@ export default function useRoleDetails() {
     // Computed
     selectedItems,
     userData,
+    // Methods
+    fetchTeamsOption,
   }
 }

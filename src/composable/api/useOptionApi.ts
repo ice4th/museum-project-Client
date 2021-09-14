@@ -108,8 +108,7 @@ export default function useOptionApi() {
         search || ''
       }`
     )
-    state.teamOptions = checkResponseStatus(res).data || []
-    return state.teamOptions
+    return checkResponseStatus(res)?.data || []
   }
 
   const getQuizzes = async (type: QuizType): Promise<QuizOption[]> => {

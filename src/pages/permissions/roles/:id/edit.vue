@@ -23,7 +23,7 @@ const {
   selectedItems,
   disabledCreateBtn,
   // methods
-  fetchOption,
+  fetchTeamsOption,
   onUpdate,
   onReset,
 } = useUpdateRole()
@@ -102,8 +102,8 @@ const {
             <V-Control icon="feather:search" :loading="loadingOption">
               <SelectOption
                 v-model="teamId"
-                :callback-search="fetchOption"
-                label-by="name"
+                :callback-search="fetchTeamsOption"
+                tract-by="name"
                 value-prop="id"
                 placeholder="Select team"
               />

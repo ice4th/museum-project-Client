@@ -53,6 +53,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
   callbackSearch: {
     type: Function,
     default: () => [],
@@ -80,6 +84,7 @@ onMounted(() => {
     :track-by="trackBy || labelBy"
     :value-prop="valueProp"
     :no-options-text="'search...'"
+    :disabled="readonly"
     clear-on-select
     clear-on-search
     @select="emit('update:modelValue', $event)"

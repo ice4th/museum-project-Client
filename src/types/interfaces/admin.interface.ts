@@ -45,6 +45,8 @@ export interface IAdminInfo {
   dob: string
   phone: string
   email: string
+  status?: number
+  lastLogin?: Date
   country: string
   manageCountry: string
   teamId: number
