@@ -26,12 +26,15 @@ export interface IAdminDetail {
   id: number
   name: string
   fullname: string
+  firstname: string
+  lastname: string
   avatar: string
   phone: string
   email: string
   teamName: string
   roleName: string
   country: AdminCountry
+  manageCountry: string[]
   status: AdminStatus
 }
 

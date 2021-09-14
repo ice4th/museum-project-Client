@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { countryFlag } from '/@src/helpers/student.helper'
+
 const props = defineProps({
   rows: {
     type: Array,
@@ -11,6 +13,7 @@ const props = defineProps({
   <div v-for="row in props.rows" :key="row.id" class="flex-table-item">
     <div class="flex-table-cell is-media is-grow">
       <V-Avatar
+        :badge="countryFlag[row.country]"
         :picture="row.avatar ? row.avatar : undefined"
         :initials="row.initials"
         :color="row.color || undefined"
@@ -35,7 +38,7 @@ const props = defineProps({
         >{{ row.status === 1 ? 'Active' : 'Deactive' }}</span
       >
     </div>
-    <div class="flex-table-cell foo" data-th="Manage">
+    <div class="flex-table-cell" data-th="Manage">
       <V-Tags>
         <V-Tag
           v-for="country in row.manageCountry"
@@ -52,9 +55,3 @@ const props = defineProps({
     </div>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.foo {
-  justify-content: space-between;
-}
-</style>

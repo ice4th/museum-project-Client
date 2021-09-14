@@ -88,6 +88,7 @@ export default function useRoleDetails() {
       return {
         lastLogin: toFormat(lastLogin, 'MMM D, YYYY HH:mm'),
         manageCountry: item.manageCountry,
+        country: item.country,
         avatar: item.avatar,
         status: item.status,
         email: item.email,
