@@ -36,6 +36,12 @@ const mainPackageInfo = ref<IUpdateAddonPackage>(
   }
 )
 
+const mainPackageChange = (value: number, option: PackageOption) => {
+  console.log(value, option)
+  mainPackageInfo.value.packageName = option.packageName
+  mainPackageInfo.value.packageTicket = option.ticket
+}
+
 const addMainPackage = () => {
   // const mainPackageData = {
   //   // ...props.mainPackage,
@@ -65,6 +71,7 @@ const addMainPackage = () => {
               :callback-search="getPackages"
               label-by="packageName"
               value-prop="id"
+              @update:modelValue="mainPackageChange"
             />
           </V-Control>
         </V-Field>

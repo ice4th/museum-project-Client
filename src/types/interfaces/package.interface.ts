@@ -187,6 +187,8 @@ export interface IUpdateAddonPackage {
   idx: number
   dependonPackageId?: number
   dependonTicketUse?: number
+  packageName?: string
+  packageTicket?: number
 }
 
 export interface ICreatePackageGroup {

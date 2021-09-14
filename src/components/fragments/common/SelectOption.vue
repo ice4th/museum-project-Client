@@ -63,6 +63,10 @@ const emit = defineEmits(['update:modelValue'])
 const searchOption = async (query?: string) => {
   return await props.callbackSearch(query)
 }
+const select = (value, option) => {
+  console.log(value, option)
+  emit('update:modelValue', value, option)
+}
 onMounted(() => {
   searchOption()
 })
@@ -74,7 +78,6 @@ onMounted(() => {
     :placeholder="placeholder"
     :options="searchOption"
     :filterResults="false"
-    :resolve-on-load="false"
     :delay="0"
     :searchable="searchable"
     :label="labelBy"
@@ -83,7 +86,7 @@ onMounted(() => {
     :no-options-text="'search...'"
     clear-on-select
     clear-on-search
-    @select="emit('update:modelValue', $event)"
+    @select="select"
   >
     <template #singlelabel="{ value }">
       <div class="multiselect-single-label">

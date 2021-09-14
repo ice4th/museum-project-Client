@@ -31,7 +31,12 @@ const addonPackage = ref<IUpdateAddonPackage>({
 })
 
 // TODO: check ticket from depenon package depenonPackageInfo?.ticket
-const maxTicket = ref(5)
+const maxTicket = computed(
+  () =>
+    props.groupPackages.find(
+      (pk) => pk.packageId === addonPackage.value.dependonPackageId
+    )?.packageTicket || 0
+)
 
 const showDependOnSelector = ref(false)
 // const allGroupPackages = ref<PackageOption[]>(
@@ -85,17 +90,16 @@ const showDependOnSelector = ref(false)
 //     undefined
 //   )
 // })
-const findDepenonPackageSelector = async (search: string) => {
-  // Promise.all([
-  //   props.groupPackages.map(async (pk) => {
-  //     const data = await getPackages(search)
-
-  //   }),
-  // ])
-  // TODO: filter package in package group
+const addonPackageChange = (value: number, option: PackageOption) => {
+  addonPackage.value.packageName = option.packageName
+  addonPackage.value.packageTicket = option.ticket
+}
+const findAddonPackages = async (search: string) => {
   const res = await getPackages(search)
-  // res.filter(pk => pk)
-  return res
+  const filter = await res.filter((pk) =>
+    props.groupPackages.every((gp) => gp.packageId !== pk.id)
+  )
+  return filter
 }
 
 const updateAddonPackage = () => {
@@ -104,7 +108,7 @@ const updateAddonPackage = () => {
 
 watch(
   () => showDependOnSelector.value,
-  (value: boolean) => {
+  async (value: boolean) => {
     if (!value) {
       addonPackage.value = {
         ...addonPackage.value,
@@ -143,9 +147,10 @@ watch(
             <SelectOption
               v-model="addonPackage.packageId"
               placeholder="Select a main package"
-              :callback-search="getPackages"
+              :callback-search="findAddonPackages"
               label-by="packageName"
               value-prop="id"
+              @update:modelValue="addonPackageChange"
             />
           </V-Control>
         </V-Field>
@@ -164,22 +169,32 @@ watch(
       </div>
 
       <template v-if="showDependOnSelector">
-        <div class="column is-9">
+        <div class="column is-8">
           <V-Field>
             <label>Depend on package</label>
             <V-Control>
-              <SelectOption
+              <Multiselect
                 v-model="addonPackage.dependonPackageId"
                 placeholder="select depend on package"
-                :callback-search="findDepenonPackageSelector"
-                label-by="packageName"
-                value-prop="id"
+                :options="groupPackages"
+                track-by="packageName"
+                value-prop="packageId"
               >
-              </SelectOption>
+                <template #singlelabel="{ value }">
+                  <div class="multiselect-single-label">
+                    ({{ value.packageId }}) {{ value.packageName }}
+                  </div>
+                </template>
+                <template #option="{ option }">
+                  <span class="select-option-text">
+                    ({{ option.packageId }}) {{ option.packageName }}
+                  </span>
+                </template>
+              </Multiselect>
             </V-Control>
           </V-Field>
         </div>
-        <div class="column is-3">
+        <div class="column is-4">
           <V-Field>
             <label>Ticket used (max: {{ maxTicket }})</label>
             <V-Control icon="feather:hash">
@@ -190,6 +205,10 @@ watch(
                 type="number"
                 class="input"
                 placeholder=""
+                @change="
+                  addonPackage.dependonTicketUse =
+                    +addonPackage.dependonTicketUse
+                "
               />
             </V-Control>
           </V-Field>
