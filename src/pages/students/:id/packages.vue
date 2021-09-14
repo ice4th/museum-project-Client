@@ -298,7 +298,6 @@ const addPackagePayload = ref<IAddPackageStudent>({
   packageId: 0,
 })
 const isOpenAddPackagePopup = ref(false)
-const packagesList = ref<PackageOption[]>([])
 const toggleAddPackagePopup = () => {
   isOpenAddPackagePopup.value = false
   addPackagePayload.value = {
@@ -307,9 +306,6 @@ const toggleAddPackagePopup = () => {
     packageId: 0,
   }
 }
-onBeforeMount(async () => {
-  packagesList.value = await getPackages()
-})
 const submitAddPackage = async () => {
   const res = await addPackage(addPackagePayload.value)
   if (res) {
@@ -389,27 +385,19 @@ const submitAddPackage = async () => {
     >
       <template #content>
         <form class="modal-form">
-          <V-Control>
-            <Multiselect
-              v-model="addPackagePayload.packageId"
-              placeholder="Select a package"
-              :options="packagesList"
-              :searchable="true"
-              track-by="packageName"
-              value-prop="id"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  ({{ value.id }}) {{ value.packageName }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  ({{ option.id }}) {{ option.packageName }}
-                </span>
-              </template>
-            </Multiselect>
-          </V-Control>
+          <V-Field>
+            <label>Package</label>
+            <V-Control>
+              <SelectOption
+                v-model="addPackagePayload.packageId"
+                placeholder="Select a package"
+                :callback-search="getPackages"
+                label-by="packageName"
+                value-prop="id"
+              >
+              </SelectOption>
+            </V-Control>
+          </V-Field>
           <v-date-picker
             v-model="addPackagePayload.startDate"
             color="orange"
