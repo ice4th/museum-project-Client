@@ -1,9 +1,11 @@
 <script setup lang="ts">
 // PackageGroupForm Component
-
 import type { PropType } from 'vue'
-import { defineProps, ref } from 'vue'
-import type { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
+import { watch, onBeforeMount, defineProps, ref } from 'vue'
+import type {
+  IPackageGroupInfo,
+  IUpdateAddonPackage,
+} from '/@src/types/interfaces/package.interface'
 
 const props = defineProps({
   title: {
@@ -11,16 +13,14 @@ const props = defineProps({
     default: 'Create Package Group',
   },
   packageGroup: {
-    type: Object as PropType<IUpdateAddonPackage[]>,
+    type: Object as PropType<IPackageGroupInfo[]>,
     default: undefined,
   },
 })
 const showMainPackageSection = ref(true)
 const showAddonSection = ref(false)
 const mainPackage = ref<IUpdateAddonPackage | undefined>(undefined)
-const packageGroupInternal = ref<IUpdateAddonPackage[]>(
-  props.packageGroup || []
-)
+const packageGroupInternal = ref<IUpdateAddonPackage[]>([])
 const emit = defineEmits(['create', 'update-main-package'])
 const isMainPackage = (packageId: number) => {
   return mainPackage.value?.packageId === packageId
@@ -62,6 +62,38 @@ const swapOrderIndex = () => {
     return { ...addon, idx: index + 1 }
   })
 }
+watch(
+  () => props.packageGroup,
+  () => {
+    const mainPk = props.packageGroup?.find((pk) => pk.isMainPackage)
+    packageGroupInternal.value =
+      props.packageGroup?.map<IUpdateAddonPackage[]>((pk) => {
+        return {
+          packageGroupId: pk.id,
+          packageId: pk.packageId,
+          generateTicket: pk.generateTicket,
+          idx: pk.idx,
+          dependonPackageId: pk.dependonPackageId,
+          dependonTicketUse: pk.dependonTicketUse,
+          packageName: pk.packageInfo.packageName,
+          packageTicket: pk.packageInfo.ticket,
+        }
+      }) || []
+    if (mainPk) {
+      mainPackage.value = {
+        packageGroupId: mainPk.id,
+        packageId: mainPk.packageId,
+        generateTicket: mainPk.generateTicket,
+        idx: mainPk.idx,
+        dependonPackageId: mainPk.dependonPackageId,
+        dependonTicketUse: mainPk.dependonTicketUse,
+        packageName: mainPk.packageInfo.packageName,
+        packageTicket: mainPk.packageInfo.ticket,
+      }
+      showMainPackageSection.value = false
+    }
+  }
+)
 </script>
 
 <template>

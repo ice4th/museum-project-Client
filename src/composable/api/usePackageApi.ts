@@ -46,7 +46,7 @@ export default function usePackageApi() {
     packageId: number
   ): Promise<IPackageGroupInfo[]> => {
     const res = await api.get<IPackageGroupInfo[], ApiResponse>(
-      `/PackageGroups/Packages/${packageId}`
+      `/Packages/${packageId}/PackageGroups`
     )
     return catchReponse(res) || []
   }
@@ -80,7 +80,7 @@ export default function usePackageApi() {
   // remove alll package in group by main package
   const deletePackageGroupByMainPackageId = async (packageId: number) => {
     return await api.delete<any, ApiResponse>(
-      `/PackageGroups/Packages/${packageId}`
+      `/Packages/${packageId}/PackageGroups`
     )
   }
 

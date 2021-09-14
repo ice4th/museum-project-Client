@@ -133,8 +133,9 @@ const confirmRemovePackage = () => {
               </RouterLink>
               <RouterLink
                 :to="{
-                  name: 'products-packages-groups-:packageid-edit',
+                  name: 'products-packages-groups-:packageid',
                   params: { packageid: `${value.packageId}` },
+                  hash: '#edit',
                 }"
                 role="menuitem"
                 class="dropdown-item is-media"

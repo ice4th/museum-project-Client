@@ -14,31 +14,6 @@ useHead({
 })
 
 const { createPackageGroup } = useManagePackageGroup()
-
-// const showDependOnSelector = ref(false)
-// const {
-//   addonPackages,
-//   addMainPackage,
-//   currentAddonPackage,
-//   createPackageGroup,
-//   dependOnPackageList,
-//   displayPackageNameById,
-//   displayPackageImageById,
-//   mainPackageId,
-//   mainSelectedPackage,
-//   addAddonPackage,
-//   showAddonSection,
-//   removePackage,
-//   showMainPackageSection,
-//   toggleShowAddonPackageSection,
-//   toggleShowMainPackageSection,
-// } = useManagePackageGroup()
-
-// const swapOrderIndex = () => {
-//   addonPackages.value = addonPackages.value.map((addon, index) => {
-//     return { ...addon, idx: index + 1 }
-//   })
-// }
 </script>
 
 <template>

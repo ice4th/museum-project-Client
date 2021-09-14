@@ -2,12 +2,13 @@
  * useCreatePackage Composition API
  */
 
-import { reactive, toRefs } from 'vue'
+import { computed, reactive, toRefs } from 'vue'
 import {
   ICreateAddonPackage,
+  IPackageGroupInfo,
   IUpdateAddonPackage,
 } from '/@src/types/interfaces/package.interface'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import usePackageApi from '../api/usePackageApi'
 import { errMessage } from '/@src/helpers/filter.helper'
 import useNotyf from '../useNotyf'
@@ -18,12 +19,22 @@ import useNotyf from '../useNotyf'
 export interface IAddonPackageWithType extends ICreateAddonPackage {
   type: 'main' | 'addon'
 }
-export interface IUseCreatePackageState {}
+export interface IUseCreatePackageState {
+  packageGroupInfo: IPackageGroupInfo[]
+}
 export default function useManagePackageGroup() {
-  const state = reactive<IUseCreatePackageState>({})
+  const state = reactive<IUseCreatePackageState>({
+    packageGroupInfo: [],
+  })
   const notyf = useNotyf()
+  const route = useRoute()
   const router = useRouter()
-  const { createPackageGroup: createPackageGroupApi } = usePackageApi()
+
+  const isEditPage = computed(() => route.hash === '#edit')
+  const {
+    createPackageGroup: createPackageGroupApi,
+    getAddonPackageByMainPackageId,
+  } = usePackageApi()
 
   // const displayPackageNameById = (id: number) => {
   //   return state.packages.find((pk) => pk.id === id)?.packageName || ''
@@ -123,9 +134,16 @@ export default function useManagePackageGroup() {
     notyf.error(errMessage(message))
   }
 
+  const fetchPackageInfo = async (id: number) => {
+    const res = await getAddonPackageByMainPackageId(id)
+    state.packageGroupInfo = res
+  }
+
   return {
     ...toRefs(state),
+    isEditPage,
     createPackageGroup,
+    fetchPackageInfo,
     // addMainPackage,
     // addAddonPackage,
     // displayPackageNameById,
