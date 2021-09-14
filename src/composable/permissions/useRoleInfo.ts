@@ -78,18 +78,6 @@ export default function useRoleInfo() {
     state.rolePagination = pagination
     state.isLoading = false
   }
-  const onViewDetails = async (id: number) => {
-    await router.push({
-      name: 'permissions-role-:id-details',
-      params: { id },
-    })
-  }
-  const onUpdateRole = async (id: number) => {
-    await router.push({
-      name: 'permissions-role-:id-update',
-      params: { id },
-    })
-  }
   const onDeleteRole = async () => {
     if (state.deleteActionItem?.id) {
       const { status, message } = await deleteRole(state.deleteActionItem.id)
@@ -124,8 +112,6 @@ export default function useRoleInfo() {
     // variable
     roleTableHeaders,
     // methods
-    onViewDetails,
-    onUpdateRole,
     onDeleteRole,
   }
 }

@@ -74,7 +74,6 @@ onMounted(() => {
     :placeholder="placeholder"
     :options="searchOption"
     :filterResults="false"
-    :resolve-on-load="false"
     :delay="0"
     :searchable="searchable"
     :label="labelBy"

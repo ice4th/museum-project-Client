@@ -81,13 +81,13 @@ export const codeSubsidebarList: SubsideBarItemDetail[] = [
 
 export const permissionSubsidebarList: SubsideBarItemDetail[] = [
   {
-    routeName: 'permissions-role',
+    routeName: 'permissions-roles',
     label: 'Roles Information',
     icon: '<i class="lnil lnil-books mr-2"></i>',
     action: 'VIEW_LIST_OF_ROLE',
   },
   {
-    routeName: 'permissions-role-create',
+    routeName: 'permissions-roles-create',
     label: 'Create Role',
     icon: '<i class="lnil lnil-books mr-2"></i>',
     action: 'CREATE_ROLE',

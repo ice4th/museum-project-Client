@@ -24,7 +24,7 @@ const props = defineProps({
 })
 const customDate = ref(false)
 const addTicketInput = ref<IAddTicketStudent>({
-  packageItemId: props.packageItem?.packageId || 0,
+  packageItemId: props.packageItem?.id || 0,
   type: 'package',
   amount: 1,
   comment: '',

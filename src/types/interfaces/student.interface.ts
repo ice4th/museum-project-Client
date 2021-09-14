@@ -66,6 +66,10 @@ export interface IStudentTicketResult {
 
 export interface IStudentList extends IStudentInfo {
   partners?: IPartner[]
+  ticket: {
+    available: number
+    used: number
+  }
 }
 
 export interface IUpdateStudentProfile {
