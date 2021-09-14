@@ -12,12 +12,11 @@ export default function useManageStudentFamuly() {
     isOpenCreateFamilyPopup: false,
     isOpenDeleteConfirmPopup: false,
   })
-  const route = useRoute()
-  const getStudents = useOptionApi()
+  // const route = useRoute()
+  // const getStudents = useOptionApi()
 
-  const fectAllStudent = async () => {
-    if (route.query.students) {
-    }
+  const addStdFam = () => {
+    // Api post stdFam
   }
 
   const deleteMember = () => {
@@ -33,5 +32,5 @@ export default function useManageStudentFamuly() {
     { key: 'phone', label: 'Phone' },
     { key: 'action', label: 'Action', isCenter: true, isRaw: true },
   ]
-  return { ...toRefs(state), familyTableHeaders, deleteMember }
+  return { ...toRefs(state), familyTableHeaders, deleteMember, addStdFam }
 }

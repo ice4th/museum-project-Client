@@ -141,6 +141,10 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>('PackageItems', payload)
   }
 
+  // const addStudentFamily = async (studentId: number,data:) => {
+  //   return await api.post<any, ApiResponse>(`Students/${studentId}/Families`,)
+  // }
+
   return {
     getStudentInfoById,
     getAllStudents,

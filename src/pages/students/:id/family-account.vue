@@ -5,6 +5,7 @@ const {
   isOpenCreateFamilyPopup,
   isOpenDeleteConfirmPopup,
   familyTableHeaders,
+  addStdFam,
   deleteMember,
   students,
 } = useManageStudentFamily()
@@ -101,7 +102,7 @@ const familyData = [
         />
       </div>
       <div class="column is-6">
-        <V-Button color="primary">Add</V-Button>
+        <V-Button color="primary" @click="addStdFam">Add</V-Button>
       </div>
     </div>
 
