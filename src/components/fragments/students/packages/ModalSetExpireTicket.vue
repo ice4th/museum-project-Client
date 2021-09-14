@@ -31,7 +31,7 @@ const props = defineProps({
   },
 })
 const expirePackageInput = ref<IExpireTicketStudent>({
-  packageItemId: props.packageItem?.packageId || 0,
+  packageItemId: props.packageItem?.id || 0,
   comment: '',
   expireDate: toFormat(props.expireDate, 'YYYY-MM-DD'),
 })
