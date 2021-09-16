@@ -9,7 +9,7 @@ import type {
 } from '/@src/types/interfaces/student.interface'
 import moment from 'moment-timezone'
 import _ from 'lodash'
-import { GlobishLevel } from '/@src/types/enums/package.enum'
+import { GLevel } from '/@src/types/enums/package.enum'
 const props = defineProps({
   studentInfo: {
     type: Object as PropType<IStudentInfo>,
@@ -25,7 +25,7 @@ const props = defineProps({
     default: () => {},
   },
 })
-const globishLevelItems = Object.entries(GlobishLevel).map(([key, value]) => {
+const globishLevelItems = Object.entries(GLevel).map(([key, value]) => {
   return { key: key.replace(/_/g, ' '), value }
 })
 const { y } = useWindowScroll()
@@ -110,6 +110,60 @@ const removeValidation = (key: string) => {
       </div>
     </div>
     <div class="form-body">
+      <!-- Ticket Info -->
+      <div class="fieldset">
+        <div class="fieldset-heading">
+          <h4>Ticket Info</h4>
+          <p>Information of ticket</p>
+        </div>
+        <table class="table is-fullwidth table-size">
+          <thead>
+            <tr>
+              <th scope="col">Ticket ID</th>
+              <th scope="col" class="has-text-centered">Package Item ID</th>
+              <th scope="col" class="has-text-centered">Feature Group ID</th>
+              <th scope="col" class="has-text-centered">Globish Level</th>
+              <th scope="col" class="has-text-centered">Package Name</th>
+              <th scope="col" class="has-text-centered">Start Date</th>
+              <th scope="col" class="has-text-centered">Expire Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(ticket, idxTicket) in internalStudentGbpInfo?.tickets"
+              :key="`ticket-${idxTicket}`"
+            >
+              <td class="has-text-centered">{{ ticket?.id }}</td>
+              <td class="has-text-centered">{{ ticket?.packageItemId }}</td>
+              <td class="has-text-centered">{{ ticket?.featureGroupId }}</td>
+              <td class="has-text-centered">
+                {{
+                  Object.keys(GLevel).find(
+                    (key) => GLevel[key] === ticket?.globishLevel
+                  ) || '-'
+                }}
+              </td>
+              <td class="has-text-centered">
+                ({{ ticket.packageId }}) {{ ticket?.packageName }}
+              </td>
+              <td class="has-text-centered">
+                {{
+                  (ticket?.startDate &&
+                    moment(ticket?.startDate).format('YYYY-MM-DD')) ||
+                  '-'
+                }}
+              </td>
+              <td class="has-text-centered">
+                {{
+                  (ticket?.expireDate &&
+                    moment(ticket?.expireDate).format('YYYY-MM-DD')) ||
+                  '-'
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <!-- Student Info -->
       <div class="fieldset">
         <div class="fieldset-heading">
@@ -402,4 +456,10 @@ const removeValidation = (key: string) => {
 </template>
 <style lang="scss" scoped>
 @import 'src/scss/abstracts/_variables.scss';
+.account-wrapper .account-box.is-form .form-body .fieldset {
+  max-width: 750px;
+}
+.table-size {
+  font-size: 12px;
+}
 </style>
