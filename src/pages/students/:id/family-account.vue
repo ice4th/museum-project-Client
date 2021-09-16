@@ -5,9 +5,13 @@ const {
   isOpenCreateFamilyPopup,
   isOpenDeleteConfirmPopup,
   familyTableHeaders,
-  addStdFam,
+  addFamily,
   deleteMember,
-  students,
+  student,
+  family,
+  addStdToFam,
+  familyInfo,
+  memberInfo,
 } = useManageStudentFamily()
 const { getStudents } = useOptionApi()
 // family-account Component
@@ -32,7 +36,7 @@ const familyData = [
 
 <template>
   <!-- student create button,student family list -> (inlist)>>add,delete student  -->
-
+  <!-- Creat family -->
   <V-modal
     :open="isOpenCreateFamilyPopup"
     title="Create student family"
@@ -46,6 +50,7 @@ const familyData = [
           <label>Name</label>
           <V-Control>
             <input
+              v-model="family.name"
               type="text"
               class="input is-primary-focus"
               placeholder="Student family"
@@ -57,6 +62,8 @@ const familyData = [
           <label>Note</label>
           <V-Control>
             <textarea
+              v-model="family.note"
+              type="text"
               class="textarea is-primary-focus"
               rows="2"
               placeholder="Note"
@@ -67,17 +74,15 @@ const familyData = [
       </form>
     </template>
     <template #action>
-      <V-Button color="primary" @click="isOpenCreateFamilyPopup = false"
-        >Submit</V-Button
-      >
+      <V-Button color="primary" @click="addFamily">Submit</V-Button>
     </template>
   </V-modal>
-
-  <!-- family list -->
+  <!-- familylist page -->
   <div class="account-box">
     <div class="is-flex is-justify-content-space-between">
       <div class="left">
-        <h2 class="title is-5 is-narrow is-bolder">My Family Account</h2>
+        <h2 class="title is-5 is-narrow is-bolder">familyinfo.name</h2>
+        <p>note</p>
       </div>
       <div class="right">
         <V-Button
@@ -93,22 +98,22 @@ const familyData = [
     <div class="columns">
       <div class="column is-6">
         <SelectOption
-          v-model="students"
+          v-model="student"
           :callback-search="getStudents"
           label-by="fullnameTh"
           track-by="fullnameTh"
           value-prop="id"
-          placeholder="Select student for send package (Search by name)"
+          placeholder="Select student to add family (Search by name,id)"
         />
       </div>
       <div class="column is-6">
-        <V-Button color="primary" @click="addStdFam">Add</V-Button>
+        <V-Button color="primary" @click="addStdToFam">Add</V-Button>
       </div>
     </div>
-
+    <!-- family list -->
     <Datatable
       :headers="familyTableHeaders"
-      :data="familyData"
+      :data="memberInfo"
       :can-searchable="false"
       hide-per-page
       hide-pagination

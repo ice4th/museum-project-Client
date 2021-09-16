@@ -1,3 +1,4 @@
+import exp from 'constants'
 import {
   StudentCountry,
   StudentGender,
@@ -87,4 +88,53 @@ export interface IUpdateStudentProfile {
   device?: string
   occupation?: string
   file?: File
+}
+
+export interface ICreateFamily {
+  name?: string
+  note?: string
+}
+
+export interface IFamilyInfo {
+  name: string
+  note: string
+  createdAt: string
+  updatedAt: string
+  id: string
+  students: IFamilyMemberInfo[]
+}
+
+export interface IFamilyMemberInfo {
+  id: number
+  password: string
+  bcryptPassword: string
+  personalTitle: string
+  fullnameTh: string
+  fullnameEn: string
+  firstnameTh: string
+  firstnameEn: string
+  lastnameTh: string
+  lastnameEn: string
+  middlenameEn: string
+  nicknameTh: string
+  nicknameEn: string
+  email: string
+  phone: string
+  gender: StudentGender
+  dob: string
+  address: number
+  lastLogin: string
+  interest: string
+  facebook: string
+  avatar: string
+  country: StudentCountry
+  language: StudentLanguage
+  timezone: string
+  type: number
+  cefr: string
+  globishLevel: string
+  referrerCode: string
+  refereeCode: string
+  createdAt: string
+  updatedAt: string
 }

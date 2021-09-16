@@ -13,6 +13,8 @@ import {
   IStudentList,
   IUpdateStudentProfile,
   IStudentInfo,
+  ICreateFamily,
+  IFamilyInfo,
 } from '/@src/types/interfaces/student.interface'
 import {
   IAddTicketStudent,
@@ -141,9 +143,30 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>('PackageItems', payload)
   }
 
-  // const addStudentFamily = async (studentId: number,data:) => {
-  //   return await api.post<any, ApiResponse>(`Students/${studentId}/Families`,)
-  // }
+  const getStudentByFamily = async (
+    studentId: number
+  ): Promise<IFamilyInfo | null> => {
+    const res = await api.get<IFamilyInfo, ApiResponse>(
+      `/Students/${studentId}/Families`
+    )
+    return catchReponse(res)
+  }
+
+  const addStudentFamily = async (
+    studentId: number,
+    familyForm: ICreateFamily
+  ) => {
+    return await api.post<any, ApiResponse>(
+      `Students/${studentId}/Families`,
+      familyForm
+    )
+  }
+
+  const addStudentToFamily = async (studentId: number, familyId: number) => {
+    return api.post<any, ApiResponse>(
+      `Students/${studentId}/Families/${familyId}/Members`
+    )
+  }
 
   return {
     getStudentInfoById,
@@ -161,5 +184,8 @@ export default function useStudentApi() {
     redeemPackageByStudentId,
     loginByStudentId,
     addPackageItemByStudentId,
+    getStudentByFamily,
+    addStudentToFamily,
+    addStudentFamily,
   }
 }
