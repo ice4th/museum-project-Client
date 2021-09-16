@@ -72,6 +72,20 @@ export interface IStudentList extends IStudentInfo {
   }
 }
 
+export interface IStudentPrivateClass {
+  id: number
+  time: number
+  endTime: number
+  coachAttend: Date
+  studentAttend: Date
+  ticketId: number
+  coach: {
+    id: number
+    name: string
+  }
+  packageName: string
+}
+
 export interface IUpdateStudentProfile {
   firstnameTH?: string
   lastnameTH?: string

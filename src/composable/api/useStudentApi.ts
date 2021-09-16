@@ -13,6 +13,7 @@ import {
   IStudentList,
   IUpdateStudentProfile,
   IStudentInfo,
+  IStudentPrivateClass,
 } from '/@src/types/interfaces/student.interface'
 import {
   IAddTicketStudent,
@@ -130,6 +131,17 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>('Redeems/Activate', payload)
   }
 
+  const getStudentPrivateClass = async (
+    studentId: number,
+    params: IPaginationParams
+  ): Promise<IPaginationResponse<IStudentPrivateClass[]>> => {
+    const res = await api.get<
+      IPaginationResponse<IStudentPrivateClass[]>,
+      ApiResponse
+    >(`/Students/${studentId}/PrivateClass`, { params: { ...params } })
+    return catchReponse(res)
+  }
+
   const loginByStudentId = async (studentId: number) => {
     return api.post<
       LoginAsStudentResponse,
@@ -155,6 +167,7 @@ export default function useStudentApi() {
     changePackage,
     deletePackageByPackageItem,
     redeemPackageByStudentId,
+    getStudentPrivateClass,
     loginByStudentId,
     addPackageItemByStudentId,
   }
