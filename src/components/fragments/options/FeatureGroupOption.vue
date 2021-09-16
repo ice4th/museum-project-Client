@@ -35,7 +35,7 @@ onBeforeMount(() => {
   <Multiselect
     v-model="modelValue"
     placeholder="Select Feature Group"
-    track-by="id"
+    track-by="label"
     value-prop="id"
     clear-on-select
     clear-on-search
