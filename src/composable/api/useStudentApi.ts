@@ -11,6 +11,7 @@ import {
   IAddPackageStudent,
 } from '/@src/types/interfaces/package-item.interface'
 import {
+  IStudentPrivateClass,
   IStudentList,
   IUpdateStudentProfile,
   IStudentInfo,
@@ -134,6 +135,17 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>('Redeems/Activate', payload)
   }
 
+  const getStudentPrivateClass = async (
+    studentId: number,
+    params: IPaginationParams
+  ): Promise<IPaginationResponse<IStudentPrivateClass[]>> => {
+    const res = await api.get<
+      IPaginationResponse<IStudentPrivateClass[]>,
+      ApiResponse
+    >(`/Students/${studentId}/PrivateClass`, { params: { ...params } })
+    return catchReponse(res)
+  }
+
   const loginByStudentId = async (studentId: number) => {
     return api.post<
       LoginAsStudentResponse,
@@ -193,6 +205,7 @@ export default function useStudentApi() {
     changePackage,
     deletePackageByPackageItem,
     redeemPackageByStudentId,
+    getStudentPrivateClass,
     loginByStudentId,
     addPackageItemByStudentId,
     getStudentGroupClass,
