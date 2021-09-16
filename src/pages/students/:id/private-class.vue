@@ -31,8 +31,8 @@ const headers: IDatatableHeader = [
             <th scope="col" rowspan="2" class="has-text-centered">ID</th>
             <th scope="col" rowspan="2">Package Name</th>
             <th scope="col" rowspan="2">Coach</th>
-            <th scope="col" rowspan="2">Class Date</th>
-            <th scope="col" rowspan="2">Class Time</th>
+            <th scope="col" rowspan="2">Date</th>
+            <th scope="col" rowspan="2">Time</th>
             <th scope="col" rowspan="2">Coach Attend</th>
             <th scope="col" rowspan="2">Student Attend</th>
           </tr>
@@ -41,19 +41,23 @@ const headers: IDatatableHeader = [
           {{ value.coach.name }}
         </template>
         <template #date="{ value }">
-          {{ moment(value.time).format('L') }}
+          {{ moment(value.time).format('DD/MM/YYYY') }}
         </template>
         <template #time="{ value }">
           {{ moment(value.time).format('HH:mm:ss') }}
         </template>
         <template #coachAttend="{ value }">
           {{
-            moment(value).isValid() ? moment(value).format('L HH:mm:ss') : '-'
+            moment(value).isValid()
+              ? moment(value).format('DD/MM/YYYY HH:mm:ss')
+              : '-'
           }}
         </template>
         <template #studentAttend="{ value }">
           {{
-            moment(value).isValid() ? moment(value).format('L HH:mm:ss') : '-'
+            moment(value).isValid()
+              ? moment(value).format('DD/MM/YYYY HH:mm:ss')
+              : '-'
           }}
         </template>
       </Datatable>
