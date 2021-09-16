@@ -1,7 +1,7 @@
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
-import useStudentApi from '../api/useStudentApi'
-import usePaginationRoute from '../use-pagination-route'
+import useStudentApi from '/@src/composable/api/useStudentApi'
+import usePaginationRoute from '/@src/composable/use-pagination-route'
 import { IStudentPrivateClass } from '/@src/types/interfaces/student.interface'
 interface UseStudentListState {
   data: IStudentPrivateClass[]
