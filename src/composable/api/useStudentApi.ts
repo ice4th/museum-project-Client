@@ -10,10 +10,10 @@ import {
   IAddPackageStudent,
 } from '/@src/types/interfaces/package-item.interface'
 import {
+  IStudentPrivateClass,
   IStudentList,
   IUpdateStudentProfile,
   IStudentInfo,
-  IStudentPrivateClass,
 } from '/@src/types/interfaces/student.interface'
 import {
   IAddTicketStudent,
