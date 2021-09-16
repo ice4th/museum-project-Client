@@ -56,6 +56,8 @@ export interface IAdminInfo {
   teamName: string
   roleId: number
   roleName: string
+  initials?: string
+  color?: string
 }
 
 export interface IFormAdminInfo {
