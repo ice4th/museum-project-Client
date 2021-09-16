@@ -89,16 +89,6 @@ export interface IUpdateStudentProfile {
   file?: File
 }
 
-export interface IStudentGlobishPlusTicket {
-  id: number
-  packageItemId: number
-  featureGroupId: number
-  packageId: number
-  packageName: string
-  productLevel: number
-  startDate: Date
-  expireDate: Date
-}
 export interface IStudentGlobishPlusInfo {
   firstname: string
   lastname: string
@@ -131,4 +121,15 @@ export interface IUpdateStudentGlobishPlusProfile {
   email: string
   globishLevel: number
   featureGroupId: number
+}
+
+export interface IStudentGlobishPlusTicket {
+  id: number
+  packageItemId: number
+  featureGroupId: number
+  packageId: number
+  packageName: string
+  productLevel: number
+  startDate: Date
+  expireDate: Date
 }
