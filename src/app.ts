@@ -7,11 +7,12 @@ import {
   provide,
   App,
 } from 'vue'
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import { createHead } from '@vueuse/head'
 import { createI18n } from './i18n'
 import { createRouter } from './router'
-
+import AppLayout from '/@src/layouts/AppLayout.vue'
+import LandingLayout from '/@src/layouts/LandingLayout.vue'
 import {
   initUserSession,
   userSessionSymbol,
@@ -56,6 +57,8 @@ export async function createApp({ enhanceApp }: VueroAppOptions) {
       provide(userSessionSymbol, session)
       provide(apiSymbol, api)
 
+      const route = useRoute()
+
       /**
        * Here we are creating a render function for our router view with
        * a Transition for the inner component
@@ -70,7 +73,6 @@ export async function createApp({ enhanceApp }: VueroAppOptions) {
       return () => {
         const defaultSlot = ({ Component: _Component }: any) => {
           const Component = resolveDynamicComponent(_Component) as VNode
-
           return [
             h(
               Transition,
@@ -82,9 +84,31 @@ export async function createApp({ enhanceApp }: VueroAppOptions) {
           ]
         }
 
-        return h(RouterView, null, {
-          default: defaultSlot,
+        if (RegExp('/auth*').test(route.path)) {
+          return h(RouterView, null, {
+            default: defaultSlot,
+          })
+        } else if (RegExp('/not-found*').test(route.path)) {
+          return h(LandingLayout, null, {
+            default: () => [
+              h(RouterView, null, {
+                default: defaultSlot,
+              }),
+            ],
+          })
+        }
+
+        return h(AppLayout, null, {
+          default: () => [
+            h(RouterView, null, {
+              default: defaultSlot,
+            }),
+          ],
         })
+
+        // return h(RouterView, null, {
+        //   default: defaultSlot,
+        // })
       }
     },
   })

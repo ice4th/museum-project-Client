@@ -54,7 +54,7 @@ const submitEdit = () => {
         </div>
         <div class="right">
           <div class="buttons">
-            <V-Button icon="feather:arrow-left" :to="{ name: 'admin' }" raised>
+            <V-Button icon="feather:arrow-left" :to="{ name: 'admins' }" raised>
               Back
             </V-Button>
             <V-Button

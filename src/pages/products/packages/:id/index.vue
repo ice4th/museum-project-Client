@@ -7,7 +7,6 @@ import { pageTitle } from '/@src/state/sidebarLayoutState'
 import usePackageDetails from '/@src/composable/package/usePackageDetails'
 
 pageTitle.value = 'Package Details'
-
 useHead({
   title: 'Whitehouse Package Details',
 })
@@ -26,11 +25,7 @@ const {
   editable,
   // computed
   disabledDone,
-  // methods
-  fetchProductsOption,
-  fetchCurriculumsOption,
-  fetchFindMyCoachesOption,
-  fetchMoocCoursesOption,
+  onPressDone,
 } = usePackageDetails()
 
 /**
@@ -88,13 +83,20 @@ const isStuck = computed(() => {
                   Back
                 </V-Button>
                 <V-Button
+                  v-if="!editable"
                   icon="lnir lnir-pencil rem-100"
+                  to="#edit"
+                  color="primary"
+                  >Edit</V-Button
+                >
+                <V-Button
+                  v-else
+                  icon="lnir lnir-checkmark rem-100"
                   color="primary"
                   raised
-                  @click="editable = true"
+                  @click="onPressDone"
+                  >Done</V-Button
                 >
-                  Edit
-                </V-Button>
               </div>
             </div>
           </div>
@@ -106,10 +108,6 @@ const isStuck = computed(() => {
             :mooc-courses="moocCourses"
             :fmc-packages="fmcPackages"
             :curriculums="curriculums"
-            :fetch-products-option="fetchProductsOption"
-            :fetch-curriculums-option="fetchCurriculumsOption"
-            :fetch-find-my-coaches-option="fetchFindMyCoachesOption"
-            :fetch-mooc-courses-option="fetchMoocCoursesOption"
             :loading-options="loadingOptions"
             :readonly="!editable"
           />

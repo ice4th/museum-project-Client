@@ -1,9 +1,8 @@
 import { Notyf } from 'notyf'
-import { computed, onMounted, reactive, toRefs } from 'vue-demi'
+import { onMounted, reactive, toRefs } from 'vue-demi'
 import { useRouter, useRoute } from 'vue-router'
-import { errMessage, isNil } from '../../helpers/filter.helper'
+import { errMessage } from '../../helpers/filter.helper'
 import { Purchasable } from '../../types/enums/product.enum'
-import useOptionApi from '../api/useOptionApi'
 import usePackageApi from '../api/usePackageApi'
 
 export interface IUsePackageDetailsState {
@@ -60,19 +59,13 @@ export default function usePackageDetails() {
   /**
    * Use Api
    */
-  const {
-    getProducts,
-    getCurriculums,
-    getFeatureGroups,
-    getFmcPackages,
-    getMoocCourses,
-  } = useOptionApi()
   const { getPackageById, createPackage, updatePackage } = usePackageApi()
 
   /**
    * Use Router
    */
   const route = useRoute()
+  const router = useRouter()
 
   /**
    * State
@@ -115,60 +108,14 @@ export default function usePackageDetails() {
     loadingOptions: false,
     loadingPackage: false,
     notFoundPackage: false,
-    // other logic
+    // readonly logic
     editable: false,
-  })
-
-  /**
-   * Computed
-   */
-  const disabledDone = computed(() => {
-    return (
-      !state.formPackageInfo.packageName ||
-      !state.formPackageInfo.productId ||
-      !state.formPackageInfo.globishLevel ||
-      !state.formPackageInfo.cefrLevel ||
-      parseInt(`${state.formPackageInfo.price}`) < 0 ||
-      parseInt(`${state.formPackageInfo.beforeDiscount}`) < 0 ||
-      isNil(state.formPackageInfo.installmentMonth) ||
-      !state.formPackageInfo.type ||
-      parseInt(`${state.formPackageInfo.duration}`) < 0 ||
-      !state.formPackageInfo.ticketOneOnOne ||
-      !state.formPackageInfo.privateSlot
-    )
   })
 
   /**
    * Methods
    */
-  const fetchProductsOption = (search?: string) => {
-    return getProducts({
-      currentPage: 1,
-      perPage: 25,
-      search,
-    })
-  }
-  const fetchCurriculumsOption = (search?: string) => {
-    return getCurriculums({
-      currentPage: 1,
-      perPage: 25,
-      search,
-    })
-  }
-  const fetchFindMyCoachesOption = (search?: string) => {
-    return getFmcPackages({
-      currentPage: 1,
-      perPage: 25,
-      search,
-    })
-  }
-  const fetchMoocCoursesOption = (search?: string) => {
-    return getMoocCourses({
-      currentPage: 1,
-      perPage: 25,
-      search,
-    })
-  }
+  const setDefaultPackage = () => {}
   const fetchPackage = async () => {
     state.loadingPackage = true
 
@@ -209,25 +156,71 @@ export default function usePackageDetails() {
     } else {
       state.notFoundPackage = true
     }
-
     state.loadingPackage = false
+  }
+  const onSavePackage = async () => {
+    const { status, message, data } = await createPackage(state.formPackageInfo)
+    if (status === 201) {
+      notyfMessage.open({
+        type: 'success',
+        message: 'Package was created!',
+      })
+      router.push({
+        name: 'products-packages-:id',
+        params: { id: `${data.id}` },
+      })
+    } else {
+      notyfMessage.open({
+        message: errMessage(message),
+        type: 'error',
+      })
+    }
+  }
+  const onEditPackage = async () => {
+    const { status, message } = await updatePackage(state.formPackageInfo)
+    if (status === 200) {
+      router.push({
+        name: 'products-packages-:id',
+        params: {
+          id: parseInt(`${state.formPackageInfo.packageId}`),
+        },
+      })
+      notyfMessage.open({
+        type: 'success',
+        message: 'Package was updated!',
+      })
+    } else {
+      notyfMessage.open({
+        message: errMessage(message),
+        type: 'error',
+      })
+    }
+  }
+  const onPressDone = async () => {
+    if (route.hash === '#create') {
+      await onSavePackage()
+    } else {
+      await onEditPackage()
+    }
   }
 
   /**
    * On Mounted
    */
   onMounted(() => {
-    fetchPackage()
+    if (route.hash !== '#create') {
+      fetchPackage()
+    } else {
+      state.editable = true
+    }
+    if (route.hash === '#edit') {
+      state.editable = true
+    }
   })
 
   return {
     ...toRefs(state),
-    // Computed
-    disabledDone,
     // Methods
-    fetchProductsOption,
-    fetchCurriculumsOption,
-    fetchFindMyCoachesOption,
-    fetchMoocCoursesOption,
+    onPressDone,
   }
 }

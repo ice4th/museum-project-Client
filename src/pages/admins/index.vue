@@ -171,8 +171,8 @@ const confirmChangeCountry = async () => {
               <RouterLink
                 role="menuitem"
                 :to="{
-                  name: 'admin-:userid',
-                  params: { userid: value.id },
+                  name: 'admins-:id',
+                  params: { id: value.id },
                 }"
                 class="dropdown-item is-media"
               >
@@ -189,8 +189,9 @@ const confirmChangeCountry = async () => {
                 v-show="user.roleId === 1"
                 role="menuitem"
                 :to="{
-                  name: 'admin-:userid-edit',
-                  params: { userid: value.id },
+                  name: 'admins-:id',
+                  params: { id: value.id },
+                  hash: '#edit',
                 }"
                 class="dropdown-item is-media"
               >

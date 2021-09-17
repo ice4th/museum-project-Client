@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
 import { computed, ref } from 'vue'
-import useViewAdmin from '../../../composable/admin/useAdminDetails'
+import useViewAdmin from '/@src/composable/admin/useAdminDetails'
 
-const { adminInfo, loading } = useViewAdmin()
+const { adminInfo, loading, validate, isEdit, saveInfo } = useViewAdmin()
 </script>
 
 <template>
@@ -14,14 +14,16 @@ const { adminInfo, loading } = useViewAdmin()
           v-if="adminInfo"
           header="View Profile"
           :info="adminInfo"
-          readonly
+          :readonly="!isEdit"
+          @edit="saveInfo"
         >
-          <template #buttons>
+          <template v-if="!isEdit" #buttons>
             <V-Button
               icon="feather:edit-2"
               :to="{
-                name: 'admin-:userid-edit',
-                params: { userid: `${adminInfo.id}` },
+                name: 'admins-:id',
+                params: { id: `${adminInfo.id}` },
+                hash: '#edit',
               }"
               color="primary"
               >Edit</V-Button
@@ -34,7 +36,7 @@ const { adminInfo, loading } = useViewAdmin()
 </template>
 
 <style lang="scss">
-@import '../../../scss/abstracts/_variables.scss';
-@import '../../../scss/abstracts/_mixins.scss';
-@import '../../../scss/pages/generic/_forms.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_mixins.scss';
+@import 'src/scss/pages/generic/_forms.scss';
 </style>
