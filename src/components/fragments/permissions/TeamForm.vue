@@ -49,7 +49,7 @@ const editTeam = () => {
 
                 <V-Button
                   v-if="readonly"
-                  icon="feature:edit-2"
+                  icon="lnil lnil-pencil"
                   to="#edit"
                   color="primary"
                   >Edit</V-Button

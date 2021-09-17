@@ -50,16 +50,10 @@ const {
       :total="total"
       :is-loading="isloading"
       :search="search"
+      is-action
     >
       <template #member="{ value }">
-        <div>
-          <V-Avatar
-            v-for="admin in value.admins"
-            :key="`admin-${admin.id}`"
-            v-tooltip="admin.name"
-            :picture="admin.avatar"
-          />
-        </div>
+        <V-AvatarStack :avatars="value.admins" size="small" />
       </template>
 
       <template #action="{ value }">
@@ -84,7 +78,7 @@ const {
                 }"
               >
                 <div class="icon">
-                  <i aria-hidden="true" class="lnil lnil-pencil"></i>
+                  <i aria-hidden="true" class="lnil lnil-eye"></i>
                 </div>
                 <div class="meta">
                   <span>View</span>

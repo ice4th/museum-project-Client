@@ -26,7 +26,7 @@ export default function useProductApi() {
     const res = await api.get<
       IPaginationResponse<IProductDetail[]>,
       ApiResponse
-    >(`/Products/List`, { params })
+    >(`/Products`, { params })
     return catchReponse(res)
   }
 

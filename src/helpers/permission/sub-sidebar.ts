@@ -13,7 +13,7 @@ import { SubsideBarItemDetail } from './sidebar.interface'
 
 export const adminSubsidebarList: SubsideBarItemDetail[] = [
   {
-    routeName: 'admin-users',
+    routeName: 'admin',
     label: 'Admin List',
     icon: '<i class="fas fa-user-edit mr-2"></i>',
     action: 'VIEW_LIST_OF_ADMIN',
@@ -35,26 +35,26 @@ export const productSubsidebarList: SubsideBarItemDetail[] = [
   },
   { isDivider: true },
   {
-    routeName: 'products-package',
+    routeName: 'products-packages',
     label: 'Package Detail',
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
     action: 'VIEW_LIST_OF_PACKAGE',
   },
   {
-    routeName: 'products-package-create',
+    routeName: 'products-packages-create',
     label: 'Create Package',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PACKAGE',
   },
   { isDivider: true },
   {
-    routeName: 'products-package-group',
+    routeName: 'products-packages-groups',
     label: 'Package Group Detail',
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
     action: 'VIEW_LIST_OF_PACKAGE',
   },
   {
-    routeName: 'products-package-group-create',
+    routeName: 'products-packages-groups-create',
     label: 'Create Package Group',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PACKAGE',
@@ -81,13 +81,13 @@ export const codeSubsidebarList: SubsideBarItemDetail[] = [
 
 export const permissionSubsidebarList: SubsideBarItemDetail[] = [
   {
-    routeName: 'permissions-role',
+    routeName: 'permissions-roles',
     label: 'Roles Information',
     icon: '<i class="lnil lnil-books mr-2"></i>',
     action: 'VIEW_LIST_OF_ROLE',
   },
   {
-    routeName: 'permissions-role-create',
+    routeName: 'permissions-roles-create',
     label: 'Create Role',
     icon: '<i class="lnil lnil-books mr-2"></i>',
     action: 'CREATE_ROLE',
