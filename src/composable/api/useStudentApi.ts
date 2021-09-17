@@ -144,6 +144,10 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>('PackageItems', payload)
   }
 
+  const forgotPassword = async (id: number) => {
+    return await api.post<any, ApiResponse>(`Students/${id}/ForgotPassword`)
+  }
+
   const getStudentGlobishPlusById = async (
     studentId: number
   ): Promise<IStudentGlobishPlusInfo | undefined> => {
@@ -179,6 +183,7 @@ export default function useStudentApi() {
     redeemPackageByStudentId,
     loginByStudentId,
     addPackageItemByStudentId,
+    forgotPassword,
     getStudentGlobishPlusById,
     updateStudentGlobishPlusById,
   }
