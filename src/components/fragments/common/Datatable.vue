@@ -258,4 +258,7 @@ watch(
 .table tbody td {
   vertical-align: middle;
 }
+.input {
+  min-width: 300px;
+}
 </style>
