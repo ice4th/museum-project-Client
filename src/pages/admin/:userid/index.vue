@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useHead } from '@vueuse/head'
 import { computed, ref } from 'vue'
-import useViewAdmin from '/@src/composable/admin/use-view-admin'
+import useViewAdmin from '../../../composable/admin/useAdminDetails'
+
 const { adminInfo, loading } = useViewAdmin()
 </script>
 

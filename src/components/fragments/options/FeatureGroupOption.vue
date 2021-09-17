@@ -22,7 +22,9 @@ const fetchFetureGroup = async () => {
   featureGroupOption.value = data.map((group) => {
     return {
       id: group.id,
-      label: `(${group.id}) ${group.name}  [users: ${group.numberOfActiveUsers}]`,
+      label: `(${group.id}) ${group.name}  [users: ${
+        group.numberOfActiveUsers || 0
+      }]`,
     }
   })
 }

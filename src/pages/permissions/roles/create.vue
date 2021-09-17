@@ -44,6 +44,7 @@ const {
   selectedItems,
   disabledCreateBtn,
   // methods
+  fetchTeamsOption,
   onCreate,
   onClear,
 } = useCreateRole()
@@ -93,7 +94,7 @@ const {
           <V-Field class="is-autocomplete-select">
             <label>Team</label>
             <V-Control icon="feather:search" :loading="loadingOption">
-              <Multiselect
+              <!-- <Multiselect
                 v-model="teamId"
                 placeholder="Select team"
                 :options="teamOptions"
@@ -111,7 +112,14 @@ const {
                     ({{ option.id }}) {{ option.name }}
                   </span>
                 </template>
-              </Multiselect>
+              </Multiselect> -->
+              <SelectOption
+                v-model="teamId"
+                :callback-search="fetchTeamsOption"
+                tract-by="name"
+                value-prop="id"
+                placeholder="Select team"
+              />
               <p v-show="!teamId" class="help text-danger">
                 Choose team for this role.
               </p>

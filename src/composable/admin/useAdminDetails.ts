@@ -7,6 +7,7 @@ import useAdminApi from '../api/useAdminApi'
 import { useRoute } from 'vue-router'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
+import { initAvatar } from '../../helpers/avatar.helper'
 interface UseViewAdminState {
   loading: boolean
   adminInfo?: IAdminInfo
@@ -26,9 +27,18 @@ export default function useViewAdmin() {
   const adminId = route.params.userid as string
   const getAdminInfo = async () => {
     state.loading = true
-    const res = await getAdminById(+adminId)
+    const data = await getAdminById(+adminId)
+
+    const { firstname, lastname } = data
+    const { initials, color } = initAvatar(firstname, lastname)
+    state.adminInfo = {
+      ...data,
+      firstname,
+      lastname,
+      initials,
+      color,
+    }
     state.loading = false
-    state.adminInfo = res
   }
 
   const saveInfo = async (profile: IFormAdminInfo) => {

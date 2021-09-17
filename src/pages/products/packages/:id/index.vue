@@ -4,7 +4,7 @@ import { computed, ref } from 'vue'
 import { useHead } from '@vueuse/head'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
-import useFormPackageInfo from '/@src/composable/package/use-form-package-info'
+import usePackageDetails from '/@src/composable/package/usePackageDetails'
 
 pageTitle.value = 'Package Details'
 
@@ -22,9 +22,16 @@ const {
   products,
   loadingOptions,
   notFoundPackage,
+  // logic
+  editable,
   // computed
   disabledDone,
-} = useFormPackageInfo()
+  // methods
+  fetchProductsOption,
+  fetchCurriculumsOption,
+  fetchFindMyCoachesOption,
+  fetchMoocCoursesOption,
+} = usePackageDetails()
 
 /**
  * Methods
@@ -80,6 +87,14 @@ const isStuck = computed(() => {
                 >
                   Back
                 </V-Button>
+                <V-Button
+                  icon="lnir lnir-pencil rem-100"
+                  color="primary"
+                  raised
+                  @click="editable = true"
+                >
+                  Edit
+                </V-Button>
               </div>
             </div>
           </div>
@@ -91,9 +106,12 @@ const isStuck = computed(() => {
             :mooc-courses="moocCourses"
             :fmc-packages="fmcPackages"
             :curriculums="curriculums"
-            :products="products"
+            :fetch-products-option="fetchProductsOption"
+            :fetch-curriculums-option="fetchCurriculumsOption"
+            :fetch-find-my-coaches-option="fetchFindMyCoachesOption"
+            :fetch-mooc-courses-option="fetchMoocCoursesOption"
             :loading-options="loadingOptions"
-            readonly
+            :readonly="!editable"
           />
         </div>
       </div>
@@ -113,14 +131,5 @@ const isStuck = computed(() => {
 
 .is-stuck {
   top: 0 !important;
-}
-
-@media only screen and (max-width: 767px) {
-  .buttons {
-    justify-content: center !important;
-    .custom-btn {
-      width: 90% !important;
-    }
-  }
 }
 </style>

@@ -149,10 +149,15 @@ export default function useCreateRole() {
 
     state.menuLoading = false
   }
-  const fetchOption = async () => {
+  const fetchTeamsOption = async (search?: string) => {
     state.loadingOption = true
-    state.teamOptions = await getTeams()
+    state.teamOptions = await getTeams({
+      currentPage: 1,
+      perPage: 25,
+      search,
+    })
     state.loadingOption = false
+    return state.teamOptions
   }
   const onCreate = async () => {
     const permissionIds = selectedItems.value
@@ -204,7 +209,7 @@ export default function useCreateRole() {
    */
   onMounted(() => {
     setMenuItems()
-    fetchOption()
+    fetchTeamsOption()
   })
 
   return {
@@ -215,7 +220,7 @@ export default function useCreateRole() {
     verifyMessage,
     colorMessage,
     // Methods
-    fetchOption,
+    fetchTeamsOption,
     onCreate,
     onClear,
   }

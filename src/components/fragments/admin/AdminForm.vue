@@ -26,7 +26,7 @@ const props = defineProps({
   },
 })
 const emit = defineEmits(['edit'])
-const manageCountry = ref(props.info?.manageCountry.split(',') || [])
+const manageCountry = ref(props.info?.manageCountry || [])
 
 const { y } = useWindowScroll()
 const isStuck = computed(() => y.value > 30)
@@ -54,16 +54,12 @@ const submitEdit = () => {
         </div>
         <div class="right">
           <div class="buttons">
-            <V-Button
-              icon="feather:arrow-left"
-              :to="{ name: 'admin-users' }"
-              raised
-            >
+            <V-Button icon="feather:arrow-left" :to="{ name: 'admin' }" raised>
               Back
             </V-Button>
             <V-Button
               v-if="!readonly"
-              icon="feather:save"
+              icon="lnir lnir-checkmark"
               color="primary"
               raised
               @click="submitEdit"
@@ -80,7 +76,9 @@ const submitEdit = () => {
         <div class="is-flex is-justify-content-center p-3">
           <!-- TODO: Select image or upload by file manager -->
           <V-Avatar
-            :picture="info.avatar"
+            :picture="info.avatar ? info.avatar : undefined"
+            :initials="info.initials"
+            :color="info.color"
             size="xl"
             class="align-item-center"
           />
