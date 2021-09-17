@@ -2,7 +2,7 @@
 import { useHead } from '@vueuse/head'
 
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
-import usePackageTable from '/@src/composable/package/use-package-table'
+import usePackageTable from '../../../composable/package/usePackageTable'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 pageTitle.value = 'Package Information'

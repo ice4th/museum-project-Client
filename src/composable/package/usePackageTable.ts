@@ -3,7 +3,6 @@
  */
 
 import { onMounted, reactive, toRefs } from 'vue'
-import { useRouter } from 'vue-router'
 import usePackageApi from '../api/usePackageApi'
 import usePaginationRoute from '../use-pagination-route'
 import { IPaginationResponse } from '/@src/types/interfaces/common.interface'
@@ -23,7 +22,6 @@ export default function usePackageTable() {
   /**
    * Router
    */
-  const router = useRouter()
   const { currentPage, perPage, search } = usePaginationRoute()
 
   /**
