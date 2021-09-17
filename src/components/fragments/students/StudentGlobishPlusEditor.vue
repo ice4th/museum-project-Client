@@ -9,7 +9,7 @@ import type {
 } from '/@src/types/interfaces/student.interface'
 import moment from 'moment-timezone'
 import _ from 'lodash'
-import { GlobishLevel } from '/@src/types/enums/package.enum'
+import { GLevel } from '/@src/types/enums/package.enum'
 const props = defineProps({
   studentInfo: {
     type: Object as PropType<IStudentInfo>,
@@ -25,8 +25,8 @@ const props = defineProps({
     default: () => {},
   },
 })
-const globishLevelItems = Object.entries(GlobishLevel).map(([key, value]) => {
-  return { key: key.replace(/_/g, ' '), value }
+const globishLevelItems = Object.keys(GLevel).map((key) => {
+  return { key, value: GLevel[key] }
 })
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
@@ -344,7 +344,7 @@ const removeValidation = (key: string) => {
                 mask: 'YYYY-MM-DD',
               }"
               :masks="{
-                input: 'YYYY-MM-DD',
+                input: 'DD/MM/YYYY',
               }"
               trim-weeks
               :popover="{ visibility: !isEditMode ? '' : 'click' }"
@@ -373,6 +373,62 @@ const removeValidation = (key: string) => {
               </template>
             </v-date-picker>
           </div>
+        </div>
+        <!-- Ticket Info -->
+        <div class="fieldset">
+          <div class="fieldset-heading">
+            <h4>Ticket Info</h4>
+            <p>Information of ticket</p>
+          </div>
+          <table class="table is-fullwidth table-size">
+            <thead>
+              <tr>
+                <th scope="col">Ticket ID</th>
+                <th scope="col" class="has-text-centered">Package Item ID</th>
+                <th scope="col" class="has-text-centered">Feature Group ID</th>
+                <th scope="col" class="has-text-centered">Globish Level</th>
+                <th scope="col" class="has-text-centered">Package Name</th>
+                <th scope="col" class="has-text-centered">Start Date</th>
+                <th scope="col" class="has-text-centered">Expire Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="(ticket, idxTicket) in internalStudentGbpInfo?.tickets"
+                :key="`ticket-${idxTicket}`"
+              >
+                <td class="has-text-centered">{{ ticket?.id }}</td>
+                <td class="has-text-centered">{{ ticket?.packageItemId }}</td>
+                <td class="has-text-centered">
+                  {{ ticket?.featureGroupId }}
+                </td>
+                <td class="has-text-centered">
+                  {{
+                    Object.keys(GLevel).find(
+                      (key) => GLevel[key] === ticket?.globishLevel
+                    ) || '-'
+                  }}
+                </td>
+                <td class="has-text-centered">
+                  ({{ ticket.packageId }}) {{ ticket?.packageName }}
+                </td>
+                <td class="has-text-centered">
+                  {{
+                    (ticket?.startDate &&
+                      moment(ticket?.startDate).format('DD/MM/YYYY')) ||
+                    '-'
+                  }}
+                </td>
+                <td class="has-text-centered">
+                  {{
+                    (ticket?.expireDate &&
+                      moment(ticket?.expireDate).format('DD/MM/YYYY')) ||
+                    '-'
+                  }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <div class="content">
             <blockquote class="is-primary">
               <p class="text-danger">
@@ -381,17 +437,8 @@ const removeValidation = (key: string) => {
                   class="iconify"
                   data-icon="feather:alert-triangle"
                 ></i
-                >&nbsp; &nbsp; ก่อนกด Save
-                กรุณาแก้ไขวันหมดอายุให้เท่ากับวันหมดอายุของตั๋วทุกครั้ง
-              </p>
-              <p class="text-danger">
-                <i
-                  aria-hidden="true"
-                  class="iconify"
-                  data-icon="feather:alert-triangle"
-                ></i
-                >&nbsp; &nbsp; วันที่หมดอายุของ Globich Plus จะเพิ่ม 1
-                วันโดยอัตโนมัติ กรุณาเลือกวันหมดอายุให้เท่ากับวันหมดอายุของตั๋ว
+                >&nbsp; &nbsp; Before "Save", please make sure the expiration
+                date to be equal to the expiration date of the ticket.
               </p>
             </blockquote>
           </div>
@@ -402,4 +449,10 @@ const removeValidation = (key: string) => {
 </template>
 <style lang="scss" scoped>
 @import 'src/scss/abstracts/_variables.scss';
+.account-wrapper .account-box.is-form .form-body .fieldset {
+  max-width: 750px;
+}
+.table-size {
+  font-size: 12px;
+}
 </style>

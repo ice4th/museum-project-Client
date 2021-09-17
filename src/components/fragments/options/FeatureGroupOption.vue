@@ -22,7 +22,9 @@ const fetchFetureGroup = async () => {
   featureGroupOption.value = data.map((group) => {
     return {
       id: group.id,
-      label: `(${group.id}) ${group.name}  [users: ${group.numberOfActiveUsers}]`,
+      label: `(${group.id}) ${group.name}  [users: ${
+        group.numberOfActiveUsers || 0
+      }]`,
     }
   })
 }
@@ -35,7 +37,7 @@ onBeforeMount(() => {
   <Multiselect
     v-model="modelValue"
     placeholder="Select Feature Group"
-    track-by="id"
+    track-by="label"
     value-prop="id"
     clear-on-select
     clear-on-search

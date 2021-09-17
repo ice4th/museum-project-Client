@@ -91,7 +91,7 @@ export interface IUpdateStudentProfile {
 
 export interface IStudentGlobishPlusInfo {
   firstname: string
-  lasstname: string
+  lastname: string
   phone: string
   email: string
   voxyLevel: number
@@ -101,6 +101,7 @@ export interface IStudentGlobishPlusInfo {
     id: number
     name: string
   }
+  tickets: IStudentGlobishPlusTicket[]
   joinedDate: string
   expireDate: string
   dateOfNextVpa: string
@@ -120,4 +121,15 @@ export interface IUpdateStudentGlobishPlusProfile {
   email: string
   globishLevel: number
   featureGroupId: number
+}
+
+export interface IStudentGlobishPlusTicket {
+  id: number
+  packageItemId: number
+  featureGroupId: number
+  packageId: number
+  packageName: string
+  productLevel: number
+  startDate: Date
+  expireDate: Date
 }

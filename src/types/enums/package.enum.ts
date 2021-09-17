@@ -43,6 +43,18 @@ export enum GlobishLevel {
   LEVEL_12 = '12',
 }
 
+export enum GLevel {
+  G0 = '0',
+  G1 = '1',
+  G2 = '2',
+  G3 = '3',
+  G4 = '4',
+  G5 = '5',
+  G6 = '6',
+  G7 = '7',
+  G8 = '8',
+}
+
 export enum PackageCefrLevel {
   PRE_A1 = 'Pre A1',
   A1 = 'A1',
