@@ -4,7 +4,7 @@
 
 import { onMounted, reactive, toRefs } from 'vue'
 import usePackageApi from '../api/usePackageApi'
-import usePaginationRoute from '../use-pagination-route'
+import usePaginationRoute from '../usePaginationRoute'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { IDatatableHeader } from '/@src/types/interfaces/component.interface'

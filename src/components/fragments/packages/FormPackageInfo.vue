@@ -10,28 +10,13 @@ import {
   PackageInstallment,
   PackageType,
 } from '/@src/types/enums/package.enum'
+import useOptionApi from '/@src/composable/api/useOptionApi'
 
 /**
  * defined props type
  */
 const props = defineProps({
-  fetchProductsOption: {
-    type: Function,
-    default: () => [],
-  },
-  fetchCurriculumsOption: {
-    type: Function,
-    default: () => [],
-  },
   featureGroups: {
-    type: Function,
-    default: () => [],
-  },
-  fetchFindMyCoachesOption: {
-    type: Function,
-    default: () => [],
-  },
-  fetchMoocCoursesOption: {
     type: Function,
     default: () => [],
   },
@@ -53,6 +38,8 @@ const props = defineProps({
   },
 })
 
+const { getProducts, getCurriculums, getFmcPackages, getMoocCourses } =
+  useOptionApi()
 /**
  * Multi Select Items
  */
@@ -129,7 +116,7 @@ const privateSlots = [
           <V-Control icon="feather:search" :loading="loadingOptions">
             <SelectOption
               v-model="formPackageInfo.productId"
-              :callback-search="fetchProductsOption"
+              :callback-search="getProducts"
               :readonly="readonly"
               label-by="name"
               value-prop="id"
@@ -174,7 +161,7 @@ const privateSlots = [
               name="status_radio"
               color="primary"
               square
-              :disabled="readonly"
+              :disabled="readonly ? readonly : undefined"
             />
             <V-Radio
               v-model="formPackageInfo.status"
@@ -183,7 +170,7 @@ const privateSlots = [
               name="status_radio"
               color="primary"
               square
-              :disabled="readonly"
+              :disabled="readonly ? readonly : undefined"
             />
           </V-Control>
         </V-Field>
@@ -483,7 +470,7 @@ const privateSlots = [
               :name="type.key"
               color="primary"
               square
-              :disabled="readonly"
+              :disabled="readonly ? readonly : undefined"
             />
             <p v-show="!formPackageInfo.type" class="help text-danger">
               Choose private class time for this package.
@@ -623,7 +610,7 @@ const privateSlots = [
           <V-Control>
             <SelectOption
               v-model="formPackageInfo.curriculumId"
-              :callback-search="fetchCurriculumsOption"
+              :callback-search="getCurriculums"
               :readonly="readonly"
               label-by="name"
               value-prop="id"
@@ -665,7 +652,7 @@ const privateSlots = [
           <label>Globish Plus</label>
           <V-Control>
             <FeatureGroupOption
-              :model-value="formPackageInfo.featureGroupId"
+              v-model="formPackageInfo.featureGroupId"
               :disabled="readonly"
             />
           </V-Control>
@@ -678,7 +665,7 @@ const privateSlots = [
           <V-Control :has-error="false">
             <SelectOption
               v-model="formPackageInfo.findMycoachId"
-              :callback-search="fetchFindMyCoachesOption"
+              :callback-search="getFmcPackages"
               :readonly="readonly"
               label-by="packageName"
               value-prop="id"
@@ -694,7 +681,7 @@ const privateSlots = [
           <V-Control>
             <SelectOption
               v-model="formPackageInfo.moocCourseId"
-              :callback-search="fetchMoocCoursesOption"
+              :callback-search="getMoocCourses"
               :readonly="readonly"
               label-by="title"
               value-prop="id"

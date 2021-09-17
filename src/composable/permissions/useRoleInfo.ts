@@ -5,7 +5,7 @@ import { IPaginationResponse } from '../../types/interfaces/common.interface'
 import { useRoute, useRouter } from 'vue-router'
 import { Notyf } from 'notyf'
 import { errMessage } from '../../helpers/filter.helper'
-import usePaginationRoute from '../use-pagination-route'
+import usePaginationRoute from '../usePaginationRoute'
 
 /**
  * global notify

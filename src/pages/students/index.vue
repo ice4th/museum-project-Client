@@ -127,6 +127,7 @@ const headers: IDatatableHeader = [
               :to="{
                 name: 'students-:id',
                 params: { id: `${value.id}` },
+                hash: '#edit',
               }"
             >
               <div class="icon">
