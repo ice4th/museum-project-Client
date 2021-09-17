@@ -40,6 +40,7 @@ const props = defineProps({
 
 const { getProducts, getCurriculums, getFmcPackages, getMoocCourses } =
   useOptionApi()
+
 /**
  * Multi Select Items
  */
@@ -63,7 +64,6 @@ const privateSlots = [
   { key: '30 Minutes', value: 1 },
   { key: '1 Hour', value: 2 },
   { key: '1 Hour 30 Minutes', value: 3 },
-  { key: '30 Minutes', value: 4 },
 ]
 </script>
 

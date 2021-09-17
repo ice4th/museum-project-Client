@@ -14,18 +14,11 @@ useHead({
 const {
   // state
   formPackageInfo,
-  featureGroups,
-  moocCourses,
-  fmcPackages,
-  curriculums,
-  products,
-  loadingOptions,
-  notFoundPackage,
+  // methods
+  onEditPackage,
   // logic
+  notFoundPackage,
   editable,
-  // computed
-  disabledDone,
-  onPressDone,
 } = usePackageDetails()
 
 /**
@@ -94,7 +87,7 @@ const isStuck = computed(() => {
                   icon="lnir lnir-checkmark rem-100"
                   color="primary"
                   raised
-                  @click="onPressDone"
+                  @click="onEditPackage"
                   >Done</V-Button
                 >
               </div>
@@ -104,11 +97,6 @@ const isStuck = computed(() => {
         <div class="form-body">
           <FormPackageInfo
             :form-package-info="formPackageInfo"
-            :feature-groups="featureGroups"
-            :mooc-courses="moocCourses"
-            :fmc-packages="fmcPackages"
-            :curriculums="curriculums"
-            :loading-options="loadingOptions"
             :readonly="!editable"
           />
         </div>
