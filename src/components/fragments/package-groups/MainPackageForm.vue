@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // MainPackageForm Component
-
 import { ref } from 'vue'
 import type { PropType } from 'vue'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
@@ -20,7 +19,6 @@ const props = defineProps({
 })
 
 const { getPackages } = useOptionApi()
-const mainPackageId = ref<number>(props.mainPackage?.packageId || 0)
 const generateTicket = ref<GenerateTicket>(
   props.mainPackage?.generateTicket || GenerateTicket.NOT_GENERATE_TICKET
 )
@@ -36,20 +34,26 @@ const mainPackageInfo = ref<IUpdateAddonPackage>(
   }
 )
 
+const findMainPackageSelector = async (search?: string) => {
+  const selected = mainPackageInfo.value.packageName
+  const res = await getPackages(search || selected)
+  return res.filter((pk) =>
+    props.packageGroup.filter((p) => p.packageId !== pk.id)
+  )
+}
+
 const mainPackageChange = (value: number, option: PackageOption) => {
-  console.log(value, option)
   mainPackageInfo.value.packageName = option.packageName
   mainPackageInfo.value.packageTicket = option.ticket
 }
 
+const clearMainPackage = () => {
+  mainPackageInfo.value.packageId = 0
+  mainPackageInfo.value.packageName = mainPackageInfo.value.packageTicket =
+    undefined
+}
+
 const addMainPackage = () => {
-  // const mainPackageData = {
-  //   // ...props.mainPackage,
-  //   packageGroupId: props.mainPackage?.packageGroupId,
-  //   idx: props.mainPackage?.idx || 1,
-  //   packageId: mainPackageId.value,
-  //   generateTicket: generateTicket.value,
-  // } as IUpdateAddonPackage
   emit('on-update', mainPackageInfo.value)
 }
 </script>
@@ -68,10 +72,11 @@ const addMainPackage = () => {
             <SelectOption
               v-model="mainPackageInfo.packageId"
               placeholder="Search for select a main package"
-              :callback-search="getPackages"
+              :callback-search="findMainPackageSelector"
               label-by="packageName"
               value-prop="id"
               @update:modelValue="mainPackageChange"
+              @clear="clearMainPackage"
             />
           </V-Control>
         </V-Field>

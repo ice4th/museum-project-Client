@@ -49,6 +49,14 @@ const props = defineProps({
     type: String,
     default: 'id',
   },
+  closeOnSelect: {
+    type: Boolean,
+    default: true,
+  },
+  clearOnSearch: {
+    type: Boolean,
+    default: true,
+  },
   isShowId: {
     type: Boolean,
     default: true,
@@ -58,7 +66,7 @@ const props = defineProps({
     default: () => [],
   },
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'clear'])
 
 const searchOption = async (query?: string) => {
   return await props.callbackSearch(query || props.modelValue)
@@ -81,9 +89,10 @@ const select = (value, option) => {
     :track-by="trackBy || labelBy"
     :value-prop="valueProp"
     :no-options-text="'search...'"
-    clear-on-select
-    clear-on-search
+    :clear-on-select="closeOnSelect"
+    :clear-on-search="clearOnSearch"
     @select="select"
+    @clear="emit('clear')"
   >
     <template #singlelabel="{ value }">
       <div class="multiselect-single-label">

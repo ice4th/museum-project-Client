@@ -51,6 +51,7 @@ export default function useOptionApi() {
     search?: string,
     params?: IPaginationParams
   ): Promise<PackageOption[]> => {
+    console.log(params)
     const res = await api.get<IPaginationResponse<PackageOption[]>>(
       '/Options/Packages',
       {

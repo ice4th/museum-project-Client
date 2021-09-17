@@ -57,6 +57,7 @@ export interface IStudentInfo {
   cefr?: string
   globishLevel?: string
   studentNote: IStudentNote
+  ticket?: IStudentTicketResult
 }
 
 export interface IStudentTicketResult {

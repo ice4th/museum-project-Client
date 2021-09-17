@@ -61,6 +61,12 @@ const updateMainPackage = (mainpk: IUpdateAddonPackage) => {
       idx: packageGroupInternal.value.length + 1,
     })
   } else {
+    const includedPackageIdIndex = packageGroupInternal.value.findIndex(
+      (pk) => pk.packageId === mainpk.packageId
+    )
+    if (includedPackageIdIndex >= 0) {
+      packageGroupInternal.value.splice(includedPackageIdIndex, 1)
+    }
     const index = packageGroupInternal.value.findIndex(
       (pk) => pk.idx === mainpk.idx
     )
@@ -100,11 +106,13 @@ const removePackage = (addon: IUpdateAddonPackage) => {
     (pk) => pk.packageId === addon.packageId
   )
   packageGroupInternal.value.splice(index, 1)
-  console.log(packageGroupInternal.value)
+  packageGroupInternal.value.map((pk) => {
+    if (pk.dependonPackageId === addon.packageId) {
+      pk.dependonPackageId = pk.dependonTicketUse = undefined
+    }
+    return pk
+  })
   swapOrderIndex()
-  if (addon.packageGroupId) {
-    // emit()
-  }
 }
 
 const swapOrderIndex = () => {
@@ -160,10 +168,22 @@ watch(
       >
         Cancel
       </V-Button>
-      <V-Button v-if="mode === 'create'" color="primary" raised @click="create">
+      <V-Button
+        v-if="mode === 'create'"
+        color="primary"
+        :disabled="packageGroupInternal.length < 2"
+        raised
+        @click="create"
+      >
         Create
       </V-Button>
-      <V-Button v-if="isEdit" color="primary" raised @click="create">
+      <V-Button
+        v-if="isEdit"
+        color="primary"
+        :disabled="packageGroupInternal.length < 2"
+        raised
+        @click="create"
+      >
         Update
       </V-Button>
       <V-Button
@@ -193,16 +213,20 @@ watch(
                 addon.packageName || addon.packageId
               }`"
             >
-              <div>
-                {{
-                  isMainPackage(addon.packageId)
-                    ? 'Main Package'
-                    : 'Addon Package'
-                }}
-              </div>
-
-              <template v-if="isEdit" #action>
+              <template #action>
+                <div class="mx-3">
+                  <V-Tag
+                    :color="isMainPackage(addon.packageId) ? 'danger' : 'blue'"
+                    :label="
+                      isMainPackage(addon.packageId)
+                        ? 'Main Package'
+                        : 'Addon Package'
+                    "
+                    curved
+                  />
+                </div>
                 <V-Dropdown
+                  v-if="isEdit"
                   icon="feather:more-vertical"
                   color="primary"
                   spaced
@@ -265,7 +289,9 @@ watch(
 
               <V-Snack
                 v-if="addon.dependonPackageId"
-                :title="displayPackageName(addon.dependonPackageId)"
+                :title="`(id: ${addon.packageId}) ${displayPackageName(
+                  addon.dependonPackageId
+                )}`"
                 color="warning"
                 white
                 solid

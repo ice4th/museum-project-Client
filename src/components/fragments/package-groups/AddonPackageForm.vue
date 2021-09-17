@@ -43,63 +43,15 @@ const showDependOnSelector = ref(
 const dependonPackagesOption = computed(() =>
   props.groupPackages.filter((pk) => pk.idx !== addonPackage.value.idx)
 )
-// const allGroupPackages = ref<PackageOption[]>(
-//   props.packages.filter((pk) =>
-//     props.groupPackages.some(
-//       (gpk) =>
-//         gpk.packageId === pk.id &&
-//         props.currentAddonPackage?.packageId !== pk.id
-//     )
-//   ) || []
-// )
-// const addonPackage = ref<number | undefined>(
-//   props.currentAddonPackage?.packageId
-// )
-// const dependOnPackage = ref<number | undefined>(
-//   props.currentAddonPackage?.dependonPackageId
-// )
-// const ticketUsed = ref<number | undefined>(
-//   props.currentAddonPackage?.dependonTicketUse
-// )
-// const showDependOnSelector = ref<boolean>(
-//   !!props.currentAddonPackage?.dependonPackageId
-// )
 
-// const updateAddonPackage = () => {
-//   if (showDependOnSelector.value) {
-//     if (!addonPackage.value) return
-//     const data = {
-//       packageId: addonPackage.value,
-//       generateTicket: GenerateTicket.GENERATE_TICKET,
-//       dependonPackageId: dependOnPackage.value,
-//       idx: props.currentAddonPackage?.idx || 0,
-//       dependonTicketUse: ticketUsed.value ? +ticketUsed.value : undefined,
-//       packageGroupId: props.currentAddonPackage.packageGroupId,
-//     } as IUpdateAddonPackage
-//     emit('add', data)
-//   } else {
-//     if (!addonPackage.value) return
-//     const data = {
-//       packageId: addonPackage.value,
-//       generateTicket: GenerateTicket.GENERATE_TICKET,
-//       idx: props.currentAddonPackage?.idx || 0,
-//       packageGroupId: props.currentAddonPackage.packageGroupId,
-//     } as IUpdateAddonPackage
-//     emit('add', data)
-//   }
-// }
-// const depenonPackageInfo = computed(() => {
-//   return (
-//     allGroupPackages.value.find((pk) => pk.id === dependOnPackage.value) ||
-//     undefined
-//   )
-// })
 const addonPackageChange = (value: number, option: PackageOption) => {
   addonPackage.value.packageName = option.packageName
   addonPackage.value.packageTicket = option.ticket
 }
 const findAddonPackages = async (search: string) => {
-  const res = await getPackages(search)
+  // const res = await getPackages(search, { currentPage: 1, perPage: 25 })
+  const selected = props.currentAddonPackage?.packageName
+  const res = await getPackages(search || selected)
   const filter = await res.filter(
     (pk) =>
       props.groupPackages.every((gp) => gp.packageId !== pk.id) ||
