@@ -76,7 +76,6 @@ const searchOption = async (query?: string) => {
   return await props.callbackSearch(query || props.modelValue)
 }
 const select = (value, option) => {
-  console.log(value, option)
   emit('update:modelValue', value, option)
 }
 </script>

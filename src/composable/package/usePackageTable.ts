@@ -3,7 +3,6 @@
  */
 
 import { onMounted, reactive, toRefs } from 'vue'
-import { useRouter } from 'vue-router'
 import usePackageApi from '../api/usePackageApi'
 import usePaginationRoute from '../use-pagination-route'
 import { IPaginationResponse } from '/@src/types/interfaces/common.interface'
@@ -23,7 +22,6 @@ export default function usePackageTable() {
   /**
    * Router
    */
-  const router = useRouter()
   const { currentPage, perPage, search } = usePaginationRoute()
 
   /**
@@ -64,18 +62,6 @@ export default function usePackageTable() {
       state.paginationData = res
     }
   }
-  const onViewPackage = async (id: number) => {
-    await router.push({
-      name: 'products-packages-:id',
-      params: { id },
-    })
-  }
-  const onEditPackage = async (id: number) => {
-    await router.push({
-      name: 'products-packages-:id-edit',
-      params: { id },
-    })
-  }
 
   /**
    * On Mounted
@@ -88,7 +74,5 @@ export default function usePackageTable() {
     ...toRefs(state),
     packageTableHeaders,
     fetchAllPackages,
-    onViewPackage,
-    onEditPackage,
   }
 }

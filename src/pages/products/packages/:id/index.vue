@@ -31,6 +31,7 @@ const {
   fetchCurriculumsOption,
   fetchFindMyCoachesOption,
   fetchMoocCoursesOption,
+  onPressDone,
 } = usePackageDetails()
 
 /**
@@ -88,13 +89,20 @@ const isStuck = computed(() => {
                   Back
                 </V-Button>
                 <V-Button
+                  v-if="!editable"
                   icon="lnir lnir-pencil rem-100"
+                  to="#edit"
+                  color="primary"
+                  >Edit</V-Button
+                >
+                <V-Button
+                  v-else
+                  icon="lnir lnir-checkmark rem-100"
                   color="primary"
                   raised
-                  @click="editable = true"
+                  @click="onPressDone"
+                  >Done</V-Button
                 >
-                  Edit
-                </V-Button>
               </div>
             </div>
           </div>
