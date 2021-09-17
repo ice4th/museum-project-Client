@@ -9,7 +9,7 @@ import {
   IUpdateAddonPackage,
 } from '/@src/types/interfaces/package.interface'
 import { useRoute, useRouter } from 'vue-router'
-import usePackageApi from '../api/usePackageApi'
+import usePackageApi, { DeleteAddonPackageParams } from '../api/usePackageApi'
 import { errMessage } from '/@src/helpers/filter.helper'
 import useNotyf from '../useNotyf'
 
@@ -33,86 +33,10 @@ export default function useManagePackageGroup() {
   const isEditPage = computed(() => route.hash === '#edit')
   const {
     createPackageGroup: createPackageGroupApi,
+    updatePackageGroup,
     getAddonPackageByMainPackageId,
+    deleteAddonPackageGroupById,
   } = usePackageApi()
-
-  // const displayPackageNameById = (id: number) => {
-  //   return state.packages.find((pk) => pk.id === id)?.packageName || ''
-  // }
-
-  // const displayPackageImageById = (id: number) => {
-  //   return state.packages.find((pk) => pk.id === id)?.photo || ''
-  // }
-
-  // const toggleShowMainPackageSection = () => {
-  //   showMainPackageSection.value = !showMainPackageSection.value
-  // }
-
-  // const toggleShowAddonPackageSection = (addon?: IAddonPackageWithType) => {
-  //   state.currentAddonPackage = addon
-  //   showAddonSection.value = !showAddonSection.value
-  // }
-
-  // const addMainPackage = (mainPk: IUpdateAddonPackage) => {
-  //   /**
-  //    * @info remove old main package
-  //    */
-  //   if (state.mainPackageId && mainPk.packageId !== state.mainPackageId) {
-  //     state.addonPackages = state.addonPackages.filter(
-  //       (pk) => pk.packageId !== state.mainPackageId
-  //     )
-  //   }
-  //   state.mainPackageId = mainPk.packageId
-  //   const index = state.addonPackages.findIndex(
-  //     (pk) => pk.packageId === state.mainPackageId
-  //   )
-  //   if (index >= 0) {
-  //     state.addonPackages[index] = mainPk
-  //   } else {
-  //     state.addonPackages = [mainPk]
-  //       .concat(state.addonPackages)
-  //       .map((pk, index) => {
-  //         return { ...pk, idx: index + 1 }
-  //       })
-  //   }
-  //   state.mainSelectedPackage = mainPk
-  //   toggleShowMainPackageSection()
-  // }
-
-  // const addAddonPackage = (addon: IUpdateAddonPackage) => {
-  //   if (addon.packageId === state.mainPackageId) {
-  //     notyf.warning('package id is duplicate main package')
-  //     return
-  //   }
-  //   const havePackage = state.addonPackages.some(
-  //     (pk) => pk.packageId === addon.packageId
-  //   )
-  //   const isMyPackage = state.addonPackages.some((pk) => pk.idx === addon.idx)
-  //   if (havePackage && !isMyPackage) {
-  //     notyf.warning('package id is duplicate')
-  //     return
-  //   }
-  //   if (addon.idx) {
-  //     const index = state.addonPackages.findIndex(
-  //       (pk) => pk.packageId === addon.packageId
-  //     )
-  //     state.addonPackages[index] = addon
-  //   } else {
-  //     state.addonPackages.push({
-  //       ...addon,
-  //       idx: state.addonPackages.length + 1,
-  //     })
-  //   }
-  //   toggleShowAddonPackageSection()
-  // }
-
-  // const removePackage = async (packageId: number) => {
-  //   state.addonPackages = await state.addonPackages
-  //     .filter((pk) => pk.packageId !== packageId)
-  //     .map((pk, index) => {
-  //       return { ...pk, idx: index + 1 }
-  //     })
-  // }
 
   const createPackageGroup = async (packageGroup: {
     mainPackage: IUpdateAddonPackage
@@ -139,18 +63,61 @@ export default function useManagePackageGroup() {
     state.packageGroupInfo = res
   }
 
+  const editPackageGroup = async (packageGroup: {
+    mainPackage: IUpdateAddonPackage
+    addonPackages: IUpdateAddonPackage[]
+  }) => {
+    if (state.packageGroupInfo) {
+      const mainPackage = state.packageGroupInfo.find((pk) => pk.isMainPackage)
+
+      await Promise.all(
+        state.packageGroupInfo.map(async (pk) => {
+          const havePackage = packageGroup.addonPackages.some(
+            (p) => p.packageId === pk.packageId
+          )
+          if (!havePackage) {
+            await removePackageById({
+              packageId: pk.packageId,
+              packageGroupId: pk.id,
+            })
+          }
+        })
+      )
+      const { error, message } = await updatePackageGroup({
+        mainPackageId: packageGroup.mainPackage.packageId,
+        addonPackages: packageGroup.addonPackages,
+      })
+
+      if (error) {
+        notyf.error(errMessage(message))
+      } else {
+        router.push({
+          name: 'products-packages-groups-:packageid',
+          params: { packageid: `${packageGroup.mainPackage.packageId}` },
+        })
+      }
+    }
+    //
+  }
+
+  const removePackageById = async (params: DeleteAddonPackageParams) => {
+    const res = await deleteAddonPackageGroupById(params)
+    console.log(res)
+  }
+
+  const routeToView = () => {
+    if (isEditPage.value) {
+      router.push({ hash: '' })
+    }
+  }
+
   return {
     ...toRefs(state),
     isEditPage,
     createPackageGroup,
+    editPackageGroup,
     fetchPackageInfo,
-    // addMainPackage,
-    // addAddonPackage,
-    // displayPackageNameById,
-    // displayPackageImageById,
-    // toggleShowAddonPackageSection,
-    // toggleShowMainPackageSection,
-    // createPackageGroup,
-    // removePackage,
+    removePackageById,
+    routeToView,
   }
 }

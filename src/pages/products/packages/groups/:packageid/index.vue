@@ -14,8 +14,13 @@ useHead({
   title: 'Whitehouse Group Package',
 })
 const route = useRoute()
-const { fetchPackageInfo, packageGroupInfo } = useManagePackageGroup()
-
+const {
+  fetchPackageInfo,
+  packageGroupInfo,
+  isEditPage,
+  editPackageGroup,
+  routeToView,
+} = useManagePackageGroup()
 onBeforeMount(() => {
   const mainPackageId = route.params.packageid as string
   fetchPackageInfo(+mainPackageId)
@@ -25,8 +30,11 @@ onBeforeMount(() => {
 <template>
   <div class="page-content-inner">
     <PackageGroupForm
-      title="Edit Package Group"
+      :title="isEditPage ? 'Edit Package Group' : `View Package Group`"
       :package-group="packageGroupInfo"
+      :mode="isEditPage ? 'edit' : 'view'"
+      @update="editPackageGroup"
+      @cancel="routeToView"
     />
   </div>
 </template>

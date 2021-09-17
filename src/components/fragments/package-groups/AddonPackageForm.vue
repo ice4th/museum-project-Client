@@ -12,23 +12,22 @@ const props = defineProps({
     type: Array as PropType<IUpdateAddonPackage[]>,
     default: () => [],
   },
-  // currentAddonPackage: {
-  //   type: Object as PropType<IUpdateAddonPackage>,
-  //   default: undefined,
-  // },
+  currentAddonPackage: {
+    type: Object as PropType<IUpdateAddonPackage>,
+    default: undefined,
+  },
 })
-const emit = defineEmits({
-  cancel: null,
-  add: Object,
-})
+const emit = defineEmits(['cancel', 'add', 'edit'])
 
 const { getPackages } = useOptionApi()
 
-const addonPackage = ref<IUpdateAddonPackage>({
-  idx: undefined,
-  packageId: 0,
-  generateTicket: GenerateTicket.GENERATE_TICKET,
-})
+const addonPackage = ref<IUpdateAddonPackage>(
+  props.currentAddonPackage || {
+    idx: undefined,
+    packageId: 0,
+    generateTicket: GenerateTicket.GENERATE_TICKET,
+  }
+)
 
 // TODO: check ticket from depenon package depenonPackageInfo?.ticket
 const maxTicket = computed(
@@ -38,7 +37,12 @@ const maxTicket = computed(
     )?.packageTicket || 0
 )
 
-const showDependOnSelector = ref(false)
+const showDependOnSelector = ref(
+  !!props.currentAddonPackage?.dependonPackageId || false
+)
+const dependonPackagesOption = computed(() =>
+  props.groupPackages.filter((pk) => pk.idx !== addonPackage.value.idx)
+)
 // const allGroupPackages = ref<PackageOption[]>(
 //   props.packages.filter((pk) =>
 //     props.groupPackages.some(
@@ -96,13 +100,19 @@ const addonPackageChange = (value: number, option: PackageOption) => {
 }
 const findAddonPackages = async (search: string) => {
   const res = await getPackages(search)
-  const filter = await res.filter((pk) =>
-    props.groupPackages.every((gp) => gp.packageId !== pk.id)
+  const filter = await res.filter(
+    (pk) =>
+      props.groupPackages.every((gp) => gp.packageId !== pk.id) ||
+      props.currentAddonPackage?.packageId === pk.id
   )
   return filter
 }
 
 const updateAddonPackage = () => {
+  if (props.currentAddonPackage) {
+    emit('edit', addonPackage.value)
+    return
+  }
   emit('add', addonPackage.value)
 }
 
@@ -115,6 +125,18 @@ watch(
         dependonPackageId: undefined,
         dependonTicketUse: undefined,
       }
+    }
+  }
+)
+
+watch(
+  () => props.currentAddonPackage,
+  (value) => {
+    console.log(value)
+    if (value) {
+      addonPackage.value = props.currentAddonPackage
+      showDependOnSelector.value =
+        !!props.currentAddonPackage?.dependonPackageId
     }
   }
 )
@@ -176,7 +198,7 @@ watch(
               <Multiselect
                 v-model="addonPackage.dependonPackageId"
                 placeholder="select depend on package"
-                :options="groupPackages"
+                :options="dependonPackagesOption"
                 track-by="packageName"
                 value-prop="packageId"
               >
