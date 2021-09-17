@@ -40,12 +40,6 @@ export interface IUsePackageDetailsState {
     findMycoachId?: number
     moocCourseId?: number
   }
-  // select options
-  products: any[]
-  curriculums: any[]
-  featureGroups: any[]
-  fmcPackages: any[]
-  moocCourses: any[]
   // loading
   loadingOptions: boolean
   loadingPackage: boolean
@@ -117,12 +111,6 @@ export default function usePackageDetails() {
       findMycoachId: undefined,
       moocCourseId: undefined,
     },
-    // select options
-    products: [],
-    curriculums: [],
-    featureGroups: [],
-    fmcPackages: [],
-    moocCourses: [],
     // loading
     loadingOptions: false,
     loadingPackage: false,
@@ -153,37 +141,6 @@ export default function usePackageDetails() {
   /**
    * Methods
    */
-  const fetchOptions = async () => {
-    state.loadingOptions = true
-
-    // fetch all options
-    const [products, curriculums, featureGroups, fmcPackages, moocCourses] =
-      await Promise.all([
-        getProducts({
-          currentPage: 1,
-          perPage: 12,
-        }),
-        getCurriculums({
-          currentPage: 1,
-          perPage: 25,
-        }),
-        getFeatureGroups(),
-        getFmcPackages({
-          currentPage: 1,
-          perPage: 25,
-        }),
-        getMoocCourses({
-          currentPage: 1,
-          perPage: 25,
-        }),
-      ])
-    state.products = products
-    state.curriculums = curriculums
-    state.featureGroups = featureGroups
-    state.fmcPackages = fmcPackages
-    state.moocCourses = moocCourses
-    state.loadingOptions = false
-  }
   const fetchProductsOption = (search?: string) => {
     return getProducts({
       currentPage: 1,
@@ -260,7 +217,6 @@ export default function usePackageDetails() {
    * On Mounted
    */
   onMounted(() => {
-    fetchOptions()
     fetchPackage()
   })
 

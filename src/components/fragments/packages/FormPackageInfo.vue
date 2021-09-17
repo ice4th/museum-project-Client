@@ -664,25 +664,10 @@ const privateSlots = [
         <V-Field>
           <label>Globish Plus</label>
           <V-Control>
-            <Multiselect
-              v-model="formPackageInfo.featureGroupId"
-              placeholder="Select or search feature group"
-              :options="featureGroups"
-              track-by="name"
-              value-prop="id"
+            <FeatureGroupOption
+              :model-value="formPackageInfo.featureGroupId"
               :disabled="readonly"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.name }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.name }}
-                </span>
-              </template>
-            </Multiselect>
+            />
           </V-Control>
         </V-Field>
       </div>
