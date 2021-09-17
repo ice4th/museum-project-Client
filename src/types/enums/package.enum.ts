@@ -44,15 +44,15 @@ export enum GlobishLevel {
 }
 
 export enum GLevel {
-  G0 = 0,
-  G1 = 1,
-  G2 = 2,
-  G3 = 3,
-  G4 = 4,
-  G5 = 5,
-  G6 = 6,
-  G7 = 7,
-  G8 = 8,
+  G0 = '0',
+  G1 = '1',
+  G2 = '2',
+  G3 = '3',
+  G4 = '4',
+  G5 = '5',
+  G6 = '6',
+  G7 = '7',
+  G8 = '8',
 }
 
 export enum PackageCefrLevel {
