@@ -51,7 +51,16 @@ const {
       </template>
       <template #action="{ value }">
         <div class="is-flex is-justify-content-flex-end">
-          <V-Dropdown title="More" spaced right>
+          <V-Dropdown spaced right>
+            <template #button="{ toggle }">
+              <V-Button
+                icon="feather:more-vertical"
+                class="is-trigger"
+                @click="toggle"
+              >
+                Actions
+              </V-Button>
+            </template>
             <template #content>
               <a
                 role="menuitem"

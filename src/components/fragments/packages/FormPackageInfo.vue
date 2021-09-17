@@ -15,24 +15,24 @@ import {
  * defined props type
  */
 const props = defineProps({
-  products: {
-    type: Array,
+  fetchProductsOption: {
+    type: Function,
     default: () => [],
   },
-  curriculums: {
-    type: Array,
+  fetchCurriculumsOption: {
+    type: Function,
     default: () => [],
   },
   featureGroups: {
-    type: Array,
+    type: Function,
     default: () => [],
   },
-  fmcPackages: {
-    type: Array,
+  fetchFindMyCoachesOption: {
+    type: Function,
     default: () => [],
   },
-  moocCourses: {
-    type: Array,
+  fetchMoocCoursesOption: {
+    type: Function,
     default: () => [],
   },
   packageName: {
@@ -127,26 +127,14 @@ const privateSlots = [
         <V-Field class="is-autocomplete-select">
           <label>Product</label>
           <V-Control icon="feather:search" :loading="loadingOptions">
-            <Multiselect
+            <SelectOption
               v-model="formPackageInfo.productId"
-              placeholder="Select product"
-              :options="products"
-              :searchable="true"
-              track-by="name"
+              :callback-search="fetchProductsOption"
+              :readonly="readonly"
+              label-by="name"
               value-prop="id"
-              :disabled="readonly"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  ({{ value.id }}) {{ value.name }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  ({{ option.id }}) {{ option.name }}
-                </span>
-              </template>
-            </Multiselect>
+              placeholder="Select or search product"
+            />
             <p v-show="!formPackageInfo.productId" class="help text-danger">
               Choose product for this package.
             </p>
@@ -310,7 +298,7 @@ const privateSlots = [
           <V-Control>
             <Multiselect
               v-model="formPackageInfo.installmentMonth"
-              placeholder="Select installment"
+              placeholder="Select or search installment"
               :options="installmentItems"
               track-by="key"
               value-prop="value"
@@ -458,7 +446,7 @@ const privateSlots = [
           <V-Control>
             <Multiselect
               v-model="formPackageInfo.privateSlot"
-              placeholder="Select private class time"
+              placeholder="Select or search private class time"
               :options="privateSlots"
               track-by="key"
               value-prop="value"
@@ -510,7 +498,7 @@ const privateSlots = [
           <V-Control>
             <Multiselect
               v-model="formPackageInfo.globishLevel"
-              placeholder="Select globish level"
+              placeholder="Select or search globish level"
               :options="globishLevelItems"
               track-by="key"
               value-prop="value"
@@ -540,7 +528,7 @@ const privateSlots = [
           <V-Control>
             <Multiselect
               v-model="formPackageInfo.cefrLevel"
-              placeholder="Select CEFR level"
+              placeholder="Select or search CEFR level"
               :options="cefrLevelItems"
               track-by="key"
               value-prop="value"
@@ -633,25 +621,14 @@ const privateSlots = [
         <V-Field>
           <label>Curriculum (New)</label>
           <V-Control>
-            <Multiselect
+            <SelectOption
               v-model="formPackageInfo.curriculumId"
-              placeholder="Select curriculum"
-              :options="curriculums"
-              track-by="name"
+              :callback-search="fetchCurriculumsOption"
+              :readonly="readonly"
+              label-by="name"
               value-prop="id"
-              :disabled="readonly"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.name }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.name }}
-                </span>
-              </template>
-            </Multiselect>
+              placeholder="Select or search curriculum"
+            />
           </V-Control>
         </V-Field>
       </div>
@@ -662,7 +639,7 @@ const privateSlots = [
           <V-Control>
             <Multiselect
               v-model="formPackageInfo.engder"
-              placeholder="Select package engder"
+              placeholder="Select or search package engder"
               :options="packageEngderItems"
               track-by="key"
               value-prop="value"
@@ -687,25 +664,10 @@ const privateSlots = [
         <V-Field>
           <label>Globish Plus</label>
           <V-Control>
-            <Multiselect
-              v-model="formPackageInfo.featureGroupId"
-              placeholder="Select feature group"
-              :options="featureGroups"
-              track-by="name"
-              value-prop="id"
+            <FeatureGroupOption
+              :model-value="formPackageInfo.featureGroupId"
               :disabled="readonly"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.name }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.name }}
-                </span>
-              </template>
-            </Multiselect>
+            />
           </V-Control>
         </V-Field>
       </div>
@@ -714,25 +676,14 @@ const privateSlots = [
         <V-Field>
           <label>Find My Coach</label>
           <V-Control :has-error="false">
-            <Multiselect
+            <SelectOption
               v-model="formPackageInfo.findMycoachId"
-              placeholder="Select find my coach"
-              :options="fmcPackages"
-              track-by="packageName"
+              :callback-search="fetchFindMyCoachesOption"
+              :readonly="readonly"
+              label-by="packageName"
               value-prop="id"
-              :disabled="readonly"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.packageName }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.packageName }}
-                </span>
-              </template>
-            </Multiselect>
+              placeholder="Select or search find by coach"
+            />
           </V-Control>
         </V-Field>
       </div>
@@ -741,86 +692,17 @@ const privateSlots = [
         <V-Field>
           <label>Course (Mook)</label>
           <V-Control>
-            <Multiselect
+            <SelectOption
               v-model="formPackageInfo.moocCourseId"
-              placeholder="Select mooc course"
-              :options="moocCourses"
-              track-by="title"
+              :callback-search="fetchMoocCoursesOption"
+              :readonly="readonly"
+              label-by="title"
               value-prop="id"
-              :disabled="readonly"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  {{ value.title }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  {{ option.title }}
-                </span>
-              </template>
-            </Multiselect>
-          </V-Control>
-        </V-Field>
-      </div>
-
-      <!-- <div class="column is-12">
-        <V-Field>
-          <label>Subscription class type</label>
-          <V-Control>
-            <div class="select">
-              <select v-model="selectStatus">
-                <option value="">Select subscription class type</option>
-                <option value="Superman">Superman</option>
-                <option value="Batman">Batman</option>
-                <option value="Spiderman">Spiderman</option>
-                <option value="Deadpool">Deadpool</option>
-                <option value="Spawn">Spawn</option>
-                <option value="Galactus">Galactus</option>
-              </select>
-            </div>
-          </V-Control>
-        </V-Field>
-      </div>
-      <div class="column is-4">
-        <V-Field>
-          <label>Limit per day</label>
-          <V-Control icon="lnil lnil-ticket">
-            <input
-              v-model="duration"
-              type="number"
-              class="input"
-              placeholder="Limit ticket..."
+              placeholder="Select or search mooc course"
             />
           </V-Control>
         </V-Field>
       </div>
-      <div class="column is-4">
-        <V-Field>
-          <label>Limit per week</label>
-          <V-Control icon="lnil lnil-ticket">
-            <input
-              v-model="duration"
-              type="number"
-              class="input"
-              placeholder="Limit ticket..."
-            />
-          </V-Control>
-        </V-Field>
-      </div>
-      <div class="column is-4">
-        <V-Field>
-          <label>Limit per month</label>
-          <V-Control icon="lnil lnil-ticket">
-            <input
-              v-model="duration"
-              type="number"
-              class="input"
-              placeholder="Limit ticket..."
-            />
-          </V-Control>
-        </V-Field>
-      </div> -->
     </div>
   </div>
 </template>

@@ -61,6 +61,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
   callbackSearch: {
     type: Function,
     default: () => [],
@@ -89,6 +93,7 @@ const select = (value, option) => {
     :track-by="trackBy || labelBy"
     :value-prop="valueProp"
     :no-options-text="'search...'"
+    :disabled="readonly"
     :clear-on-select="closeOnSelect"
     :clear-on-search="clearOnSearch"
     @select="select"
