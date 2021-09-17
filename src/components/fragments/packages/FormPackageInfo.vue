@@ -40,6 +40,7 @@ const props = defineProps({
 
 const { getProducts, getCurriculums, getFmcPackages, getMoocCourses } =
   useOptionApi()
+
 /**
  * Multi Select Items
  */
@@ -63,7 +64,6 @@ const privateSlots = [
   { key: '30 Minutes', value: 1 },
   { key: '1 Hour', value: 2 },
   { key: '1 Hour 30 Minutes', value: 3 },
-  { key: '30 Minutes', value: 4 },
 ]
 </script>
 
@@ -121,6 +121,7 @@ const privateSlots = [
               label-by="name"
               value-prop="id"
               placeholder="Select or search product"
+              @clear="formPackageInfo.productId = undefined"
             />
             <p v-show="!formPackageInfo.productId" class="help text-danger">
               Choose product for this package.
@@ -290,6 +291,7 @@ const privateSlots = [
               track-by="key"
               value-prop="value"
               :disabled="readonly"
+              @clear="formPackageInfo.installment = undefined"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -438,6 +440,7 @@ const privateSlots = [
               track-by="key"
               value-prop="value"
               :disabled="readonly"
+              @clear="formPackageInfo.privateSlot = undefined"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -490,6 +493,7 @@ const privateSlots = [
               track-by="key"
               value-prop="value"
               :disabled="readonly"
+              @clear="formPackageInfo.globishLevel = undefined"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -520,6 +524,7 @@ const privateSlots = [
               track-by="key"
               value-prop="value"
               :disabled="readonly"
+              @clear="formPackageInfo.cefrLevel = undefined"
             >
               <template #singlelabel="{ value }">
                 <div class="multiselect-single-label">
@@ -615,6 +620,7 @@ const privateSlots = [
               label-by="name"
               value-prop="id"
               placeholder="Select or search curriculum"
+              @clear="formPackageInfo.curriculumId = null"
             />
           </V-Control>
         </V-Field>
@@ -670,6 +676,7 @@ const privateSlots = [
               label-by="packageName"
               value-prop="id"
               placeholder="Select or search find by coach"
+              @clear="formPackageInfo.findMycoachId = null"
             />
           </V-Control>
         </V-Field>
@@ -686,6 +693,7 @@ const privateSlots = [
               label-by="title"
               value-prop="id"
               placeholder="Select or search mooc course"
+              @clear="formPackageInfo.moocCourseId = null"
             />
           </V-Control>
         </V-Field>

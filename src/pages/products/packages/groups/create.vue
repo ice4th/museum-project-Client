@@ -4,7 +4,6 @@ import { computed, reactive, ref } from 'vue'
 import { useHead } from '@vueuse/head'
 import { activeSidebar, toggleSidebar } from '/@src/state/activeSidebarState'
 import useManagePackageGroup from '/@src/composable/package-groups/useManagePackageGroup'
-import useFormPackageInfo from '/@src/composable/package/use-form-package-info'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
 pageTitle.value = 'Package Group Management'

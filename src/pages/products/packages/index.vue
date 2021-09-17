@@ -28,11 +28,7 @@ const { isLoading, packageTableHeaders, paginationData, fetchAllPackages } =
           <V-Button
             color="primary"
             icon="fas fa-plus"
-            :to="{
-              name: 'products-packages-:id',
-              params: { id: 'new' },
-              hash: '#create',
-            }"
+            :to="{ name: 'products-packages-create' }"
           >
             Add Package
           </V-Button>
