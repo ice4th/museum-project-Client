@@ -1,20 +1,23 @@
-import { reactive, toRefs } from 'vue'
+import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
 import useStudentApi from '../api/useStudentApi'
 import useNotyf from '../useNotyf'
 import useOptionApi from '/@src/composable/api/useOptionApi'
-import { IMemberInfo } from '/@src/types/interfaces/permission.interface'
+import { errMessage } from '/@src/helpers/filter.helper'
 import {
-  ICreateFamily,
   IFamilyInfo,
+  ICreateFamily,
 } from '/@src/types/interfaces/student.interface'
+
 interface UseManageStudentFamilyState {
   student: string
   family: ICreateFamily
+  familyId: number
   familyInfo?: IFamilyInfo
-  memberInfo?: IMemberInfo
+  memberId?: number
   isOpenCreateFamilyPopup: boolean
   isOpenDeleteConfirmPopup: boolean
+  validate: Object
 }
 export default function useManageStudentFamuly() {
   const state = reactive<UseManageStudentFamilyState>({
@@ -25,48 +28,95 @@ export default function useManageStudentFamuly() {
       name: '',
       note: '',
     },
+    familyId: 0,
     familyInfo: undefined,
-    memberInfo: undefined,
+    memberId: undefined,
+    validate: {},
   })
   const route = useRoute()
   const notyf = useNotyf()
   const studentId = route.params.id as string
 
   // const getStudents = useOptionApi()
-  const { getStudentByFamily, addStudentFamily, addStudentToFamily } =
-    useStudentApi()
+  const {
+    getStudentByFamily,
+    addStudentFamily,
+    addStudentToFamily,
+    deleteFamilyMember,
+  } = useStudentApi()
 
-  const fectStudentFamily = () => {
-    const data = getStudentByFamily(+studentId)
+  const fectStudentFamily = async () => {
+    const data = await getStudentByFamily(+studentId)
     console.log('data' + data)
-    // if (data) {
-    //   state.familyInfo = data
-    // }
+    if (data) {
+      state.familyInfo = data
+      state.familyId = state.familyInfo.id
+    }
     //Api get getStudentByFamily
   }
 
-  const addFamily = () => {
-    const res = addStudentFamily(+studentId, state.family)
+  const addFamily = async () => {
+    const res = await addStudentFamily(+studentId, state.family)
     console.log('res' + res)
-    state.isOpenCreateFamilyPopup = false
+    if (res.status === 200) {
+      notyf.success('success!')
+      state.validate = {}
+      state.isOpenCreateFamilyPopup = false
+    } else {
+      if (typeof res.message === 'object') {
+        state.validate = res.message
+      } else {
+        notyf.error(errMessage(res.message))
+      }
+    }
+
     // Api post addStudentFamily
   }
 
-  const addStdToFam = () => {
-    // const  res = addStudentToFamily(+studentId,familyId,state.student)
+  const addStdToFam = async () => {
+    if (!state.familyInfo) return
+    const res = await addStudentToFamily(
+      +studentId,
+      state.familyInfo?.id,
+      state.student
+    )
+    if (res.status === 200) {
+      notyf.success('success!')
+      state.validate = {}
+    } else {
+      if (typeof res.message === 'object') {
+        state.validate = res.message
+      } else {
+        notyf.error(errMessage(res.message))
+      }
+    }
     // Api post  addStudentToFamily
     // studentId,familyId,memberId
   }
 
-  const deleteMember = () => {
+  const deleteMember = async () => {
+    if (!state.memberId) return
+    const res = await deleteFamilyMember(
+      +studentId,
+      state.familyId,
+      state.memberId
+    )
+    if (res.status === 200) {
+      notyf.success('success!')
+    } else {
+      notyf.error(errMessage(res.message))
+    }
     //   Delete member
+
     state.isOpenDeleteConfirmPopup = false
   }
+  onMounted(() => {
+    fectStudentFamily()
+  })
 
   const familyTableHeaders = [
     { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Student name' },
-    { key: 'role', label: 'Role' },
+    { key: 'fullnameTh', label: 'Student name' },
     { key: 'email', label: 'Email' },
     { key: 'phone', label: 'Phone' },
     { key: 'action', label: 'Action', isCenter: true, isRaw: true },

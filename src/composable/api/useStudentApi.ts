@@ -162,9 +162,25 @@ export default function useStudentApi() {
     )
   }
 
-  const addStudentToFamily = async (studentId: number, familyId: number) => {
+  const addStudentToFamily = async (
+    studentId: number,
+    familyId: number,
+    memberId: string
+  ) => {
     return api.post<any, ApiResponse>(
-      `Students/${studentId}/Families/${familyId}/Members`
+      `Students/${studentId}/Families/${familyId}/Members`,
+      memberId
+    )
+  }
+
+  const deleteFamilyMember = async (
+    studentId: number,
+    familyId: number,
+    memberId: number
+  ) => {
+    return api.post<any, ApiResponse>(
+      `Students/${studentId}/Families/${familyId}/Members/${memberId}`,
+      memberId
     )
   }
 
@@ -187,5 +203,6 @@ export default function useStudentApi() {
     getStudentByFamily,
     addStudentToFamily,
     addStudentFamily,
+    deleteFamilyMember,
   }
 }

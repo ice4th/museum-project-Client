@@ -98,6 +98,24 @@ export default function useOptionApi() {
     return checkResponseStatus(res) ? res.data.data : []
   }
 
+  const getStudentsWithoutFamily = async (
+    search?: string,
+    params?: IPaginationParams
+  ): Promise<StudentOption[]> => {
+    const res = await api.get<IPaginationResponse<StudentOption[]>>(
+      '/Options/Students',
+      {
+        params: {
+          currentPage: params?.currentPage || 1,
+          perPage: params?.perPage || 10,
+          search,
+          condition: 'without_family',
+        },
+      }
+    )
+    return checkResponseStatus(res)?.data || []
+  }
+
   const getTeams = async (): Promise<TeamOption[]> => {
     const res = await api.get<TeamOption[]>('/Options/Teams')
     state.teamOptions = checkResponseStatus(res) || []
@@ -122,6 +140,7 @@ export default function useOptionApi() {
     getFeatureGroups,
     getFmcPackages,
     getStudents,
+    getStudentsWithoutFamily,
     getTeams,
     getQuizzes,
   }

@@ -11,27 +11,28 @@ const {
   family,
   addStdToFam,
   familyInfo,
-  memberInfo,
+  memberId,
+  validate,
 } = useManageStudentFamily()
-const { getStudents } = useOptionApi()
+const { getStudentsWithoutFamily } = useOptionApi()
 // family-account Component
 
-const familyData = [
-  {
-    id: 1,
-    name: 'สมปอง เป็นน้องสมชาย',
-    role: 'General',
-    email: 'ggg@gmail.com',
-    phone: '0946872456',
-  },
-  {
-    id: 2,
-    name: 'สมหมาย เป็นพี่สมปอง',
-    role: 'General',
-    email: 'ggg@gmail.com',
-    phone: '0946872567',
-  },
-]
+// const familyData = [
+//   {
+//     id: 1,
+//     name: 'สมปอง เป็นน้องสมชาย',
+//     role: 'General',
+//     email: 'ggg@gmail.com',
+//     phone: '0946872456',
+//   },
+//   {
+//     id: 2,
+//     name: 'สมหมาย เป็นพี่สมปอง',
+//     role: 'General',
+//     email: 'ggg@gmail.com',
+//     phone: '0946872567',
+//   },
+// ]
 </script>
 
 <template>
@@ -57,6 +58,9 @@ const familyData = [
               required
             />
           </V-Control>
+          <p v-show="validate.name" class="help text-danger">
+            {{ validate.name }}
+          </p>
         </V-Field>
         <V-Field>
           <label>Note</label>
@@ -81,8 +85,7 @@ const familyData = [
   <div class="account-box">
     <div class="is-flex is-justify-content-space-between">
       <div class="left">
-        <h2 class="title is-5 is-narrow is-bolder">familyinfo.name</h2>
-        <p>note</p>
+        <!-- <h2 class="title is-5 is-narrow is-bolder">{{ familyinfo.name }}</h2> -->
       </div>
       <div class="right">
         <V-Button
@@ -99,12 +102,15 @@ const familyData = [
       <div class="column is-6">
         <SelectOption
           v-model="student"
-          :callback-search="getStudents"
+          :callback-search="getStudentsWithoutFamily"
           label-by="fullnameTh"
           track-by="fullnameTh"
           value-prop="id"
           placeholder="Select student to add family (Search by name,id)"
         />
+        <!-- <p v-show="validate.student" class="help text-danger">
+          {{ validate.student }}
+        </p> -->
       </div>
       <div class="column is-6">
         <V-Button color="primary" @click="addStdToFam">Add</V-Button>
@@ -113,23 +119,21 @@ const familyData = [
     <!-- family list -->
     <Datatable
       :headers="familyTableHeaders"
-      :data="memberInfo"
+      :data="familyInfo?.students || []"
       :can-searchable="false"
       hide-per-page
       hide-pagination
     >
-      <template #action>
-        <V-Button
-          color="danger"
-          outlined
-          @click="isOpenDeleteConfirmPopup = true"
+      <template #action="{ value }">
+        <V-Button color="danger" outlined @click="memberId = value.id"
           >Delete</V-Button
         >
+        {{ value.id }}
       </template>
     </Datatable>
   </div>
   <V-Modal
-    :open="isOpenDeleteConfirmPopup"
+    :open="!!memberId"
     size="small"
     actions="center"
     @close="isOpenDeleteConfirmPopup = false"
@@ -150,7 +154,9 @@ const familyData = [
       <V-Message color="danger"> Confirm Remove </V-Message>
     </template>
     <template #action>
-      <V-Button color="danger" outlined @click="deleteMember">Comfirm</V-Button>
+      <V-Button color="danger" outlined @click="deleteMember(val)"
+        >Comfirm</V-Button
+      >
     </template>
   </V-Modal>
 </template>
