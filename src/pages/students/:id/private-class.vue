@@ -6,7 +6,7 @@ const { data, total, isLoading } = useStudentPrivateClass()
 
 const headers: IDatatableHeader = [
   { key: 'id', label: 'ID' },
-  { key: 'packageName', label: 'Package Name' },
+  { key: 'packageName', label: 'Package' },
   { key: 'coachName', label: 'Coach', isRaw: true },
   { key: 'date', label: 'Class Date', isRaw: true },
   { key: 'time', label: 'Class Time', isRaw: true },
@@ -20,7 +20,7 @@ const headers: IDatatableHeader = [
     <h1 class="title is-4 p-3">Private Class History</h1>
     <div class="page-content-inner">
       <Datatable
-        :can-searchable="false"
+        :search-placeholder="'Class ID, Package or Coach'"
         :is-loading="isLoading"
         :headers="headers"
         :data="data"
@@ -29,7 +29,7 @@ const headers: IDatatableHeader = [
         <template #thead>
           <tr>
             <th scope="col" rowspan="2" class="has-text-centered">ID</th>
-            <th scope="col" rowspan="2">Package Name</th>
+            <th scope="col" rowspan="2">Package</th>
             <th scope="col" rowspan="2">Coach</th>
             <th scope="col" rowspan="2">Date</th>
             <th scope="col" rowspan="2">Time</th>
