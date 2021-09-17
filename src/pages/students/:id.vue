@@ -155,8 +155,8 @@ onMounted(() => {
           <div class="column is-8">
             <!-- <StudentProfileEditor /> -->
             <RouterView v-slot="{ Component }">
-              <transition name="translate-page-y" mode="in-out">
-                <component :is="Component" />
+              <transition name="fade-fast" mode="out-in">
+                <component :is="Component" :key="$route.fullPath" />
               </transition>
             </RouterView>
           </div>
@@ -170,9 +170,14 @@ onMounted(() => {
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
 @import '../../scss/pages/profile/_user-profile.scss';
+.account-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 .account-wrapper .account-box.is-navigation .media-flex-center {
   padding-bottom: 0;
 }
+
 .advanced-box {
   padding-bottom: 20px;
 }
