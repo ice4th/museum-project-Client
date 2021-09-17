@@ -64,18 +64,6 @@ export default function usePackageTable() {
       state.paginationData = res
     }
   }
-  const onViewPackage = async (id: number) => {
-    await router.push({
-      name: 'products-packages-:id',
-      params: { id },
-    })
-  }
-  const onEditPackage = async (id: number) => {
-    await router.push({
-      name: 'products-packages-:id-edit',
-      params: { id },
-    })
-  }
 
   /**
    * On Mounted
@@ -88,7 +76,5 @@ export default function usePackageTable() {
     ...toRefs(state),
     packageTableHeaders,
     fetchAllPackages,
-    onViewPackage,
-    onEditPackage,
   }
 }

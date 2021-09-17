@@ -174,7 +174,7 @@ const privateSlots = [
               name="status_radio"
               color="primary"
               square
-              :disabled="readonly"
+              :disabled="readonly ? readonly : undefined"
             />
             <V-Radio
               v-model="formPackageInfo.status"
@@ -183,7 +183,7 @@ const privateSlots = [
               name="status_radio"
               color="primary"
               square
-              :disabled="readonly"
+              :disabled="readonly ? readonly : undefined"
             />
           </V-Control>
         </V-Field>
@@ -483,7 +483,7 @@ const privateSlots = [
               :name="type.key"
               color="primary"
               square
-              :disabled="readonly"
+              :disabled="readonly ? readonly : undefined"
             />
             <p v-show="!formPackageInfo.type" class="help text-danger">
               Choose private class time for this package.
@@ -665,7 +665,7 @@ const privateSlots = [
           <label>Globish Plus</label>
           <V-Control>
             <FeatureGroupOption
-              :model-value="formPackageInfo.featureGroupId"
+              v-model="formPackageInfo.featureGroupId"
               :disabled="readonly"
             />
           </V-Control>

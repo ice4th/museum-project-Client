@@ -10,14 +10,8 @@ useHead({
   title: 'Whitehouse Package',
 })
 
-const {
-  isLoading,
-  packageTableHeaders,
-  paginationData,
-  onViewPackage,
-  onEditPackage,
-  fetchAllPackages,
-} = usePackageTable()
+const { isLoading, packageTableHeaders, paginationData, fetchAllPackages } =
+  usePackageTable()
 </script>
 
 <template>
@@ -29,12 +23,16 @@ const {
       :total="paginationData?.total || 0"
       is-action
     >
-      <template #custom-right>
-        <div class="is-flex is-justify-content-flex-end pt-4">
+      <template #custom-left>
+        <div class="is-flex is-justify-content-flex-start pt-4">
           <V-Button
             color="primary"
             icon="fas fa-plus"
-            :to="{ name: 'products-packages-create' }"
+            :to="{
+              name: 'products-packages-:id',
+              params: { id: 'new' },
+              hash: '#create',
+            }"
           >
             Add Package
           </V-Button>
@@ -62,10 +60,13 @@ const {
               </V-Button>
             </template>
             <template #content>
-              <a
+              <RouterLink
                 role="menuitem"
                 class="dropdown-item is-media"
-                @click="onViewPackage(value.id)"
+                :to="{
+                  name: 'products-packages-:id',
+                  params: { id: value.id },
+                }"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-eye"></i>
@@ -74,12 +75,16 @@ const {
                   <span>View</span>
                   <span>View package details</span>
                 </div>
-              </a>
+              </RouterLink>
 
-              <a
+              <RouterLink
                 role="menuitem"
                 class="dropdown-item is-media"
-                @click="onEditPackage(value.id)"
+                :to="{
+                  name: 'products-packages-:id',
+                  params: { id: value.id },
+                  hash: '#edit',
+                }"
               >
                 <div class="icon">
                   <i aria-hidden="true" class="lnil lnil-pencil"></i>
@@ -88,7 +93,7 @@ const {
                   <span>Edit</span>
                   <span>Edit package details</span>
                 </div>
-              </a>
+              </RouterLink>
 
               <hr class="dropdown-divider" />
 
