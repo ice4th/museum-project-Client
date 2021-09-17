@@ -1,16 +1,13 @@
 <script setup lang="ts">
 // AddonPackageForm Component
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { PropType } from 'vue'
 import { GenerateTicket } from '/@src/types/enums/package.enum'
 import type { IUpdateAddonPackage } from '/@src/types/interfaces/package.interface'
 import type { PackageOption } from '/@src/types/interfaces/option.interface'
+import useOptionApi from '/@src/composable/api/useOptionApi'
 
 const props = defineProps({
-  packages: {
-    type: Array as PropType<PackageOption[]>,
-    required: true,
-  },
   groupPackages: {
     type: Array as PropType<IUpdateAddonPackage[]>,
     default: () => [],
@@ -20,61 +17,81 @@ const props = defineProps({
     default: undefined,
   },
 })
-const emit = defineEmits({
-  cancel: null,
-  add: Object,
-})
-const allGroupPackages = ref<PackageOption[]>(
-  props.packages.filter((pk) =>
-    props.groupPackages.some(
-      (gpk) =>
-        gpk.packageId === pk.id &&
-        props.currentAddonPackage?.packageId !== pk.id
-    )
-  ) || []
-)
-const addonPackage = ref<number | undefined>(
-  props.currentAddonPackage?.packageId
-)
-const dependOnPackage = ref<number | undefined>(
-  props.currentAddonPackage?.dependonPackageId
-)
-const ticketUsed = ref<number | undefined>(
-  props.currentAddonPackage?.dependonTicketUse
-)
-const showDependOnSelector = ref<boolean>(
-  !!props.currentAddonPackage?.dependonPackageId
+const emit = defineEmits(['cancel', 'add', 'edit'])
+
+const { getPackages } = useOptionApi()
+
+const addonPackage = ref<IUpdateAddonPackage>(
+  props.currentAddonPackage || {
+    idx: undefined,
+    packageId: 0,
+    generateTicket: GenerateTicket.GENERATE_TICKET,
+  }
 )
 
-const updateAddonPackage = () => {
-  if (showDependOnSelector.value) {
-    if (!addonPackage.value) return
-    const data = {
-      packageId: addonPackage.value,
-      generateTicket: GenerateTicket.GENERATE_TICKET,
-      dependonPackageId: dependOnPackage.value,
-      idx: props.currentAddonPackage?.idx || 0,
-      dependonTicketUse: ticketUsed.value ? +ticketUsed.value : undefined,
-      packageGroupId: props.currentAddonPackage.packageGroupId,
-    } as IUpdateAddonPackage
-    emit('add', data)
-  } else {
-    if (!addonPackage.value) return
-    const data = {
-      packageId: addonPackage.value,
-      generateTicket: GenerateTicket.GENERATE_TICKET,
-      idx: props.currentAddonPackage?.idx || 0,
-      packageGroupId: props.currentAddonPackage.packageGroupId,
-    } as IUpdateAddonPackage
-    emit('add', data)
-  }
+// TODO: check ticket from depenon package depenonPackageInfo?.ticket
+const maxTicket = computed(
+  () =>
+    props.groupPackages.find(
+      (pk) => pk.packageId === addonPackage.value.dependonPackageId
+    )?.packageTicket || 0
+)
+
+const showDependOnSelector = ref(
+  !!props.currentAddonPackage?.dependonPackageId || false
+)
+const dependonPackagesOption = computed(() =>
+  props.groupPackages.filter((pk) => pk.idx !== addonPackage.value.idx)
+)
+
+const addonPackageChange = (value: number, option: PackageOption) => {
+  addonPackage.value.packageName = option.packageName
+  addonPackage.value.packageTicket = option.ticket
 }
-const depenonPackageInfo = computed(() => {
-  return (
-    allGroupPackages.value.find((pk) => pk.id === dependOnPackage.value) ||
-    undefined
+const findAddonPackages = async (search: string) => {
+  // const res = await getPackages(search, { currentPage: 1, perPage: 25 })
+  const selected = props.currentAddonPackage?.packageName
+  const res = await getPackages(search || selected)
+  const filter = await res.filter(
+    (pk) =>
+      props.groupPackages.every((gp) => gp.packageId !== pk.id) ||
+      props.currentAddonPackage?.packageId === pk.id
   )
-})
+  return filter
+}
+
+const updateAddonPackage = () => {
+  if (props.currentAddonPackage) {
+    emit('edit', addonPackage.value)
+    return
+  }
+  emit('add', addonPackage.value)
+}
+
+watch(
+  () => showDependOnSelector.value,
+  async (value: boolean) => {
+    if (!value) {
+      addonPackage.value = {
+        ...addonPackage.value,
+        dependonPackageId: undefined,
+        dependonTicketUse: undefined,
+      }
+    }
+  }
+)
+
+watch(
+  () => props.currentAddonPackage,
+  (value) => {
+    console.log(value)
+    if (value) {
+      addonPackage.value = props.currentAddonPackage
+      showDependOnSelector.value =
+        !!props.currentAddonPackage?.dependonPackageId
+    }
+  }
+)
 </script>
 
 <template>
@@ -101,25 +118,14 @@ const depenonPackageInfo = computed(() => {
         <V-Field>
           <label>Addon Package</label>
           <V-Control>
-            <Multiselect
-              v-model="addonPackage"
+            <SelectOption
+              v-model="addonPackage.packageId"
               placeholder="Select a main package"
-              :options="packages"
-              :searchable="true"
-              track-by="packageName"
+              :callback-search="findAddonPackages"
+              label-by="packageName"
               value-prop="id"
-            >
-              <template #singlelabel="{ value }">
-                <div class="multiselect-single-label">
-                  ({{ value.id }}) {{ value.packageName }}
-                </div>
-              </template>
-              <template #option="{ option }">
-                <span class="select-option-text">
-                  ({{ option.id }}) {{ option.packageName }}
-                </span>
-              </template>
-            </Multiselect>
+              @update:modelValue="addonPackageChange"
+            />
           </V-Control>
         </V-Field>
       </div>
@@ -137,44 +143,46 @@ const depenonPackageInfo = computed(() => {
       </div>
 
       <template v-if="showDependOnSelector">
-        <div class="column is-9">
+        <div class="column is-8">
           <V-Field>
             <label>Depend on package</label>
             <V-Control>
               <Multiselect
-                v-model="dependOnPackage"
+                v-model="addonPackage.dependonPackageId"
                 placeholder="select depend on package"
-                :options="allGroupPackages"
-                :searchable="true"
+                :options="dependonPackagesOption"
                 track-by="packageName"
-                value-prop="id"
+                value-prop="packageId"
               >
                 <template #singlelabel="{ value }">
                   <div class="multiselect-single-label">
-                    ({{ value.id }}) {{ value.packageName }}
+                    ({{ value.packageId }}) {{ value.packageName }}
                   </div>
                 </template>
                 <template #option="{ option }">
                   <span class="select-option-text">
-                    ({{ option.id }}) {{ option.packageName }}
+                    ({{ option.packageId }}) {{ option.packageName }}
                   </span>
                 </template>
               </Multiselect>
             </V-Control>
           </V-Field>
         </div>
-        <div class="column is-3">
+        <div class="column is-4">
           <V-Field>
-            <label>Ticket used {{ depenonPackageInfo?.ticket }}</label>
+            <label>Ticket used (max: {{ maxTicket }})</label>
             <V-Control icon="feather:hash">
               <input
-                v-model="ticketUsed"
+                v-model="addonPackage.dependonTicketUse"
                 min="0"
-                :max="depenonPackageInfo?.ticket"
+                :max="maxTicket"
                 type="number"
                 class="input"
                 placeholder=""
-                autocomplete="family-name"
+                @change="
+                  addonPackage.dependonTicketUse =
+                    +addonPackage.dependonTicketUse
+                "
               />
             </V-Control>
           </V-Field>

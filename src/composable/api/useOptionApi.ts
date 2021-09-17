@@ -47,9 +47,22 @@ export default function useOptionApi() {
     return state.productTypeOptions
   }
 
-  const getPackages = async (): Promise<PackageOption[]> => {
-    const res = await api.get<PackageOption[]>('/Options/Packages')
-    return checkResponseStatus(res) || []
+  const getPackages = async (
+    search?: string,
+    params?: IPaginationParams
+  ): Promise<PackageOption[]> => {
+    console.log(params)
+    const res = await api.get<IPaginationResponse<PackageOption[]>>(
+      '/Options/Packages',
+      {
+        params: {
+          currentPage: params?.currentPage || 1,
+          perPage: params?.perPage || 10,
+          search,
+        },
+      }
+    )
+    return checkResponseStatus(res) ? res.data.data : []
   }
 
   const getPartners = async (): Promise<PartnerOption[]> => {
