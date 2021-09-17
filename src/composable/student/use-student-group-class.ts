@@ -1,6 +1,6 @@
 import { onMounted, reactive, toRefs, watch } from 'vue'
 import useStudentApi from '../api/useStudentApi'
-import usePaginationRoute from '../use-pagination-route'
+import usePaginationRoute from '../usePaginationRoute'
 import { IStudentGroupClass } from '/@src/types/interfaces/student.interface'
 interface UseStudentGroupClassState {
   data: IStudentGroupClass[]
