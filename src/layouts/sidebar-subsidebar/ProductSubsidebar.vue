@@ -13,27 +13,27 @@ const emit = defineEmits(['close'])
     <div class="inner" data-simplebar>
       <ul>
         <li>
-          <RouterLink :to="{ name: 'product' }" class="is-submenu">
+          <RouterLink :to="{ name: 'products' }" class="is-submenu">
             <i class="lnil lnil-books"></i>
             <span>Product Detail</span>
           </RouterLink>
         </li>
         <li>
-          <RouterLink :to="{ name: 'product' }" class="is-submenu">
+          <RouterLink :to="{ name: 'products-create' }" class="is-submenu">
             <i class="lnil lnil-books"></i>
             <span>Create Product</span>
           </RouterLink>
         </li>
         <li class="divider"></li>
         <li>
-          <RouterLink :to="{ name: 'product-package' }" class="is-submenu">
+          <RouterLink :to="{ name: 'products-packages' }" class="is-submenu">
             <i class="lnil lnil-books"></i>
             <span>Package Detail</span>
           </RouterLink>
         </li>
         <li>
           <RouterLink
-            :to="{ name: 'product-create-package' }"
+            :to="{ name: 'products-create-package' }"
             class="is-submenu"
           >
             <i class="lnil lnil-books"></i>
@@ -43,7 +43,7 @@ const emit = defineEmits(['close'])
         <li class="divider"></li>
         <li>
           <RouterLink
-            :to="{ name: 'product-package-group' }"
+            :to="{ name: 'products-packages-groups' }"
             class="is-submenu"
           >
             <i class="lnil lnil-books"></i>
@@ -52,7 +52,7 @@ const emit = defineEmits(['close'])
         </li>
         <li>
           <RouterLink
-            :to="{ name: 'product-create-package' }"
+            :to="{ name: 'products-create-package' }"
             class="is-submenu"
           >
             <i class="lnil lnil-books"></i>
@@ -66,6 +66,6 @@ const emit = defineEmits(['close'])
 </template>
 
 <style lang="scss">
-@import '../../scss/abstracts/_variables.scss';
-@import '../../scss/layout/_sidebar-panel.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/layout/_sidebar-panel.scss';
 </style>

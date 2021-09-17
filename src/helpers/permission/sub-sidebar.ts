@@ -22,39 +22,39 @@ export const adminSubsidebarList: SubsideBarItemDetail[] = [
 
 export const productSubsidebarList: SubsideBarItemDetail[] = [
   {
-    routeName: 'product',
+    routeName: 'products',
     label: 'Product Detail',
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
     action: 'VIEW_LIST_OF_PRODUCT',
   },
   {
-    routeName: 'product-create-product',
+    routeName: 'products-create',
     label: 'Create Product',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PRODUCT',
   },
   { isDivider: true },
   {
-    routeName: 'product-package',
+    routeName: 'products-packages',
     label: 'Package Detail',
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
     action: 'VIEW_LIST_OF_PACKAGE',
   },
   {
-    routeName: 'product-package-create',
+    routeName: 'products-packages-create',
     label: 'Create Package',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PACKAGE',
   },
   { isDivider: true },
   {
-    routeName: 'product-package-group',
+    routeName: 'products-packages-groups',
     label: 'Package Group Detail',
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
     action: 'VIEW_LIST_OF_PACKAGE',
   },
   {
-    routeName: 'product-package-group-create',
+    routeName: 'products-packages-groups-create',
     label: 'Create Package Group',
     icon: '<i class="lnil lnil-pencil mr-2"></i>',
     action: 'CREATE_PACKAGE',
@@ -81,13 +81,13 @@ export const codeSubsidebarList: SubsideBarItemDetail[] = [
 
 export const permissionSubsidebarList: SubsideBarItemDetail[] = [
   {
-    routeName: 'permissions-role',
+    routeName: 'permissions-roles',
     label: 'Roles Information',
     icon: '<i class="lnil lnil-books mr-2"></i>',
     action: 'VIEW_LIST_OF_ROLE',
   },
   {
-    routeName: 'permissions-role-create',
+    routeName: 'permissions-roles-create',
     label: 'Create Role',
     icon: '<i class="lnil lnil-books mr-2"></i>',
     action: 'CREATE_ROLE',

@@ -265,6 +265,6 @@ watch(
 </template>
 <style lang="scss" scoped>
 .table tbody td {
-  vertical-align: initial;
+  vertical-align: middle;
 }
 </style>

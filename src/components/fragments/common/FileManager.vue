@@ -212,8 +212,8 @@ const onReset = () => {
 </template>
 
 <style lang="scss" scoped>
-@import '../../scss/abstracts/_variables.scss';
-@import '../../scss/abstracts/_mixins.scss';
+@import 'src/scss/abstracts/_variables.scss';
+@import 'src/scss/abstracts/_mixins.scss';
 .scoll-y {
   overflow-y: scroll;
   height: 800px;

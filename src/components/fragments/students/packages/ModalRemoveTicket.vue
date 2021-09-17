@@ -30,7 +30,7 @@ const props = defineProps({
   },
 })
 const dataInput = ref<IDeleteTicketPayload>({
-  packageItemId: props.packageItem?.packageId || 0,
+  packageItemId: props.packageItem?.id || 0,
   type: props.ticketType,
   amount: 1,
   comment: '',

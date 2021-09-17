@@ -6,6 +6,7 @@ type AvatarItem = {
   picture?: string
   initials?: string
   color?: string
+  name?: string
 }
 
 const props = defineProps({
@@ -45,6 +46,7 @@ const props = defineProps({
       <V-Avatar
         v-for="(avatar, index) in avatars.slice(0, limit)"
         :key="index"
+        v-tooltip="avatar.name"
         :size="size"
         :picture="avatar.picture"
         :initials="avatar.initials"
@@ -57,7 +59,17 @@ const props = defineProps({
       >
         <span class="avatar is-more">
           <span class="inner">
-            <span>+{{ avatars.length - limit }}</span>
+            <span
+              v-tooltip="
+                `${avatars
+                  .slice(limit, limit + limit)
+                  .map(({ name }) => name)
+                  .join(', ')}
+                  ${avatars.length - limit > limit ? 'and other' : ''}
+                `
+              "
+              >+{{ avatars.length - limit }}</span
+            >
           </span>
         </span>
       </div>

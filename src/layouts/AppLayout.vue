@@ -131,9 +131,9 @@ watch(
         <!-- Roles & Permissions -->
         <li>
           <RouterLink
-            :to="{ name: 'permissions-role' }"
-            :class="[activeMobileSubsidebar === 'permission' && 'is-active']"
-            @click="activeMobileSubsidebar = 'permission'"
+            :to="{ name: 'permissions-roles' }"
+            :class="[activeMobileSubsidebar === 'permissions' && 'is-active']"
+            @click="activeMobileSubsidebar = 'permissions'"
           >
             <i
               aria-hidden="true"
