@@ -7,7 +7,6 @@ import { pageTitle } from '/@src/state/sidebarLayoutState'
 import usePackageDetails from '/@src/composable/package/usePackageDetails'
 
 pageTitle.value = 'Package Details'
-
 useHead({
   title: 'Whitehouse Package Details',
 })
@@ -26,11 +25,6 @@ const {
   editable,
   // computed
   disabledDone,
-  // methods
-  fetchProductsOption,
-  fetchCurriculumsOption,
-  fetchFindMyCoachesOption,
-  fetchMoocCoursesOption,
   onPressDone,
 } = usePackageDetails()
 
@@ -114,10 +108,6 @@ const isStuck = computed(() => {
             :mooc-courses="moocCourses"
             :fmc-packages="fmcPackages"
             :curriculums="curriculums"
-            :fetch-products-option="fetchProductsOption"
-            :fetch-curriculums-option="fetchCurriculumsOption"
-            :fetch-find-my-coaches-option="fetchFindMyCoachesOption"
-            :fetch-mooc-courses-option="fetchMoocCoursesOption"
             :loading-options="loadingOptions"
             :readonly="!editable"
           />

@@ -4,7 +4,7 @@
 
 import { onMounted, reactive, toRefs } from 'vue'
 import useRedeemApi from '../api/useRedeemApi'
-import usePaginationRoute from '../use-pagination-route'
+import usePaginationRoute from '../usePaginationRoute'
 import { IDatatableHeader } from '/@src/types/interfaces/component.interface'
 import { IRedeemDetail } from '/@src/types/interfaces/redeem.interface'
 

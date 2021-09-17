@@ -40,12 +40,12 @@ export const productSubsidebarList: SubsideBarItemDetail[] = [
     icon: '<i class="iconify mr-2" data-icon="feather:book-open"></i>',
     action: 'VIEW_LIST_OF_PACKAGE',
   },
-  {
-    routeName: 'products-packages-create',
-    label: 'Create Package',
-    icon: '<i class="lnil lnil-pencil mr-2"></i>',
-    action: 'CREATE_PACKAGE',
-  },
+  // {
+  //   routeName: 'products-packages-create',
+  //   label: 'Create Package',
+  //   icon: '<i class="lnil lnil-pencil mr-2"></i>',
+  //   action: 'CREATE_PACKAGE',
+  // },
   { isDivider: true },
   {
     routeName: 'products-packages-groups',

@@ -1,9 +1,8 @@
 import { Notyf } from 'notyf'
-import { computed, onMounted, reactive, toRefs } from 'vue-demi'
+import { onMounted, reactive, toRefs } from 'vue-demi'
 import { useRouter, useRoute } from 'vue-router'
-import { errMessage, isNil } from '../../helpers/filter.helper'
+import { errMessage } from '../../helpers/filter.helper'
 import { Purchasable } from '../../types/enums/product.enum'
-import useOptionApi from '../api/useOptionApi'
 import usePackageApi from '../api/usePackageApi'
 
 export interface IUsePackageDetailsState {
@@ -60,13 +59,6 @@ export default function usePackageDetails() {
   /**
    * Use Api
    */
-  const {
-    getProducts,
-    getCurriculums,
-    getFeatureGroups,
-    getFmcPackages,
-    getMoocCourses,
-  } = useOptionApi()
   const { getPackageById, createPackage, updatePackage } = usePackageApi()
 
   /**
@@ -123,34 +115,6 @@ export default function usePackageDetails() {
   /**
    * Methods
    */
-  const fetchProductsOption = (search?: string) => {
-    return getProducts({
-      currentPage: 1,
-      perPage: 25,
-      search,
-    })
-  }
-  const fetchCurriculumsOption = (search?: string) => {
-    return getCurriculums({
-      currentPage: 1,
-      perPage: 25,
-      search,
-    })
-  }
-  const fetchFindMyCoachesOption = (search?: string) => {
-    return getFmcPackages({
-      currentPage: 1,
-      perPage: 25,
-      search,
-    })
-  }
-  const fetchMoocCoursesOption = (search?: string) => {
-    return getMoocCourses({
-      currentPage: 1,
-      perPage: 25,
-      search,
-    })
-  }
   const setDefaultPackage = () => {}
   const fetchPackage = async () => {
     state.loadingPackage = true
@@ -257,10 +221,6 @@ export default function usePackageDetails() {
   return {
     ...toRefs(state),
     // Methods
-    fetchProductsOption,
-    fetchCurriculumsOption,
-    fetchFindMyCoachesOption,
-    fetchMoocCoursesOption,
     onPressDone,
   }
 }

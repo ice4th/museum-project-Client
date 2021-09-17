@@ -3,7 +3,7 @@ import { Purchasable } from '/@src/types/enums/product.enum'
 import useProductApi from '../api/useProductApi'
 import { IProductDetail } from '/@src/types/interfaces/product.interface'
 import { useRoute, useRouter } from 'vue-router'
-import usePaginationRoute from '../use-pagination-route'
+import usePaginationRoute from '../usePaginationRoute'
 
 interface UseProductTableState {
   products: IProductDetail[]

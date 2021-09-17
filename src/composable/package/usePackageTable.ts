@@ -4,7 +4,7 @@
 
 import { onMounted, reactive, toRefs } from 'vue'
 import usePackageApi from '../api/usePackageApi'
-import usePaginationRoute from '../use-pagination-route'
+import usePaginationRoute from '../usePaginationRoute'
 import { IPaginationResponse } from '/@src/types/interfaces/common.interface'
 import { IPackageTableInfo } from '/@src/types/interfaces/package.interface'
 

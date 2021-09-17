@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import type { PropType } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IDatatableHeader } from '/@src/types/interfaces/component.interface'
-import usePaginationRoute from '/@src/composable/use-pagination-route'
+import usePaginationRoute from '/@src/composable/usePaginationRoute'
 /**
  * @info header example
  * const headers: IDatatableHeader = [

@@ -26,6 +26,13 @@ interface UseOptionApiState {
   quizOptions: QuizOption[]
 }
 
+interface QuizzesPaginationParams {
+  currentPage?: number
+  perPage?: number
+  search?: string
+  type: QuizType
+}
+
 export default function useOptionApi() {
   const api = useApi()
   const state = reactive<UseOptionApiState>({
@@ -35,14 +42,13 @@ export default function useOptionApi() {
     quizOptions: [],
   })
 
-  const getProducts = async ({
-    currentPage,
-    perPage,
-    search,
-  }: IPaginationParams): Promise<ProductOption[]> => {
+  const getProducts = async (
+    search?: string,
+    pagination?: IPaginationParams
+  ): Promise<ProductOption[]> => {
     const params = new URLSearchParams({
-      currentPage: `${currentPage}`,
-      perPage: `${perPage}`,
+      currentPage: `${pagination?.currentPage || 1}`,
+      perPage: `${pagination?.perPage || 25}`,
       search: search || '',
     })
     const res = await api.get<ProductOption[]>(
@@ -67,7 +73,7 @@ export default function useOptionApi() {
       {
         params: {
           currentPage: params?.currentPage || 1,
-          perPage: params?.perPage || 10,
+          perPage: params?.perPage || 50,
           search,
         },
       }
@@ -75,19 +81,27 @@ export default function useOptionApi() {
     return checkResponseStatus(res) ? res.data.data : []
   }
 
-  const getPartners = async (): Promise<PartnerOption[]> => {
-    const res = await api.get<PartnerOption[]>('/Options/Partners')
-    return checkResponseStatus(res) || []
+  const getPartners = async (
+    search?: string,
+    params?: IPaginationParams
+  ): Promise<PartnerOption[]> => {
+    const res = await api.get<PartnerOption[]>('/Options/Partners', {
+      params: {
+        currentPage: params?.currentPage || 1,
+        perPage: params?.perPage || 10,
+        search,
+      },
+    })
+    return checkResponseStatus(res)?.data || []
   }
 
-  const getMoocCourses = async ({
-    currentPage,
-    perPage,
-    search,
-  }: IPaginationParams): Promise<MoocOption[]> => {
+  const getMoocCourses = async (
+    search?: string,
+    pagination?: IPaginationParams
+  ): Promise<MoocOption[]> => {
     const params = new URLSearchParams({
-      currentPage: `${currentPage}`,
-      perPage: `${perPage}`,
+      currentPage: `${pagination?.currentPage || 1}`,
+      perPage: `${pagination?.perPage || 25}`,
       search: search || '',
     })
     const res = await api.get<MoocOption[]>(
@@ -96,14 +110,13 @@ export default function useOptionApi() {
     return checkResponseStatus(res)?.data || []
   }
 
-  const getCurriculums = async ({
-    currentPage,
-    perPage,
-    search,
-  }: IPaginationParams): Promise<CurriculumOption[]> => {
+  const getCurriculums = async (
+    search?: string,
+    pagination?: IPaginationParams
+  ): Promise<CurriculumOption[]> => {
     const params = new URLSearchParams({
-      currentPage: `${currentPage}`,
-      perPage: `${perPage}`,
+      currentPage: `${pagination?.currentPage || 1}`,
+      perPage: `${pagination?.perPage || 25}`,
       search: search || '',
     })
     const res = await api.get<CurriculumOption[]>(
@@ -119,14 +132,13 @@ export default function useOptionApi() {
     return checkResponseStatus(res) || []
   }
 
-  const getFmcPackages = async ({
-    currentPage,
-    perPage,
-    search,
-  }: IPaginationParams): Promise<FindMyCoachOption[]> => {
+  const getFmcPackages = async (
+    search?: string,
+    pagination?: IPaginationParams
+  ): Promise<FindMyCoachOption[]> => {
     const params = new URLSearchParams({
-      currentPage: `${currentPage}`,
-      perPage: `${perPage}`,
+      currentPage: `${pagination?.currentPage || 1}`,
+      perPage: `${pagination?.perPage || 25}`,
       search: search || '',
       type: 'find_my_coach',
     })
@@ -150,7 +162,7 @@ export default function useOptionApi() {
         },
       }
     )
-    return checkResponseStatus(res) ? res.data.data : []
+    return checkResponseStatus(res)?.data || []
   }
 
   const getTeams = async ({
@@ -166,13 +178,41 @@ export default function useOptionApi() {
     return checkResponseStatus(res)?.data || []
   }
 
-  const getQuizzes = async (type: QuizType): Promise<QuizOption[]> => {
-    const res = await api.get<QuizOption[]>('/Options/Quizzes', {
-      params: { type },
+  const getQuizzes = async (
+    params: QuizzesPaginationParams
+  ): Promise<QuizOption[]> => {
+    const res = await api.get<QuizOption[]>('/Options/Quizzes/Types', {
+      params: {
+        currentPage: params.currentPage || 1,
+        perPage: params.perPage || 25,
+        search: params.search,
+        type: params.type,
+      },
     })
-    state.quizOptions = checkResponseStatus(res) || []
-    return state.quizOptions
+    return checkResponseStatus(res)?.data || []
   }
+
+  const getPreTestQuizzes = async (
+    search?: string,
+    pagination?: IPaginationParams
+  ) => {
+    return await getQuizzes({ ...pagination, search, type: QuizType.PRETEST })
+  }
+
+  const getMidTestQuizzes = async (
+    search?: string,
+    pagination?: IPaginationParams
+  ) => {
+    return getQuizzes({ ...pagination, search, type: QuizType.MIDTEST })
+  }
+
+  const getPostTestQuizzes = async (
+    search?: string,
+    pagination?: IPaginationParams
+  ) => {
+    return getQuizzes({ ...pagination, search, type: QuizType.POSTTEST })
+  }
+
   return {
     ...toRefs(state),
     getProducts,
@@ -186,5 +226,8 @@ export default function useOptionApi() {
     getStudents,
     getTeams,
     getQuizzes,
+    getPreTestQuizzes,
+    getMidTestQuizzes,
+    getPostTestQuizzes,
   }
 }
