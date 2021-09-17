@@ -138,7 +138,7 @@ export default function useStudentApi() {
     const res = await api.get<
       IPaginationResponse<IStudentPrivateClass[]>,
       ApiResponse
-    >(`/Students/${studentId}/PrivateClass`, { params: { ...params } })
+    >(`/Students/${studentId}/PrivateClasses`, { params: { ...params } })
     return catchReponse(res)
   }
 
