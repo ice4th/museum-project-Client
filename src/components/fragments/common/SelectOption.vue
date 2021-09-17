@@ -93,9 +93,9 @@ const select = (value, option) => {
     :track-by="trackBy || labelBy"
     :value-prop="valueProp"
     :no-options-text="'search...'"
+    :disabled="readonly"
     :clear-on-select="closeOnSelect"
     :clear-on-search="clearOnSearch"
-    :disabled="readonly"
     @select="select"
     @clear="emit('clear')"
   >
