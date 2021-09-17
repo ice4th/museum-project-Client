@@ -70,6 +70,7 @@ const onSave = async () => {
     dob: value?.dob,
     phone: value?.phone,
     email: value?.email,
+    country: value?.country,
     timezone: value?.timezone,
     industry: value?.studentNote?.industry,
     school: value?.studentNote?.school,
@@ -407,6 +408,24 @@ const removeValidation = (key: string) => {
                   placeholder="Age"
                   readonly
                 />
+              </V-Control>
+            </V-Field>
+          </div>
+
+          <!-- Chang country -->
+          <div class="column is-12">
+            <V-Field>
+              <label>Change Country</label>
+              <V-Control>
+                <div class="select">
+                  <select
+                    v-model="internalStudentInfo.country"
+                    :disabled="!isEditMode"
+                  >
+                    <option value="th">TH</option>
+                    <option value="vn">VN</option>
+                  </select>
+                </div>
               </V-Control>
             </V-Field>
           </div>

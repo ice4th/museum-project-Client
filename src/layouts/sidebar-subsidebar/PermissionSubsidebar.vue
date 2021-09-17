@@ -23,14 +23,14 @@ const emit = defineEmits(['close'])
           </div>
           <ul>
             <li>
-              <RouterLink :to="{ name: 'permission-role' }" class="is-submenu">
+              <RouterLink :to="{ name: 'permissions-role' }" class="is-submenu">
                 <i class="lnil lnil-books"></i>
                 <span>Roles Information</span>
               </RouterLink>
             </li>
             <li>
               <RouterLink
-                :to="{ name: 'permission-role-create' }"
+                :to="{ name: 'permissions-role-create' }"
                 class="is-submenu"
               >
                 <i class="lnil lnil-books"></i>
@@ -48,14 +48,17 @@ const emit = defineEmits(['close'])
           </div>
           <ul>
             <li>
-              <RouterLink :to="{ name: 'permission-team' }" class="is-submenu">
+              <RouterLink
+                :to="{ name: 'permissions-teams' }"
+                class="is-submenu"
+              >
                 <i class="lnil lnil-books"></i>
                 <span>Team Information</span>
               </RouterLink>
             </li>
             <li>
               <RouterLink
-                :to="{ name: 'permission-team-create' }"
+                :to="{ name: 'permissions-teams-create' }"
                 class="is-submenu"
               >
                 <i class="lnil lnil-books"></i>

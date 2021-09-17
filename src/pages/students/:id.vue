@@ -56,7 +56,7 @@ onMounted(() => {
                   />
                 </template>
               </V-Block>
-              <div class="advanced-box">
+              <div class="advanced-box p-3">
                 <V-Button
                   icon="feather:log-in"
                   color="primary"
@@ -66,26 +66,6 @@ onMounted(() => {
                   @click="loginAsStudent"
                   >Login as Student</V-Button
                 >
-                <div v-if="studentInfo">
-                  <V-Field>
-                    <label>Change Country</label>
-                    <V-Control>
-                      <div class="select">
-                        <select
-                          v-model="studentInfo.country"
-                          @change="
-                            updateStudentProfile({
-                              country: $event.target.value,
-                            })
-                          "
-                        >
-                          <option value="th">TH</option>
-                          <option value="vn">VN</option>
-                        </select>
-                      </div>
-                    </V-Control>
-                  </V-Field>
-                </div>
               </div>
 
               <div class="account-menu">

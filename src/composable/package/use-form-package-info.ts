@@ -176,7 +176,7 @@ export default function useFormPackageInfo() {
         message: 'Package was created!',
       })
       router.push({
-        name: 'product-package',
+        name: 'products-package',
         params: { id: `${data.id}` },
       })
     } else {
@@ -191,7 +191,7 @@ export default function useFormPackageInfo() {
     const { status, message } = await updatePackage(state.formPackageInfo)
     if (status === 200) {
       await fetchPackage()
-      router.push({ name: 'product-package' })
+      router.push({ name: 'products-package' })
       notyfMessage.open({
         type: 'success',
         message: 'Package was created!',
@@ -210,7 +210,7 @@ export default function useFormPackageInfo() {
   onMounted(() => {
     fetchOptions()
     // fetch package by id if update page or details page
-    const page = ['product-package-:id-update', 'product-package-:id-details']
+    const page = ['products-package-:id-update', 'products-package-:id-details']
     if (page.includes(String(route.name)) && route.params.id) {
       fetchPackage()
     }
