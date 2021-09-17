@@ -39,11 +39,8 @@ export interface IUsePackageDetailsState {
     findMycoachId?: number
     moocCourseId?: number
   }
-  // loading
-  loadingOptions: boolean
-  loadingPackage: boolean
-  notFoundPackage: boolean
   // other logic
+  notFoundPackage: boolean
   editable: boolean
 }
 
@@ -104,21 +101,15 @@ export default function usePackageDetails() {
       findMycoachId: undefined,
       moocCourseId: undefined,
     },
-    // loading
-    loadingOptions: false,
-    loadingPackage: false,
-    notFoundPackage: false,
     // readonly logic
+    notFoundPackage: false,
     editable: false,
   })
 
   /**
    * Methods
    */
-  const setDefaultPackage = () => {}
   const fetchPackage = async () => {
-    state.loadingPackage = true
-
     const packageId = parseInt(route.params.id as string)
     // fetch package by id
     const res = (await getPackageById(packageId)) as any
@@ -156,7 +147,6 @@ export default function usePackageDetails() {
     } else {
       state.notFoundPackage = true
     }
-    state.loadingPackage = false
   }
   const onSavePackage = async () => {
     const { status, message, data } = await createPackage(state.formPackageInfo)
@@ -196,19 +186,12 @@ export default function usePackageDetails() {
       })
     }
   }
-  const onPressDone = async () => {
-    if (route.hash === '#create') {
-      await onSavePackage()
-    } else {
-      await onEditPackage()
-    }
-  }
 
   /**
    * On Mounted
    */
   onMounted(() => {
-    if (route.hash !== '#create') {
+    if (route.name !== 'products-packages-create') {
       fetchPackage()
     } else {
       state.editable = true
@@ -221,6 +204,7 @@ export default function usePackageDetails() {
   return {
     ...toRefs(state),
     // Methods
-    onPressDone,
+    onSavePackage,
+    onEditPackage,
   }
 }
