@@ -101,7 +101,7 @@ export default function useOptionApi() {
 
   const getFeatureGroups = async (): Promise<FeatureGroupOption[]> => {
     const res = await api.get<FeatureGroupOption[]>(
-      '/Options/Voxy/getFeatureGroups'
+      '/Options/Voxy/FeatureGroups'
     )
     return checkResponseStatus(res) || []
   }

@@ -1,5 +1,6 @@
 import useApi, { apiHandleError, ApiResponse } from '../useApi'
 import useUserSession from '../useUserSession'
+import { ISuccessMessage } from '../../types/interfaces/common.interface'
 import {
   IPaginationParams,
   IPaginationResponse,
@@ -13,6 +14,8 @@ import {
   IStudentList,
   IUpdateStudentProfile,
   IStudentInfo,
+  IUpdateStudentGlobishPlusProfile,
+  IStudentGlobishPlusInfo,
 } from '/@src/types/interfaces/student.interface'
 import {
   IAddTicketStudent,
@@ -141,6 +144,25 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>('PackageItems', payload)
   }
 
+  const getStudentGlobishPlusById = async (
+    studentId: number
+  ): Promise<IStudentGlobishPlusInfo | undefined> => {
+    const res = await api.get<IStudentGlobishPlusInfo, ApiResponse>(
+      `/Students/${studentId}/GlobishPlus`
+    )
+    return catchReponse(res)
+  }
+
+  const updateStudentGlobishPlusById = async (
+    studentId: number,
+    payload: IUpdateStudentGlobishPlusProfile
+  ) => {
+    const res = await api.put<ISuccessMessage, ApiResponse>(
+      `/Students/${studentId}/GlobishPlus`,
+      payload
+    )
+    return res
+  }
   return {
     getStudentInfoById,
     getAllStudents,
@@ -157,5 +179,7 @@ export default function useStudentApi() {
     redeemPackageByStudentId,
     loginByStudentId,
     addPackageItemByStudentId,
+    getStudentGlobishPlusById,
+    updateStudentGlobishPlusById,
   }
 }
