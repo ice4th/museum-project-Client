@@ -78,7 +78,6 @@ export default function usePackageDetails() {
   /**
    * Use Router
    */
-  const router = useRouter()
   const route = useRoute()
 
   /**
@@ -160,11 +159,23 @@ export default function usePackageDetails() {
     // fetch all options
     const [products, curriculums, featureGroups, fmcPackages, moocCourses] =
       await Promise.all([
-        getProducts(),
-        getCurriculums(),
+        getProducts({
+          currentPage: 1,
+          perPage: 12,
+        }),
+        getCurriculums({
+          currentPage: 1,
+          perPage: 25,
+        }),
         getFeatureGroups(),
-        getFmcPackages(),
-        getMoocCourses(),
+        getFmcPackages({
+          currentPage: 1,
+          perPage: 25,
+        }),
+        getMoocCourses({
+          currentPage: 1,
+          perPage: 25,
+        }),
       ])
     state.products = products
     state.curriculums = curriculums
@@ -172,6 +183,34 @@ export default function usePackageDetails() {
     state.fmcPackages = fmcPackages
     state.moocCourses = moocCourses
     state.loadingOptions = false
+  }
+  const fetchProductsOption = (search?: string) => {
+    return getProducts({
+      currentPage: 1,
+      perPage: 25,
+      search,
+    })
+  }
+  const fetchCurriculumsOption = (search?: string) => {
+    return getCurriculums({
+      currentPage: 1,
+      perPage: 25,
+      search,
+    })
+  }
+  const fetchFindMyCoachesOption = (search?: string) => {
+    return getFmcPackages({
+      currentPage: 1,
+      perPage: 25,
+      search,
+    })
+  }
+  const fetchMoocCoursesOption = (search?: string) => {
+    return getMoocCourses({
+      currentPage: 1,
+      perPage: 25,
+      search,
+    })
   }
   const fetchPackage = async () => {
     state.loadingPackage = true
@@ -229,5 +268,10 @@ export default function usePackageDetails() {
     ...toRefs(state),
     // Computed
     disabledDone,
+    // Methods
+    fetchProductsOption,
+    fetchCurriculumsOption,
+    fetchFindMyCoachesOption,
+    fetchMoocCoursesOption,
   }
 }

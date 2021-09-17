@@ -111,7 +111,10 @@ export default function useFormPackageInfo() {
     // fetch all options
     const [products, curriculums, featureGroups, fmcPackages, moocCourses] =
       await Promise.all([
-        getProducts(),
+        getProducts({
+          currentPage: 1,
+          perPage: 12,
+        }),
         getCurriculums(),
         getFeatureGroups(),
         getFmcPackages(),
@@ -124,6 +127,14 @@ export default function useFormPackageInfo() {
     state.moocCourses = moocCourses
     state.loadingOptions = false
   }
+  // const fetchProductsOption = async (search?: string) => {
+  //   state.products = await getProducts({
+  //     currentPage: 1,
+  //     perPage: 25,
+  //     search,
+  //   })
+  //   return state.teamOptions
+  // }
   const fetchPackage = async () => {
     state.loadingPackage = true
 

@@ -22,10 +22,15 @@ const {
   products,
   loadingOptions,
   notFoundPackage,
-  // computed
-  disabledDone,
   // logic
   editable,
+  // computed
+  disabledDone,
+  // methods
+  fetchProductsOption,
+  fetchCurriculumsOption,
+  fetchFindMyCoachesOption,
+  fetchMoocCoursesOption,
 } = usePackageDetails()
 
 /**
@@ -101,7 +106,10 @@ const isStuck = computed(() => {
             :mooc-courses="moocCourses"
             :fmc-packages="fmcPackages"
             :curriculums="curriculums"
-            :products="products"
+            :fetch-products-option="fetchProductsOption"
+            :fetch-curriculums-option="fetchCurriculumsOption"
+            :fetch-find-my-coaches-option="fetchFindMyCoachesOption"
+            :fetch-mooc-courses-option="fetchMoocCoursesOption"
             :loading-options="loadingOptions"
             :readonly="!editable"
           />
