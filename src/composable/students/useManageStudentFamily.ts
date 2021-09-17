@@ -58,10 +58,11 @@ export default function useManageStudentFamuly() {
   const addFamily = async () => {
     const res = await addStudentFamily(+studentId, state.family)
     console.log('res' + res)
-    if (res.status === 200) {
+    if (res.status === 201) {
       notyf.success('success!')
       state.validate = {}
       state.isOpenCreateFamilyPopup = false
+      fectStudentFamily()
     } else {
       if (typeof res.message === 'object') {
         state.validate = res.message
@@ -83,6 +84,7 @@ export default function useManageStudentFamuly() {
     if (res.status === 200) {
       notyf.success('success!')
       state.validate = {}
+      fectStudentFamily()
     } else {
       if (typeof res.message === 'object') {
         state.validate = res.message
@@ -106,9 +108,7 @@ export default function useManageStudentFamuly() {
     } else {
       notyf.error(errMessage(res.message))
     }
-    //   Delete member
-
-    state.isOpenDeleteConfirmPopup = false
+    state.memberId = undefined
   }
   onMounted(() => {
     fectStudentFamily()

@@ -83,9 +83,9 @@ const { getStudentsWithoutFamily } = useOptionApi()
   </V-modal>
   <!-- familylist page -->
   <div class="account-box">
-    <div class="is-flex is-justify-content-space-between">
+    <div v-if="!familyInfo" class="is-flex is-justify-content-space-between">
       <div class="left">
-        <!-- <h2 class="title is-5 is-narrow is-bolder">{{ familyinfo.name }}</h2> -->
+        <h2 class="title is-5 is-narrow is-bolder">Family Account</h2>
       </div>
       <div class="right">
         <V-Button
@@ -98,58 +98,47 @@ const { getStudentsWithoutFamily } = useOptionApi()
         </V-Button>
       </div>
     </div>
-    <div class="columns">
-      <div class="column is-6">
-        <SelectOption
-          v-model="student"
-          :callback-search="getStudentsWithoutFamily"
-          label-by="fullnameTh"
-          track-by="fullnameTh"
-          value-prop="id"
-          placeholder="Select student to add family (Search by name,id)"
-        />
-        <!-- <p v-show="validate.student" class="help text-danger">
+    <template v-else>
+      <div class="columns">
+        <div class="column is-6">
+          <SelectOption
+            v-model="student"
+            :callback-search="getStudentsWithoutFamily"
+            label-by="fullnameTh"
+            track-by="fullnameTh"
+            value-prop="id"
+            placeholder="Select student to add family (Search by name,id)"
+          />
+          <!-- <p v-show="validate.student" class="help text-danger">
           {{ validate.student }}
         </p> -->
+        </div>
+        <div class="column is-6">
+          <V-Button color="primary" @click="addStdToFam">Add</V-Button>
+        </div>
       </div>
-      <div class="column is-6">
-        <V-Button color="primary" @click="addStdToFam">Add</V-Button>
-      </div>
-    </div>
-    <!-- family list -->
-    <Datatable
-      :headers="familyTableHeaders"
-      :data="familyInfo?.students || []"
-      :can-searchable="false"
-      hide-per-page
-      hide-pagination
-    >
-      <template #action="{ value }">
-        <V-Button color="danger" outlined @click="memberId = value.id"
-          >Delete</V-Button
-        >
-        {{ value.id }}
-      </template>
-    </Datatable>
+      <!-- family list -->
+      <Datatable
+        :headers="familyTableHeaders"
+        :data="familyInfo?.students || []"
+        :can-searchable="false"
+        hide-per-page
+        hide-pagination
+      >
+        <template #action="{ value }">
+          <V-Button color="danger" outlined @click="memberId = value.id"
+            >Delete</V-Button
+          >
+        </template>
+      </Datatable>
+    </template>
   </div>
   <V-Modal
     :open="!!memberId"
     size="small"
     actions="center"
-    @close="isOpenDeleteConfirmPopup = false"
+    @close="memberId = undefined"
   >
-    <!-- <template #content>
-      <p class="title has-text-danger is-justify-content-center">
-        Are you sure to delete ?
-      </p>
-    </template> -->
-    <!-- <template #content>
-      <V-PlaceholderSection
-        class="has-text-danger-dark"
-        title="Confirmation"
-        subtitle="Are you sure to delete ?"
-      />
-    </template> -->
     <template #content>
       <V-Message color="danger"> Confirm Remove </V-Message>
     </template>
