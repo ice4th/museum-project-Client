@@ -7,7 +7,7 @@ import axios, {
 } from 'axios'
 
 import Cookies from 'js-cookie'
-import { ADMIN_ACCESS_TOKEN } from './api'
+import { ADMIN_ACCESS_TOKEN, ADMIN_PROFILE } from './api'
 import {
   RouteLocationNormalizedLoaded,
   Router,
@@ -32,6 +32,7 @@ export interface ApiResponse<T = any> extends AxiosResponse {
   message: any
 }
 export function initApi(): AxiosInstance {
+  const router = useRouter()
   // Here we set the base URL for all requests made to the api
   const api = axios.create({
     baseURL: apiBaseUrl,
@@ -67,6 +68,11 @@ export function initApi(): AxiosInstance {
         error,
         message,
         code,
+      }
+      if (code === 401) {
+        Cookies.remove(ADMIN_ACCESS_TOKEN)
+        localStorage.removeItem(ADMIN_PROFILE)
+        router.go(0)
       }
       return err
     }
