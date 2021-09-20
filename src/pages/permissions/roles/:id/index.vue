@@ -13,6 +13,8 @@ const {
   // computed
   userData,
   selectedItems,
+  // methods
+  fetchTeamsOption,
 } = useRoleDetails()
 </script>
 
@@ -92,26 +94,14 @@ const {
           <V-Field class="is-autocomplete-select">
             <label>Team</label>
             <V-Control icon="feather:search" :loading="loadingOption">
-              <Multiselect
+              <SelectOption
                 v-model="roleData.teamId"
-                placeholder="Select team"
-                :options="teamOptions"
-                :searchable="true"
-                track-by="name"
-                value-prop="id"
+                :callback-search="fetchTeamsOption"
                 disabled
-              >
-                <template #singlelabel="{ value }">
-                  <div class="multiselect-single-label">
-                    ({{ value.id }}) {{ value.name }}
-                  </div>
-                </template>
-                <template #option="{ option }">
-                  <span class="select-option-text">
-                    ({{ option.id }}) {{ option.name }}
-                  </span>
-                </template>
-              </Multiselect>
+                tract-by="name"
+                value-prop="id"
+                placeholder="Select team"
+              />
               <p v-show="!roleData.teamId" class="help text-danger">
                 Choose team for this role.
               </p>

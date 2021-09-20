@@ -22,19 +22,23 @@ const props = defineProps({
     type: Object,
     default: () => {},
   },
+  isEditMode: {
+    type: Boolean,
+    default: false,
+  },
 })
-const emit = defineEmits({
-  'on-update': Object,
-})
+const emit = defineEmits(['on-update', 'cancel', 'change-country'])
 
 const { y } = useWindowScroll()
 const isScrolling = computed(() => {
   return y.value > 30
 })
 
-const isEditMode = ref(false)
 const isLoading = ref(false)
-const internalStudentInfo = ref<IStudentInfo | undefined>(undefined)
+const isShowConfirmChangeCountry = ref(false)
+const internalStudentInfo = ref<IStudentInfo | undefined>(
+  _.cloneDeep(props.studentInfo)
+)
 const internalValidation = ref(props.validation)
 
 watch(
@@ -70,6 +74,7 @@ const onSave = async () => {
     dob: value?.dob,
     phone: value?.phone,
     email: value?.email,
+    country: value?.country,
     timezone: value?.timezone,
     industry: value?.studentNote?.industry,
     school: value?.studentNote?.school,
@@ -81,15 +86,12 @@ const onSave = async () => {
 }
 
 const onCancelEdit = () => {
-  isEditMode.value = false
   internalStudentInfo.value = _.cloneDeep(props.studentInfo)
   internalValidation.value = {}
+  emit('cancel')
 }
 
 onBeforeMount(() => {
-  if (props.studentInfo) {
-    internalStudentInfo.value = _.cloneDeep(props.studentInfo)
-  }
   if (
     !occupationOptions.some(
       (oc) => oc.value === props.studentInfo?.studentNote?.occupation
@@ -105,15 +107,45 @@ onBeforeMount(() => {
 const removeValidation = (key: string) => {
   delete internalValidation.value[key]
 }
+
+const changeCountry = () => {
+  emit('change-country', internalStudentInfo.value?.country)
+  toggleShowConfirmCountry()
+}
+
+const toggleShowConfirmCountry = () => {
+  isShowConfirmChangeCountry.value = !isShowConfirmChangeCountry.value
+}
 </script>
 
 <template>
   <div class="account-box is-form is-footerless">
+    <V-Modal
+      title="Confirm change country"
+      :open="isShowConfirmChangeCountry"
+      size="small"
+      actions="center"
+      @close="toggleShowConfirmCountry"
+    >
+      <template #content>
+        <V-PlaceholderSection
+          :title="`You want to change student country to ${internalStudentInfo?.country}`"
+        />
+      </template>
+      <template #action>
+        <V-Button color="primary" raised @click="changeCountry"
+          >Confirm</V-Button
+        >
+      </template>
+      <template #cancel>
+        <V-Button raised @click="toggleShowConfirmCountry">Cancel</V-Button>
+      </template>
+    </V-Modal>
     <div class="form-head stuck-header" :class="[isScrolling && 'is-stuck']">
       <div class="form-head-inner">
         <div class="left">
           <h3>Student Information</h3>
-          <p>Edit student's information</p>
+          <p>{{ isEditMode ? 'Edit' : 'View' }} student's information</p>
         </div>
         <div class="right">
           <div v-show="isEditMode" class="buttons">
@@ -135,14 +167,37 @@ const removeValidation = (key: string) => {
             </V-Button>
           </div>
           <div v-show="!isEditMode" class="buttons">
-            <V-Button color="primary" raised @click="isEditMode = true">
-              Edit
-            </V-Button>
+            <V-Button color="primary" to="#edit" raised> Edit </V-Button>
           </div>
         </div>
       </div>
     </div>
     <div class="form-body">
+      <div class="fieldset">
+        <div class="fieldset-heading">
+          <h4>Country</h4>
+          <!-- <p>Information in Thai</p> -->
+        </div>
+        <div class="columns is-multiline">
+          <!-- Chang country -->
+          <div class="column is-12">
+            <V-Field>
+              <label>Change Country</label>
+              <V-Control>
+                <div class="select" @change="toggleShowConfirmCountry">
+                  <select
+                    v-model="internalStudentInfo.country"
+                    :disabled="!isEditMode"
+                  >
+                    <option value="th">TH</option>
+                    <option value="vn">VN</option>
+                  </select>
+                </div>
+              </V-Control>
+            </V-Field>
+          </div>
+        </div>
+      </div>
       <!--Fieldset-->
       <div class="fieldset">
         <div class="fieldset-heading">
@@ -207,6 +262,45 @@ const removeValidation = (key: string) => {
               </V-Control>
               <h6 v-show="internalValidation.nicknameTH" class="msg-error">
                 {{ internalValidation.nicknameTH }}
+              </h6>
+            </V-Field>
+          </div>
+          <!--Field-->
+          <div class="column is-6">
+            <V-Field>
+              <label>Email</label>
+              <V-Control icon="feather:user">
+                <input
+                  v-model="internalStudentInfo.email"
+                  type="text"
+                  class="input"
+                  placeholder="Email"
+                  autocomplete="email"
+                  @keypress="removeValidation('email')"
+                />
+              </V-Control>
+              <h6 v-show="internalValidation.email" class="msg-error">
+                {{ internalValidation.email }}
+              </h6>
+            </V-Field>
+          </div>
+          <!--Field-->
+          <div class="column is-6">
+            <V-Field>
+              <label>Phone</label>
+              <V-Control icon="feather:phone">
+                <input
+                  v-model="internalStudentInfo.phone"
+                  type="text"
+                  class="input"
+                  placeholder="Phone"
+                  autocomplete="phone"
+                  :readonly="!isEditMode"
+                  @keypress="removeValidation('phone')"
+                />
+              </V-Control>
+              <h6 v-show="internalValidation.phone" class="msg-error">
+                {{ internalValidation.phone }}
               </h6>
             </V-Field>
           </div>
@@ -291,45 +385,6 @@ const removeValidation = (key: string) => {
         </div>
 
         <div class="columns is-multiline">
-          <!--Field-->
-          <div class="column is-6">
-            <V-Field>
-              <label>Email</label>
-              <V-Control icon="feather:user">
-                <input
-                  v-model="internalStudentInfo.email"
-                  type="text"
-                  class="input"
-                  placeholder="Email"
-                  autocomplete="email"
-                  @keypress="removeValidation('email')"
-                />
-              </V-Control>
-              <h6 v-show="internalValidation.email" class="msg-error">
-                {{ internalValidation.email }}
-              </h6>
-            </V-Field>
-          </div>
-          <!--Field-->
-          <div class="column is-6">
-            <V-Field>
-              <label>Phone</label>
-              <V-Control icon="feather:phone">
-                <input
-                  v-model="internalStudentInfo.phone"
-                  type="text"
-                  class="input"
-                  placeholder="Phone"
-                  autocomplete="phone"
-                  :readonly="!isEditMode"
-                  @keypress="removeValidation('phone')"
-                />
-              </V-Control>
-              <h6 v-show="internalValidation.phone" class="msg-error">
-                {{ internalValidation.phone }}
-              </h6>
-            </V-Field>
-          </div>
           <!--Field-->
           <div class="column is-12">
             <V-Field>
@@ -461,13 +516,12 @@ const removeValidation = (key: string) => {
       </div>
 
       <!--Fieldset-->
-      <div class="fieldset">
+      <!-- <div class="fieldset">
         <div class="fieldset-heading">
           <h4>Professional Info</h4>
           <p>This can help you to win some opportunities</p>
         </div>
         <div class="columns is-multiline">
-          <!--Field-->
           <div class="column is-12">
             <V-Field class="is-autocomplete-select">
               <label>Industry</label>
@@ -552,7 +606,6 @@ const removeValidation = (key: string) => {
               </V-Control>
             </V-Field>
           </div>
-          <!--Field-->
           <div class="column is-12">
             <V-Field>
               <label>Devices</label>
@@ -580,7 +633,7 @@ const removeValidation = (key: string) => {
             </V-Field>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

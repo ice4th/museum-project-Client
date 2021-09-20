@@ -13,13 +13,17 @@ import {
   IPackageGroupTable,
 } from '/@src/types/interfaces/package.interface'
 
+export interface DeleteAddonPackageParams {
+  packageGroupId: number
+  packageId: number
+}
 export default function usePackageApi() {
   const api = useApi()
   const { catchReponse } = apiHandleError()
 
   const getPackageById = async (id: number): Promise<IPackageDetail> => {
-    const res = await api.get<IPackageDetail>(`/Packages/${id}`)
-    return checkResponseStatus(res) || undefined
+    const res = await api.get<IPackageDetail, ApiResponse>(`/Packages/${id}`)
+    return catchReponse(res)
   }
 
   const getPackagesWithPagination = async (
@@ -46,7 +50,7 @@ export default function usePackageApi() {
     packageId: number
   ): Promise<IPackageGroupInfo[]> => {
     const res = await api.get<IPackageGroupInfo[], ApiResponse>(
-      `/PackageGroups/Packages/${packageId}`
+      `/Packages/${packageId}/PackageGroups`
     )
     return catchReponse(res) || []
   }
@@ -77,17 +81,19 @@ export default function usePackageApi() {
     })
   }
 
-  // remove alll package in group by main package
+  // remove all package in group by main package
   const deletePackageGroupByMainPackageId = async (packageId: number) => {
     return await api.delete<any, ApiResponse>(
-      `/PackageGroups/Packages/${packageId}`
+      `/Packages/${packageId}/PackageGroups`
     )
   }
 
   // remove package by addon package **cannot remove main package
-  const deleteAddonPackageGroupById = async (packageGroupId: number) => {
+  const deleteAddonPackageGroupById = async (
+    params: DeleteAddonPackageParams
+  ) => {
     return await api.delete<any, ApiResponse>(
-      `/PackageGroups/${packageGroupId}`
+      `/PackageGroups/${params.packageGroupId}/Packages/${params.packageId}`
     )
   }
 

@@ -56,7 +56,7 @@ onMounted(() => {
                   />
                 </template>
               </V-Block>
-              <div class="advanced-box">
+              <div class="advanced-box p-3">
                 <V-Button
                   icon="feather:log-in"
                   color="primary"
@@ -66,26 +66,6 @@ onMounted(() => {
                   @click="loginAsStudent"
                   >Login as Student</V-Button
                 >
-                <div v-if="studentInfo">
-                  <V-Field>
-                    <label>Change Country</label>
-                    <V-Control>
-                      <div class="select">
-                        <select
-                          v-model="studentInfo.country"
-                          @change="
-                            updateStudentProfile({
-                              country: $event.target.value,
-                            })
-                          "
-                        >
-                          <option value="th">TH</option>
-                          <option value="vn">VN</option>
-                        </select>
-                      </div>
-                    </V-Control>
-                  </V-Field>
-                </div>
               </div>
 
               <div class="account-menu">
@@ -94,7 +74,7 @@ onMounted(() => {
                   class="account-menu-item"
                 >
                   <i aria-hidden="true" class="lnil lnil-user-alt"></i>
-                  <span>General</span>
+                  <span>Profile</span>
                   <span class="end">
                     <i aria-hidden="true" class="fas fa-arrow-right"></i>
                   </span>
@@ -103,7 +83,7 @@ onMounted(() => {
                   :to="{ name: 'students-:id-packages' }"
                   class="account-menu-item"
                 >
-                  <i aria-hidden="true" class="lnil lnil-book"></i>
+                  <i aria-hidden="true" class="lnil lnil-package"></i>
                   <span>Packages</span>
                   <span class="end">
                     <i aria-hidden="true" class="fas fa-arrow-right"></i>
@@ -113,7 +93,7 @@ onMounted(() => {
                   :to="{ name: 'students-:id-private-class' }"
                   class="account-menu-item"
                 >
-                  <i aria-hidden="true" class="lnil lnil-user-alt"></i>
+                  <i aria-hidden="true" class="lnil lnil-classroom"></i>
                   <span>Private Class</span>
                   <span class="end">
                     <i aria-hidden="true" class="fas fa-arrow-right"></i>
@@ -130,10 +110,20 @@ onMounted(() => {
                   </span>
                 </RouterLink>
                 <RouterLink
+                  :to="{ name: 'students-:id-globish-plus' }"
+                  class="account-menu-item"
+                >
+                  <i aria-hidden="true" class="lnil lnil-global"></i>
+                  <span>Globish Plus</span>
+                  <span class="end">
+                    <i aria-hidden="true" class="fas fa-arrow-right"></i>
+                  </span>
+                </RouterLink>
+                <RouterLink
                   :to="{ name: 'students-:id-family-account' }"
                   class="account-menu-item"
                 >
-                  <i aria-hidden="true" class="lnil lnil-users"></i>
+                  <i aria-hidden="true" class="lnil lnil-hierchy-alt"></i>
                   <span>Family Account</span>
                   <span class="end">
                     <i aria-hidden="true" class="fas fa-arrow-right"></i>
@@ -165,8 +155,8 @@ onMounted(() => {
           <div class="column is-8">
             <!-- <StudentProfileEditor /> -->
             <RouterView v-slot="{ Component }">
-              <transition name="translate-page-y" mode="in-out">
-                <component :is="Component" />
+              <transition name="fade-fast" mode="out-in">
+                <component :is="Component" :key="$route.fullPath" />
               </transition>
             </RouterView>
           </div>
@@ -180,9 +170,14 @@ onMounted(() => {
 @import '../../scss/abstracts/_variables.scss';
 @import '../../scss/abstracts/_mixins.scss';
 @import '../../scss/pages/profile/_user-profile.scss';
+.account-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
 .account-wrapper .account-box.is-navigation .media-flex-center {
   padding-bottom: 0;
 }
+
 .advanced-box {
   padding-bottom: 20px;
 }

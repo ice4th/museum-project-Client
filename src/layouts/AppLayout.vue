@@ -1,3 +1,8 @@
+<route lang="yaml">
+meta:
+  requiresAuth: true
+</route>
+
 <script setup lang="ts">
 import type { PropType } from 'vue'
 import { computed, ref, watchPostEffect, watch } from 'vue'

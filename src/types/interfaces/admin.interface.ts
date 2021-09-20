@@ -26,12 +26,15 @@ export interface IAdminDetail {
   id: number
   name: string
   fullname: string
+  firstname: string
+  lastname: string
   avatar: string
   phone: string
   email: string
   teamName: string
   roleName: string
   country: AdminCountry
+  manageCountry: string[]
   status: AdminStatus
 }
 
@@ -45,12 +48,16 @@ export interface IAdminInfo {
   dob: string
   phone: string
   email: string
+  status?: number
+  lastLogin?: Date
   country: string
   manageCountry: string
   teamId: number
   teamName: string
   roleId: number
   roleName: string
+  initials?: string
+  color?: string
 }
 
 export interface IFormAdminInfo {

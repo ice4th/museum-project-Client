@@ -2,29 +2,28 @@
 import { useWindowScroll } from '@vueuse/core'
 import { computed, ref } from 'vue'
 import { useHead } from '@vueuse/head'
-import useFormPackageInfo from '/@src/composable/package/use-form-package-info'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
-pageTitle.value = 'Package Management'
+import usePackageDetails from '/@src/composable/package/usePackageDetails'
 
+pageTitle.value = 'Package Details'
 useHead({
-  title: 'Whitehouse Group Package',
+  title: 'Whitehouse Package Details',
 })
 
 const {
   // state
   formPackageInfo,
-  featureGroups,
-  moocCourses,
-  fmcPackages,
-  curriculums,
-  products,
-  // computed
-  disabledDone,
   // methods
-  savePackage,
-} = useFormPackageInfo()
+  onSavePackage,
+  // logic
+  notFoundPackage,
+  editable,
+} = usePackageDetails()
 
+/**
+ * Methods
+ */
 const { y } = useWindowScroll()
 const isStuck = computed(() => {
   return y.value > 30
@@ -32,18 +31,45 @@ const isStuck = computed(() => {
 </script>
 
 <template>
-  <div class="page-content-inner">
-    <!-- create group package -->
+  <div v-if="notFoundPackage">
+    <div class="error-container">
+      <div class="error-wrapper">
+        <div class="error-inner has-text-centered">
+          <div class="bg-number">404</div>
+          <img
+            src="/@src/assets/illustrations/placeholders/error-1.svg"
+            alt=""
+          />
+          <h3>We couldn't find that package</h3>
+          <p>
+            Looks like we couldn't find that package. Please try again or
+            contact an administrator if the problem persists.
+          </p>
+          <div class="button-wrap">
+            <V-Button
+              color="primary"
+              elevated
+              :to="{ name: 'products-packages' }"
+            >
+              Take me Back
+            </V-Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-else class="page-content-inner">
     <div class="form-layout">
       <div class="form-outer">
         <div :class="[isStuck && 'is-stuck']" class="form-header stuck-header">
           <div class="form-header-inner">
-            <div class="left"><h3>Create Package</h3></div>
+            <div class="left"><h3>Package Details</h3></div>
             <div class="right">
               <div class="buttons">
                 <V-Button
                   :to="{ name: 'products-packages' }"
                   icon="lnir lnir-arrow-left rem-100"
+                  class="custom-btn"
                   dark-outlined
                   light
                 >
@@ -53,11 +79,9 @@ const isStuck = computed(() => {
                   icon="lnir lnir-checkmark rem-100"
                   color="primary"
                   raised
-                  :disabled="disabledDone"
-                  @click="savePackage"
+                  @click="onSavePackage"
+                  >Done</V-Button
                 >
-                  Done
-                </V-Button>
               </div>
             </div>
           </div>
@@ -65,11 +89,7 @@ const isStuck = computed(() => {
         <div class="form-body">
           <FormPackageInfo
             :form-package-info="formPackageInfo"
-            :feature-groups="featureGroups"
-            :mooc-courses="moocCourses"
-            :fmc-packages="fmcPackages"
-            :curriculums="curriculums"
-            :products="products"
+            :readonly="!editable"
           />
         </div>
       </div>
@@ -81,15 +101,13 @@ const isStuck = computed(() => {
 @import 'src/scss/abstracts/_variables.scss';
 @import 'src/scss/abstracts/_mixins.scss';
 @import 'src/scss/pages/generic/_forms.scss';
-.button-submit {
-  text-align: end;
+@import 'src/scss/pages/generic/_utility.scss';
+
+* {
+  box-sizing: border-box;
 }
-.package-row-drag {
-  cursor: pointer;
-  margin-bottom: 1rem;
-  .package-detail {
-    display: flex;
-    align-items: center;
-  }
+
+.is-stuck {
+  top: 0 !important;
 }
 </style>

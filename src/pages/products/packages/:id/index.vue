@@ -4,10 +4,9 @@ import { computed, ref } from 'vue'
 import { useHead } from '@vueuse/head'
 import { pageTitle } from '/@src/state/sidebarLayoutState'
 
-import useFormPackageInfo from '/@src/composable/package/use-form-package-info'
+import usePackageDetails from '/@src/composable/package/usePackageDetails'
 
 pageTitle.value = 'Package Details'
-
 useHead({
   title: 'Whitehouse Package Details',
 })
@@ -15,16 +14,12 @@ useHead({
 const {
   // state
   formPackageInfo,
-  featureGroups,
-  moocCourses,
-  fmcPackages,
-  curriculums,
-  products,
-  loadingOptions,
+  // methods
+  onEditPackage,
+  // logic
   notFoundPackage,
-  // computed
-  disabledDone,
-} = useFormPackageInfo()
+  editable,
+} = usePackageDetails()
 
 /**
  * Methods
@@ -80,6 +75,21 @@ const isStuck = computed(() => {
                 >
                   Back
                 </V-Button>
+                <V-Button
+                  v-if="!editable"
+                  icon="lnir lnir-pencil rem-100"
+                  to="#edit"
+                  color="primary"
+                  >Edit</V-Button
+                >
+                <V-Button
+                  v-else
+                  icon="lnir lnir-checkmark rem-100"
+                  color="primary"
+                  raised
+                  @click="onEditPackage"
+                  >Done</V-Button
+                >
               </div>
             </div>
           </div>
@@ -87,13 +97,7 @@ const isStuck = computed(() => {
         <div class="form-body">
           <FormPackageInfo
             :form-package-info="formPackageInfo"
-            :feature-groups="featureGroups"
-            :mooc-courses="moocCourses"
-            :fmc-packages="fmcPackages"
-            :curriculums="curriculums"
-            :products="products"
-            :loading-options="loadingOptions"
-            readonly
+            :readonly="!editable"
           />
         </div>
       </div>
@@ -113,14 +117,5 @@ const isStuck = computed(() => {
 
 .is-stuck {
   top: 0 !important;
-}
-
-@media only screen and (max-width: 767px) {
-  .buttons {
-    justify-content: center !important;
-    .custom-btn {
-      width: 90% !important;
-    }
-  }
 }
 </style>

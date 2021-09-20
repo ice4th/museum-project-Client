@@ -1,4 +1,4 @@
-import { onMounted, reactive, toRefs } from 'vue'
+import { computed, onMounted, reactive, toRefs } from 'vue'
 import {
   IAdminInfo,
   IFormAdminInfo,
@@ -7,6 +7,7 @@ import useAdminApi from '../api/useAdminApi'
 import { useRoute } from 'vue-router'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
+import { initAvatar } from '../../helpers/avatar.helper'
 interface UseViewAdminState {
   loading: boolean
   adminInfo?: IAdminInfo
@@ -23,16 +24,27 @@ export default function useViewAdmin() {
   const notyf = useNotyf()
   const { getAdminById, putAdminInfo } = useAdminApi()
   const route = useRoute()
-  const adminId = route.params.userid as string
+  const adminId = computed(() => route.params.id as string)
+
+  const isEdit = computed(() => route.hash === '#edit')
   const getAdminInfo = async () => {
     state.loading = true
-    const res = await getAdminById(+adminId)
+    const data = await getAdminById(+adminId.value)
+
+    const { firstname, lastname } = data
+    const { initials, color } = initAvatar(firstname, lastname)
+    state.adminInfo = {
+      ...data,
+      firstname,
+      lastname,
+      initials,
+      color,
+    }
     state.loading = false
-    state.adminInfo = res
   }
 
   const saveInfo = async (profile: IFormAdminInfo) => {
-    const { status, message } = await putAdminInfo(+adminId, profile)
+    const { status, message } = await putAdminInfo(+adminId.value, profile)
     if (status === 200) {
       notyf.success('Success!')
     } else {
@@ -48,5 +60,5 @@ export default function useViewAdmin() {
     getAdminInfo()
   })
 
-  return { ...toRefs(state), saveInfo }
+  return { ...toRefs(state), saveInfo, isEdit }
 }

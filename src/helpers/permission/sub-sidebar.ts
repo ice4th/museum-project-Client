@@ -13,7 +13,7 @@ import { SubsideBarItemDetail } from './sidebar.interface'
 
 export const adminSubsidebarList: SubsideBarItemDetail[] = [
   {
-    routeName: 'admin-users',
+    routeName: 'admins',
     label: 'Admin List',
     icon: '<i class="fas fa-user-edit mr-2"></i>',
     action: 'VIEW_LIST_OF_ADMIN',

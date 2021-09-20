@@ -1,24 +1,24 @@
 import { onMounted, reactive, toRefs, watch } from 'vue'
 import useStudentApi from '../api/useStudentApi'
 import usePaginationRoute from '../usePaginationRoute'
-import { IStudentList } from '/@src/types/interfaces/student.interface'
-interface UseStudentListState {
-  data: IStudentList[]
+import { IStudentGroupClass } from '/@src/types/interfaces/student.interface'
+interface UseStudentGroupClassState {
+  data: IStudentGroupClass[]
   total: number
   isLoading: Boolean
 }
 
-export default function useStudentList() {
-  const state = reactive<UseStudentListState>({
+export default function useStudentGroupClass() {
+  const state = reactive<UseStudentGroupClassState>({
     data: [],
     total: 0,
     isLoading: true,
   })
   const { currentPage, perPage, search } = usePaginationRoute()
-  const { getAllStudents } = useStudentApi()
-  const fetchAllStudents = async () => {
+  const { getStudentGroupClass } = useStudentApi()
+  const fetchStudentGroupClass = async (studentId: number) => {
     state.isLoading = true
-    const data = await getAllStudents({
+    const data = await getStudentGroupClass(studentId, {
       currentPage,
       perPage,
       search,
@@ -29,8 +29,5 @@ export default function useStudentList() {
       state.total = data.total
     }
   }
-  onMounted(() => {
-    fetchAllStudents()
-  })
-  return { ...toRefs(state) }
+  return { ...toRefs(state), fetchStudentGroupClass }
 }

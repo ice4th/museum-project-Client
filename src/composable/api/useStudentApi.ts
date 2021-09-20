@@ -1,5 +1,6 @@
 import useApi, { apiHandleError, ApiResponse } from '../useApi'
 import useUserSession from '../useUserSession'
+import { ISuccessMessage } from '../../types/interfaces/common.interface'
 import {
   IPaginationParams,
   IPaginationResponse,
@@ -10,11 +11,15 @@ import {
   IAddPackageStudent,
 } from '/@src/types/interfaces/package-item.interface'
 import {
+  IStudentPrivateClass,
   IStudentList,
   IUpdateStudentProfile,
   IStudentInfo,
   ICreateFamily,
   IFamilyInfo,
+  IStudentGroupClass,
+  IUpdateStudentGlobishPlusProfile,
+  IStudentGlobishPlusInfo,
 } from '/@src/types/interfaces/student.interface'
 import {
   IAddTicketStudent,
@@ -132,6 +137,17 @@ export default function useStudentApi() {
     return api.post<any, ApiResponse>('Redeems/Activate', payload)
   }
 
+  const getStudentPrivateClass = async (
+    studentId: number,
+    params: IPaginationParams
+  ): Promise<IPaginationResponse<IStudentPrivateClass[]>> => {
+    const res = await api.get<
+      IPaginationResponse<IStudentPrivateClass[]>,
+      ApiResponse
+    >(`/Students/${studentId}/PrivateClasses`, { params: { ...params } })
+    return catchReponse(res)
+  }
+
   const loginByStudentId = async (studentId: number) => {
     return api.post<
       LoginAsStudentResponse,
@@ -184,6 +200,40 @@ export default function useStudentApi() {
     )
   }
 
+  const getStudentGroupClass = async (
+    id: number,
+    params: IPaginationParams
+  ): Promise<IPaginationResponse<IStudentGroupClass[]>> => {
+    const res = await api.get<
+      IPaginationResponse<IStudentGroupClass[]>,
+      ApiResponse
+    >(`/Students/${id}/GroupClass`, { params: { ...params } })
+    return catchReponse(res)
+  }
+
+  const forgotPassword = async (id: number) => {
+    return await api.post<any, ApiResponse>(`Students/${id}/ForgotPassword`)
+  }
+
+  const getStudentGlobishPlusById = async (
+    studentId: number
+  ): Promise<IStudentGlobishPlusInfo | undefined> => {
+    const res = await api.get<IStudentGlobishPlusInfo, ApiResponse>(
+      `/Students/${studentId}/GlobishPlus`
+    )
+    return catchReponse(res)
+  }
+
+  const updateStudentGlobishPlusById = async (
+    studentId: number,
+    payload: IUpdateStudentGlobishPlusProfile
+  ) => {
+    const res = await api.put<ISuccessMessage, ApiResponse>(
+      `/Students/${studentId}/GlobishPlus`,
+      payload
+    )
+    return res
+  }
   return {
     getStudentInfoById,
     getAllStudents,
@@ -198,11 +248,16 @@ export default function useStudentApi() {
     changePackage,
     deletePackageByPackageItem,
     redeemPackageByStudentId,
+    getStudentPrivateClass,
     loginByStudentId,
     addPackageItemByStudentId,
     getStudentByFamily,
     addStudentToFamily,
     addStudentFamily,
     deleteFamilyMember,
+    getStudentGroupClass,
+    forgotPassword,
+    getStudentGlobishPlusById,
+    updateStudentGlobishPlusById,
   }
 }

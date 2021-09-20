@@ -13,7 +13,7 @@ const emit = defineEmits(['close'])
     <div class="inner" data-simplebar>
       <ul>
         <li>
-          <RouterLink :to="{ name: 'admin-users' }">Admin list</RouterLink>
+          <RouterLink :to="{ name: 'admins' }">Admin list</RouterLink>
         </li>
       </ul>
     </div>

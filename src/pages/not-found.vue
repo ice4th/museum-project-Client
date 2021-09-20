@@ -52,9 +52,23 @@ const content = ref(
           <h3 class="dark-inverted">{{ message }}</h3>
           <p>{{ content }}</p>
           <div class="button-wrap">
-            <V-Button color="primary" elevated @click="$router.go(-1)">
-              Take me Back
-            </V-Button>
+            <div class="buttons is-justify-content-center">
+              <V-Button
+                icon="feather:arrow-left"
+                elevated
+                @click="$router.go(-1)"
+              >
+                Take me Back
+              </V-Button>
+              <V-Button
+                icon="feather:home"
+                color="primary"
+                elevated
+                :to="{ name: 'index' }"
+              >
+                Home
+              </V-Button>
+            </div>
           </div>
         </div>
       </div>

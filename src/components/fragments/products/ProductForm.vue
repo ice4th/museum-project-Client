@@ -23,6 +23,9 @@ const {
   getProductType,
   productTypeOptions,
   getQuizzes,
+  getPreTestQuizzes,
+  getMidTestQuizzes,
+  getPostTestQuizzes,
 } = useOptionApi()
 const props = defineProps({
   validate: {
@@ -84,16 +87,7 @@ const selectImage = (ev: IFile) => {
   productInfo.value.image = ev.src
 }
 onBeforeMount(async () => {
-  const [preTestList, midTestList, postTestList] = await Promise.all([
-    getQuizzes(QuizType.PRETEST),
-    getQuizzes(QuizType.MIDTEST),
-    getQuizzes(QuizType.POSTTEST),
-    getProducts(),
-    getProductType(),
-  ])
-  preTestOption.value = preTestList
-  midTestOption.value = midTestList
-  postTestOption.value = postTestList
+  await Promise.all([getProducts(), getProductType()])
 })
 const onChangePurchasable = () => {
   productInfo.value.purchasable = isPurchase.value ? '1' : '0'
@@ -174,76 +168,43 @@ const onChangePurchasable = () => {
             <V-Field>
               <label>Pre Test</label>
               <V-Control>
-                <Multiselect
+                <SelectOption
                   v-model="productInfo.preTestId"
                   placeholder="Select pre-test"
-                  :options="preTestOption"
+                  :callback-search="getPreTestQuizzes"
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
                   :disabled="readonly"
-                >
-                  <template #singlelabel="{ value }">
-                    <div class="multiselect-single-label">
-                      ({{ value.id }}) {{ value.name }}
-                    </div>
-                  </template>
-                  <template #option="{ option }">
-                    <span class="select-option-text">
-                      ({{ option.id }}) {{ option.name }}
-                    </span>
-                  </template>
-                </Multiselect>
+                />
               </V-Control>
             </V-Field>
             <V-Field>
               <label>Mid Test</label>
               <V-Control>
-                <Multiselect
+                <SelectOption
                   v-model="productInfo.midTestId"
-                  placeholder="Select mid-test"
-                  :options="midTestOption"
+                  placeholder="Select pre-test"
+                  :callback-search="getMidTestQuizzes"
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
                   :disabled="readonly"
-                >
-                  <template #singlelabel="{ value }">
-                    <div class="multiselect-single-label">
-                      ({{ value.id }}) {{ value.name }}
-                    </div>
-                  </template>
-                  <template #option="{ option }">
-                    <span class="select-option-text">
-                      ({{ option.id }}) {{ option.name }}
-                    </span>
-                  </template>
-                </Multiselect>
+                />
               </V-Control>
             </V-Field>
             <V-Field>
               <label>Post Test</label>
               <V-Control>
-                <Multiselect
+                <SelectOption
                   v-model="productInfo.postTestId"
-                  placeholder="Select post-test"
-                  :options="postTestOption"
+                  placeholder="Select pre-test"
+                  :callback-search="getPostTestQuizzes"
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
                   :disabled="readonly"
-                >
-                  <template #singlelabel="{ value }">
-                    <div class="multiselect-single-label">
-                      ({{ value.id }}) {{ value.name }}
-                    </div>
-                  </template>
-                  <template #option="{ option }">
-                    <span class="select-option-text">
-                      ({{ option.id }}) {{ option.name }}
-                    </span>
-                  </template>
-                </Multiselect>
+                />
               </V-Control>
             </V-Field>
           </div>
@@ -258,76 +219,43 @@ const onChangePurchasable = () => {
             <V-Field>
               <label>Product Recommend 001</label>
               <V-Control>
-                <Multiselect
+                <SelectOption
                   v-model="productInfo.recommend1"
-                  placeholder="Select type of recommend 1"
-                  :options="productOptions"
+                  placeholder="Select pre-test"
+                  :callback-search="getProducts"
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
                   :disabled="readonly"
-                >
-                  <template #singlelabel="{ value }">
-                    <div class="multiselect-single-label">
-                      ({{ value.id }}) {{ value.name }}
-                    </div>
-                  </template>
-                  <template #option="{ option }">
-                    <span class="select-option-text">
-                      ({{ option.id }}) {{ option.name }}
-                    </span>
-                  </template>
-                </Multiselect>
+                />
               </V-Control>
             </V-Field>
             <V-Field>
               <label>Product Recommend 002</label>
               <V-Control>
-                <Multiselect
+                <SelectOption
                   v-model="productInfo.recommend2"
-                  placeholder="Select type of recommend 2"
-                  :options="productOptions"
+                  placeholder="Select pre-test"
+                  :callback-search="getProducts"
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
                   :disabled="readonly"
-                >
-                  <template #singlelabel="{ value }">
-                    <div class="multiselect-single-label">
-                      ({{ value.id }}) {{ value.name }}
-                    </div>
-                  </template>
-                  <template #option="{ option }">
-                    <span class="select-option-text">
-                      ({{ option.id }}) {{ option.name }}
-                    </span>
-                  </template>
-                </Multiselect>
+                />
               </V-Control>
             </V-Field>
             <V-Field>
               <label>Product Recommend 003</label>
               <V-Control>
-                <Multiselect
+                <SelectOption
                   v-model="productInfo.recommend3"
-                  placeholder="Select type of recommend 3"
-                  :options="productOptions"
+                  placeholder="Select pre-test"
+                  :callback-search="getProducts"
                   :searchable="true"
                   track-by="name"
                   value-prop="id"
                   :disabled="readonly"
-                >
-                  <template #singlelabel="{ value }">
-                    <div class="multiselect-single-label">
-                      ({{ value.id }}) {{ value.name }}
-                    </div>
-                  </template>
-                  <template #option="{ option }">
-                    <span class="select-option-text">
-                      ({{ option.id }}) {{ option.name }}
-                    </span>
-                  </template>
-                </Multiselect>
+                />
               </V-Control>
             </V-Field>
           </div>

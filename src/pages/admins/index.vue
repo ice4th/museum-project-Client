@@ -2,7 +2,7 @@
 import { useHead } from '@vueuse/head'
 import moment from 'moment'
 import { ref, onMounted, watch } from 'vue'
-import useAdminList from '/@src/composable/admin/use-admin-list'
+import useAdminList from '../../composable/admin/useAdminList'
 import {
   displayStudentFullname,
   countryFlag,
@@ -37,15 +37,11 @@ useHead({
   title: 'Whitehouse: Admin list',
 })
 const headers: IDatatableHeader = [
-  { key: 'id', label: 'ID' },
-  { key: 'avatar', label: 'Avatar', isRaw: true },
+  { key: 'user', label: 'User', isRaw: true },
   { key: 'name', label: 'Name' },
-  { key: 'fullname', label: 'Fullname' },
-  { key: 'email', label: 'Email' },
-  { key: 'phone', label: 'Phone' },
   { key: 'teamName', label: 'Team' },
   { key: 'roleName', label: 'Role' },
-  { key: 'country', label: 'Country', isCenter: true },
+  { key: 'manage', label: 'Manage', isRaw: true },
   { key: 'status', label: 'Status' },
   { key: 'action', label: 'Action', isEnd: true, isRaw: true },
 ]
@@ -119,16 +115,37 @@ const confirmChangeCountry = async () => {
           </V-Field>
         </div>
       </template>
-      <template #avatar="{ value }">
-        <V-Avatar
-          size="small"
-          :picture="value.avatar"
-          :badge="countryFlag[value.country]"
-        />
+      <template #user="{ value }">
+        <div class="user-avatar dark-inverted">
+          <V-Avatar
+            :badge="countryFlag[value.country]"
+            :picture="value.avatar ? value.avatar : undefined"
+            :initials="value.initials"
+            :color="value.color || undefined"
+            size="medium"
+          />
+          <div class="avatar-details dark-inverted">
+            <span class="item-name dark-inverted"
+              >{{ value.firstname }} {{ value.lastname }}</span
+            >
+            <span class="item-meta">
+              <span>{{ value.email }}</span>
+            </span>
+          </div>
+        </div>
       </template>
-      <!-- <template #fullname="{ value }">
-        {{ `${value.firstname} ${value.lastname}` }}
-      </template> -->
+      <template #manage="{ value }">
+        <V-Tags>
+          <V-Tag
+            v-for="country in value.manageCountry"
+            :key="country"
+            :label="country"
+            color="primary"
+            curved
+            outlined
+          />
+        </V-Tags>
+      </template>
       <template #status="{ value }">
         <!-- {{ value ? toFormat(value, 'DD/MM/YYYY, HH:mm') : '-' }} -->
         <V-Tag
@@ -154,8 +171,8 @@ const confirmChangeCountry = async () => {
               <RouterLink
                 role="menuitem"
                 :to="{
-                  name: 'admin-:userid-view',
-                  params: { userid: value.id },
+                  name: 'admins-:id',
+                  params: { id: value.id },
                 }"
                 class="dropdown-item is-media"
               >
@@ -172,8 +189,9 @@ const confirmChangeCountry = async () => {
                 v-show="user.roleId === 1"
                 role="menuitem"
                 :to="{
-                  name: 'admin-:userid-edit',
-                  params: { userid: value.id },
+                  name: 'admins-:id',
+                  params: { id: value.id },
+                  hash: '#edit',
                 }"
                 class="dropdown-item is-media"
               >
@@ -185,20 +203,6 @@ const confirmChangeCountry = async () => {
                   <span>Edit Profile</span>
                 </div>
               </RouterLink>
-              <!-- <a
-                role="menuitem"
-                href="#"
-                class="dropdown-item is-media"
-                @click="selectedUser = { ...value }"
-              >
-                <div class="icon">
-                  <i aria-hidden="true" class="lnil lnil-flag"></i>
-                </div>
-                <div class="meta">
-                  <span>Change Country</span>
-                  <span>Change admin country (TH or VN)</span>
-                </div>
-              </a> -->
 
               <hr class="dropdown-divider" />
               <a
@@ -239,6 +243,8 @@ const confirmChangeCountry = async () => {
   </div>
 </template>
 <style lang="scss" scoped>
+@import 'src/scss/abstracts/_variables.scss';
+
 .link {
   color: #a2a5b9;
   text-decoration: underline;
@@ -257,6 +263,27 @@ td {
   align-items: center;
   > a {
     margin-left: 10px;
+  }
+}
+
+.user-avatar {
+  display: flex;
+
+  .avatar-details {
+    display: flex;
+    flex-direction: column;
+    padding-left: 0.8rem;
+
+    .item-name {
+      font-family: $font-alt;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $dark;
+    }
+
+    .item-meta {
+      color: $light-text;
+    }
   }
 }
 </style>

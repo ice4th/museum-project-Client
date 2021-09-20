@@ -14,16 +14,16 @@ const { logout } = useAuthApi()
         aria-haspopup="true"
         @click="toggle"
       >
-        <V-Avatar :picture="user.avatar" />
+        <V-Avatar :picture="user?.avatar" />
       </a>
     </template>
 
     <template #content>
       <div class="dropdown-head">
-        <V-Avatar size="large" :picture="user.avatar" />
+        <V-Avatar size="large" :picture="user?.avatar" />
 
         <div class="meta">
-          <span>{{ user.name }}</span>
+          <span>{{ user?.name }}</span>
           <span>User Role</span>
         </div>
       </div>

@@ -58,6 +58,7 @@ export interface IStudentInfo {
   cefr?: string
   globishLevel?: string
   studentNote: IStudentNote
+  ticket?: IStudentTicketResult
 }
 
 export interface IStudentTicketResult {
@@ -71,6 +72,20 @@ export interface IStudentList extends IStudentInfo {
     available: number
     used: number
   }
+}
+
+export interface IStudentPrivateClass {
+  id: number
+  time: number
+  endTime: number
+  coachAttend: Date
+  studentAttend: Date
+  ticketId: number
+  coach: {
+    id: number
+    name: string
+  }
+  packageName: string
 }
 
 export interface IUpdateStudentProfile {
@@ -103,4 +118,60 @@ export interface IFamilyInfo {
   id: number
   name: string
   students: IStudentInfo[]
+}
+
+export interface IStudentGroupClass {
+  id: number
+  topic: string
+  type: string
+  level: string
+  teacher: string
+  date: string
+  time: string
+  attend: string
+}
+
+export interface IStudentGlobishPlusInfo {
+  firstname: string
+  lastname: string
+  phone: string
+  email: string
+  voxyLevel: number
+  globishLevel: number
+  featureGroupId: number
+  featureGroup: {
+    id: number
+    name: string
+  }
+  tickets: IStudentGlobishPlusTicket[]
+  joinedDate: string
+  expireDate: string
+  dateOfNextVpa: string
+  nativeLanguage: string
+  accessType: string
+  segments: unknown
+  purchasedTutoringCredits: number
+  tutoringCredits: number
+  tutoringCreditsUsed: number
+  canReserveGroupSessions: boolean
+}
+
+export interface IUpdateStudentGlobishPlusProfile {
+  expireDate: Date
+  firstname: string
+  lastname: string
+  email: string
+  globishLevel: number
+  featureGroupId: number
+}
+
+export interface IStudentGlobishPlusTicket {
+  id: number
+  packageItemId: number
+  featureGroupId: number
+  packageId: number
+  packageName: string
+  productLevel: number
+  startDate: Date
+  expireDate: Date
 }

@@ -1,8 +1,9 @@
 import { onMounted, reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
+import { initAvatar } from '../../helpers/avatar.helper'
 import { isSuccess } from '../api'
 import useAdminApi from '../api/useAdminApi'
-import usePaginationRoute from '../use-pagination-route'
+import usePaginationRoute from '../usePaginationRoute'
 import useNotyf from '../useNotyf'
 import { errMessage } from '/@src/helpers/filter.helper'
 import { IAdminDetail } from '/@src/types/interfaces/admin.interface'
@@ -42,7 +43,17 @@ export default function useAdminList() {
     })
     state.isLoading = false
     if (data) {
-      state.data = data.data
+      state.data = data.data.map((item) => {
+        const { firstname, lastname } = item
+        const { initials, color } = initAvatar(firstname, lastname)
+        return {
+          ...item,
+          firstname,
+          lastname,
+          initials,
+          color,
+        }
+      })
       state.total = data.total
     }
   }

@@ -1,19 +1,49 @@
-/**
- * useCreatePackageForm Composition API
- */
-
 import { Notyf } from 'notyf'
-import { computed, onMounted, reactive, toRefs } from 'vue'
+import { onMounted, reactive, toRefs } from 'vue-demi'
 import { useRouter, useRoute } from 'vue-router'
-import { errMessage, isNil } from '../../helpers/filter.helper'
-import { Purchasable } from '../../types/enums/package.enum'
-import useOptionApi from '../api/useOptionApi'
+import { errMessage } from '../../helpers/filter.helper'
+import { Purchasable } from '../../types/enums/product.enum'
 import usePackageApi from '../api/usePackageApi'
-import { IUseCratePackageForm } from '/@src/types/interfaces/package.interface'
 
-/**
- * global notify
- */
+export interface IUsePackageDetailsState {
+  formPackageInfo: {
+    packageId?: number
+    // package details
+    packageName: string
+    packageNameInternal?: string
+    productId: number
+    purchasable: boolean
+    status: '0' | '1'
+    detail: string
+    comment: string
+    // price & ticket
+    price?: number
+    beforeDiscount?: number
+    installmentMonth?: string
+    duration?: number
+    ticketOneOnOne?: number
+    ticketFreetalk?: number
+    ticketGroup?: number
+    ticketMaster?: number
+    //   course detail
+    privateSlot?: number
+    type: string
+    globishLevel: string
+    cefrLevel: string
+    photo?: string
+    // package's addons
+    curriculumSheet?: string
+    curriculumId?: number
+    engder?: string
+    featureGroupId?: number
+    findMycoachId?: number
+    moocCourseId?: number
+  }
+  // other logic
+  notFoundPackage: boolean
+  editable: boolean
+}
+
 const notyfMessage = new Notyf({
   duration: 2000,
   position: {
@@ -22,38 +52,25 @@ const notyfMessage = new Notyf({
   },
 })
 
-export default function useFormPackageInfo() {
+export default function usePackageDetails() {
   /**
    * Use Api
    */
-  const {
-    getProducts,
-    getCurriculums,
-    getFeatureGroups,
-    getFmcPackages,
-    getMoocCourses,
-  } = useOptionApi()
   const { getPackageById, createPackage, updatePackage } = usePackageApi()
 
   /**
-   * Router
+   * Use Router
    */
-  const router = useRouter()
   const route = useRoute()
+  const router = useRouter()
 
   /**
    * State
    */
-  const state = reactive<IUseCratePackageForm>({
-    products: [],
-    curriculums: [],
-    featureGroups: [],
-    fmcPackages: [],
-    moocCourses: [],
-    loadingOptions: false,
-    loadingPackage: false,
-    notFoundPackage: false,
+  const state = reactive<IUsePackageDetailsState>({
     formPackageInfo: {
+      packageId: undefined,
+      // package details
       packageName: '',
       packageNameInternal: '',
       productId: NaN,
@@ -61,75 +78,41 @@ export default function useFormPackageInfo() {
       status: '0',
       detail: '',
       comment: '',
-      globishLevel: '',
-      cefrLevel: '',
+      // price & ticket
       price: undefined,
       beforeDiscount: undefined,
       installmentMonth: undefined,
-      engder: undefined,
-      type: '',
       duration: undefined,
       ticketOneOnOne: undefined,
       ticketFreetalk: undefined,
       ticketGroup: undefined,
       ticketMaster: undefined,
+      //   course detail
+      privateSlot: undefined,
+      type: '',
+      globishLevel: '',
+      cefrLevel: '',
       photo: '',
+      // package's addons
       curriculumSheet: '',
       curriculumId: undefined,
+      engder: undefined,
       featureGroupId: undefined,
       findMycoachId: undefined,
       moocCourseId: undefined,
-      privateSlot: undefined,
     },
-  })
-
-  /**
-   * Computed
-   */
-  const disabledDone = computed(() => {
-    return (
-      !state.formPackageInfo.packageName ||
-      !state.formPackageInfo.productId ||
-      !state.formPackageInfo.globishLevel ||
-      !state.formPackageInfo.cefrLevel ||
-      parseInt(`${state.formPackageInfo.price}`) < 0 ||
-      parseInt(`${state.formPackageInfo.beforeDiscount}`) < 0 ||
-      isNil(state.formPackageInfo.installmentMonth) ||
-      !state.formPackageInfo.type ||
-      parseInt(`${state.formPackageInfo.duration}`) < 0 ||
-      !state.formPackageInfo.ticketOneOnOne ||
-      !state.formPackageInfo.privateSlot
-    )
+    // readonly logic
+    notFoundPackage: false,
+    editable: false,
   })
 
   /**
    * Methods
    */
-  const fetchOptions = async () => {
-    state.loadingOptions = true
-
-    // fetch all options
-    const [products, curriculums, featureGroups, fmcPackages, moocCourses] =
-      await Promise.all([
-        getProducts(),
-        getCurriculums(),
-        getFeatureGroups(),
-        getFmcPackages(),
-        getMoocCourses(),
-      ])
-    state.products = products
-    state.curriculums = curriculums
-    state.featureGroups = featureGroups
-    state.fmcPackages = fmcPackages
-    state.moocCourses = moocCourses
-    state.loadingOptions = false
-  }
   const fetchPackage = async () => {
-    state.loadingPackage = true
-
     const packageId = parseInt(route.params.id as string)
     // fetch package by id
-    const res = await getPackageById(packageId)
+    const res = (await getPackageById(packageId)) as any
 
     if (res) {
       state.formPackageInfo = {
@@ -137,8 +120,8 @@ export default function useFormPackageInfo() {
         packageName: res.packageName,
         packageNameInternal: res.packageNameInternal,
         productId: res.productInfo.id,
-        purchasable: res.purchasable === Purchasable.SALE,
-        status: `${res.status}`,
+        purchasable: res.purchasable === Purchasable.YES,
+        status: `${res.status}` as any,
         detail: res.detail,
         comment: res.comment,
         globishLevel: res.globishLevel,
@@ -164,11 +147,8 @@ export default function useFormPackageInfo() {
     } else {
       state.notFoundPackage = true
     }
-
-    state.loadingPackage = false
   }
-  const savePackage = async () => {
-    // save form package info
+  const onSavePackage = async () => {
     const { status, message, data } = await createPackage(state.formPackageInfo)
     if (status === 201) {
       notyfMessage.open({
@@ -176,7 +156,7 @@ export default function useFormPackageInfo() {
         message: 'Package was created!',
       })
       router.push({
-        name: 'products-packages',
+        name: 'products-packages-:id',
         params: { id: `${data.id}` },
       })
     } else {
@@ -186,15 +166,18 @@ export default function useFormPackageInfo() {
       })
     }
   }
-  const editPackage = async () => {
-    // save form package info
+  const onEditPackage = async () => {
     const { status, message } = await updatePackage(state.formPackageInfo)
     if (status === 200) {
-      await fetchPackage()
-      router.push({ name: 'products-packages' })
+      router.push({
+        name: 'products-packages-:id',
+        params: {
+          id: parseInt(`${state.formPackageInfo.packageId}`),
+        },
+      })
       notyfMessage.open({
         type: 'success',
-        message: 'Package was created!',
+        message: 'Package was updated!',
       })
     } else {
       notyfMessage.open({
@@ -208,20 +191,20 @@ export default function useFormPackageInfo() {
    * On Mounted
    */
   onMounted(() => {
-    fetchOptions()
-    // fetch package by id if update page or details page
-    const page = ['products-packages-:id-edit', 'products-packages-:id']
-    if (page.includes(String(route.name)) && route.params.id) {
+    if (route.name !== 'products-packages-create') {
       fetchPackage()
+    } else {
+      state.editable = true
+    }
+    if (route.hash === '#edit') {
+      state.editable = true
     }
   })
 
   return {
     ...toRefs(state),
-    //  Computed
-    disabledDone,
-    //  Methods
-    savePackage,
-    editPackage,
+    // Methods
+    onSavePackage,
+    onEditPackage,
   }
 }
